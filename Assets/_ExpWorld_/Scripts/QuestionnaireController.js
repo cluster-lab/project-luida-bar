@@ -3,58 +3,51 @@ $.onStart(() => {
 })
 
 $.onUpdate(() => {
-    $.state.answerType = $.getStateCompat("owner", "questionnaire_answer_type", "integer");
+    
 })
 
 $.onInteract(() => {
+    $.state.answerType = $.getStateCompat("this", "questionnaire_answer_type", "integer");
+    let answer = null;
     try {
         switch ($.state.answerType) {
             case 0:
-                const answer = $.getStateCompat("owner", "questionnaire_answer", "integer");
-                $.log(answer);
-                $.state.answers[$.state.questionID] = answer;
+                answer = $.getStateCompat("this", "questionnaire_answer", "integer");
                 break;
             case 1:
-                $.log($.state.answers[$.state.questionID]);
+                answer = $.state.tmpAnswer;
                 break;
             case 2:
-                $.getStateCompat("owner", "questionnaire_answer", "boolean");
-                $.log(answer);
-                $.state.answers[$.state.questionID] = answer;
+                answer = $.getStateCompat("this", "questionnaire_answer", "boolean");
                 break;
             case 3:
                 break;
             default:
                 break;
         }
-        $.log($.state.answers);
+        
+        if (answer) $.state.answers = { ...$.state.answers, [$.state.questionID]: answer};
+        $.log("Q" + $.state.questionID + ": " + $.state.answers[$.state.questionID]);
+
         $.state.questionID++;
+        $.state.tmpAnswer = null;
+        $.setStateCompat("owner", "questionnaire_indicator_active", false);
     } catch (error) {
         $.log(error);
     }
 });
 
-$.onTextInput((text, meta, status) => {
-    switch(status) {
-      case TextInputStatus.Success:
-        $.log(text);
-        $.state.answers[$.state.questionID] = answer;
-        $.state.answerType = 1;
-        break;
-      case TextInputStatus.Busy:
-        // 5秒後にretryする
-        $.state.should_retry = true;
-        $.state.retry_timer = 5;
-        break;
-      case TextInputStatus.Refused:
-        // 拒否された場合は諦める
-        $.state.should_retry = false;
-        break;
-    }
-});
+$.onReceive((messageType, arg, sender) => {
+    if (messageType !== "send_questionnaire_answer") return;
+    
+    $.state.tmpAnswer = arg;
+    $.setStateCompat("this", "questionnaire_answer_type", 1);
+})
 
 function reset () {
     $.state.answers = {};
     $.state.questionID = 0;
     $.state.answerType = -1; // 0: integer, 1: str, 2: boolean, 3: integer[]
+    $.state.tmpAnswer = null;
+    $.setStateCompat("owner", "questionnaire_indicator_active", false);
 }
