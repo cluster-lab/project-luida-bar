@@ -31,7 +31,7 @@ $.onInteract(() => {
 
         $.state.questionID++;
         $.state.tmpAnswer = null;
-        $.setStateCompat("owner", "questionnaire_indicator_active", false);
+        $.setStateCompat("owner", "trigger_indicator", false);
     } catch (error) {
         $.log(error);
     }

@@ -12,6 +12,9 @@ GameObject:
   - component: {fileID: 1936604059201671698}
   - component: {fileID: 9120172293683553579}
   - component: {fileID: 4916924578940370253}
+  - component: {fileID: 2246081964734239156}
+  - component: {fileID: 8992209998322095003}
+  - component: {fileID: 8133423231843910547}
   m_Layer: 14
   m_Name: Button
   m_TagString: Untagged
@@ -98,6 +101,91 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &2246081964734239156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7359199090098155751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id:
+    value: 0
+  itemName: 
+  size: {x: 0, y: 0, z: 0}
+--- !u!114 &8992209998322095003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7359199090098155751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2872ae1873cd4546a4cf7dae626612b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 2246081964734239156}
+  triggers:
+  - target: 1
+    specifiedTargetItem: {fileID: 0}
+    key: questionnaire_answer
+    type: 3
+    value:
+      boolValue: 0
+      floatValue: 0
+      integerValue: 0
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+  - target: 1
+    specifiedTargetItem: {fileID: 0}
+    key: questionnaire_answer_type
+    type: 3
+    value:
+      boolValue: 0
+      floatValue: 0
+      integerValue: 0
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+  - target: 2
+    specifiedTargetItem: {fileID: 0}
+    key: trigger_indicator
+    type: 1
+    value:
+      boolValue: 1
+      floatValue: 0
+      integerValue: 0
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+  - target: 0
+    specifiedTargetItem: {fileID: 0}
+    key: try_move_indicator
+    type: 1
+    value:
+      boolValue: 1
+      floatValue: 0
+      integerValue: 0
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+--- !u!114 &8133423231843910547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7359199090098155751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61061896c654489a41575fc291bf4a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourceCodeAsset: {fileID: 5022602860645237092, guid: c53a543662894421c9ad3cacde2e58af,
+    type: 3}
+  sourceCode: 
 --- !u!1 &8443619225727822656
 GameObject:
   m_ObjectHideFlags: 0
@@ -108,8 +196,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7006467581672386338}
   - component: {fileID: 6664790268749088724}
-  - component: {fileID: 2956946039318504125}
-  - component: {fileID: 4172400052133075466}
   m_Layer: 14
   m_Name: RadioButton
   m_TagString: Untagged
@@ -151,63 +237,3 @@ MonoBehaviour:
   textAnchor: 3
   textAlignment: 0
   color: {r: 1, g: 1, b: 1, a: 1}
---- !u!114 &2956946039318504125
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8443619225727822656}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id:
-    value: 0
-  itemName: 
-  size: {x: 0, y: 0, z: 0}
---- !u!114 &4172400052133075466
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8443619225727822656}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2872ae1873cd4546a4cf7dae626612b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item: {fileID: 2956946039318504125}
-  triggers:
-  - target: 2
-    specifiedTargetItem: {fileID: 0}
-    key: questionnaire_answer
-    type: 3
-    value:
-      boolValue: 0
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
-  - target: 2
-    specifiedTargetItem: {fileID: 0}
-    key: questionnaire_answer_type
-    type: 3
-    value:
-      boolValue: 0
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
-  - target: 2
-    specifiedTargetItem: {fileID: 0}
-    key: questionnaire_indicator_active
-    type: 1
-    value:
-      boolValue: 1
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
