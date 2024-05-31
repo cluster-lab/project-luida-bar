@@ -396,12 +396,17 @@ PrefabInstance:
     - target: {fileID: 8187736243455501272, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_Name
-      value: WorldGateToClusterLobby
+      value: WorldGateToExpWorld
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501272, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8187736243628620956, guid: bcb4321352c07a94480b4dd0ff0fadee,
+        type: 3}
+      propertyPath: worldOrEventId
+      value: 67a71729-1985-4b57-bac5-72ff96d1b9b4
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243628620956, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -1919,8 +1924,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1076686506}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.4}
-  m_LocalScale: {x: 0.0030238132, y: 0.0030238132, z: 0.0030238132}
+  m_LocalPosition: {x: 0, y: 0, z: 2.5240717}
+  m_LocalScale: {x: 0.0054516583, y: 0.0054516583, z: 0.0054516583}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 439272145}
@@ -1932,7 +1937,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -634.225, y: -308.55}
+  m_AnchoredPosition: {x: -571.72797, y: -341.27536}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1773428102 &1076686508
