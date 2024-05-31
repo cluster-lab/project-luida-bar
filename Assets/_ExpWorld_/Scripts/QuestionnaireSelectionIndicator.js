@@ -1,3 +1,3 @@
 $.onUpdate(() => {
-    $.setPosition($.getStateCompat("owner", "move_indicator", "vector3"));
+    $.setPosition($.getStateCompat("owner", "q_move_indicator", "vector3"));
 })

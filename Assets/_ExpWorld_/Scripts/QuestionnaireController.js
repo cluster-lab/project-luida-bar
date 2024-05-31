@@ -1,53 +1,95 @@
+/*
+[$.state.answerType]
+0: radio buttons / linear scale (integer)
+1: text (string)
+2: toggle (boolean)
+3: checkboxes (integer[])
+*/
+
 $.onStart(() => {
     reset();
+    $.setStateCompat("owner", "q_trigger_question_" + $.state.questionID, true);
 })
 
 $.onUpdate(() => {
-    
+    if ($.getStateCompat("owner", "q_is_next", "boolean")) {
+        $.setStateCompat("owner", "q_is_next", false)
+        saveAnswer();
+    }
+    if ($.getStateCompat("owner", "q_is_previous", "boolean")) {
+        $.setStateCompat("owner", "q_is_previous", false)
+        // TODO: move to prev question
+    }
 })
 
 $.onInteract(() => {
-    $.state.answerType = $.getStateCompat("this", "questionnaire_answer_type", "integer");
-    let answer = null;
-    try {
-        switch ($.state.answerType) {
-            case 0:
-                answer = $.getStateCompat("this", "questionnaire_answer", "integer");
-                break;
-            case 1:
-                answer = $.state.tmpAnswer;
-                break;
-            case 2:
-                answer = $.getStateCompat("this", "questionnaire_answer", "boolean");
-                break;
-            case 3:
-                break;
-            default:
-                break;
-        }
-        
-        if (answer) $.state.answers = { ...$.state.answers, [$.state.questionID]: answer};
-        $.log("Q" + $.state.questionID + ": " + $.state.answers[$.state.questionID]);
-
-        $.state.questionID++;
-        $.state.tmpAnswer = null;
-        $.setStateCompat("owner", "trigger_indicator", false);
-    } catch (error) {
-        $.log(error);
-    }
+    saveAnswer();
 });
 
 $.onReceive((messageType, arg, sender) => {
-    if (messageType !== "send_questionnaire_answer") return;
-    
-    $.state.tmpAnswer = arg;
-    $.setStateCompat("this", "questionnaire_answer_type", 1);
+    switch (messageType) {
+        case "q_send_text_answer":
+            $.state.tmpAnswer = arg;
+            $.setStateCompat("owner", "q_answer_type", 1);
+            break;
+        case "q_send_checked":
+            if (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];
+            if (!$.state.tmpAnswer.includes(arg)) $.state.tmpAnswer = [ ...$.state.tmpAnswer, arg ];
+            $.setStateCompat("owner", "q_answer_type", 3);
+            break;
+        case "q_send_unchecked":
+            if (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];
+            $.state.tmpAnswer = $.state.tmpAnswer.filter(item => {
+                return item !== arg;
+            });
+            $.setStateCompat("owner", "q_answer_type", 3);
+            break;
+        default:
+            break;
+    }
 })
 
 function reset () {
     $.state.answers = {};
-    $.state.questionID = 0;
+    $.state.questionID = 1;
     $.state.answerType = -1; // 0: integer, 1: str, 2: boolean, 3: integer[]
     $.state.tmpAnswer = null;
-    $.setStateCompat("owner", "questionnaire_indicator_active", false);
+    $.setStateCompat("owner", "q_indicator_active", false);
+}
+
+function saveAnswer () {
+    $.state.answerType = $.getStateCompat("owner", "q_answer_type", "integer");
+    let answer = null;
+    switch ($.state.answerType) {
+        case 0: // radio buttons / linear scale
+            answer = $.getStateCompat("owner", "q_answer", "integer");
+            if (!answer) return;
+            break;
+        case 1: // text
+            answer = $.state.tmpAnswer; // string
+            if (!answer) return;
+            break;
+        case 2: // toggle
+            answer = $.getStateCompat("owner", "q_answer", "boolean");
+            break;
+        case 3: // checkboxes
+            answer = $.state.tmpAnswer.sort() || []; // integer[]
+            if (!answer) return;
+            break;
+        default:
+            break;
+    }
+    
+    $.state.answers = { ...$.state.answers, [$.state.questionID]: answer };
+    $.log(JSON.stringify($.state.answers));
+
+    toNext();
+}
+
+function toNext () {
+    $.setStateCompat("owner", "q_trigger_question_" + $.state.questionID, false);
+    $.state.questionID++;
+    $.state.tmpAnswer = null;
+    $.setStateCompat("owner", "q_trigger_indicator", false);
+    $.setStateCompat("owner", "q_trigger_question_" + $.state.questionID, true);
 }

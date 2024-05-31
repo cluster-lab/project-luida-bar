@@ -131,19 +131,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: {fileID: 2246081964734239156}
   triggers:
-  - target: 1
+  - target: 2
     specifiedTargetItem: {fileID: 0}
-    key: questionnaire_answer
-    type: 3
-    value:
-      boolValue: 0
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
-  - target: 1
-    specifiedTargetItem: {fileID: 0}
-    key: questionnaire_answer_type
+    key: q_answer
     type: 3
     value:
       boolValue: 0
@@ -153,7 +143,17 @@ MonoBehaviour:
       vector3Value: {x: 0, y: 0, z: 0}
   - target: 2
     specifiedTargetItem: {fileID: 0}
-    key: trigger_indicator
+    key: q_answer_type
+    type: 3
+    value:
+      boolValue: 0
+      floatValue: 0
+      integerValue: 0
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+  - target: 2
+    specifiedTargetItem: {fileID: 0}
+    key: q_trigger_indicator
     type: 1
     value:
       boolValue: 1
@@ -163,7 +163,7 @@ MonoBehaviour:
       vector3Value: {x: 0, y: 0, z: 0}
   - target: 0
     specifiedTargetItem: {fileID: 0}
-    key: try_move_indicator
+    key: q_try_move_indicator
     type: 1
     value:
       boolValue: 1

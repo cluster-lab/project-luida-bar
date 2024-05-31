@@ -1,6 +1,6 @@
 $.onUpdate(() => {
-    if ($.getStateCompat("this", "try_move_indicator", "boolean")) {
-        $.setStateCompat("this", "try_move_indicator", false);
-        $.setStateCompat("owner", "move_indicator", $.getPosition().clone());
+    if ($.getStateCompat("this", "q_try_move_indicator", "boolean")) {
+        $.setStateCompat("this", "q_try_move_indicator", false);
+        $.setStateCompat("owner", "q_move_indicator", $.getPosition().clone());
     }
 })

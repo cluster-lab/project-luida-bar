@@ -1,13 +1,13 @@
 $.onInteract(player => {
-    player.requestTextInput("request_questionnaire_answer", "Hi, what is your name?");
+    player.requestTextInput("q_request_text_answer", "Hi, what is your name?");
 })
 
 $.onTextInput((text, meta, status) => {
-    if (meta !== "request_questionnaire_answer") return;
+    if (meta !== "q_request_text_answer") return;
     switch(status) {
       case TextInputStatus.Success:
         $.getItemsNear($.getPosition(), 0.1).forEach(item => {
-            item.send("send_questionnaire_answer", text);
+            item.send("q_send_text_answer", text);
         });
         $.subNode("Text").setText(text);
         break;
