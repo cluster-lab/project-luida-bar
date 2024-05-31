@@ -22,9 +22,9 @@ $.onUpdate(() => {
     }
 })
 
-$.onInteract(() => {
-    saveAnswer();
-});
+// $.onInteract(() => {
+//     saveAnswer();
+// });
 
 $.onReceive((messageType, arg, sender) => {
     switch (messageType) {
@@ -43,6 +43,12 @@ $.onReceive((messageType, arg, sender) => {
                 return item !== arg;
             });
             $.setStateCompat("owner", "q_answer_type", 3);
+            break;
+        case "q_save_and_next_question":
+            saveAnswer();
+            break;
+        case "q_prev_question":
+            toPrev();
             break;
         default:
             break;
@@ -83,12 +89,23 @@ function saveAnswer () {
     $.state.answers = { ...$.state.answers, [$.state.questionID]: answer };
     $.log(JSON.stringify($.state.answers));
 
+    // TODO: Send data
+
     toNext();
 }
 
 function toNext () {
     $.setStateCompat("owner", "q_trigger_question_" + $.state.questionID, false);
     $.state.questionID++;
+    $.state.tmpAnswer = null;
+    $.setStateCompat("owner", "q_trigger_indicator", false);
+    $.setStateCompat("owner", "q_trigger_question_" + $.state.questionID, true);
+}
+
+function toPrev () {
+    if ($.state.questionID <= 0) return;
+    $.setStateCompat("owner", "q_trigger_question_" + $.state.questionID, false);
+    $.state.questionID--;
     $.state.tmpAnswer = null;
     $.setStateCompat("owner", "q_trigger_indicator", false);
     $.setStateCompat("owner", "q_trigger_question_" + $.state.questionID, true);
