@@ -11,21 +11,6 @@ $.onStart(() => {
     $.setStateCompat("owner", "q_trigger_question_" + $.state.questionID, true);
 })
 
-$.onUpdate(() => {
-    if ($.getStateCompat("owner", "q_is_next", "boolean")) {
-        $.setStateCompat("owner", "q_is_next", false)
-        saveAnswer();
-    }
-    if ($.getStateCompat("owner", "q_is_previous", "boolean")) {
-        $.setStateCompat("owner", "q_is_previous", false)
-        // TODO: move to prev question
-    }
-})
-
-// $.onInteract(() => {
-//     saveAnswer();
-// });
-
 $.onReceive((messageType, arg, sender) => {
     switch (messageType) {
         case "q_send_text_answer":
