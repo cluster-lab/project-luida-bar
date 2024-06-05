@@ -14,15 +14,16 @@ function initQuestion (title, description, answerOptions, questionTypeID) { // o
     $.state.answerOptions = answerOptions;
     $.state.questionTypeID = questionTypeID;
     $.state.spawningAnswerID = 0;
-    spawnAnswerOption();
+    $.state.answerOptionUIs = [];
+    spawnAnswerOptionUI();
 }
 
-function setAnswerOptionSpawnPoint () {
+function setAnswerOptionUISpawnPoint () {
     // TODO: calculate & set spawn point position only when answerType === "radio" or "check"
 }
 
-function spawnAnswerOption () {
-    setAnswerOptionSpawnPoint();
+function spawnAnswerOptionUI () {
+    setAnswerOptionUISpawnPoint();
     // Spawn for "radio_button" and "scale_button" and "checkbox"; Set GameObject Active for "toggle" and "text_input"
     $.setStateCompat("this", "form_spawn_" + attrsByQuestionType[$.state.questionTypeID].aTemplateName, true);
 }
@@ -31,10 +32,11 @@ $.onReceive((messageType, arg, sender) => {
     switch (messageType) {
         case "form_on_answer_option_spawned":
             if (arg && $.state.answerOptions) {
+                $.state.answerOptionUIs = [ ...$.state.answerOptionUIs, sender ];
                 sender.send("form_init_answer_option", { id: $.state.spawningAnswerID + 1, label: $.state.answerOptions[$.state.spawningAnswerID] });
                 if ($.state.spawningAnswerID < $.state.answerOptions.length - 1) {
                     $.state.spawningAnswerID = $.state.spawningAnswerID + 1;
-                    spawnAnswerOption();
+                    spawnAnswerOptionUI();
                 }
             }
             break;
@@ -42,3 +44,10 @@ $.onReceive((messageType, arg, sender) => {
             break;
     }
 })
+
+function destroyAnswerOptionUIs () {
+    $.state.answerOptionUIs.forEach(optionUI => {
+        optionUI.send("form_destroy_answer_option", true);
+    });
+    $.state.answerOptionUIs = [];
+}

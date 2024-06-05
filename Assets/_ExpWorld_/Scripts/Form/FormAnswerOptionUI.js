@@ -1,5 +1,8 @@
+/*
+    Sth like a parent class for any form answer option UI to inherit (despite no implementation of 'class' in CCK script)
+*/
+
 $.onStart(() => {
-    $.state.isOn = $.getStateCompat("this", "form_toggle_on", "boolean");
     $.state.answerValue = null;
     $.getItemsNear($.getPosition(), 0.1).forEach(item => {
         item.send("form_on_answer_option_spawned", true);
@@ -29,6 +32,5 @@ $.onReceive((messageType, arg, sender) => {
 })
 
 function answer() {
-    $.state.isOn = $.getStateCompat("this", "form_toggle_on", "boolean");
-    $.state.formController.send("form_answer", { value: $.state.answerValue, isOn: $.state.isOn } );
+    $.state.formController.send("form_answer", $.state.answerValue);
 }
