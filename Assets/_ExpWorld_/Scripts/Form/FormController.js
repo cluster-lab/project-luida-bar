@@ -1,4 +1,12 @@
-// TODO: copy and modify QuestionnaireController to here
+const dummyQuestions = [
+    { title: "どのくらいの頻度でVRを体験していますか？", description: "どのくらいの頻度でVRを体験していますか？", questionTypeID: 0, answerOptions: ["なし", "年に一回未満", "年に一回以上", "月に1~2回くらい", "週1回くらい", "週2~3回くらい", "週4回以上"] },
+    { title: "VRについて興味ありますか？", description: "1:全く興味ない、7:とても興味ある", questionTypeID: 1, answerOptions: [1, 2, 3, 4, 5, 6, 7] },
+    { title: "VRデバイスのメーカーとして認識している会社を選んでください", description: "会社として聞いたことはあるが、VRメーカーであることは知っていなければ、選択しないでください", questionTypeID: 2, answerOptions: ["Meta (Oculus)", "Vive", "Valve", "Sony", "Pico", "DPVR"] },
+    { title: "10歳以上ですか？", description: "10歳未満の方はVRデバイスの使用をお控えください", questionTypeID: 3, answerOptions: [] },
+    { title: "コメント", description: "何かコメントがあればどうぞ！", questionTypeID: 4, answerOptions: [] }
+]
+
+const answerOptionUISpawnCenter = new Vector3(0, -0.5, 0);
 
 const attrsByQuestionType = [
     { questionType: "Options (single answer)",      answerType: "radio",    aTemplateName: "radio_button" },
@@ -8,11 +16,17 @@ const attrsByQuestionType = [
     { questionType: "Text",                         answerType: "text",     aTemplateName: "text_input" },
 ]
 
-function initQuestion (title, description, answerOptions, questionTypeID) { // options: array of string
+$.onStart(() => {
+    $.state.qID = 0;
+    let q = dummyQuestions[$.state.qID];
+    initQuestion(q.title, q.description, q.questionTypeID, q.answerOptions);
+})
+
+function initQuestion (title, description, questionTypeID, answerOptions) { // options: array of string
     $.subNode("Title").setText(title);
     $.subNode("Description").setText(description);
-    $.state.answerOptions = answerOptions;
     $.state.questionTypeID = questionTypeID;
+    $.state.answerOptions = answerOptions;
     $.state.spawningAnswerID = 0;
     $.state.answerOptionUIs = [];
     spawnAnswerOptionUI();
@@ -20,11 +34,30 @@ function initQuestion (title, description, answerOptions, questionTypeID) { // o
 
 function setAnswerOptionUISpawnPoint () {
     // TODO: calculate & set spawn point position only when answerType === "radio" or "check"
+    let pos = $.getPosition().clone().add(answerOptionUISpawnCenter);
+    let rot = $.getRotation().clone();
+    switch ($.state.questionTypeID) {
+        case 0:
+        case 2:
+            // max 5 options (rows) per column
+            // 1 columns: x = -0.1 - 0.3 * ((chars - 1) / 7), textsize = 0.05, max 30 chars per text line, 1~2 lines
+            // 2 columns: x = -0.5 - 0.065 * (chars - 1) & 0.2, textsize = 0.04, 15 chars per text line, 1~2 lines; textsize = 0.03 for 3 lines
+            // > 3 columns: x = -1.5 + 0.1 + (3 / columnCnt) * columnID, textsize = 0.05 - chars * (0.025/(max chars per line)), max chars per line = 3->15, 4->10, 5->6, 6->4 = (60/columnCnt - 5)
+            break;
+        case 1:
+            pos = pos.add(new Vector3((($.state.answerOptions.length > 11 ? 3 : 2) / ($.state.answerOptions.length - 1)) * ($.state.spawningAnswerID - ($.state.answerOptions.length - 1) / 2), 0, 0));
+            break;
+        case 3:
+        case 4:
+            break;
+        default:
+            break;
+    }
+    // TODO: set pos and rot for spawn point
 }
 
 function spawnAnswerOptionUI () {
     setAnswerOptionUISpawnPoint();
-    // Spawn for "radio_button" and "scale_button" and "checkbox"; Set GameObject Active for "toggle" and "text_input"
     $.setStateCompat("this", "form_spawn_" + attrsByQuestionType[$.state.questionTypeID].aTemplateName, true);
 }
 
@@ -40,6 +73,36 @@ $.onReceive((messageType, arg, sender) => {
                 }
             }
             break;
+        case "form_answer":
+            switch ($.state.questionTypeID) {
+                case 0: // radio buttons
+                case 1: // linear scale
+                case 3: // toggle
+                case 4: // text
+                    $.state.tmpAnswer = arg;
+                    break;
+                case 2: // checkboxes
+                    if (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];
+                    if (arg.isOn) {
+                        if (!$.state.tmpAnswer.includes(arg.value)) $.state.tmpAnswer = [ ...$.state.tmpAnswer, arg.value ];
+                    } else {
+                        if ($.state.tmpAnswer.includes(arg.value)) {
+                            $.state.tmpAnswer = $.state.tmpAnswer.filter(item => {
+                                return item !== arg.value;
+                            });
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+            break;
+        case "form_to_next":
+            saveAnswer();
+            break;
+        case "form_to_prev":
+            toPrev();
+            break;
         default:
             break;
     }
@@ -50,4 +113,44 @@ function destroyAnswerOptionUIs () {
         optionUI.send("form_destroy_answer_option", true);
     });
     $.state.answerOptionUIs = [];
+}
+
+function saveAnswer () {
+    $.state.answers = { ...$.state.answers, [$.state.questionID]: $.state.tmpAnswer };
+    $.log("Update answers: " + JSON.stringify($.state.answers));
+    toNext();
+}
+
+function submitAnswers () {
+    // TODO: Send $.state.answers to DB
+    $.log("Send final answers: " + JSON.stringify($.state.answers));
+}
+
+function toNext () {
+    $.state.qID = $.state.qID + 1;
+    if ($.state.qID >= dummyQuestions.length) {
+        submitAnswers();
+    } else {
+        destroyAnswerOptionUIs();
+        $.state.tmpAnswer = null;
+        // TODO: hide selection indicator
+        initQuestion($.state.qID);
+    }
+}
+
+function toPrev () {
+    if ($.state.qID <= 0) return;
+    destroyAnswerOptionUIs();
+    $.state.qID = $.state.qID - 1;
+    $.state.tmpAnswer = null;
+    // TODO: hide selection indicator
+    initQuestion($.state.qID);
+}
+
+function reset () {
+    $.state.answers = {};
+    $.state.qID = 0;
+    $.state.answerType = -1;
+    $.state.tmpAnswer = null;
+    // TODO: hide selection indicator
 }
