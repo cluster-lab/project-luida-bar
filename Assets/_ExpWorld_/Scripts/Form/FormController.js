@@ -11,22 +11,29 @@ const answerOptionUISpawnCenter = new Vector3(0, -0.5, 0);
 const attrsByQuestionType = [
     { questionType: "Options (single answer)",      answerType: "radio",    aTemplateName: "radio_button" },
     { questionType: "Linear scale",                 answerType: "radio",    aTemplateName: "scale_button" },
-    { questionType: "Options (multiple answers)",   answerType: "check", aTemplateName: "checkbox" },
+    { questionType: "Options (multiple answers)",   answerType: "check",    aTemplateName: "checkbox" },
     { questionType: "Toggle",                       answerType: "toggle",   aTemplateName: "toggle" },
     { questionType: "Text",                         answerType: "text",     aTemplateName: "text_input" },
 ]
 
-$.onStart(() => {
-    $.state.qID = 0;
-    let q = dummyQuestions[$.state.qID];
-    initQuestion(q.title, q.description, q.questionTypeID, q.answerOptions);
+// $.onStart(() => {
+//     $.state.qID = 0;
+//     initQuestion(dummyQuestions[$.state.qID]);
+// })
+
+$.onUpdate(() => {
+    if ($.getStateCompat("this", "form_init", "boolean")) {
+        $.setStateCompat("this", "form_init", false);
+        $.state.qID = 0;
+        initQuestion(dummyQuestions[$.state.qID]);
+    }
 })
 
-function initQuestion (title, description, questionTypeID, answerOptions) { // options: array of string
-    $.subNode("Title").setText(title);
-    $.subNode("Description").setText(description);
-    $.state.questionTypeID = questionTypeID;
-    $.state.answerOptions = answerOptions;
+function initQuestion (q) { // options: array of string
+    $.subNode("Title").setText(q.title);
+    $.subNode("Description").setText(q.description);
+    $.state.questionTypeID = q.questionTypeID;
+    $.state.answerOptions = q.answerOptions;
     $.state.spawningAnswerID = 0;
     $.state.answerOptionUIs = [];
     spawnAnswerOptionUI();
@@ -58,7 +65,7 @@ function setAnswerOptionUISpawnPoint () {
 
 function spawnAnswerOptionUI () {
     setAnswerOptionUISpawnPoint();
-    $.setStateCompat("this", "form_spawn_" + attrsByQuestionType[$.state.questionTypeID].aTemplateName, true);
+    $.sendSignalCompat("this", "form_spawn_" + attrsByQuestionType[$.state.questionTypeID].aTemplateName);
 }
 
 $.onReceive((messageType, arg, sender) => {
@@ -134,7 +141,7 @@ function toNext () {
         destroyAnswerOptionUIs();
         $.state.tmpAnswer = null;
         // TODO: hide selection indicator
-        initQuestion($.state.qID);
+        initQuestion(dummyQuestions[$.state.qID]);
     }
 }
 
@@ -144,7 +151,7 @@ function toPrev () {
     $.state.qID = $.state.qID - 1;
     $.state.tmpAnswer = null;
     // TODO: hide selection indicator
-    initQuestion($.state.qID);
+    initQuestion(dummyQuestions[$.state.qID]);
 }
 
 function reset () {
