@@ -2899,6 +2899,16 @@ PrefabInstance:
       propertyPath: id.value
       value: 15134296783848939537
       objectReference: {fileID: 0}
+    - target: {fileID: 5697374076830100655, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 8408533183222688948, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: 8676583077377606105, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
       propertyPath: textMesh
@@ -2908,6 +2918,11 @@ PrefabInstance:
         type: 3}
       propertyPath: textMesh
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8809687985327368340, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: m_Convex
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5fc328789f6f647509a5de61027d8680, type: 3}

@@ -6,7 +6,7 @@ const dummyQuestions = [
     { title: "コメント", description: "何かコメントがあればどうぞ！", questionTypeID: 4, answerOptions: [] }
 ]
 
-const answerOptionUISpawnCenter = new Vector3(0, -0.5, 0);
+const answerOptionUISpawnCenter = new Vector3(0, -0.3, 0);
 
 const attrsByQuestionType = [
     { questionType: "Options (single answer)",      answerType: "radio",    aTemplateName: "radio_button" },
@@ -16,64 +16,33 @@ const attrsByQuestionType = [
     { questionType: "Text",                         answerType: "text",     aTemplateName: "text_input" },
 ]
 
-// $.onStart(() => {
-//     $.state.qID = 0;
-//     initQuestion(dummyQuestions[$.state.qID]);
-// })
+$.onStart(() => {
+    reset();
+})
 
 $.onUpdate(() => {
-    if ($.getStateCompat("this", "form_init", "boolean")) {
-        $.setStateCompat("this", "form_init", false);
+    if (!$.state.isInitiated && $.getStateCompat("this", "form_set_content_active", "boolean")) {
+        $.state.isInitiated = true;
         $.state.qID = 0;
         initQuestion(dummyQuestions[$.state.qID]);
     }
-})
-
-function initQuestion (q) { // options: array of string
-    $.subNode("Title").setText(q.title);
-    $.subNode("Description").setText(q.description);
-    $.state.questionTypeID = q.questionTypeID;
-    $.state.answerOptions = q.answerOptions;
-    $.state.spawningAnswerID = 0;
-    $.state.answerOptionUIs = [];
-    spawnAnswerOptionUI();
-}
-
-function setAnswerOptionUISpawnPoint () {
-    // TODO: calculate & set spawn point position only when answerType === "radio" or "check"
-    let pos = $.getPosition().clone().add(answerOptionUISpawnCenter);
-    let rot = $.getRotation().clone();
-    switch ($.state.questionTypeID) {
-        case 0:
-        case 2:
-            // max 5 options (rows) per column
-            // 1 columns: x = -0.1 - 0.3 * ((chars - 1) / 7), textsize = 0.05, max 30 chars per text line, 1~2 lines
-            // 2 columns: x = -0.5 - 0.065 * (chars - 1) & 0.2, textsize = 0.04, 15 chars per text line, 1~2 lines; textsize = 0.03 for 3 lines
-            // > 3 columns: x = -1.5 + 0.1 + (3 / columnCnt) * columnID, textsize = 0.05 - chars * (0.025/(max chars per line)), max chars per line = 3->15, 4->10, 5->6, 6->4 = (60/columnCnt - 5)
-            break;
-        case 1:
-            pos = pos.add(new Vector3((($.state.answerOptions.length > 11 ? 3 : 2) / ($.state.answerOptions.length - 1)) * ($.state.spawningAnswerID - ($.state.answerOptions.length - 1) / 2), 0, 0));
-            break;
-        case 3:
-        case 4:
-            break;
-        default:
-            break;
+    if ($.state.isWaiting) {
+        if ($.state.timer < 10) {
+            $.state.timer = $.state.timer + 1;
+        } else {
+            $.state.isWaiting = false;
+            $.state.timer = 0;
+            $.sendSignalCompat("this", "form_spawn_" + attrsByQuestionType[$.state.questionTypeID].aTemplateName);
+        }
     }
-    // TODO: set pos and rot for spawn point
-}
-
-function spawnAnswerOptionUI () {
-    setAnswerOptionUISpawnPoint();
-    $.sendSignalCompat("this", "form_spawn_" + attrsByQuestionType[$.state.questionTypeID].aTemplateName);
-}
+})
 
 $.onReceive((messageType, arg, sender) => {
     switch (messageType) {
         case "form_on_answer_option_spawned":
             if (arg && $.state.answerOptions) {
                 $.state.answerOptionUIs = [ ...$.state.answerOptionUIs, sender ];
-                sender.send("form_init_answer_option", { id: $.state.spawningAnswerID + 1, label: $.state.answerOptions[$.state.spawningAnswerID] });
+                sender.send("form_init_answer_option", { value: $.state.spawningAnswerID + 1, label: $.state.answerOptions[$.state.spawningAnswerID] });
                 if ($.state.spawningAnswerID < $.state.answerOptions.length - 1) {
                     $.state.spawningAnswerID = $.state.spawningAnswerID + 1;
                     spawnAnswerOptionUI();
@@ -115,15 +84,65 @@ $.onReceive((messageType, arg, sender) => {
     }
 })
 
+function initQuestion (q) { // options: array of string
+    $.subNode("Title").setText(q.title);
+    $.subNode("Description").setText(q.description);
+    $.state.questionTypeID = q.questionTypeID;
+    $.state.answerOptions = q.answerOptions;
+    $.state.spawningAnswerID = 0;
+    $.state.answerOptionUIs = [];
+    spawnAnswerOptionUI();
+}
+
+function setAnswerOptionUISpawnPoint () {
+    // TODO: calculate & set spawn point position only when answerType === "radio" or "check"
+    let pos = answerOptionUISpawnCenter.clone();
+    let rot = new Quaternion();;
+    switch ($.state.questionTypeID) {
+        case 0:
+        case 2:
+            // let maxStringLength = Math.min(30, $.state.answerOptions.reduce((maxLength, str) => Math.max(maxLength, str.length), 0));
+            let x = 0;
+            // if ($.state.answerOptions.length <= 5) {
+            //     x = -0.1 - 0.3 * ((maxStringLength - 1) / 7)
+            // }
+            // $.log(x);
+            let y = ($.state.spawningAnswerID - ($.state.answerOptions.length - 1) / 2) * 0.3;
+            pos = pos.add(new Vector3(x, y, 0));
+            // let textSize = 0.05;
+            // max 5 options (rows) per column
+            // 1 columns: x = -0.1 - 0.3 * ((chars - 1) / 7), textsize = 0.05, max 30 chars per text line, 1~2 lines
+            // 2 columns: x = -0.5 - 0.065 * (chars - 1) & 0.2, textsize = 0.04, 15 chars per text line, 1~2 lines; textsize = 0.03 for 3 lines
+            // > 3 columns: x = -1.5 + 0.1 + (3 / columnCnt) * columnID, textsize = 0.05 - chars * (0.025/(max chars per line)), max chars per line = 3->15, 4->10, 5->6, 6->4 = (60/columnCnt - 5)
+            break;
+        case 1:
+            pos = pos.add(new Vector3((($.state.answerOptions.length > 11 ? 3 : 2) / ($.state.answerOptions.length - 1)) * ($.state.spawningAnswerID - ($.state.answerOptions.length - 1) / 2), 0, 0));
+            break;
+        case 3:
+        case 4:
+            break;
+        default:
+            break;
+    }
+    $.subNode("AnswerOptionSpawnPoint").setPosition(pos.clone());
+    $.subNode("AnswerOptionSpawnPoint").setRotation(rot.clone());
+}
+
+function spawnAnswerOptionUI () {
+    setAnswerOptionUISpawnPoint();
+    $.state.isWaiting = true;
+}
+
 function destroyAnswerOptionUIs () {
-    $.state.answerOptionUIs.forEach(optionUI => {
-        optionUI.send("form_destroy_answer_option", true);
-    });
+    // $.state.answerOptionUIs.forEach(optionUI => {
+    //     optionUI.send("form_destroy_answer_option", true);
+    // });
+    $.setStateCompat("owner", "form_destroy_answer_option", true);
     $.state.answerOptionUIs = [];
 }
 
 function saveAnswer () {
-    $.state.answers = { ...$.state.answers, [$.state.questionID]: $.state.tmpAnswer };
+    $.state.answers = { ...$.state.answers, [$.state.qID]: $.state.tmpAnswer };
     $.log("Update answers: " + JSON.stringify($.state.answers));
     toNext();
 }
@@ -131,6 +150,7 @@ function saveAnswer () {
 function submitAnswers () {
     // TODO: Send $.state.answers to DB
     $.log("Send final answers: " + JSON.stringify($.state.answers));
+    reset();
 }
 
 function toNext () {
@@ -155,9 +175,14 @@ function toPrev () {
 }
 
 function reset () {
+    if ($.state.answerOptionUIs && $.state.answerOptionUIs.length > 0) destroyAnswerOptionUIs();
     $.state.answers = {};
     $.state.qID = 0;
     $.state.answerType = -1;
     $.state.tmpAnswer = null;
+    $.state.isInitiated = false;
+    $.state.isWaiting = false;
+    $.state.timer = 0;
+    $.setStateCompat("this", "form_set_content_active", false);
     // TODO: hide selection indicator
 }
