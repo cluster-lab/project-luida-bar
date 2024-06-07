@@ -24,8 +24,9 @@ $.onUpdate(() => {
     if (!$.state.isInitiated && $.getStateCompat("this", "form_set_content_active", "boolean")) {
         $.state.isInitiated = true;
         $.state.qID = 0;
-        $.state.questions = dummyQuestions;
-        tryInitQuestion();
+        
+        let request = {type: "questions", questionnaireID: 0};
+        $.callExternal(JSON.stringify(request), "getQuestions");
     }
     if ($.state.waitBeforeSpawningAnswerOption) {
         if ($.state.timer < 6) {
@@ -47,6 +48,10 @@ $.onUpdate(() => {
     }
 })
 
+$.onInteract(() => {
+    $.setStateCompat("this", "form_set_content_active", true);
+});
+
 $.onReceive((messageType, arg, sender) => {
     switch (messageType) {
         case "form_on_answer_option_spawned":
@@ -62,6 +67,8 @@ $.onReceive((messageType, arg, sender) => {
             switch ($.state.questionTypeID) {
                 case 0: // radio buttons
                 case 1: // linear scale
+                    $.subNode("RadioButtonIndicator").setEnabled(true);
+                    $.subNode("RadioButtonIndicator").setPosition($.state.answerOptionLocalPositions[arg - 1].clone());
                 case 3: // toggle
                 case 4: // text
                     $.state.tmpAnswer = arg;
@@ -99,6 +106,7 @@ function tryInitQuestion () {
 }
 
 function initQuestion () { // options: array of string
+    $.state.answerOptionLocalPositions = [];
     q = $.state.questions[$.state.qID]
     $.subNode("Title").setText(q.title);
     $.subNode("Description").setText(q.description);
@@ -138,6 +146,7 @@ function setAnswerOptionUISpawnPoint () {
         default:
             break;
     }
+    $.state.answerOptionLocalPositions = [ ...$.state.answerOptionLocalPositions, pos.clone() ];
     $.subNode("AnswerOptionSpawnPoint").setPosition(pos.clone());
     $.subNode("AnswerOptionSpawnPoint").setRotation(rot.clone());
 }
@@ -159,13 +168,15 @@ function saveAnswer () {
 }
 
 function submitAnswers () {
-    // TODO: Send $.state.answers to DB
     $.log("Send final answers: " + JSON.stringify($.state.answers));
+    let request = {type: "questionAnswers", questionnaireID: 0, answers: JSON.stringify($.state.answers)};
+    $.callExternal(JSON.stringify(request), "postQuestionAnswers");
     reset();
 }
 
 function toNext () {
     $.state.qID = $.state.qID + 1;
+    $.subNode("RadioButtonIndicator").setEnabled(false);
     if ($.state.qID >= $.state.questions.length) {
         submitAnswers();
     } else {
@@ -183,10 +194,12 @@ function toPrev () {
     $.state.tmpAnswer = null;
     // TODO: hide selection indicator
     tryInitQuestion();
+    $.subNode("RadioButtonIndicator").setEnabled(false);
 }
 
 function reset () {
     destroyAnswerOptionUIs();
+    $.subNode("RadioButtonIndicator").setEnabled(false);
     $.state.answers = {};
     $.state.qID = 0;
     $.state.answerType = -1;
@@ -195,6 +208,32 @@ function reset () {
     $.state.waitBeforeSpawningAnswerOption = false;
     $.state.waitBeforeInitQuestion = false;
     $.state.timer = 0;
+    $.state.answerOptionLocalPositions = [];
     $.setStateCompat("this", "form_set_content_active", false);
     // TODO: hide selection indicator
 }
+
+$.onExternalCallEnd((res, meta, err) =>
+{
+    if (res == null) {
+        $.log("callExternal ERROR: " + err);
+        return;
+    }
+
+    if (meta === "getQuestions") {
+        // $.log(res);
+        let parsedRes = JSON.parse(res);
+        $.state.questions = parsedRes.questions;
+        tryInitQuestion();
+
+        // for(let i = 0; i < Math.min(parsedRes.quests.length, numberPerPage); i++)
+        // {
+        //     const questTitle = $.subNode("Quest_" + i);
+        //     if (questTitle) questTitle.setText(parsedRes.quests[i].title);
+        // }
+    }
+
+    if (meta === "postQuestionAnswers") {
+        $.log("Answers recorded!");
+    }
+});
