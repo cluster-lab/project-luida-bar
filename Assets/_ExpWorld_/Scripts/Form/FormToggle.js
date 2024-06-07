@@ -1,5 +1,4 @@
 $.onStart(() => {
-    $.state.answerValue = null;
     $.state.destroyable = false;
     $.getItemsNear($.getPosition(), 0.1).forEach(item => {
         item.send("form_on_answer_option_spawned", true);
@@ -20,8 +19,9 @@ $.onReceive((messageType, arg, sender) => {
     switch (messageType) {
         case "form_init_answer_option":
             $.setStateCompat("owner", "form_destroy_answer_option", false);
-            $.state.formController = sender; 
+            $.state.formController = sender;
             $.state.destroyable = true;
+            $.state.formController.send("form_answer", $.getStateCompat("this", "form_toggle_on", "boolean"));
             // if (arg["value"]) $.state.answerValue = arg["value"]
             // if (arg["label"] && $.subNode("Text")) $.subNode("Text").setText(arg["label"]);
             break;
@@ -34,6 +34,5 @@ $.onReceive((messageType, arg, sender) => {
 })
 
 function answer() {
-    $.state.answerValue = $.getStateCompat("this", "form_toggle_on", "boolean");
-    $.state.formController.send("form_answer", $.state.answerValue);
+    $.state.formController.send("form_answer", $.getStateCompat("this", "form_toggle_on", "boolean"));
 }
