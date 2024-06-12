@@ -1,13 +1,22 @@
-let currentQuestID = -1;
-let requestedQuestID = -1;
+const numberPerPage = 5;
+
+$.onStart(() => {
+    $.state.currentQuestID = -1;
+    $.state.requestedQuestID = -1;
+    $.state.currentQuestBoardPage = 1;
+    $.state.isLoading = false;
+    $.getItemsNear($.getPosition().clone(), 0.1).forEach(item => {
+        item.send("get_quest_board", true);
+    });
+})
 
 $.onUpdate(() => {
-    requestedQuestID = $.getStateCompat("owner", "triggerQuest", "integer");
-    if (currentQuestID !== requestedQuestID) {
-        $.log("Request Quest!");
-        let request = {type: "questInfo", id: requestedQuestID};
-        $.callExternal(JSON.stringify(request), "getQuestInfo");
-        currentQuestID = requestedQuestID;
+    if ($.state.isLoading) return;
+
+    $.state.requestedQuestID = $.getStateCompat("owner", "triggerQuest", "integer");
+    if ($.state.questBoard && $.state.currentQuestID !== $.state.requestedQuestID) {
+        $.state.isLoading = true;
+        $.state.questBoard.send("quest_board_get_current_page", true);
     }
 });
 
@@ -15,8 +24,8 @@ $.onExternalCallEnd((res, meta, err) =>
 {
     if (res == null) {
         $.log("callExternal ERROR: " + err);
-        currentQuestID = -1;
-        requestedQuestID = -1;
+        $.state.currentQuestID = -1;
+        $.state.requestedQuestID = -1;
         return;
     }
 
@@ -25,12 +34,30 @@ $.onExternalCallEnd((res, meta, err) =>
         $.state.quests = parsedRes.quests;
         const quest = parsedRes.quest;
 
-        $.log(quest.title);
-        $.log(quest.description);
-        $.log(quest.prerequisite);
-
         $.subNode("Title").setText(quest.title);
         $.subNode("Description").setText(quest.description);
         $.subNode("Prerequisite").setText(quest.prerequisite);
+
+        $.state.isLoading = false;
     }
 });
+
+$.onReceive((messageType, arg, sender) => {
+    switch (messageType) {
+        case "return_quest_board":
+            $.state.questBoard = sender;
+            break;
+        case "quest_board_current_page":
+            $.state.currentQuestBoardPage = arg;
+            sendQuestInfoRequest();
+            break;
+        default:
+            break;
+    }
+});
+
+function sendQuestInfoRequest () {
+    let request = {type: "questInfo", id: ($.state.currentQuestBoardPage - 1) * numberPerPage + $.state.requestedQuestID};
+    $.callExternal(JSON.stringify(request), "getQuestInfo");
+    $.state.currentQuestID = $.state.requestedQuestID;
+}

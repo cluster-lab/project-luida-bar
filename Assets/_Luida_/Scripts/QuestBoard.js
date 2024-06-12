@@ -5,14 +5,10 @@ const data = ["Hello", "Cluster", "from", "Cyber", "Lab"];
 const numberPerPage = 5;
 
 $.onStart(() => {
+    $.state.allQuestsCount = 0;
+    setCurrentPage(1);
     $.state.quests = [];
-    let request = {type: "questList", number: numberPerPage};
-    $.callExternal(JSON.stringify(request), "getQuestList");
-});
-
-$.onInteract(() => {
-    let request = {type: "questList", number: numberPerPage};
-    $.callExternal(JSON.stringify(request), "getQuestList");
+    requestQuestList();
 });
 
 $.onExternalCallEnd((res, meta, err) =>
@@ -25,6 +21,8 @@ $.onExternalCallEnd((res, meta, err) =>
     if (meta === "getQuestList") {
         let parsedRes = JSON.parse(res);
         $.state.quests = parsedRes.quests;
+        $.state.allQuestsCount = parsedRes.allQuestsCount;
+        $.subNode("AllPagesNumber").setText(Math.ceil($.state.allQuestsCount / numberPerPage));
 
         for(let i = 0; i < Math.min(parsedRes.quests.length, numberPerPage); i++)
         {
@@ -34,15 +32,46 @@ $.onExternalCallEnd((res, meta, err) =>
     }
 });
 
-// $.onInteract(() => {
-//     $.log("Welcome to Luida bar!");
-//     for (let i = 0; i < Math.min(data.length, numberPerPage); i++) {
-//         const quest = $.subNode("Quest_" + i);
-//         if (quest) quest.setText(data[i]);
-//         // TODO: create an item with interaction item trigger covering this subnode (quest) -> show details when this quest is clicked
-//     }
-//     // data.forEach((str) => {
-//         // const item = $.createItem(itemTemplateId, position.add(new Vector3(0, 1, 0)), rotation);
-//         // item.send("setTitle", str);
-//     // });
-// });
+$.onReceive((messageType, arg, sender) => {
+    switch (messageType) {
+        case "quest_board_update":
+            requestQuestList();
+            break;
+        case "quest_board_to_next":
+            toNext();
+            break;
+        case "quest_board_to_prev":
+            toPrev();
+            break;
+        case "get_quest_board":
+            sender.send("return_quest_board", true);
+            break;
+        case "quest_board_get_current_page":
+            sender.send("quest_board_current_page", $.state.currentPage);
+            break;
+        default:
+            break;
+    }
+})
+
+function requestQuestList () {
+    let request = {type: "questList", page: $.state.currentPage, number: numberPerPage};
+    $.callExternal(JSON.stringify(request), "getQuestList");
+}
+
+function toPrev () {
+    if ($.state.currentPage <= 1) return;
+    setCurrentPage($.state.currentPage - 1);
+    requestQuestList();
+}
+
+function toNext () {
+    if ($.state.currentPage >= Math.ceil($.state.allQuestsCount / numberPerPage)) return;
+    setCurrentPage($.state.currentPage + 1);
+    requestQuestList();
+}
+
+function setCurrentPage (page) {
+    $.state.currentPage = page;
+    $.subNode("CurrentPageNumber").setText($.state.currentPage);
+}
