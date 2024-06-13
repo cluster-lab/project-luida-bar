@@ -27,7 +27,13 @@ $.onExternalCallEnd((res, meta, err) =>
         for(let i = 0; i < Math.min(parsedRes.quests.length, numberPerPage); i++)
         {
             const questTitle = $.subNode("Quest_" + i);
-            if (questTitle) questTitle.setText(parsedRes.quests[i].title);
+            if (questTitle) {
+                var titleStr = parsedRes.quests[i].title + "（" + parsedRes.quests[i].playersCount + "人待ち）";
+                if (titleStr.length > 16) {
+                    titleStr = titleStr.substring(0, 16) + "\n" + titleStr.substring(16, titleStr.length);
+                }
+                questTitle.setText(titleStr);
+            }
         }
     }
 });
