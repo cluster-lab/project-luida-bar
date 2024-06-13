@@ -5,6 +5,7 @@ $.onStart(() => {
     $.state.requestedQuestID = -1;
     $.state.currentQuestBoardPage = 1;
     $.state.isLoading = false;
+    $.setStateCompat("owner", "AllowJoinExp", true);
     $.getItemsNear($.getPosition().clone(), 0.1).forEach(item => {
         item.send("get_quest_board", true);
     });
@@ -37,6 +38,8 @@ $.onExternalCallEnd((res, meta, err) =>
         $.subNode("Title").setText(quest.title);
         $.subNode("Description").setText(quest.description);
         $.subNode("Prerequisite").setText(quest.prerequisite);
+
+        $.setStateCompat("owner", "AllowJoinExp", +quest.playersCount === 0);
 
         $.state.isLoading = false;
     }
