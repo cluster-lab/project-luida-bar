@@ -1,8 +1,6 @@
 const numberPerPage = 5;
 
 $.onStart(() => {
-    $.state.currentQuestID = -1;
-    $.state.requestedQuestID = -1;
     $.state.currentQuestBoardPage = 1;
     $.state.isLoading = false;
     $.setStateCompat("owner", "AllowJoinExp", true);
@@ -14,8 +12,7 @@ $.onStart(() => {
 $.onUpdate(() => {
     if ($.state.isLoading) return;
 
-    $.state.requestedQuestID = $.getStateCompat("owner", "triggerQuest", "integer");
-    if ($.state.questBoard && $.state.currentQuestID !== $.state.requestedQuestID) {
+    if ($.state.questBoard && $.getStateCompat("owner", "triggerQuest", "integer") >= 0) {
         $.state.isLoading = true;
         $.state.questBoard.send("quest_board_get_current_page", true);
     }
@@ -25,8 +22,7 @@ $.onExternalCallEnd((res, meta, err) =>
 {
     if (res == null) {
         $.log("callExternal ERROR: " + err);
-        $.state.currentQuestID = -1;
-        $.state.requestedQuestID = -1;
+        $.setStateCompat("owner", "triggerQuest", -1);
         return;
     }
 
@@ -39,7 +35,8 @@ $.onExternalCallEnd((res, meta, err) =>
         $.subNode("Description").setText(quest.description);
         $.subNode("Prerequisite").setText(quest.prerequisite);
 
-        $.setStateCompat("owner", "AllowJoinExp", +quest.playersCount === 0);
+        $.setStateCompat("this", "AllowJoinExp", +quest.playersCount === 0);
+        $.setStateCompat("owner", "triggerQuest", -1);
 
         $.state.isLoading = false;
     }
@@ -60,7 +57,6 @@ $.onReceive((messageType, arg, sender) => {
 });
 
 function sendQuestInfoRequest () {
-    let request = {type: "questInfo", id: ($.state.currentQuestBoardPage - 1) * numberPerPage + $.state.requestedQuestID};
+    let request = {type: "questInfo", id: ($.state.currentQuestBoardPage - 1) * numberPerPage + $.getStateCompat("owner", "triggerQuest", "integer")};
     $.callExternal(JSON.stringify(request), "getQuestInfo");
-    $.state.currentQuestID = $.state.requestedQuestID;
 }

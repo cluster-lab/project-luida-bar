@@ -5,20 +5,33 @@ $.onStart(() => {
     $.state.timer = 0;
     $.state.lastPlayersCount = 0;
     $.state.currentPlayersCount = 0;
+    $.state.isSendingUpdateRequest = false;
 })
 
 $.onUpdate(() => {
+    $.state.timer = $.state.timer + 1;
+
+    if ($.getStateCompat("global", "PlayerJoined", "boolean")) {
+        if ($.state.isSendingUpdateRequest) {
+            $.state.timer = 0;
+        } else {
+            $.sendSignalCompat("this", "ResetPlayerJoinedStatus");
+            $.state.timer = countPlayersInterval + 1;
+            $.state.isSendingUpdateRequest = true;
+        }
+    } else if ($.state.isSendingUpdateRequest) {
+        $.state.isSendingUpdateRequest = false;
+    }
+
     if ($.state.timer > countPlayersInterval) {
         $.state.timer = 0;
         updatePlayersCount();
-    } else {
-        $.state.timer = $.state.timer + 1;
     }
 })
 
 function updatePlayersCount () {
     $.state.lastPlayersCount = $.state.currentPlayersCount;
-    $.state.currentPlayersCount = $.getPlayersNear($.getPosition().clone(), 100);
+    $.state.currentPlayersCount = $.getPlayersNear($.getPosition().clone(), 100).length;
     if ($.state.lastPlayersCount !== $.state.currentPlayersCount) {
         $.callExternal(JSON.stringify({ type: "updatePlayersCount", expIdentifier: worldID, playersCount: $.state.currentPlayersCount }), "playersCountUpdated");
     }
