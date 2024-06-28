@@ -10,7 +10,11 @@ $.onStart(() => {
 });
 
 $.onUpdate(() => {
-    if (!$.state.isLast && $.getStateCompat("global", "exp_conditionID", "integer") >= $.state.conditions.length - 1) {
+    if ($.getStateCompat("this", "exp_initCondition", "boolean")) {
+        $.setStateCompat("this", "exp_initCondition", false);
+        InitConditions();
+    }
+    if ($.state.conditions && !$.state.isLast && $.getStateCompat("global", "exp_conditionID", "integer") >= $.state.conditions.length - 1) {
         $.state.isLast = true;
         $.sendSignalCompat("this", "exp_readyToLeaveTrials");
     }
@@ -21,9 +25,9 @@ $.onReceive((messageType, arg, sender) => {
         case "exp_conditionDependentObject":
             $.state.conditionDependentObjects = [ ...$.state.conditionDependentObjects, sender ];
             break;
-        case "exp_initCondition":
-            InitConditions();
-            break;
+        // case "exp_initCondition":
+        //     InitConditions();
+        //     break;
         default:
             break;
     }
