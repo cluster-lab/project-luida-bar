@@ -11,7 +11,9 @@ $.onUpdate(() => {
         $.setStateCompat("this", "state_enter", false);
         OnStateEnter();
     }
-    DuringState();
+    if ($.getStateCompat("this", "state_isActive", "boolean")) {
+        DuringState();
+    }
 })
 
 function OnStateEnter() {}

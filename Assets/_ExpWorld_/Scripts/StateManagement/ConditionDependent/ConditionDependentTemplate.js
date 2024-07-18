@@ -16,7 +16,8 @@ $.onUpdate(() => {
 
 $.onReceive((messageType, arg, sender) => {
     if (messageType === "exp_updateConditions") {
-        this.state.conditions = arg
+        $.state.conditions = arg;
+        $.setStateCompat("this", "exp_conditionChanged", true);
     }
 })
 
