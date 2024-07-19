@@ -62,19 +62,15 @@ public class StateDependentObjectEditor : EditorWindow
             return;
         }
 
-        // Load the StateList ScriptableObject
-        // stateList = (StateList)EditorGUILayout.ObjectField("State List", stateList, typeof(StateList), false);
-
-        // if (stateList == null)
-        // {
-        //     EditorGUILayout.HelpBox("Please assign a State List ScriptableObject.", MessageType.Warning);
-        //     return;
-        // }
-
         // Dropdown to select the state ID
         if (stateList.States.Length > 0)
         {
-            selectedStateIndex = EditorGUILayout.Popup("State ID", selectedStateIndex, stateList.States);
+            string[] stateNames = new string[stateList.States.Length];
+            for (int i = 0; i < stateList.States.Length; i++)
+            {
+                stateNames[i] = stateList.States[i].StateName;
+            }
+            selectedStateIndex = EditorGUILayout.Popup("State ID", selectedStateIndex, stateNames);
         }
 
         // Show and update the second component's properties

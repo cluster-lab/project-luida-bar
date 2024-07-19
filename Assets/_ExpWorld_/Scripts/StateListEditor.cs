@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using System;
 
 public class StateListEditor : EditorWindow
 {
@@ -40,9 +41,36 @@ public class StateListEditor : EditorWindow
         for (int i = 0; i < statesProperty.arraySize; i++)
         {
             EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.BeginVertical();
 
             SerializedProperty state = statesProperty.GetArrayElementAtIndex(i);
-            EditorGUILayout.PropertyField(state, GUIContent.none);
+            SerializedProperty stateName = state.FindPropertyRelative("StateName");
+            SerializedProperty destStateName = state.FindPropertyRelative("DestStateName");
+
+            EditorGUILayout.LabelField("State name:");
+            EditorGUILayout.PropertyField(stateName, GUIContent.none);
+
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.BeginVertical();
+
+            // Label and dropdown for Transition Destination State ID
+            EditorGUILayout.LabelField("Transit destination state ID");
+            int destStateIndex = Array.FindIndex(stateList.States, s => s.StateName == destStateName.stringValue);
+            string[] stateNames = Array.ConvertAll(stateList.States, s => s.StateName);
+            destStateIndex = EditorGUILayout.Popup(destStateIndex, stateNames);
+
+            if (destStateIndex >= 0)
+            {
+                destStateName.stringValue = stateList.States[destStateIndex].StateName;
+            }
+
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.BeginVertical();
+
+            // Label and buttons for moving state
+            EditorGUILayout.LabelField("Move state to:");
+
+            EditorGUILayout.BeginHorizontal();
 
             if (GUILayout.Button("Up", GUILayout.Width(50)))
             {
@@ -69,6 +97,20 @@ public class StateListEditor : EditorWindow
             }
 
             EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndHorizontal();
+
+            if (GUI.changed && !EditorGUIUtility.editingTextField)
+            {
+                GUI.FocusControl(null); // Unfocus any field
+                GameObject transition = GameObject.Find(stateName.stringValue)?.transform.Find("Transition")?.gameObject;
+                if (transition != null)
+                {
+                    int destStateId = Array.FindIndex(stateList.States, s => s.StateName == destStateName.stringValue);
+                    UpdateTransitionDestStateId(transition, destStateId);
+                }
+            }
         }
 
         if (GUILayout.Button("Add State"))
@@ -92,14 +134,16 @@ public class StateListEditor : EditorWindow
 
         for (int i = 0; i < stateList.States.Length; i++)
         {
-            string stateName = stateList.States[i];
+            string stateName = stateList.States[i].StateName;
             Transform child = statesObject.transform.Find(stateName);
 
             if (child == null)
             {
                 GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+                // Debug.Log("?????");
                 if (prefab != null)
                 {
+                    // Debug.Log("!!!!!!!!!");
                     GameObject newChild = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
                     newChild.name = stateName;
                     newChild.transform.SetParent(statesObject.transform);
@@ -115,7 +159,9 @@ public class StateListEditor : EditorWindow
             GameObject transition = child.Find("Transition")?.gameObject;
             if (transition != null)
             {
-                UpdateTransitionComponent(transition, i);
+                UpdateTransitionCurrentStateId(transition, i);
+                int destStateId = Array.FindIndex(stateList.States, s => s.StateName == stateList.States[i].DestStateName);
+                UpdateTransitionDestStateId(transition, destStateId);
             }
         }
 
@@ -125,14 +171,14 @@ public class StateListEditor : EditorWindow
         }
     }
 
-    private void UpdateTransitionComponent(GameObject transition, int stateId)
+    private void UpdateTransitionCurrentStateId(GameObject transition, int stateId)
     {
-        Component logicComponent = GetComponentByIndex(transition, 2); // transition.GetComponent<ItemLogic>(); // Replace with the actual component type
-        if (logicComponent != null)
+        Component stateIdSettingComp = transition.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>(); // Replace with the actual component type
+        if (stateIdSettingComp != null)
         {
-            SerializedObject serializedLogicComponent = new SerializedObject(logicComponent);
+            SerializedObject serializedComp = new SerializedObject(stateIdSettingComp);
 
-            SerializedProperty specificProperty = serializedLogicComponent.FindProperty("logic.statements");
+            SerializedProperty specificProperty = serializedComp.FindProperty("logic.statements");
 
             if (specificProperty != null && specificProperty.isArray && specificProperty.arraySize > 0)
             {
@@ -140,7 +186,11 @@ public class StateListEditor : EditorWindow
                 if (firstElement != null)
                 {
                     firstElement.intValue = stateId;
-                    serializedLogicComponent.ApplyModifiedProperties();
+                    serializedComp.ApplyModifiedProperties();
+                }
+                else
+                {
+                    Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.value.constant.integerValue");
                 }
             }
             else
@@ -150,13 +200,51 @@ public class StateListEditor : EditorWindow
         }
     }
 
-    private Component GetComponentByIndex(GameObject gameObject, int index)
+    private void UpdateTransitionDestStateId(GameObject transition, int destStateId)
     {
-        Component[] components = gameObject.GetComponents<Component>();
-        if (index >= 0 && index < components.Length)
+        var globalLogics = transition.GetComponents<ClusterVR.CreatorKit.Operation.Implements.GlobalLogic>();
+        Component transitionSettingLogic = null;
+        foreach (var globalLogic in globalLogics)
         {
-            return components[index];
+            SerializedObject serializedComp = new SerializedObject(globalLogic);
+            var keyProp = serializedComp.FindProperty("globalGimmickKey.key.key");
+            if (keyProp != null && keyProp.stringValue == "state_triggerTransition")
+            {
+                transitionSettingLogic = globalLogic;
+                break;
+            }
         }
-        return null;
+        if (transitionSettingLogic != null)
+        {
+            SerializedObject serializedTransitionSettingLogic = new SerializedObject(transitionSettingLogic);
+
+            SerializedProperty specificProperty = serializedTransitionSettingLogic.FindProperty("logic.statements");
+
+            if (specificProperty != null && specificProperty.isArray && specificProperty.arraySize > 0)
+            {
+                var targetStateKey = specificProperty.GetArrayElementAtIndex(1).FindPropertyRelative("singleStatement.targetState.key");
+                if (targetStateKey.stringValue == "state_currentID")
+                {
+                    var transitDestStateIdProp = specificProperty.GetArrayElementAtIndex(1).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
+                    if (transitDestStateIdProp != null)
+                    {
+                        transitDestStateIdProp.intValue = destStateId;
+                        serializedTransitionSettingLogic.ApplyModifiedProperties();
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.value.constant.integerValue");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("Property not found: logic.statements.singleStatement.targetState.key");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Property not found: logic.statements");
+            }
+        }
     }
 }
