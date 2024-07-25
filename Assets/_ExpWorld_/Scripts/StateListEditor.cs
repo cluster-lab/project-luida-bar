@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 using System;
@@ -248,3 +249,4 @@ public class StateListEditor : EditorWindow
         }
     }
 }
+#endif
