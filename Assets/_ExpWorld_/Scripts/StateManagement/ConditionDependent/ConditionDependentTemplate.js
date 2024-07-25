@@ -1,6 +1,8 @@
 $.onStart(() => {
     $.getItemsNear($.getPosition(), 0.1).forEach(item => {
-        item.send("exp_conditionDependentObject", true);
+        if (item.id === "5570182165721890090") { // ConditionManager
+            item.send("exp_conditionDependentObject", true);
+        }
     });
 })
 
@@ -21,7 +23,9 @@ $.onReceive((messageType, arg, sender) => {
     }
 })
 
-function onConditionChanged () {}
+function onConditionChanged () {
+    $.log($.state.currentCondition);
+}
 
 // Real-time execution depending on current condition
 function tick () {

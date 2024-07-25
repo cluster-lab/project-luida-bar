@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Main
   m_EditorClassIdentifier: 
   States:
-  - StateName: Start
+  - StateName: Questionnaire
     DestStateName: Play
   - StateName: Play
     DestStateName: Trial
   - StateName: Trial
     DestStateName: Done
   - StateName: Done
-    DestStateName: Start
+    DestStateName: Questionnaire

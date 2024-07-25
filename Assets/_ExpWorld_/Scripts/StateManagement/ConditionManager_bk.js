@@ -3,15 +3,10 @@ const variables_dummy = [
     { name: "size", values: [5, 10, 15], isRandom: true },
 ];
 
-const between_variables_dummy = [
-    { name: "method", values: ["old", "new"] }
-];
-
 const trialsCountForEachCondition = 1;
 
 $.onStart(() => {
     $.state.conditionDependentObjects = [];
-    $.state.betweenSubjectsCondition = {};
 });
 
 $.onUpdate(() => {
@@ -30,14 +25,9 @@ $.onReceive((messageType, arg, sender) => {
         case "exp_conditionDependentObject":
             $.state.conditionDependentObjects = [ ...$.state.conditionDependentObjects, sender ];
             break;
-        case "exp_questionnaire_answer":
-            // 参加者に参加者間条件を割り当てる
-            let betweenSubjectsCondition = {};
-            between_variables_dummy.forEach(v => {
-                betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random() * v.values.length)];
-                // TODO: Randomだけでなく、質問紙の回答に応じて参加者に割り当てる参加者間条件を計算するオプションも提供する
-            });
-            $.state.betweenSubjectsCondition = betweenSubjectsCondition;
+        // case "exp_initCondition":
+        //     InitConditions();
+        //     break;
         default:
             break;
     }
@@ -46,9 +36,7 @@ $.onReceive((messageType, arg, sender) => {
 function InitConditions () {
     $.state.isLast = false;
 
-    $.state.conditions = getConditions(variables_dummy).map(cond => {
-        return { ...cond, ...$.state.betweenSubjectsCondition };
-    });
+    $.state.conditions = getConditions(variables_dummy);
     
     $.state.conditionDependentObjects.forEach(obj => {
         obj.send("exp_updateConditions", $.state.conditions);

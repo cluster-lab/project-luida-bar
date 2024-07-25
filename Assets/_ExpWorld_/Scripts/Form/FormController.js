@@ -170,6 +170,11 @@ function saveAnswer () {
 function submitAnswers () {
     $.log("Send final answers: " + JSON.stringify($.state.answers));
     let request = {type: "questionAnswers", questionnaireID: 0, answers: JSON.stringify($.state.answers)};
+    $.getItemsNear($.getPosition(), 0.1).forEach(item => {
+        if (item.id === "5570182165721890090") { // ConditionManager
+            item.send("exp_questionnaire_answer", $.state.answers);
+        }
+    });
     $.callExternal(JSON.stringify(request), "postQuestionAnswers");
     reset();
 }
