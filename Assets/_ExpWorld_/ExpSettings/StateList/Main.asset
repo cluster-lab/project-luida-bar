@@ -18,6 +18,8 @@ MonoBehaviour:
   - StateName: Play
     DestStateName: Trial
   - StateName: Trial
+    DestStateName: TrialRest
+  - StateName: TrialRest
     DestStateName: Done
   - StateName: Done
     DestStateName: Questionnaire

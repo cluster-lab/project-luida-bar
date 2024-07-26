@@ -25,8 +25,9 @@ $.onReceive((messageType, arg, sender) => {
 
 function onConditionChanged () {
     if ($.state.currentCondition) {
-        $.log($.state.currentCondition);
-        $.subNode("Text").setText("Method (between subjects): " + $.state.currentCondition["method"] + ", Color (within subjects): " + $.state.currentCondition["color"] + ", Size (within subjects): " + $.state.currentCondition["size"]);
+        const loggedCondition = "Method (between): " + $.state.currentCondition["method"] + ", Color (within, not random): " + $.state.currentCondition["color"] + ", Size (within, random): " + $.state.currentCondition["size"];
+        $.log(loggedCondition);
+        $.subNode("Text").setText(loggedCondition);
     }
 }
 
