@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 
@@ -39,7 +38,7 @@ public class StateDependentObjectEditor : EditorWindow
         {
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
             if (prefab != null)
-            {
+            { 
                 instantiatedObject = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
                 instantiatedObject.name = prefab.name + "_" + System.DateTime.Now.ToString("yyyyMMddHHmmss");
                 instantiatedObject.transform.position = Vector3.zero; // Optional: Set position to zero or any default position
@@ -251,4 +250,3 @@ public class StateDependentObjectEditor : EditorWindow
         }
     }
 }
-#endif

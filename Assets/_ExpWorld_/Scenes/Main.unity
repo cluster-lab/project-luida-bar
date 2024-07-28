@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17412753, g: 0.21774767, b: 0.29994398, a: 1}
+  m_IndirectSpecularColor: {r: 0.17412737, g: 0.21774727, b: 0.29994345, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3871,10 +3871,132 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4638770987403183712, guid: 582d9461e4f86459080aac4eee555440,
+        type: 3}
+      propertyPath: clusterScripts.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4638770987403183712, guid: 582d9461e4f86459080aac4eee555440,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[0]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 8821fb654779949b38c61e01b3dae4b5,
+        type: 3}
+    - target: {fileID: 4638770987403183712, guid: 582d9461e4f86459080aac4eee555440,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[1]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 2e416213903dde942b281b0df3e8b16e,
+        type: 3}
+    - target: {fileID: 4638770987403183712, guid: 582d9461e4f86459080aac4eee555440,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[2]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 8821fb654779949b38c61e01b3dae4b5,
+        type: 3}
     - target: {fileID: 4731245737645068637, guid: 582d9461e4f86459080aac4eee555440,
         type: 3}
       propertyPath: m_Name
       value: ConditionManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 4731245737645068704, guid: 582d9461e4f86459080aac4eee555440,
+        type: 3}
+      propertyPath: sourceCode
+      value: "const trialsCountForEachUniqueCondition = 2;\nconst within_subjects_variables
+        = [\n    { name: \"color\", values: [\"W\", \"B\"], isRandom: false },\n   
+        { name: \"size\", values: [\"10\", \"20\", \"30\"], isRandom: true },\n];\nconst
+        between_subjects_variables = [\n    { name: \"method\", values: [\"new\",
+        \"old\"], isRandom: false },\n];\n\r\nconst within_subjects_variables_dummy
+        = [\r\n    { name: \"color\", values: [\"R\", \"G\", \"B\"], isRandom: false
+        },\r\n    { name: \"size\", values: [5, 10, 15], isRandom: true },\r\n];\r\n\r\nconst
+        between_subjects_variables_dummy = [\r\n    { name: \"method\", values: [\"old\",
+        \"new\"] }\r\n];\r\n\r\n$.onStart(() => {\r\n    $.state.conditionDependentObjects
+        = [];\r\n    // $.state.betweenSubjectsCondition = {};\r\n});\r\n\r\n$.onUpdate(()
+        => {\r\n    if ($.getStateCompat(\"this\", \"exp_initCondition\", \"boolean\"))
+        {\r\n        $.setStateCompat(\"this\", \"exp_initCondition\", false);\r\n       
+        InitConditions();\r\n    }\r\n    if ($.state.conditions && !$.state.isLast
+        && $.getStateCompat(\"global\", \"exp_conditionID\", \"integer\") >= $.state.conditions.length
+        - 1) {\r\n        $.state.isLast = true;\r\n        $.sendSignalCompat(\"this\",
+        \"exp_readyToLeaveTrials\");\r\n    }\r\n});\r\n\r\n$.onReceive((messageType,
+        arg, sender) => {\r\n    switch (messageType) {\r\n        case \"exp_conditionDependentObject\":\r\n           
+        $.state.conditionDependentObjects = [ ...$.state.conditionDependentObjects,
+        sender ];\r\n            break;\r\n        case \"exp_questionnaire_answer\":\r\n           
+        // \u53C2\u52A0\u8005\u306B\u53C2\u52A0\u8005\u9593\u6761\u4EF6\u3092\u5272\u308A\u5F53\u3066\u308B\r\n           
+        InitBetweenSubjectCondition(arg);\r\n        default:\r\n            break;\r\n   
+        }\r\n});\r\n\r\nfunction InitConditions () {\r\n    $.state.isLast = false;\r\n\r\n   
+        if (!$.state.betweenSubjectsCondition) {\r\n        InitBetweenSubjectCondition(null);\r\n   
+        }\r\n    \r\n    try {\r\n        $.state.conditions = getConditions(within_subjects_variables,
+        trialsCountForEachUniqueCondition).map(cond => {\r\n            return {
+        ...cond, ...$.state.betweenSubjectsCondition };\r\n        });\r\n    } catch
+        (e) {\r\n        $.state.conditions = getConditions(within_subjects_variables_dummy).map(cond
+        => {\r\n            return { ...cond, ...$.state.betweenSubjectsCondition
+        };\r\n        });\r\n    }\r\n    \r\n    $.log(JSON.stringify($.state.conditions));\r\n   
+        \r\n    $.state.conditionDependentObjects.forEach(obj => {\r\n        //
+        TODO: send to 10 objects per second\r\n        obj.send(\"exp_updateConditions\",
+        $.state.conditions);\r\n    });\r\n}\r\n\r\nfunction InitBetweenSubjectCondition(questionnaireAnswers)
+        {\r\n    try {\r\n        $.state.betweenSubjectsCondition = GetBetweenSubjectsCondition(questionnaireAnswers);\r\n   
+        }\r\n    catch (e) {\r\n        $.log(\"Function GetBetweenSubjectsCondition
+        is not defined. Randomly assign between-subjects condition.\");\r\n       
+        let betweenSubjectsCondition = {};\r\n        try {\r\n            between_subjects_variables.forEach(v
+        => {\r\n                betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random()
+        * v.values.length)];\r\n            });\r\n        } catch (e) {\r\n           
+        $.log(\"Between-subjects variables are not defined. Use dummy variables.\");\r\n           
+        between_subjects_variables_dummy.forEach(v => {\r\n                betweenSubjectsCondition[v.name]
+        = v.values[Math.floor(Math.random() * v.values.length)];\r\n            });\r\n       
+        }\r\n        $.state.betweenSubjectsCondition = betweenSubjectsCondition;\r\n   
+        }\r\n}\r\n\r\n// --------- Initialize conditions from variables ----------\r\n\r\nfunction
+        getConditions (variables, repeatPerCombination = 1) {\r\n    const isRepetitionRandom
+        = true;\r\n    \r\n    const allCombinations = generateCombinations(variables);\r\n   
+        \r\n    // Group by non-random variables\r\n    const groupedCombinations
+        = {};\r\n    \r\n    for (const combination of allCombinations) {\r\n       
+        const groupKey = variables\r\n            .filter(v => !v.isRandom)\r\n           
+        .map(v => combination[v.name])\r\n            .join('-');\r\n    \r\n       
+        if (!groupedCombinations[groupKey]) {\r\n            groupedCombinations[groupKey]
+        = [];\r\n        }\r\n        groupedCombinations[groupKey].push(combination);\r\n   
+        }\r\n    \r\n    // Shuffle each group\r\n    for (const key in groupedCombinations)
+        {\r\n        groupedCombinations[key] = shuffleArray(groupedCombinations[key]);\r\n   
+        }\r\n    \r\n    // Flatten the grouped combinations into a single array\r\n   
+        let finalCombinations = Object.values(groupedCombinations).flat();\r\n   
+        \r\n    // Repeat each combination repeatPerCombination times\r\n    let
+        conditions = [];\r\n    for (const combination of finalCombinations) {\r\n       
+        for (let i = 0; i < repeatPerCombination; i++) {\r\n            conditions.push({
+        ...combination });\r\n        }\r\n    }\r\n    \r\n    // If repetition
+        should be random, shuffle the repeated combinations\r\n    if (isRepetitionRandom)
+        {\r\n        // Group by non-random variables first\r\n        const randomGroupedCombinations
+        = {};\r\n        for (const combination of conditions) {\r\n            const
+        groupKey = variables\r\n                .filter(v => !v.isRandom)\r\n               
+        .map(v => combination[v.name])\r\n                .join('-');\r\n    \r\n           
+        if (!randomGroupedCombinations[groupKey]) {\r\n                randomGroupedCombinations[groupKey]
+        = [];\r\n            }\r\n            randomGroupedCombinations[groupKey].push(combination);\r\n       
+        }\r\n    \r\n        // Shuffle within each group\r\n        for (const key
+        in randomGroupedCombinations) {\r\n            randomGroupedCombinations[key]
+        = shuffleArray(randomGroupedCombinations[key]);\r\n        }\r\n    \r\n       
+        // Flatten the grouped combinations into a single array\r\n        conditions
+        = Object.values(randomGroupedCombinations).flat();\r\n    }\r\n    \r\n   
+        return conditions;\r\n}\r\n\r\nfunction shuffleArray(array) {\r\n    for
+        (let i = array.length - 1; i > 0; i--) {\r\n        const j = Math.floor(Math.random()
+        * (i + 1));\r\n        [array[i], array[j]] = [array[j], array[i]];\r\n   
+        }\r\n    return array;\r\n}\r\n\r\nfunction generateCombinations(variables)
+        {\r\n    const combinations = [];\r\n\r\n    function createCombination(currentCombination,
+        currentIndex) {\r\n        if (currentIndex === variables.length) {\r\n           
+        combinations.push({ ...currentCombination });\r\n            return;\r\n       
+        }\r\n\r\n        const variable = variables[currentIndex];\r\n        for
+        (const value of variable.values) {\r\n            currentCombination[variable.name]
+        = value;\r\n            createCombination(currentCombination, currentIndex
+        + 1);\r\n        }\r\n    }\r\n\r\n    createCombination({}, 0);\r\n\r\n   
+        return combinations;\r\n}\r\n\r\nfunction GetBetweenSubjectsCondition(questionnaireAnswers)
+        {\r\n    let betweenSubjectsCondition = {};\r\n    try {\r\n        between_subjects_variables.forEach(v
+        => {\r\n            // The line below randomly assigns between-subjects condition.
+        Comment out this line and add your implementation.\r\n            betweenSubjectsCondition[v.name]
+        = v.values[Math.floor(Math.random() * v.values.length)];\r\n            \r\n           
+        // Add your implementation here to assign between-subjects condition based
+        on questionnaire answers.\r\n            \r\n        });\r\n    } catch (e)
+        {\r\n        $.log(\"Between-subjects variables are not defined. Use dummy
+        variables.\");\r\n        try {\r\n            between_subjects_variables_dummy.forEach(v
+        => {\r\n                betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random()
+        * v.values.length)];\r\n            });\r\n        } catch (e) {\r\n           
+        $.log(\"Dummy between-subjects variables are not found. Return empty object\");\r\n       
+        }\r\n    }\r\n    return betweenSubjectsCondition;\r\n}"
       objectReference: {fileID: 0}
     - target: {fileID: 4731245737645068705, guid: 582d9461e4f86459080aac4eee555440,
         type: 3}
@@ -3930,16 +4052,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4731245737645068706, guid: 582d9461e4f86459080aac4eee555440,
-        type: 3}
-      propertyPath: id.value
-      value: 5570182165721890090
-      objectReference: {fileID: 0}
-    - target: {fileID: 4731245737645068707, guid: 582d9461e4f86459080aac4eee555440,
-        type: 3}
-      propertyPath: logic.statements.Array.size
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 582d9461e4f86459080aac4eee555440, type: 3}
