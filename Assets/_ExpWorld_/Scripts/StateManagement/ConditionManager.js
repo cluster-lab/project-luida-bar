@@ -1,13 +1,11 @@
-const variables_dummy = [
+const within_subjects_variables_dummy = [
     { name: "color", values: ["R", "G", "B"], isRandom: false },
     { name: "size", values: [5, 10, 15], isRandom: true },
 ];
 
-const between_variables_dummy = [
+const between_subjects_variables_dummy = [
     { name: "method", values: ["old", "new"] }
 ];
-
-const trialsCountForEachCondition = 1;
 
 $.onStart(() => {
     $.state.conditionDependentObjects = [];
@@ -45,9 +43,15 @@ function InitConditions () {
         InitBetweenSubjectCondition(null);
     }
     
-    $.state.conditions = getConditions(variables_dummy).map(cond => {
-        return { ...cond, ...$.state.betweenSubjectsCondition };
-    });
+    try {
+        $.state.conditions = getConditions(within_subjects_variables, trialsCountForEachUniqueCondition).map(cond => {
+            return { ...cond, ...$.state.betweenSubjectsCondition };
+        });
+    } catch (e) {
+        $.state.conditions = getConditions(within_subjects_variables_dummy).map(cond => {
+            return { ...cond, ...$.state.betweenSubjectsCondition };
+        });
+    }
     
     $.log(JSON.stringify($.state.conditions));
     
@@ -58,18 +62,29 @@ function InitConditions () {
 }
 
 function InitBetweenSubjectCondition(questionnaireAnswers) {
-    let betweenSubjectsCondition = {};
-    between_variables_dummy.forEach(v => {
-        betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random() * v.values.length)];
-        // TODO: Randomだけでなく、質問紙の回答に応じて参加者に割り当てる参加者間条件を計算するオプションも提供する
-    });
-    $.state.betweenSubjectsCondition = betweenSubjectsCondition;
+    try {
+        $.state.betweenSubjectsCondition = GetBetweenSubjectsCondition(questionnaireAnswers);
+    }
+    catch (e) {
+        $.log("Function GetBetweenSubjectsCondition is not defined. Randomly assign between-subjects condition.");
+        let betweenSubjectsCondition = {};
+        try {
+            between_subjects_variables.forEach(v => {
+                betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random() * v.values.length)];
+            });
+        } catch (e) {
+            $.log("Between-subjects variables are not defined. Use dummy variables.");
+            between_subjects_variables_dummy.forEach(v => {
+                betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random() * v.values.length)];
+            });
+        }
+        $.state.betweenSubjectsCondition = betweenSubjectsCondition;
+    }
 }
 
 // --------- Initialize conditions from variables ----------
 
-function getConditions (variables) {
-    const repeatPerCombination = 2;
+function getConditions (variables, repeatPerCombination = 1) {
     const isRepetitionRandom = true;
     
     const allCombinations = generateCombinations(variables);
