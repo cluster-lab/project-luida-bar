@@ -54,11 +54,24 @@ function InitConditions () {
     }
     
     $.log(JSON.stringify($.state.conditions));
-    
-    $.state.conditionDependentObjects.forEach(obj => {
-        // TODO: send to 10 objects per second
+    sendUpdates().catch(e => $.log(e));
+}
+
+async function sendUpdates() {
+    let sentObjectsCount = 0;
+    const sendPromises = $.state.conditionDependentObjects.map(async (obj, index) => {
+        if (sentObjectsCount > 10) {
+            await sleep(1000);
+            sentObjectsCount = 0;
+        }
         obj.send("exp_updateConditions", $.state.conditions);
+        sentObjectsCount++;
     });
+    await Promise.all(sendPromises);
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function InitBetweenSubjectCondition(questionnaireAnswers) {
