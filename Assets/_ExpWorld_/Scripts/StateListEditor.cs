@@ -58,10 +58,11 @@ public class StateListEditor : EditorWindow
             EditorGUILayout.PropertyField(stateName, GUIContent.none);
 
             EditorGUILayout.EndVertical();
+
+#region Transition Destination State
             EditorGUILayout.BeginVertical();
 
-            // Label and dropdown for Transition Destination State ID
-            EditorGUILayout.LabelField("Transit destination state ID");
+            EditorGUILayout.LabelField("Transit destination state");
             int destStateIndex = Array.FindIndex(stateList.States, s => s.StateName == destStateName.stringValue);
             string[] stateNames = Array.ConvertAll(stateList.States, s => s.StateName);
             destStateIndex = EditorGUILayout.Popup(destStateIndex, stateNames);
@@ -72,6 +73,7 @@ public class StateListEditor : EditorWindow
             }
 
             EditorGUILayout.EndVertical();
+#endregion
 
 #region Move state
             EditorGUILayout.BeginVertical();
@@ -131,20 +133,33 @@ public class StateListEditor : EditorWindow
 			EditorGUILayout.EndVertical();
 #endregion
 
-#region Repeat
+#region Repeating
             EditorGUILayout.BeginVertical();
 			
 			SerializedProperty isRepeated = state.FindPropertyRelative("IsRepeated");
+            SerializedProperty repeatDestStateName = state.FindPropertyRelative("RepeatDestStateName");
             SerializedProperty repeatCount = state.FindPropertyRelative("RepeatCount");
 
             EditorGUILayout.LabelField("Is Repeated", GUILayout.Width(80));
             isRepeated.boolValue = EditorGUILayout.Toggle(isRepeated.boolValue, GUILayout.Width(100));
 
-			EditorGUILayout.EndVertical();
-            EditorGUILayout.BeginVertical();
-
 			if (isRepeated.boolValue)
             {
+				EditorGUILayout.EndVertical();
+           		EditorGUILayout.BeginVertical();
+
+				EditorGUILayout.LabelField("Repeat destination state");
+            	int repeatStateIndex = Array.FindIndex(stateList.States, s => s.StateName == repeatDestStateName.stringValue);
+            	// string[] stateNames = Array.ConvertAll(stateList.States, s => s.StateName);
+            	repeatStateIndex = EditorGUILayout.Popup(repeatStateIndex, stateNames);
+            	if (repeatStateIndex >= 0)
+            	{
+            	    repeatDestStateName.stringValue = stateList.States[repeatStateIndex].StateName;
+            	}
+
+				EditorGUILayout.EndVertical();
+            	EditorGUILayout.BeginVertical();
+
 				EditorGUILayout.LabelField("Repeat Count", GUILayout.Width(80));
                 repeatCount.intValue = EditorGUILayout.IntField(Math.Max(repeatCount.intValue, 1), GUILayout.Width(60));
             }
@@ -163,13 +178,10 @@ public class StateListEditor : EditorWindow
                     int destStateId = Array.FindIndex(stateList.States, s => s.StateName == destStateName.stringValue);
                     UpdateTransitionDestStateId(transition, destStateId);
 
-                    UpdateTransitionHasExitTime(transition, hasExitTime.boolValue);
-                    if (hasExitTime.boolValue)
-                    {
-                    	UpdateTransitionExitTime(transition, exitTime.floatValue);
-                    }
+                    UpdateTransitionExitTime(transition, hasExitTime.boolValue, exitTime.floatValue);
 
-					UpdateTransitionRepeatCount(transition, isRepeated.boolValue ? repeatCount.intValue : 1);
+					int repeatDestStateId = Array.FindIndex(stateList.States, s => s.StateName == repeatDestStateName.stringValue);
+					UpdateRepeatedTransition(transition, Math.Max(0, repeatDestStateId), isRepeated.boolValue ? repeatCount.intValue : 1);
                 }
             }
         }
@@ -323,7 +335,7 @@ public class StateListEditor : EditorWindow
         }
     }
 
-    private void UpdateTransitionHasExitTime(GameObject transition, bool hasExitTime)
+    private void UpdateTransitionExitTime(GameObject transition, bool hasExitTime, float exitTime)
     {
         var itemTimers = transition.GetComponents<ClusterVR.CreatorKit.Operation.Implements.ItemTimer>();
         foreach (var itemTimer in itemTimers)
@@ -333,22 +345,7 @@ public class StateListEditor : EditorWindow
             if (keyProp != null && (keyProp.stringValue == "state_enter" || keyProp.stringValue == "state_enter(disabled)"))
             {
                 keyProp.stringValue = hasExitTime ? "state_enter" : "state_enter(disabled)";
-                serializedComp.ApplyModifiedProperties();
-                break;
-            }
-        }
-    }
-
-    private void UpdateTransitionExitTime(GameObject transition, float exitTime)
-    {
-        var itemTimers = transition.GetComponents<ClusterVR.CreatorKit.Operation.Implements.ItemTimer>();
-        foreach (var itemTimer in itemTimers)
-        {
-            SerializedObject serializedComp = new SerializedObject(itemTimer);
-            var keyProp = serializedComp.FindProperty("key.key");
-            if (keyProp != null && (keyProp.stringValue == "state_enter" || keyProp.stringValue == "state_enter(disabled)"))
-            {
-                var delayTimeProp = serializedComp.FindProperty("delayTimeSeconds");
+				var delayTimeProp = serializedComp.FindProperty("delayTimeSeconds");
                 delayTimeProp.floatValue = exitTime;
                 serializedComp.ApplyModifiedProperties();
                 break;
@@ -356,9 +353,58 @@ public class StateListEditor : EditorWindow
         }
     }
 
-	private void UpdateTransitionRepeatCount(GameObject transition, int repeatCount = 1)
+	private void UpdateRepeatedTransition(GameObject transition, int repeatDestStateId = 0, int repeatCount = 1)
 	{
-		Component stateIdSettingComp = transition.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
+		var globalLogics = transition.GetComponents<ClusterVR.CreatorKit.Operation.Implements.GlobalLogic>();
+        Component transitionSettingLogic = null;
+        foreach (var globalLogic in globalLogics)
+        {
+            SerializedObject serializedComp = new SerializedObject(globalLogic);
+            var keyProp = serializedComp.FindProperty("globalGimmickKey.key.key");
+            if (keyProp != null && keyProp.stringValue == "state_triggerTransitionToRepeat")
+            {
+                transitionSettingLogic = globalLogic;
+                break;
+            }
+        }
+        if (transitionSettingLogic != null)
+        {
+            SerializedObject serializedTransitionSettingLogic = new SerializedObject(transitionSettingLogic);
+
+            SerializedProperty specificProperty = serializedTransitionSettingLogic.FindProperty("logic.statements");
+
+            if (specificProperty != null && specificProperty.isArray && specificProperty.arraySize > 0)
+            {
+				for (int i = 0; i < specificProperty.arraySize; i++)
+				{
+					SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
+					if (targetKey != null && targetKey.stringValue == "state_currentID")
+					{
+                		SerializedProperty transitDestStateIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
+                		if (transitDestStateIdProp != null)
+                		{
+                		    transitDestStateIdProp.intValue = repeatDestStateId;
+                		    serializedTransitionSettingLogic.ApplyModifiedProperties();
+							break;
+                		}
+                		else
+                		{
+                		    Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.value.constant.integerValue");
+                		}
+					}
+					else
+                	{
+                	    Debug.LogWarning("Property not found: logic.statements.singleStatement.targetState.key");
+                	}
+				}
+            }
+            else
+            {
+                Debug.LogWarning("Property not found: logic.statements");
+            }
+        }
+
+		var stateIdSettingComp = transition.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
         if (stateIdSettingComp != null)
         {
             SerializedObject serializedComp = new SerializedObject(stateIdSettingComp);
