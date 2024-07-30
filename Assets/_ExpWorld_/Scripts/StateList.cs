@@ -8,6 +8,10 @@ public class StateList : ScriptableObject
     public struct State {
         public string StateName;
         public string DestStateName;
+        public bool HasExitTime;
+        public float ExitTime;
+        public bool IsRepeated;
+        public int RepeatCount;
     }
 
     public State[] States;
