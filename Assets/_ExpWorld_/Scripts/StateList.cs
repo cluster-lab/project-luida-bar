@@ -11,6 +11,7 @@ public class StateList : ScriptableObject
         public bool HasExitTime;
         public float ExitTime;
         public bool IsRepeated;
+        public string RepeatDestStateName;
         public int RepeatCount;
     }
 
