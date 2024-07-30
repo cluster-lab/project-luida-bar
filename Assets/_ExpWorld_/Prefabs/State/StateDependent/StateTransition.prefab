@@ -124,7 +124,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071929, guid: bdd15b6f2ac024119a233600dcc875cc,
         type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.targetState.key
+      value: state_repeatTargetID
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071929, guid: bdd15b6f2ac024119a233600dcc875cc,
+        type: 3}
       propertyPath: logic.statements.Array.data[1].singleStatement.targetState.parameterType
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071929, guid: bdd15b6f2ac024119a233600dcc875cc,
+        type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.targetState.parameterType
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071929, guid: bdd15b6f2ac024119a233600dcc875cc,
@@ -134,7 +144,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071929, guid: bdd15b6f2ac024119a233600dcc875cc,
         type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.expression.value.constant.type
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071929, guid: bdd15b6f2ac024119a233600dcc875cc,
+        type: 3}
       propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.sourceState.type
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071929, guid: bdd15b6f2ac024119a233600dcc875cc,
+        type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.expression.value.sourceState.type
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071929, guid: bdd15b6f2ac024119a233600dcc875cc,
@@ -144,7 +164,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071929, guid: bdd15b6f2ac024119a233600dcc875cc,
         type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.expression.value.constant.integerValue
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071929, guid: bdd15b6f2ac024119a233600dcc875cc,
+        type: 3}
       propertyPath: logic.statements.Array.data[1].singleStatement.expression.operatorExpression.operands.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071929, guid: bdd15b6f2ac024119a233600dcc875cc,
+        type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071929, guid: bdd15b6f2ac024119a233600dcc875cc,
@@ -154,7 +184,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071929, guid: bdd15b6f2ac024119a233600dcc875cc,
         type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[0].value.constant.type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071929, guid: bdd15b6f2ac024119a233600dcc875cc,
+        type: 3}
       propertyPath: logic.statements.Array.data[1].singleStatement.expression.operatorExpression.operands.Array.data[0].value.sourceState.type
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071929, guid: bdd15b6f2ac024119a233600dcc875cc,
+        type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[0].value.sourceState.type
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: bdd15b6f2ac024119a233600dcc875cc,

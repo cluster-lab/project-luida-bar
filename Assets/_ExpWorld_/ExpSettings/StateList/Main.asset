@@ -18,76 +18,89 @@ MonoBehaviour:
     HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
+    RepeatDestStateName: 
     RepeatCount: 0
   - StateName: Acclimatization
     DestStateName: Questionnaire (pre-exp)
     HasExitTime: 1
     ExitTime: 30
     IsRepeated: 0
+    RepeatDestStateName: 
     RepeatCount: 0
   - StateName: Questionnaire (pre-exp)
     DestStateName: Instruction
     HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
+    RepeatDestStateName: 
     RepeatCount: 0
   - StateName: Instruction
     DestStateName: Practice - Task
     HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
+    RepeatDestStateName: 
     RepeatCount: 0
   - StateName: Practice - Task
     DestStateName: Practice - Questionnaire
     HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
+    RepeatDestStateName: 
     RepeatCount: 0
   - StateName: Practice - Questionnaire
     DestStateName: Practice - Rest
     HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
+    RepeatDestStateName: 
     RepeatCount: 0
   - StateName: Practice - Rest
     DestStateName: Preparation
     HasExitTime: 1
     ExitTime: 5
     IsRepeated: 1
+    RepeatDestStateName: Practice - Task
     RepeatCount: 3
   - StateName: Preparation
     DestStateName: Trial - Task
     HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
-    RepeatCount: 0
+    RepeatDestStateName: 
+    RepeatCount: 1
   - StateName: Trial - Task
     DestStateName: Trial - Questionnaire
     HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
-    RepeatCount: 0
+    RepeatDestStateName: 
+    RepeatCount: 1
   - StateName: Trial - Questionnaire
     DestStateName: Trial - Rest
     HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
-    RepeatCount: 0
+    RepeatDestStateName: 
+    RepeatCount: 1
   - StateName: Trial - Rest
     DestStateName: Questionnaire (post-exp)
     HasExitTime: 1
     ExitTime: 5
     IsRepeated: 1
+    RepeatDestStateName: Trial - Task
     RepeatCount: 1
   - StateName: Questionnaire (post-exp)
     DestStateName: End
     HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
-    RepeatCount: 0
+    RepeatDestStateName: 
+    RepeatCount: 1
   - StateName: End
     DestStateName: End
     HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
-    RepeatCount: 0
+    RepeatDestStateName: Start
+    RepeatCount: 1
