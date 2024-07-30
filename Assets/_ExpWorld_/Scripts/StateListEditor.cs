@@ -10,6 +10,8 @@ public class StateListEditor : EditorWindow
     private SerializedProperty statesProperty;
     private string prefabPath = "Assets/_ExpWorld_/Prefabs/State/State/State.prefab";
 
+	private readonly string[] FixedStateNames = new string[3] {"Trial - Task", "Trial - Rest", "Trial - Questionnaire"};
+
     [MenuItem("Window/State List Editor")]
     public static void ShowWindow()
     {
@@ -55,7 +57,9 @@ public class StateListEditor : EditorWindow
             SerializedProperty destStateName = state.FindPropertyRelative("DestStateName");
 
             EditorGUILayout.LabelField("State name:");
-            EditorGUILayout.PropertyField(stateName, GUIContent.none);
+			EditorGUI.BeginDisabledGroup(Array.IndexOf(FixedStateNames, stateName.stringValue) > -1);
+            EditorGUILayout.PropertyField(stateName, GUIContent.none, GUILayout.Width(150));
+			EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.EndVertical();
 
@@ -65,7 +69,9 @@ public class StateListEditor : EditorWindow
             EditorGUILayout.LabelField("Transit destination state");
             int destStateIndex = Array.FindIndex(stateList.States, s => s.StateName == destStateName.stringValue);
             string[] stateNames = Array.ConvertAll(stateList.States, s => s.StateName);
-            destStateIndex = EditorGUILayout.Popup(destStateIndex, stateNames);
+            EditorGUI.BeginDisabledGroup(Array.IndexOf(FixedStateNames, stateName.stringValue) > -1);
+            destStateIndex = EditorGUILayout.Popup(destStateIndex, stateNames, GUILayout.Width(150));
+			EditorGUI.EndDisabledGroup();
 
             if (destStateIndex >= 0)
             {
@@ -83,6 +89,7 @@ public class StateListEditor : EditorWindow
 
             EditorGUILayout.BeginHorizontal();
 
+            EditorGUI.BeginDisabledGroup(Array.IndexOf(FixedStateNames, stateName.stringValue) > -1);
             if (GUILayout.Button("Up", GUILayout.Width(50)))
             {
                 GUI.FocusControl(null); // Unfocus any field
@@ -106,6 +113,7 @@ public class StateListEditor : EditorWindow
                 GUI.FocusControl(null); // Unfocus any field
                 statesProperty.DeleteArrayElementAtIndex(i);
             }
+			EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.EndHorizontal();
 
@@ -119,6 +127,7 @@ public class StateListEditor : EditorWindow
             SerializedProperty exitTime = state.FindPropertyRelative("ExitTime");
 
 			EditorGUILayout.LabelField("Has Exit Time", GUILayout.Width(100));
+            // EditorGUI.BeginDisabledGroup(Array.IndexOf(FixedStateNames, stateName.stringValue) > -1);
             hasExitTime.boolValue = EditorGUILayout.Toggle(hasExitTime.boolValue, GUILayout.Width(100));
 
             EditorGUILayout.EndVertical();
@@ -126,9 +135,10 @@ public class StateListEditor : EditorWindow
 
             if (hasExitTime.boolValue)
             {
-				EditorGUILayout.LabelField("Exit Time", GUILayout.Width(60));
+				EditorGUILayout.LabelField("Exit Time", GUILayout.Width(100));
                 exitTime.floatValue = EditorGUILayout.FloatField(exitTime.floatValue, GUILayout.Width(60));
             }
+			// EditorGUI.EndDisabledGroup();
 
 			EditorGUILayout.EndVertical();
 #endregion
@@ -141,6 +151,8 @@ public class StateListEditor : EditorWindow
             SerializedProperty repeatCount = state.FindPropertyRelative("RepeatCount");
 
             EditorGUILayout.LabelField("Is Repeated", GUILayout.Width(80));
+
+			EditorGUI.BeginDisabledGroup(Array.IndexOf(FixedStateNames, stateName.stringValue) > -1);
             isRepeated.boolValue = EditorGUILayout.Toggle(isRepeated.boolValue, GUILayout.Width(100));
 
 			if (isRepeated.boolValue)
@@ -150,8 +162,7 @@ public class StateListEditor : EditorWindow
 
 				EditorGUILayout.LabelField("Repeat destination state");
             	int repeatStateIndex = Array.FindIndex(stateList.States, s => s.StateName == repeatDestStateName.stringValue);
-            	// string[] stateNames = Array.ConvertAll(stateList.States, s => s.StateName);
-            	repeatStateIndex = EditorGUILayout.Popup(repeatStateIndex, stateNames);
+            	repeatStateIndex = EditorGUILayout.Popup(repeatStateIndex, stateNames, GUILayout.Width(150));
             	if (repeatStateIndex >= 0)
             	{
             	    repeatDestStateName.stringValue = stateList.States[repeatStateIndex].StateName;
@@ -164,6 +175,7 @@ public class StateListEditor : EditorWindow
                 repeatCount.intValue = EditorGUILayout.IntField(Math.Max(repeatCount.intValue, 1), GUILayout.Width(60));
             }
 
+			EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndVertical();
 #endregion
 
@@ -176,7 +188,7 @@ public class StateListEditor : EditorWindow
                 if (transition != null)
                 {
                     int destStateId = Array.FindIndex(stateList.States, s => s.StateName == destStateName.stringValue);
-                    UpdateTransitionDestStateId(transition, destStateId);
+                    UpdateTransitionDestStateId(transition, destStateId, stateName.stringValue == "Trial - Rest");
 
                     UpdateTransitionExitTime(transition, hasExitTime.boolValue, exitTime.floatValue);
 
@@ -232,7 +244,7 @@ public class StateListEditor : EditorWindow
             {
                 UpdateTransitionCurrentStateId(transition, i);
                 int destStateId = Array.FindIndex(stateList.States, s => s.StateName == stateList.States[i].DestStateName);
-                UpdateTransitionDestStateId(transition, destStateId);
+                UpdateTransitionDestStateId(transition, destStateId, stateList.States[i].StateName == "Trial - Rest");
             }
         }
 
@@ -283,7 +295,7 @@ public class StateListEditor : EditorWindow
         }
     }
 
-    private void UpdateTransitionDestStateId(GameObject transition, int destStateId)
+    private void UpdateTransitionDestStateId(GameObject transition, int destStateId, bool isTrialRestState = false)
     {
         var globalLogics = transition.GetComponents<ClusterVR.CreatorKit.Operation.Implements.GlobalLogic>();
         Component transitionSettingLogic = null;
@@ -310,22 +322,34 @@ public class StateListEditor : EditorWindow
 					SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
 					if (targetKey != null && targetKey.stringValue == "state_currentID")
 					{
-                		SerializedProperty transitDestStateIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
-                		if (transitDestStateIdProp != null)
+						SerializedProperty transitDestStateIdProp = isTrialRestState
+							? specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.operatorExpression.operands.Array.data[1].value.constant.integerValue")
+							: specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
+						
+						if (transitDestStateIdProp != null)
                 		{
                 		    transitDestStateIdProp.intValue = destStateId;
                 		    serializedTransitionSettingLogic.ApplyModifiedProperties();
-							break;
                 		}
                 		else
                 		{
-                		    Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.value.constant.integerValue");
+                		    Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.operatorExpression.operands.Array.data[1].value.constant.integerValue or logic.statements.singleStatement.expression.value.constant.integerValue");
                 		}
+
+						if (isTrialRestState)
+						{
+							SerializedProperty trialTaskStateIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.operatorExpression.operands.Array.data[2].value.constant.integerValue");
+							if (trialTaskStateIdProp != null)
+                			{
+                		    	trialTaskStateIdProp.intValue = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Task");
+                		    	serializedTransitionSettingLogic.ApplyModifiedProperties();
+                			}
+                			else
+                			{
+                		   		Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.operatorExpression.operands.Array.data[2].value.constant.integerValue");
+                			}
+						}
 					}
-					else
-                	{
-                	    Debug.LogWarning("Property not found: logic.statements.singleStatement.targetState.key");
-                	}
 				}
             }
             else

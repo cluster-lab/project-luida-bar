@@ -87,7 +87,7 @@ MonoBehaviour:
     DestStateName: Questionnaire (post-exp)
     HasExitTime: 1
     ExitTime: 5
-    IsRepeated: 1
+    IsRepeated: 0
     RepeatDestStateName: Trial - Task
     RepeatCount: 1
   - StateName: Questionnaire (post-exp)
