@@ -280,7 +280,7 @@ MonoBehaviour:
   triggers:
   - target: 0
     specifiedTargetItem: {fileID: 0}
-    key: state_triggerTransition
+    key: state_tryTriggerTransition
     type: 0
     value:
       boolValue: 0
