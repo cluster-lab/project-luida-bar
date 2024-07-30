@@ -53,6 +53,7 @@ $.onInteract(() => {
 });
 
 $.onReceive((messageType, arg, sender) => {
+    if (!$.state.isInitiated) return;
     switch (messageType) {
         case "form_on_answer_option_spawned":
             if (arg && $.state.answerOptions) {
