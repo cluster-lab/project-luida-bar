@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using Assets.KaomoLab.CSCombiner;
 using ClusterVR.CreatorKit.Item.Implements;
 using System.Collections;
@@ -31,3 +32,4 @@ public class ScriptableClusterScriptCombiner : CSCombiner
         if (combineNow) Combine();
     }
 }
+#endif

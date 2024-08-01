@@ -178,6 +178,7 @@ function submitAnswers () {
     });
     $.callExternal(JSON.stringify(request), "postQuestionAnswers");
     reset();
+    $.sendSignalCompat("this", "state_triggerTransition");
 }
 
 function toNext () {

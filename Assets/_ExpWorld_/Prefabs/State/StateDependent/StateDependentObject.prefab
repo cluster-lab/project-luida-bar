@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 5660514857068071928}
   - component: {fileID: 5660514857068071929}
   - component: {fileID: 5660514857068071926}
-  - component: {fileID: 5660514857068071927}
   - component: {fileID: 5660514857068071924}
+  - component: {fileID: 5660514857068071927}
   - component: {fileID: 7617053289787406505}
   m_Layer: 0
   m_Name: StateDependentObject
@@ -126,138 +126,6 @@ MonoBehaviour:
   sourceCodeAsset: {fileID: 5022602860645237092, guid: e228c7ca8dec0428ba2fb1c353edbb9e,
     type: 3}
   sourceCode: 
---- !u!114 &5660514857068071927
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5660514857068071925}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d06d8dc2ce9e442ab2712de694945b2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item: {fileID: 5660514857068071928}
-  key:
-    target: 2
-    key: state_entered
-  logic:
-    statements:
-    - singleStatement:
-        targetState:
-          target: 0
-          key: state_isActive
-          parameterType: 1
-        expression:
-          type: 1
-          value:
-            type: 1
-            constant:
-              type: 1
-              boolValue: 0
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 2
-              key: exp_state_id
-              type: 6
-          operatorExpression:
-            operator: 7
-            operands:
-            - type: 0
-              value:
-                type: 1
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 2
-                  key: state_currentID
-                  type: 3
-              operatorExpression:
-                operator: 0
-                operands: []
-            - type: 0
-              value:
-                type: 1
-                constant:
-                  type: 3
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 0
-                  key: state_id
-                  type: 3
-              operatorExpression:
-                operator: 0
-                operands: []
-    - singleStatement:
-        targetState:
-          target: 0
-          key: state_enter
-          parameterType: 1
-        expression:
-          type: 1
-          value:
-            type: 1
-            constant:
-              type: 1
-              boolValue: 0
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 2
-              key: exp_state_id
-              type: 6
-          operatorExpression:
-            operator: 7
-            operands:
-            - type: 0
-              value:
-                type: 1
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 2
-                  key: state_currentID
-                  type: 3
-              operatorExpression:
-                operator: 0
-                operands: []
-            - type: 0
-              value:
-                type: 1
-                constant:
-                  type: 3
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 0
-                  key: state_id
-                  type: 3
-              operatorExpression:
-                operator: 0
-                operands: []
 --- !u!114 &5660514857068071924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -387,6 +255,138 @@ MonoBehaviour:
                   target: 0
                   key: state_isActive
                   type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &5660514857068071927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5660514857068071925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d06d8dc2ce9e442ab2712de694945b2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 5660514857068071928}
+  key:
+    target: 2
+    key: state_entered
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 0
+          key: state_isActive
+          parameterType: 1
+        expression:
+          type: 1
+          value:
+            type: 1
+            constant:
+              type: 1
+              boolValue: 0
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: exp_state_id
+              type: 6
+          operatorExpression:
+            operator: 7
+            operands:
+            - type: 0
+              value:
+                type: 1
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: state_currentID
+                  type: 3
+              operatorExpression:
+                operator: 0
+                operands: []
+            - type: 0
+              value:
+                type: 1
+                constant:
+                  type: 3
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 0
+                  key: state_id
+                  type: 3
+              operatorExpression:
+                operator: 0
+                operands: []
+    - singleStatement:
+        targetState:
+          target: 0
+          key: state_enter
+          parameterType: 1
+        expression:
+          type: 1
+          value:
+            type: 1
+            constant:
+              type: 1
+              boolValue: 0
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: exp_state_id
+              type: 6
+          operatorExpression:
+            operator: 7
+            operands:
+            - type: 0
+              value:
+                type: 1
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: state_currentID
+                  type: 3
+              operatorExpression:
+                operator: 0
+                operands: []
+            - type: 0
+              value:
+                type: 1
+                constant:
+                  type: 3
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 0
+                  key: state_id
+                  type: 3
               operatorExpression:
                 operator: 0
                 operands: []

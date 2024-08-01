@@ -16,7 +16,7 @@ $.onUpdate(() => {
     }
 })
 
-function OnStateEnter() {}
+function OnStateEnter() { if ($.getStateCompat("this", "state_id", "integer") === 1) $.log($.getStateCompat("global", "state_currentID", "integer") + " global | this " + $.getStateCompat("this", "state_id", "integer")); }
 
 function OnStateExit () {}
 
