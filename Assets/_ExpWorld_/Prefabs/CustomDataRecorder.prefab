@@ -74,7 +74,10 @@ MonoBehaviour:
     {\r\n    $.state.customData = calculateData();\r\n}\r\n\r\nfunction uploadData
     () {\r\n    $.log(\"Send final answers: \" + JSON.stringify($.state.customData));\r\n   
     let request = { type: \"uploadCustomData\", dataByFileName: JSON.stringify($.state.customData)
-    };\r\n    $.callExternal(JSON.stringify(request), \"customDataUploaded\");\r\n}\r\nfunction
+    };\r\n    $.callExternal(JSON.stringify(request), \"customDataUploaded\");\r\n}\r\n\r\n$.onExternalCallEnd((res,
+    meta, err) =>\r\n{\r\n    if (res == null) {\r\n        $.log(\"callExternal
+    ERROR: \" + err);\r\n        return;\r\n    }\r\n\r\n    if (meta === \"customDataUploaded\")
+    {\r\n        $.log(\"Custom recorded data uploaded\");\r\n    }\r\n});\r\nfunction
     calculateData () {\r\n    let fileName = \"sampleFileName\";\r\n    // Implement
     your calculation for custom data to record & upload\r\n    \r\n    // Return
     the data in the following format:\r\n    return { ...$.state.customData, [fileName]:

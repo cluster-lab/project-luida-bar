@@ -25,7 +25,7 @@ $.onUpdate(() => {
         $.state.isInitiated = true;
         $.state.qID = 0;
         
-        let request = {type: "questions", questionnaireID: 0};
+        let request = {type: "questions", qID: expID + "|" + $.getStateCompat("this", "qID", "integer")};
         $.callExternal(JSON.stringify(request), "getQuestions");
     }
     if ($.state.waitBeforeSpawningAnswerOption) {
@@ -170,7 +170,7 @@ function saveAnswer () {
 
 function submitAnswers () {
     $.log("Send final answers: " + JSON.stringify($.state.answers));
-    let request = {type: "questionAnswers", questionnaireID: 0, answers: JSON.stringify($.state.answers)};
+    let request = {type: "questionAnswers", qID: expID + "|" + $.getStateCompat("this", "qID", "integer"), answers: JSON.stringify($.state.answers)};
     $.getItemsNear($.getPosition(), 0.1).forEach(item => {
         if (item.id === "5570182165721890090") { // ConditionManager
             item.send("exp_questionnaire_answer", $.state.answers);
