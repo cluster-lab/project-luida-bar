@@ -112,6 +112,14 @@
       },
       "url": "https://registry.npmjs.com"
     },
+    "mu.cluster.cluster-creator-kit-enterprise": {
+      "version": "file:ClusterCreatorKitEnterprise-master",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "mu.cluster.cluster-creator-kit": ""
+      }
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,

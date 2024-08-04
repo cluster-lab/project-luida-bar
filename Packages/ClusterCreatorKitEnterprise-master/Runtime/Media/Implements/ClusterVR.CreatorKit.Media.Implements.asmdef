@@ -1,0 +1,16 @@
+{
+  "name": "ClusterVR.CreatorKit.Media.Implements",
+  "references": [
+    "ClusterVR.CreatorKit.Media",
+    "AVProVideo.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
