@@ -1,4 +1,4 @@
-const numberPerPage = 5;
+const numberPerPage = 30;
 
 $.onStart(() => {
     $.state.currentQuestBoardPage = 1;
@@ -34,6 +34,7 @@ $.onExternalCallEnd((res, meta, err) =>
         $.subNode("Title").setText(quest.title);
         $.subNode("Description").setText(quest.description);
         $.subNode("Prerequisite").setText(quest.prerequisite);
+        $.setStateCompat("owner", "currentQuestID", ($.state.currentQuestBoardPage - 1) * numberPerPage + $.getStateCompat("owner", "triggerQuest", "integer")) + 1;
 
         $.setStateCompat("this", "AllowJoinExp", +quest.playersCount === 0);
         $.setStateCompat("owner", "triggerQuest", -1);

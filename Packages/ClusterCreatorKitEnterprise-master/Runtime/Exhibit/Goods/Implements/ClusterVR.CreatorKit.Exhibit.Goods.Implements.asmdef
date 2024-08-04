@@ -1,0 +1,17 @@
+{
+    "name": "ClusterVR.CreatorKit.Exhibit.Goods.Implements",
+    "references": [
+        "ClusterVR.CreatorKit.Constants",
+        "ClusterVR.CreatorKit.Extensions",
+        "ClusterVR.CreatorKit.Exhibit.Goods"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

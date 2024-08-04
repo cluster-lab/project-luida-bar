@@ -1,0 +1,16 @@
+{
+    "name": "ClusterVR.CreatorKit.Exhibit.ExchangeTicketForAvatar",
+    "rootNamespace": "",
+    "references": [
+        "ClusterVR.CreatorKit.Exhibit.AvatarDisplay"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
