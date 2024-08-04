@@ -29,7 +29,7 @@ $.onUpdate(() => {
         $.callExternal(JSON.stringify(request), "getQuestions");
     }
     if ($.state.waitBeforeSpawningAnswerOption) {
-        if ($.state.timer < 6) {
+        if ($.state.timer < 10) {
             $.state.timer = $.state.timer + 1;
         } else {
             $.state.waitBeforeSpawningAnswerOption = false;
@@ -118,7 +118,6 @@ function initQuestion () { // options: array of string
 }
 
 function setAnswerOptionUISpawnPoint () {
-    // TODO: calculate & set spawn point position only when answerType === "radio" or "check"
     let pos = answerOptionUISpawnCenter.clone();
     let rot = new Quaternion();;
     switch ($.state.questionTypeID) {
