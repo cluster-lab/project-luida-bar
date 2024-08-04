@@ -3,11 +3,11 @@ $.onStart(() => {
 })
 
 $.onUpdate(() => {
-    if ($.getStateCompat("this", "exp_recordCustomData", "bool")) {
+    if ($.getStateCompat("this", "exp_recordCustomData", "boolean")) {
         $.setStateCompat("this", "exp_recordCustomData", false);
         recordData();
     }
-    if ($.getStateCompat("this", "exp_uploadCustomData", "bool")) {
+    if ($.getStateCompat("this", "exp_uploadCustomData", "boolean")) {
         $.setStateCompat("this", "exp_uploadCustomData", false);
         uploadData();
     }
