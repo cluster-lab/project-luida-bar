@@ -10,7 +10,7 @@ public class StateListEditor : EditorWindow
     private SerializedProperty statesProperty;
     private string prefabPath = "Assets/_ExpWorld_/Prefabs/State/State/State.prefab";
 
-	private readonly string[] FixedStateNames = new string[3] {"Trial - Task", "Trial - Rest", "Trial - Questionnaire"};
+    private readonly string[] FixedStateNames = new string[3] {"Trial - Task", "Trial - Rest", "Trial - Questionnaire"};
 
     [MenuItem("Window/State List Editor")]
     public static void ShowWindow()
@@ -57,13 +57,17 @@ public class StateListEditor : EditorWindow
             SerializedProperty destStateName = state.FindPropertyRelative("DestStateName");
 
             EditorGUILayout.LabelField("State name:");
-			EditorGUI.BeginDisabledGroup(Array.IndexOf(FixedStateNames, stateName.stringValue) > -1);
+            EditorGUI.BeginDisabledGroup(Array.IndexOf(FixedStateNames, stateName.stringValue) > -1);
             EditorGUILayout.PropertyField(stateName, GUIContent.none, GUILayout.Width(150));
-			EditorGUI.EndDisabledGroup();
+            if (string.IsNullOrEmpty(stateName.stringValue))
+            {
+                stateName.stringValue = "State";
+            }
+            EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.EndVertical();
 
-#region Transition Destination State
+            #region Transition Destination State
             EditorGUILayout.BeginVertical();
 
             EditorGUILayout.LabelField("Transit destination state");
@@ -71,7 +75,7 @@ public class StateListEditor : EditorWindow
             string[] stateNames = Array.ConvertAll(stateList.States, s => s.StateName);
             EditorGUI.BeginDisabledGroup(Array.IndexOf(FixedStateNames, stateName.stringValue) > -1);
             destStateIndex = EditorGUILayout.Popup(destStateIndex, stateNames, GUILayout.Width(150));
-			EditorGUI.EndDisabledGroup();
+            EditorGUI.EndDisabledGroup();
 
             if (destStateIndex >= 0)
             {
@@ -79,9 +83,9 @@ public class StateListEditor : EditorWindow
             }
 
             EditorGUILayout.EndVertical();
-#endregion
+            #endregion
 
-#region Move state
+            #region Move state
             EditorGUILayout.BeginVertical();
 
             // Label and buttons for moving state
@@ -113,20 +117,20 @@ public class StateListEditor : EditorWindow
                 GUI.FocusControl(null); // Unfocus any field
                 statesProperty.DeleteArrayElementAtIndex(i);
             }
-			EditorGUI.EndDisabledGroup();
+            EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.EndVertical();
-#endregion
+            #endregion
 
-#region Exit time
+            #region Exit time
             EditorGUILayout.BeginVertical();
 
             SerializedProperty hasExitTime = state.FindPropertyRelative("HasExitTime");
             SerializedProperty exitTime = state.FindPropertyRelative("ExitTime");
 
-			EditorGUILayout.LabelField("Has Exit Time", GUILayout.Width(100));
+            EditorGUILayout.LabelField("Has Exit Time", GUILayout.Width(100));
             // EditorGUI.BeginDisabledGroup(Array.IndexOf(FixedStateNames, stateName.stringValue) > -1);
             hasExitTime.boolValue = EditorGUILayout.Toggle(hasExitTime.boolValue, GUILayout.Width(100));
 
@@ -135,49 +139,49 @@ public class StateListEditor : EditorWindow
 
             if (hasExitTime.boolValue)
             {
-				EditorGUILayout.LabelField("Exit Time", GUILayout.Width(100));
+                EditorGUILayout.LabelField("Exit Time", GUILayout.Width(100));
                 exitTime.floatValue = EditorGUILayout.FloatField(exitTime.floatValue, GUILayout.Width(60));
             }
-			// EditorGUI.EndDisabledGroup();
+            // EditorGUI.EndDisabledGroup();
 
-			EditorGUILayout.EndVertical();
-#endregion
+            EditorGUILayout.EndVertical();
+            #endregion
 
-#region Repeating
+            #region Repeating
             EditorGUILayout.BeginVertical();
-			
-			SerializedProperty isRepeated = state.FindPropertyRelative("IsRepeated");
+
+            SerializedProperty isRepeated = state.FindPropertyRelative("IsRepeated");
             SerializedProperty repeatDestStateName = state.FindPropertyRelative("RepeatDestStateName");
             SerializedProperty repeatCount = state.FindPropertyRelative("RepeatCount");
 
             EditorGUILayout.LabelField("Is Repeated", GUILayout.Width(80));
 
-			EditorGUI.BeginDisabledGroup(Array.IndexOf(FixedStateNames, stateName.stringValue) > -1);
+            EditorGUI.BeginDisabledGroup(Array.IndexOf(FixedStateNames, stateName.stringValue) > -1);
             isRepeated.boolValue = EditorGUILayout.Toggle(isRepeated.boolValue, GUILayout.Width(100));
 
-			if (isRepeated.boolValue)
+            if (isRepeated.boolValue)
             {
-				EditorGUILayout.EndVertical();
-           		EditorGUILayout.BeginVertical();
+                EditorGUILayout.EndVertical();
+                EditorGUILayout.BeginVertical();
 
-				EditorGUILayout.LabelField("Repeat destination state");
-            	int repeatStateIndex = Array.FindIndex(stateList.States, s => s.StateName == repeatDestStateName.stringValue);
-            	repeatStateIndex = EditorGUILayout.Popup(repeatStateIndex, stateNames, GUILayout.Width(150));
-            	if (repeatStateIndex >= 0)
-            	{
-            	    repeatDestStateName.stringValue = stateList.States[repeatStateIndex].StateName;
-            	}
+                EditorGUILayout.LabelField("Repeat destination state");
+                int repeatStateIndex = Array.FindIndex(stateList.States, s => s.StateName == repeatDestStateName.stringValue);
+                repeatStateIndex = EditorGUILayout.Popup(repeatStateIndex, stateNames, GUILayout.Width(150));
+                if (repeatStateIndex >= 0)
+                {
+                    repeatDestStateName.stringValue = stateList.States[repeatStateIndex].StateName;
+                }
 
-				EditorGUILayout.EndVertical();
-            	EditorGUILayout.BeginVertical();
+                EditorGUILayout.EndVertical();
+                EditorGUILayout.BeginVertical();
 
-				EditorGUILayout.LabelField("Repeat Count", GUILayout.Width(80));
+                EditorGUILayout.LabelField("Repeat Count", GUILayout.Width(80));
                 repeatCount.intValue = EditorGUILayout.IntField(Math.Max(repeatCount.intValue, 1), GUILayout.Width(60));
             }
 
-			EditorGUI.EndDisabledGroup();
+            EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndVertical();
-#endregion
+            #endregion
 
             EditorGUILayout.EndHorizontal();
 
@@ -192,8 +196,8 @@ public class StateListEditor : EditorWindow
 
                     UpdateTransitionExitTime(transition, hasExitTime.boolValue, exitTime.floatValue);
 
-					int repeatDestStateId = Array.FindIndex(stateList.States, s => s.StateName == repeatDestStateName.stringValue);
-					UpdateRepeatedTransition(transition, Math.Max(0, repeatDestStateId), isRepeated.boolValue ? repeatCount.intValue : 1);
+                    int repeatDestStateId = Array.FindIndex(stateList.States, s => s.StateName == repeatDestStateName.stringValue);
+                    UpdateRepeatedTransition(transition, Math.Max(0, repeatDestStateId), isRepeated.boolValue ? repeatCount.intValue : 1);
                 }
             }
         }
@@ -220,18 +224,34 @@ public class StateListEditor : EditorWindow
         for (int i = 0; i < stateList.States.Length; i++)
         {
             string stateName = stateList.States[i].StateName;
+            if (string.IsNullOrEmpty(stateName))
+            {
+                stateName = "State";
+            }
             Transform child = statesObject.transform.Find(stateName);
 
             if (child == null)
             {
-                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
-                if (prefab != null)
+                child = FindChildByStateID(statesObject.transform, i);
+                if (child != null)
                 {
-                    GameObject newChild = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
-                    newChild.name = stateName;
-                    newChild.transform.SetParent(statesObject.transform);
-                    child = newChild.transform;
+                    child.name = stateName;
                 }
+                else
+                {
+                    GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+                    if (prefab != null)
+                    {
+                        GameObject newChild = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+                        newChild.name = stateName;
+                        newChild.transform.SetParent(statesObject.transform);
+                        child = newChild.transform;
+                    }
+                }
+            }
+            else if (child.name != stateName)
+            {
+                child.name = stateName;
             }
 
             if (child.GetSiblingIndex() != i)
@@ -254,39 +274,73 @@ public class StateListEditor : EditorWindow
         }
     }
 
+
+    private Transform FindChildByStateID(Transform parent, int stateID)
+    {
+        foreach (Transform child in parent)
+        {
+            GameObject transition = child.Find("Transition")?.gameObject;
+            if (transition != null)
+            {
+                Component stateIdSettingComp = transition.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
+                if (stateIdSettingComp != null)
+                {
+                    SerializedObject serializedComp = new SerializedObject(stateIdSettingComp);
+                    SerializedProperty specificProperty = serializedComp.FindProperty("logic.statements");
+
+                    if (specificProperty != null && specificProperty.isArray && specificProperty.arraySize > 0)
+                    {
+                        for (int i = 0; i < specificProperty.arraySize; i++)
+                        {
+                            SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
+                            if (targetKey != null && targetKey.stringValue == "state_id")
+                            {
+                                SerializedProperty stateIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
+                                if (stateIdProp != null && stateIdProp.intValue == stateID)
+                                {
+                                    return child;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     private void UpdateTransitionCurrentStateId(GameObject transition, int stateId)
     {
         Component stateIdSettingComp = transition.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
         if (stateIdSettingComp != null)
         {
             SerializedObject serializedComp = new SerializedObject(stateIdSettingComp);
-
             SerializedProperty specificProperty = serializedComp.FindProperty("logic.statements");
 
             if (specificProperty != null && specificProperty.isArray && specificProperty.arraySize > 0)
             {
-				for (int i = 0; i < specificProperty.arraySize; i++)
-				{
-					SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
-					if (targetKey != null && targetKey.stringValue == "state_id")
-					{
-                		SerializedProperty stateIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
-                		if (stateIdProp != null)
-                		{
-                		    stateIdProp.intValue = stateId;
-                		    serializedComp.ApplyModifiedProperties();
-							break;
-                		}
-                		else
-                		{
-                		    Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.value.constant.integerValue");
-                		}
-					}
-					else
-                	{
-                	    Debug.LogWarning("Property not found: logic.statements.singleStatement.targetState.key");
-                	}
-				}
+                for (int i = 0; i < specificProperty.arraySize; i++)
+                {
+                    SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
+                    if (targetKey != null && targetKey.stringValue == "state_id")
+                    {
+                        SerializedProperty stateIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
+                        if (stateIdProp != null)
+                        {
+                            stateIdProp.intValue = stateId;
+                            serializedComp.ApplyModifiedProperties();
+                            break;
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.value.constant.integerValue");
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Property not found: logic.statements.singleStatement.targetState.key");
+                    }
+                }
             }
             else
             {
@@ -312,45 +366,44 @@ public class StateListEditor : EditorWindow
         if (transitionSettingLogic != null)
         {
             SerializedObject serializedTransitionSettingLogic = new SerializedObject(transitionSettingLogic);
-
             SerializedProperty specificProperty = serializedTransitionSettingLogic.FindProperty("logic.statements");
 
             if (specificProperty != null && specificProperty.isArray && specificProperty.arraySize > 0)
             {
-				for (int i = 0; i < specificProperty.arraySize; i++)
-				{
-					SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
-					if (targetKey != null && targetKey.stringValue == "state_currentID")
-					{
-						SerializedProperty transitDestStateIdProp = isTrialRestState
-							? specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.operatorExpression.operands.Array.data[1].value.constant.integerValue")
-							: specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
-						
-						if (transitDestStateIdProp != null)
-                		{
-                		    transitDestStateIdProp.intValue = destStateId;
-                		    serializedTransitionSettingLogic.ApplyModifiedProperties();
-                		}
-                		else
-                		{
-                		    Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.operatorExpression.operands.Array.data[1].value.constant.integerValue or logic.statements.singleStatement.expression.value.constant.integerValue");
-                		}
+                for (int i = 0; i < specificProperty.arraySize; i++)
+                {
+                    SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
+                    if (targetKey != null && targetKey.stringValue == "state_currentID")
+                    {
+                        SerializedProperty transitDestStateIdProp = isTrialRestState
+                            ? specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.operatorExpression.operands.Array.data[1].value.constant.integerValue")
+                            : specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
 
-						if (isTrialRestState)
-						{
-							SerializedProperty trialTaskStateIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.operatorExpression.operands.Array.data[2].value.constant.integerValue");
-							if (trialTaskStateIdProp != null)
-                			{
-                		    	trialTaskStateIdProp.intValue = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Task");
-                		    	serializedTransitionSettingLogic.ApplyModifiedProperties();
-                			}
-                			else
-                			{
-                		   		Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.operatorExpression.operands.Array.data[2].value.constant.integerValue");
-                			}
-						}
-					}
-				}
+                        if (transitDestStateIdProp != null)
+                        {
+                            transitDestStateIdProp.intValue = destStateId;
+                            serializedTransitionSettingLogic.ApplyModifiedProperties();
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.operatorExpression.operands.Array.data[1].value.constant.integerValue or logic.statements.singleStatement.expression.value.constant.integerValue");
+                        }
+
+                        if (isTrialRestState)
+                        {
+                            SerializedProperty trialTaskStateIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.operatorExpression.operands.Array.data[2].value.constant.integerValue");
+                            if (trialTaskStateIdProp != null)
+                            {
+                                trialTaskStateIdProp.intValue = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Task");
+                                serializedTransitionSettingLogic.ApplyModifiedProperties();
+                            }
+                            else
+                            {
+                                Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.operatorExpression.operands.Array.data[2].value.constant.integerValue");
+                            }
+                        }
+                    }
+                }
             }
             else
             {
@@ -369,7 +422,7 @@ public class StateListEditor : EditorWindow
             if (keyProp != null && (keyProp.stringValue == "state_enter" || keyProp.stringValue == "state_enter(disabled)"))
             {
                 keyProp.stringValue = hasExitTime ? "state_enter" : "state_enter(disabled)";
-				var delayTimeProp = serializedComp.FindProperty("delayTimeSeconds");
+                var delayTimeProp = serializedComp.FindProperty("delayTimeSeconds");
                 delayTimeProp.floatValue = exitTime;
                 serializedComp.ApplyModifiedProperties();
                 break;
@@ -377,9 +430,9 @@ public class StateListEditor : EditorWindow
         }
     }
 
-	private void UpdateRepeatedTransition(GameObject transition, int repeatDestStateId = 0, int repeatCount = 1)
-	{
-		var globalLogics = transition.GetComponents<ClusterVR.CreatorKit.Operation.Implements.GlobalLogic>();
+    private void UpdateRepeatedTransition(GameObject transition, int repeatDestStateId = 0, int repeatCount = 1)
+    {
+        var globalLogics = transition.GetComponents<ClusterVR.CreatorKit.Operation.Implements.GlobalLogic>();
         Component transitionSettingLogic = null;
         foreach (var globalLogic in globalLogics)
         {
@@ -394,33 +447,32 @@ public class StateListEditor : EditorWindow
         if (transitionSettingLogic != null)
         {
             SerializedObject serializedTransitionSettingLogic = new SerializedObject(transitionSettingLogic);
-
             SerializedProperty specificProperty = serializedTransitionSettingLogic.FindProperty("logic.statements");
 
             if (specificProperty != null && specificProperty.isArray && specificProperty.arraySize > 0)
             {
-				for (int i = 0; i < specificProperty.arraySize; i++)
-				{
-					SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
-					if (targetKey != null && targetKey.stringValue == "state_currentID")
-					{
-                		SerializedProperty transitDestStateIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
-                		if (transitDestStateIdProp != null)
-                		{
-                		    transitDestStateIdProp.intValue = repeatDestStateId;
-                		    serializedTransitionSettingLogic.ApplyModifiedProperties();
-							break;
-                		}
-                		else
-                		{
-                		    Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.value.constant.integerValue");
-                		}
-					}
-					else
-                	{
-                	    Debug.LogWarning("Property not found: logic.statements.singleStatement.targetState.key");
-                	}
-				}
+                for (int i = 0; i < specificProperty.arraySize; i++)
+                {
+                    SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
+                    if (targetKey != null && targetKey.stringValue == "state_currentID")
+                    {
+                        SerializedProperty transitDestStateIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
+                        if (transitDestStateIdProp != null)
+                        {
+                            transitDestStateIdProp.intValue = repeatDestStateId;
+                            serializedTransitionSettingLogic.ApplyModifiedProperties();
+                            break;
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.value.constant.integerValue");
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Property not found: logic.statements.singleStatement.targetState.key");
+                    }
+                }
             }
             else
             {
@@ -428,43 +480,42 @@ public class StateListEditor : EditorWindow
             }
         }
 
-		var stateIdSettingComp = transition.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
+        var stateIdSettingComp = transition.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
         if (stateIdSettingComp != null)
         {
             SerializedObject serializedComp = new SerializedObject(stateIdSettingComp);
-
             SerializedProperty specificProperty = serializedComp.FindProperty("logic.statements");
 
             if (specificProperty != null && specificProperty.isArray && specificProperty.arraySize > 0)
             {
-				for (int i = 0; i < specificProperty.arraySize; i++)
-				{
-					SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
-					if (targetKey != null && targetKey.stringValue == "state_repeatCountMax")
-					{
-                		SerializedProperty repeatCountMaxProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
-                		if (repeatCountMaxProp != null)
-                		{
-                		    repeatCountMaxProp.intValue = repeatCount;
-                		    serializedComp.ApplyModifiedProperties();
-							break;
-                		}
-                		else
-                		{
-                		    Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.value.constant.integerValue");
-                		}
-					}
-					else
-                	{
-                	    Debug.LogWarning("Property not found: logic.statements.singleStatement.targetState.key");
-                	}
-				}
+                for (int i = 0; i < specificProperty.arraySize; i++)
+                {
+                    SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
+                    if (targetKey != null && targetKey.stringValue == "state_repeatCountMax")
+                    {
+                        SerializedProperty repeatCountMaxProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
+                        if (repeatCountMaxProp != null)
+                        {
+                            repeatCountMaxProp.intValue = repeatCount;
+                            serializedComp.ApplyModifiedProperties();
+                            break;
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.value.constant.integerValue");
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Property not found: logic.statements.singleStatement.targetState.key");
+                    }
+                }
             }
             else
             {
                 Debug.LogWarning("Property not found: logic.statements");
             }
         }
-	}
+    }
 }
 #endif

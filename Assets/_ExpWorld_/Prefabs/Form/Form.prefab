@@ -378,9 +378,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "const expID = \"\";\r\nconst preTaskQID = \"\";\r\nconst duringTaskQID
-    = \"\";\r\nconst postTaskQID = \"\";\r\n\r\nconst dummyQuestions = [\r\n    {
-    title: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
+  sourceCode: "const expID = \"wppImWcEar\";\r\n\r\nconst dummyQuestions = [\r\n   
+    { title: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
     description: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
     questionTypeID: 0, answerOptions: [\"\u306A\u3057\", \"\u5E74\u306B\u4E00\u56DE\u672A\u6E80\",
     \"\u5E74\u306B\u4E00\u56DE\u4EE5\u4E0A\", \"\u6708\u306B1~2\u56DE\u304F\u3089\u3044\",
@@ -407,12 +406,12 @@ MonoBehaviour:
     reset();\r\n})\r\n\r\n$.onUpdate(() => {\r\n    if (!$.state.isInitiated && $.getStateCompat(\"this\",
     \"form_set_content_active\", \"boolean\")) {\r\n        $.state.isInitiated =
     true;\r\n        $.state.qID = 0;\r\n        \r\n        let request = {type:
-    \"questions\", questionnaireID: 0};\r\n        $.callExternal(JSON.stringify(request),
-    \"getQuestions\");\r\n    }\r\n    if ($.state.waitBeforeSpawningAnswerOption)
-    {\r\n        if ($.state.timer < 6) {\r\n            $.state.timer = $.state.timer
-    + 1;\r\n        } else {\r\n            $.state.waitBeforeSpawningAnswerOption
-    = false;\r\n            $.state.timer = 0;\r\n            $.sendSignalCompat(\"this\",
-    \"form_spawn_\" + attrsByQuestionType[$.state.questionTypeID].aTemplateName);\r\n       
+    \"questions\", eID: expID, qID: $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n       
+    $.callExternal(JSON.stringify(request), \"getQuestions\");\r\n    }\r\n    if
+    ($.state.waitBeforeSpawningAnswerOption) {\r\n        if ($.state.timer < 6)
+    {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else {\r\n           
+    $.state.waitBeforeSpawningAnswerOption = false;\r\n            $.state.timer
+    = 0;\r\n            $.sendSignalCompat(\"this\", \"form_spawn_\" + attrsByQuestionType[$.state.questionTypeID].aTemplateName);\r\n       
     }\r\n    }\r\n    if ($.state.waitBeforeInitQuestion) {\r\n        if ($.state.timer
     < 10) {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else {\r\n           
     $.state.waitBeforeInitQuestion = false;\r\n            $.state.timer = 0;\r\n           
@@ -479,12 +478,13 @@ MonoBehaviour:
     $.state.tmpAnswer };\r\n    $.log(\"Update answers: \" + JSON.stringify($.state.answers));\r\n   
     toNext();\r\n}\r\n\r\nfunction submitAnswers () {\r\n    $.log(\"Send final answers:
     \" + JSON.stringify($.state.answers));\r\n    let request = {type: \"questionAnswers\",
-    questionnaireID: 0, answers: JSON.stringify($.state.answers)};\r\n    $.getItemsNear($.getPosition(),
-    0.1).forEach(item => {\r\n        if (item.id === \"5570182165721890090\") {
-    // ConditionManager\r\n            item.send(\"exp_questionnaire_answer\", $.state.answers);\r\n       
-    }\r\n    });\r\n    $.callExternal(JSON.stringify(request), \"postQuestionAnswers\");\r\n   
-    reset();\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
-    toNext () {\r\n    $.state.qID = $.state.qID + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
+    eID: expID, qID: $.getStateCompat(\"this\", \"qID\", \"integer\"), answers: JSON.stringify($.state.answers)};\r\n   
+    $.getItemsNear($.getPosition(), 0.1).forEach(item => {\r\n        if (item.id
+    === \"5570182165721890090\") { // ConditionManager\r\n            item.send(\"exp_questionnaire_answer\",
+    $.state.answers);\r\n        }\r\n    });\r\n    $.callExternal(JSON.stringify(request),
+    \"postQuestionAnswers\");\r\n    reset();\r\n    $.sendSignalCompat(\"this\",
+    \"state_triggerTransition\");\r\n}\r\n\r\nfunction toNext () {\r\n    $.state.qID
+    = $.state.qID + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
     if ($.state.qID >= $.state.questions.length) {\r\n        submitAnswers();\r\n   
     } else {\r\n        destroyAnswerOptionUIs();\r\n        $.state.tmpAnswer =
     null;\r\n        // TODO: hide selection indicator\r\n        tryInitQuestion();\r\n   
