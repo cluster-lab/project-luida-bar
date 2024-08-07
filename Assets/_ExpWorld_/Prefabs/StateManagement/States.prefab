@@ -611,6 +611,46 @@ MonoBehaviour:
               operatorExpression:
                 operator: 0
                 operands: []
+    - singleStatement:
+        targetState:
+          target: 2
+          key: exp_conditionChanged
+          parameterType: 0
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 1
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
 --- !u!1001 &5160816958177636969
 PrefabInstance:
   m_ObjectHideFlags: 0
