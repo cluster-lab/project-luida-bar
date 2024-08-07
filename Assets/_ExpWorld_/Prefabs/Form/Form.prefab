@@ -408,7 +408,7 @@ MonoBehaviour:
     true;\r\n        $.state.qID = 0;\r\n        \r\n        let request = {type:
     \"questions\", eID: expID, qID: $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n       
     $.callExternal(JSON.stringify(request), \"getQuestions\");\r\n    }\r\n    if
-    ($.state.waitBeforeSpawningAnswerOption) {\r\n        if ($.state.timer < 6)
+    ($.state.waitBeforeSpawningAnswerOption) {\r\n        if ($.state.timer < 10)
     {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else {\r\n           
     $.state.waitBeforeSpawningAnswerOption = false;\r\n            $.state.timer
     = 0;\r\n            $.sendSignalCompat(\"this\", \"form_spawn_\" + attrsByQuestionType[$.state.questionTypeID].aTemplateName);\r\n       
@@ -447,8 +447,7 @@ MonoBehaviour:
     $.subNode(\"Title\").setText(q.title);\r\n    $.subNode(\"Description\").setText(q.description);\r\n   
     $.state.questionTypeID = q.questionTypeID;\r\n    $.state.answerOptions = q.answerOptions;\r\n   
     $.state.spawningAnswerID = 0;\r\n    spawnAnswerOptionUI();\r\n}\r\n\r\nfunction
-    setAnswerOptionUISpawnPoint () {\r\n    // TODO: calculate & set spawn point
-    position only when answerType === \"radio\" or \"check\"\r\n    let pos = answerOptionUISpawnCenter.clone();\r\n   
+    setAnswerOptionUISpawnPoint () {\r\n    let pos = answerOptionUISpawnCenter.clone();\r\n   
     let rot = new Quaternion();;\r\n    switch ($.state.questionTypeID) {\r\n       
     case 0:\r\n        case 2:\r\n            // let maxStringLength = Math.min(30,
     $.state.answerOptions.reduce((maxLength, str) => Math.max(maxLength, str.length),

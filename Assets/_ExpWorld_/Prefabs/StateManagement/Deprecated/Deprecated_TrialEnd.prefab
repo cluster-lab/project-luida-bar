@@ -59,7 +59,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3948777243414495919}
   m_Layer: 0
-  m_Name: TrialEnd
+  m_Name: Deprecated_TrialEnd
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

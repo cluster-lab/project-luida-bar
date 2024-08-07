@@ -349,7 +349,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6248750767526668427}
   m_Layer: 0
-  m_Name: States
+  m_Name: Deprecated_States
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
