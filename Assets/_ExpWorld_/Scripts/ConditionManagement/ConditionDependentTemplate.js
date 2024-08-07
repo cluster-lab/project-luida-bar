@@ -23,6 +23,7 @@ $.onReceive((messageType, arg, sender) => {
     }
 })
 
+// Execution when condition changed
 function onConditionChanged () {
     $.log($.state.currentCondition);
 }
