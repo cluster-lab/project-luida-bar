@@ -44,9 +44,9 @@ public class ExperimentVariablesEditor : EditorWindow
         }
         else
         {
-            trialsCountForEachUniqueCondition = EditorGUILayout.IntField("Trials Count For Each Unique Condition", trialsCountForEachUniqueCondition);
+            trialsCountForEachUniqueCondition = EditorGUILayout.IntField("Trials Count per Condition", trialsCountForEachUniqueCondition);
 
-            GUILayout.Label("Within Subjects Variables", EditorStyles.boldLabel);
+            GUILayout.Label("Variables for Within-Subject Conditions", EditorStyles.boldLabel);
             if (withinSubjectsVariables == null)
             {
                 withinSubjectsVariables = new ExperimentVariable[0];
@@ -54,7 +54,7 @@ public class ExperimentVariablesEditor : EditorWindow
 
             DrawVariables(ref withinSubjectsVariables);
 
-            GUILayout.Label("Between Subjects Variables", EditorStyles.boldLabel);
+            GUILayout.Label("Variables for Between-Subject Conditions", EditorStyles.boldLabel);
             if (betweenSubjectsVariables == null)
             {
                 betweenSubjectsVariables = new ExperimentVariable[0];
@@ -64,7 +64,7 @@ public class ExperimentVariablesEditor : EditorWindow
 
             if (betweenSubjectsConditionSetterAsset == null)
             {
-                if (GUILayout.Button("Retrieve/Create Between Subjects Condition Setter"))
+                if (GUILayout.Button("Retrieve/Create Between-Subject Condition Setter"))
                 {
                     RetrieveOrCreateBetweenSubjectsConditionSetter();
                 }
