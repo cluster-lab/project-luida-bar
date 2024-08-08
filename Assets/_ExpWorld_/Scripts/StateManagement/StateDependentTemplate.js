@@ -2,7 +2,7 @@ $.onStart(() => {
     $.sendSignalCompat("this", "state_setID");
 })
 
-$.onUpdate(() => {
+$.onUpdate((deltaTime) => {
     if ($.getStateCompat("this", "state_exit", "boolean")) {
         OnStateExit();
         $.setStateCompat("this", "state_exit", false);
@@ -12,7 +12,7 @@ $.onUpdate(() => {
         OnStateEnter();
     }
     if ($.getStateCompat("this", "state_isActive", "boolean")) {
-        DuringState();
+        DuringState(deltaTime);
     }
 })
 
@@ -20,4 +20,4 @@ function OnStateEnter() {}
 
 function OnStateExit () {}
 
-function DuringState () {}
+function DuringState (deltaTime) {}

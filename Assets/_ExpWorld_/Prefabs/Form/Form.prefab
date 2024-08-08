@@ -481,9 +481,8 @@ MonoBehaviour:
     $.getItemsNear($.getPosition(), 0.1).forEach(item => {\r\n        if (item.id
     === \"5570182165721890090\") { // ConditionManager\r\n            item.send(\"exp_questionnaire_answer\",
     $.state.answers);\r\n        }\r\n    });\r\n    $.callExternal(JSON.stringify(request),
-    \"postQuestionAnswers\");\r\n    reset();\r\n    $.sendSignalCompat(\"this\",
-    \"state_triggerTransition\");\r\n}\r\n\r\nfunction toNext () {\r\n    $.state.qID
-    = $.state.qID + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
+    \"postQuestionAnswers\");\r\n    reset();\r\n}\r\n\r\nfunction toNext () {\r\n   
+    $.state.qID = $.state.qID + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
     if ($.state.qID >= $.state.questions.length) {\r\n        submitAnswers();\r\n   
     } else {\r\n        destroyAnswerOptionUIs();\r\n        $.state.tmpAnswer =
     null;\r\n        // TODO: hide selection indicator\r\n        tryInitQuestion();\r\n   
@@ -505,7 +504,8 @@ MonoBehaviour:
     // {\r\n        //     const questTitle = $.subNode(\"Quest_\" + i);\r\n       
     //     if (questTitle) questTitle.setText(parsedRes.quests[i].title);\r\n       
     // }\r\n    }\r\n\r\n    if (meta === \"postQuestionAnswers\") {\r\n        $.log(\"Answers
-    recorded!\");\r\n    }\r\n});"
+    recorded!\");\r\n        $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n   
+    }\r\n});"
 --- !u!114 &5697374075709122382
 MonoBehaviour:
   m_ObjectHideFlags: 0

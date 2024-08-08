@@ -24,9 +24,7 @@ $.onReceive((messageType, arg, sender) => {
 })
 
 // Execution when condition changed
-function onConditionChanged () {
-    $.log($.state.currentCondition);
-}
+function onConditionChanged () {}
 
 // Real-time execution depending on current condition
 function tick () {
