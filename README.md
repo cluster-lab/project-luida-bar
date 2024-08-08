@@ -1,70 +1,108 @@
-# Cluster Creator Kit テンプレートプロジェクト
+# Luida's Bar Project - Experiment World Template
 
-[cluster](https://cluster.mu/) にゲームワールドを制作する際のテンプレートとなる Unity プロジェクトです。
+## Register your experiment on the web console (To be deployed soon)
 
-## 要件
+1. Access the web console with this URL:
+2. Login
+3. Click the Register Experiment button, and you will be redirected to the experiment detail page. A unique eID is created and displayed on the page. You will need to paste this eID in the template Unity project.
 
-### Unity 2021.3.4f1
+## Prepare the template
 
-環境に応じて以下の追加モジュールが必要です。
+1. Clone this Unity project from branch `exp-template`
+2. Duplicate the template scene and rename it
+3. Open `Assets\_ExpWorld_\ExpSettings\ExpIdentifiers.js` and paste your experiment's eID to the value for the constant `expID`.
+![スクリーンショット 2024-08-08 000712](https://github.com/user-attachments/assets/26798130-3215-4171-b18b-1ed96dc7c7a5)
 
-#### Windows の場合 
-- Android Build Support
-- iOS Build Support
-- Mac Build Support (Mono)
+## Set/Edit Experiment Variables
 
-#### macOS の場合
-- Android Build Support
-- iOS Build Support
-- Windows Build Support (Mono)
+1. From top menu, select `Window > Experiment Variables Editor` to open the experiment variables editor window. Notice that changes in this editor window only work for the currently opened scene.
+![スクリーンショット 2024-08-07 231217](https://github.com/user-attachments/assets/e21bef41-9d10-4dc9-a1e4-a8aceb89fe04)
+2. If not yet exists, Create a new variables asset for this newly created scene by clicking the `Create New Variables Asset` button
+![スクリーンショット 2024-08-07 231227](https://github.com/user-attachments/assets/d5eb2cde-4a5b-4a4c-99b2-21da608e405b)
+3. Fill in the `Length` fields with integers representing how many variables your experiment requires for within-subject and/or between-subject conditions, and then set their actual values.
+![スクリーンショット 2024-08-07 232304](https://github.com/user-attachments/assets/8568966b-9c6a-4f41-9cf3-190c2b18c952)
+4. If your experiment needs some calculation to decide the between-subject condition, click the `Retrieve/Create Between Subject Condition Setter`. Then, a JavaScript asset is created in the displayed path. Edit it later to implement the calculation.
+5. Set the value of the field `Trials Count per Condition` with how many times your experiment repeats the trial for each unique condition.
+6. Click the `Apply Updated Variables` button to save the change before closing the window.
 
-### Cluster Creator Kit v1.15.0 以上
-プロジェクトに自動で導入されます。
-起動時にエラーが出る場合や Unity のメニューに「Cluster」の項目が追加されていない場合は [Creator Kitの導入](https://clustervr.gitbook.io/creatorkit/installation/install-creatorkit) を参考に Creator Kit の手動での導入をお試しください。
+- Every time after updating the between-subject condition setter JavaScript asset, remember to open this editor window again, and then click the `Retrieve/Create Between Subject Condition Setter` and `Apply Updated Variables` buttons so that your change is applied to the scene.
 
-## テンプレートの一覧
+## Set/Edit States and their Transitions during the Experiment
 
-### ミュージック
-`Assets/ClusterCreatorKitTemplate/Music/Scenes/Music.unity`
+1. From top menu, select `Window > State List Editor` to open the state list editor window. Notice that changes in this editor window only work for the currently opened scene.
+![スクリーンショット 2024-08-07 230959](https://github.com/user-attachments/assets/ea7829e7-d4e6-423d-a791-8027ad81fe1a)
+2. Basically you can leave these states as they are, while you can still make some editions. Your edit will be immediately reflected to the scene, so you don't need to click on any button to confirm or apply changes.
+![スクリーンショット 2024-08-07 233636](https://github.com/user-attachments/assets/563e53ea-bf1c-4328-8af0-4ec341a4701c)
 
-音楽に合わせて動く様々なエフェクトが詰まったテンプレートです。
+Explanation for each field:
+- Transit destination state: the next state when the current state is exited
+- Has Exit Time: Check it if this state should automatically be exited in a period of time
+  - Exit Time: Set how many seconds from the beginning this state will be automatically transited to the next one
+- Is Repeated: Check it if this state transits not to the next state but any other state before it.
+  - Repeat destination state: Set which state to transit to instead of the next state.
+  - Repeat Count: How many times this state transits to the Repeat destination state. If the times of this state repeating to the assigned state reached the value here, it will transit to the original next state on the next transition.
+- There are also buttons to move a state upward, move a state downward, or remove a state. Some states are not allowed to be moved or removed, and for those that are allowed, please still be careful if you really need to move or remove any of them.
 
-### アスレチック
-`Assets/ClusterCreatorKitTemplate/Playground/Scenes/Playground.unity`
+You can click the `Add State` button to add more states and move or remove them if necessary.
 
-さまざまなアトラクションを作るのに便利な仕掛けがたくさん詰め込まれたテンプレートです。
+## State transition
 
-### プログレッション
-`Assets/ClusterCreatorKitTemplate/Progression/Scenes/Progression.unity`
+Invoke a global signal trigger with key `state_triggerTransition` from anywhere, then the state will transit to its Transit destination state or Repeat destination state.
+![スクリーンショット 2024-08-08 100939 copy](https://github.com/user-attachments/assets/c1d4405a-f6ac-483a-9d97-27041f15e123)
 
-「鉱石を集めてレベルを上げて、貯まったお金で強いアビリティを買って、もっと鉱石を集める」ゲームのテンプレートです。
-プレイヤーの経験値とレベル、鉱石の所持個数、プレイヤーアビリティの効果と購入・付け外しなどを実装しています。
+## Implementation depending on States
 
-### シューター
-`Assets/ClusterCreatorKitTemplate/Shooter/Scenes/Shooter.unity`
+You can have your CCK gimmick components, logic components or script listen to the global integer key `state_currentID` which represents current state's ID (you can confirm it on the State List Editor window). You can also listen to the global signal key `state_entered` or `state_exited`.
 
-銃で的を撃って破壊できるテンプレートです。
-銃にはハンドガン、マシンガン、チャージガンの3種類があります。
+If you need a state-specific execution, consider the following:
+1. Open the State dependent object editor window:
+![スクリーンショット 2024-08-08 094614](https://github.com/user-attachments/assets/0f5775d0-222c-485e-91a6-ace003b0f44e)
+2. Click the Create New stateDependentObject button
+![スクリーンショット 2024-08-08 094642](https://github.com/user-attachments/assets/6174831f-86b2-4135-b4cd-ccad50a98652)
+3. Set the state you want this gameobject to dependent to, and also press the Duplicate Asset button to create a CCK script for it, then complete the implementation in the script.
+![スクリーンショット 2024-08-08 094658](https://github.com/user-attachments/assets/e5785831-b3f0-4412-999f-dfb19f3401a6)
 
-### 乗り物
-`Assets/ClusterCreatorKitTemplate/Vehicle/Scenes/Vehicle.unity`
+## Set questionnaires
 
-ベーシックな乗り物のテンプレートです。
-ゴーカート、ヘリコプター、ポニーの3種類があります。観戦席にも座れます。
+1. There are already Questionnaire objects in each state with a name including `Questionnaire` (e.g. `Questionnaire (pre-exp)`). You can disable or remove any unnecessary ones, or add a new one from the prefab `Assets\_ExpWorld_\Prefabs\Form\Form.prefab`.
+2. You don't need to create game objects for each question or answer. Just register your questionnaire on the web console, retrieve its identifier `qID`, and paste it in the field marked with a red block in the image below. Game objects for each question and answer will be automatically generated on cluster during the exact experiment session.
+![スクリーンショット 2024-08-08 032108](https://github.com/user-attachments/assets/6bbf1485-e4b2-4860-a04b-ee785c19e348)
 
-### フィッシング
-`Assets/ClusterCreatorKitTemplate/Fishing/Scenes/Fishing.unity`
+## Implementation depending on Condition
 
-ランダムに釣れる魚を集め、図鑑を埋めていく釣りゲームです。
-完成品のPrefabが付属しているので、既存のワールドにも簡単に組み込むことができます。
+CCK gimmick or logic components cannot directly access to variables/conditions.
+You will need to complete a condition-dependent implementation with CCK script.
+Here is a recommended procedure to do so:
+1. Create a gameobject from prefab `Assets\_ExpWorld_\Prefabs\ConditionManagement\ConditionDependentObject.prefab`
+2. Duplicate JavaScript asset `Assets\_ExpWorld_\Scripts\ConditionManagement\ConditionDependentTemplate.js` and assign it to the gameobject's Scriptable Item.
+3. Complete the implementation of the duplicated JavaScript asset.
+![スクリーンショット 2024-08-08 010024](https://github.com/user-attachments/assets/157ca5fc-37eb-4e53-a1fe-3b045897628d)
 
-### Minimal Sample
-`Assets/ClusterCreatorKitTemplate/Minimal/Scenes/MinimalSample.unity`
+## Data Recorder
 
-ワールドの必須コンポーネントだけを設置したシンプルなシーンです。
-Cluster Creator KitサンプルプロジェクトのMinimal Sampleと同じものです。
+### Initialize
 
-## ライセンス
+1. Create a gameobject from prefab `Assets\_ExpWorld_\Prefabs\CustomDataRecorder\CustomDataRecorder.prefab`
+2. Duplicate JavaScript asset `Assets\_ExpWorld_\Scripts\CustomDataRecorder\CustomDataRecorderCalculatorTemplate.js` and assign it to the gameobject's `CS Combiner` component's second field for cluster scripts.
+![スクリーンショット 2024-08-08 095306 copy](https://github.com/user-attachments/assets/7c521ca6-a194-4596-82bc-7a522d23f8c2)
+3. Complete the implementation of the duplicated JavaScript asset.
 
-本プロジェクトは [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/) で提供されています。
-本プロジェクトの全部もしくは一部を使用して作成されたコンテンツを [cluster](https://cluster.mu/) で公開する場合は Cluster, Inc. のクレジット表示は不要です。
+### Record and upload data
+
+1. Invoke a global signal trigger with key `exp_recordCustomData` from anywhere to run the calculation and temporary save of the custom data.
+2. Invoke a global signal trigger with key `exp_uploadCustomData` from anywhere to upload the temporary saved custom data.
+
+The image below serves as an example:
+![スクリーンショット 2024-08-08 103851](https://github.com/user-attachments/assets/0dbdf8f4-b2b3-4ef8-a22a-3ee3fae60388)
+
+
+## Before Upload to cluster
+
+1. Find any gameobject with the CS combiner component attached, and click the "全更新" button.
+2. Open the Experiment Variables Editor window again, and then click the `Retrieve/Create Between Subject Condition Setter` and finally `Apply Updated Variables` buttons.
+
+## Upload and test your experiment world
+
+Just upload your world (https://docs.cluster.mu/creatorkit/world/upload-world/), simply enter it on cluster, and see if everything runs well!
+
+We recommend making use of cluster's test space feature for more effective tests: https://creator.cluster.mu/2024/05/24/testspace/
