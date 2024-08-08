@@ -177,7 +177,6 @@ function submitAnswers () {
     });
     $.callExternal(JSON.stringify(request), "postQuestionAnswers");
     reset();
-    $.sendSignalCompat("this", "state_triggerTransition");
 }
 
 function toNext () {
@@ -241,5 +240,6 @@ $.onExternalCallEnd((res, meta, err) =>
 
     if (meta === "postQuestionAnswers") {
         $.log("Answers recorded!");
+        $.sendSignalCompat("this", "state_triggerTransition");
     }
 });
