@@ -23,13 +23,24 @@ $.onReceive((messageType, arg, sender) => {
     }
 })
 
+// Execution when condition changed
 function onConditionChanged () {
-    if ($.state.currentCondition) {
-        const loggedCondition = "Method (between): " + $.state.currentCondition["method"] + ", Color (within, not random): " + $.state.currentCondition["color"] + ", Size (within, random): " + $.state.currentCondition["size"];
-        $.log(loggedCondition);
-        $.subNode("Text").setText(loggedCondition);
+    if (!$.state.currentCondition) return;
+    let wordObject;
+    for (var word of ["R", "G", "B"]) {
+        for (var lang of ["ja", "en"]) {
+            $.log(word + "_" + lang);
+            wordObject = $.subNode(word + "_" + lang);
+            wordObject?.setEnabled(word === $.state.currentCondition["word"] && lang === $.state.currentCondition["lang"]);
+        }
+    }
+    for (var question of ["font", "meaning"]) {
+        wordObject = $.subNode("question_" + question);
+        wordObject?.setEnabled(question === $.state.currentCondition["question"]);
     }
 }
 
 // Real-time execution depending on current condition
-function tick () {}
+function tick () {
+    // e.g. if ($.state.currentCondition["color"] === "R") $.setStateCompat("this", "isEnabled", true);
+}
