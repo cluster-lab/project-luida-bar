@@ -26,6 +26,8 @@
 3. Open `Assets\_ExpWorld_\ExpSettings\ExpIdentifiers.js` and paste your experiment's eID to the value for the constant `expID`.
 ![スクリーンショット 2024-08-08 000712](https://github.com/user-attachments/assets/26798130-3215-4171-b18b-1ed96dc7c7a5)
 
+## How to use
+
 ### Set/Edit Experiment Variables
 
 Register within/between-subject variables with an editor window, so that the number of trials and each trial's experimental condition will be automatically determined.
