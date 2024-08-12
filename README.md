@@ -1,19 +1,35 @@
 # Luida's Bar Project - Experiment World Template
 
-## Register your experiment on the web console (To be deployed soon)
+## Main Features
+- Automatically determine number of trials & condition of each trial by registered within/between-subject variables
+  - Editor window to register the variables
+  - Template script to implement decision of condition from between-subject variables
+- State management
+  - This template follows a State design pattern. We have prepared default states and their transitions for you to use without additional edition, while you can still make your customization (e.g. skip a state, enable auto transition in xx seconds, etc.) with an editor window.
+- Questionnaire generation
+  - You don't need to create game objects for each question or answer. Just register your questionnaire on the web console, retrieve its identifier `qID`, and paste it in the designated field of the questionnaire gameobject in your Unity scene. Game objects for each question and answer will be automatically generated on cluster during the exact experiment session.
+- Data recorder/uploader
+  - cluster continuously records players' positions, poses, actions, to name a few. These data will be formatted to display on the web console. Meanwhile, you can also collect custom data with a provided data recorder/uploader gameobject.
+
+## Getting started
+
+### Register your experiment on the web console
 
 1. Access the web console with this URL: https://studious-doodle-4k9pon4.pages.github.io/
 2. Login (For now, the login system is not fully implemented yet, so just fill in any text)
 3. Click the Register Experiment button, and you will be redirected to the experiment detail page. A unique eID is created and displayed on the page. You will need to paste this eID in the template Unity project.
 
-## Prepare the template
+### Prepare the template
 
 1. Clone this Unity project from branch `exp-template`
 2. Duplicate the template scene and rename it
 3. Open `Assets\_ExpWorld_\ExpSettings\ExpIdentifiers.js` and paste your experiment's eID to the value for the constant `expID`.
 ![スクリーンショット 2024-08-08 000712](https://github.com/user-attachments/assets/26798130-3215-4171-b18b-1ed96dc7c7a5)
 
-## Set/Edit Experiment Variables
+### Set/Edit Experiment Variables
+
+Register within/between-subject variables with an editor window, so that the number of trials and each trial's experimental condition will be automatically determined.
+If your experimental conditions are based on between-subject variables, there is a template script for you to implement how to determine them (e.g. randomly assign, calculate from questionnaire answers, etc.) 
 
 1. From top menu, select `Window > Experiment Variables Editor` to open the experiment variables editor window. Notice that changes in this editor window only work for the currently opened scene.
 ![スクリーンショット 2024-08-07 231217](https://github.com/user-attachments/assets/e21bef41-9d10-4dc9-a1e4-a8aceb89fe04)
@@ -27,7 +43,9 @@
 
 - Every time after updating the between-subject condition setter JavaScript asset, remember to open this editor window again, and then click the `Retrieve/Create Between Subject Condition Setter` and `Apply Updated Variables` buttons so that your change is applied to the scene.
 
-## Set/Edit States and their Transitions during the Experiment
+### Set/Edit States and their Transitions during the Experiment
+
+You can use the default states and transitions as they are, while customization (e.g. skip a state, enable auto transition in xx seconds, etc.) is available with an editor window.
 
 1. From top menu, select `Window > State List Editor` to open the state list editor window. Notice that changes in this editor window only work for the currently opened scene.
 ![スクリーンショット 2024-08-07 230959](https://github.com/user-attachments/assets/ea7829e7-d4e6-423d-a791-8027ad81fe1a)
@@ -45,12 +63,13 @@ Explanation for each field:
 
 You can click the `Add State` button to add more states and move or remove them if necessary.
 
-## State transition
+### Invoke State transition
 
+If a current state does not have an exit time, it requires its transition to be explicitly invoke.
 Invoke a global signal trigger with key `state_triggerTransition` from anywhere, then the state will transit to its Transit destination state or Repeat destination state.
 ![スクリーンショット 2024-08-08 100939 copy](https://github.com/user-attachments/assets/c1d4405a-f6ac-483a-9d97-27041f15e123)
 
-## Implementation depending on States
+### Implementation depending on States
 
 You can have your CCK gimmick components, logic components or script listen to the global integer key `state_currentID` which represents current state's ID (you can confirm it on the State List Editor window). You can also listen to the global signal key `state_entered` or `state_exited`.
 
@@ -62,13 +81,7 @@ If you need a state-specific execution, consider the following:
 3. Set the state you want this gameobject to dependent to, and also press the Duplicate Asset button to create a CCK script for it, then complete the implementation in the script.
 ![スクリーンショット 2024-08-08 094658](https://github.com/user-attachments/assets/e5785831-b3f0-4412-999f-dfb19f3401a6)
 
-## Set questionnaires
-
-1. There are already Questionnaire objects in each state with a name including `Questionnaire` (e.g. `Questionnaire (pre-exp)`). You can disable or remove any unnecessary ones, or add a new one from the prefab `Assets\_ExpWorld_\Prefabs\Form\Form.prefab`.
-2. You don't need to create game objects for each question or answer. Just register your questionnaire on the web console, retrieve its identifier `qID`, and paste it in the field marked with a red block in the image below. Game objects for each question and answer will be automatically generated on cluster during the exact experiment session.
-![スクリーンショット 2024-08-08 032108](https://github.com/user-attachments/assets/6bbf1485-e4b2-4860-a04b-ee785c19e348)
-
-## Implementation depending on Condition
+### Implementation depending on Condition
 
 CCK gimmick or logic components cannot directly access to variables/conditions.
 You will need to complete a condition-dependent implementation with CCK script.
@@ -78,16 +91,22 @@ Here is a recommended procedure to do so:
 3. Complete the implementation of the duplicated JavaScript asset.
 ![スクリーンショット 2024-08-08 010024](https://github.com/user-attachments/assets/157ca5fc-37eb-4e53-a1fe-3b045897628d)
 
-## Data Recorder
+### Set questionnaires
 
-### Initialize
+1. There are already Questionnaire objects in each state with a name including `Questionnaire` (e.g. `Questionnaire (pre-exp)`). You can disable or remove any unnecessary ones, or add a new one from the prefab `Assets\_ExpWorld_\Prefabs\Form\Form.prefab`.
+2. You don't need to create game objects for each question or answer. Just register your questionnaire on the web console, retrieve its identifier `qID`, and paste it in the field marked with a red block in the image below. Game objects for each question and answer will be automatically generated on cluster during the exact experiment session.
+![スクリーンショット 2024-08-08 032108](https://github.com/user-attachments/assets/6bbf1485-e4b2-4860-a04b-ee785c19e348)
+
+### Data Recorder/Uploader
+
+#### Initialize
 
 1. Create a gameobject from prefab `Assets\_ExpWorld_\Prefabs\CustomDataRecorder\CustomDataRecorder.prefab`
 2. Duplicate JavaScript asset `Assets\_ExpWorld_\Scripts\CustomDataRecorder\CustomDataRecorderCalculatorTemplate.js` and assign it to the gameobject's `CS Combiner` component's second field for cluster scripts.
 ![スクリーンショット 2024-08-08 095306 copy](https://github.com/user-attachments/assets/7c521ca6-a194-4596-82bc-7a522d23f8c2)
 3. Complete the implementation of the duplicated JavaScript asset.
 
-### Record and upload data
+#### Record and upload data
 
 1. Invoke a global signal trigger with key `exp_recordCustomData` from anywhere to run the calculation and temporary save of the custom data.
 2. Invoke a global signal trigger with key `exp_uploadCustomData` from anywhere to upload the temporary saved custom data.
@@ -95,13 +114,14 @@ Here is a recommended procedure to do so:
 The image below serves as an example:
 ![スクリーンショット 2024-08-08 103851](https://github.com/user-attachments/assets/0dbdf8f4-b2b3-4ef8-a22a-3ee3fae60388)
 
+## Deploy
 
-## Before Upload to cluster
+### Before Upload to cluster
 
 1. Find any gameobject with the CS combiner component attached, and click the "全更新" button.
 2. Open the Experiment Variables Editor window again, and then click the `Retrieve/Create Between Subject Condition Setter` and finally `Apply Updated Variables` buttons.
 
-## Upload and test your experiment world
+### Upload and test your experiment world
 
 Just upload your world (https://docs.cluster.mu/creatorkit/world/upload-world/), simply enter it on cluster, and see if everything runs well!
 
