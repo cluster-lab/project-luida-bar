@@ -2,8 +2,8 @@
 
 ## Register your experiment on the web console (To be deployed soon)
 
-1. Access the web console with this URL:
-2. Login
+1. Access the web console with this URL: https://studious-doodle-4k9pon4.pages.github.io/
+2. Login (For now, the login system is not fully implemented yet, so just fill in any text)
 3. Click the Register Experiment button, and you will be redirected to the experiment detail page. A unique eID is created and displayed on the page. You will need to paste this eID in the template Unity project.
 
 ## Prepare the template
