@@ -35,8 +35,13 @@ function recordData () {
 }
 
 function uploadData () {
-    $.log("Send final answers: " + JSON.stringify($.state.customData));
-    let request = { type: "uploadCustomData", dataByFileName: JSON.stringify($.state.customData), eID };
+    $.log("Upload custom data: " + JSON.stringify($.state.customData));
+    let request = {
+        type: "uploadCustomData",
+        dataByFileName: JSON.stringify($.state.customData),
+        eID: expID || "0",
+        pID: $.getStateCompat("owner", "exp_pID", "integer") || 0 // TODO: retrieve pID through cluster Player Script
+    };
     $.callExternal(JSON.stringify(request), "customDataUploaded");
 }
 
