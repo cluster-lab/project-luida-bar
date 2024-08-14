@@ -36,7 +36,7 @@ function recordData () {
 
 function uploadData () {
     $.log("Send final answers: " + JSON.stringify($.state.customData));
-    let request = { type: "uploadCustomData", dataByFileName: JSON.stringify($.state.customData) };
+    let request = { type: "uploadCustomData", dataByFileName: JSON.stringify($.state.customData), eID };
     $.callExternal(JSON.stringify(request), "customDataUploaded");
 }
 

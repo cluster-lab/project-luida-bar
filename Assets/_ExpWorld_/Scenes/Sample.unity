@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17412685, g: 0.21774654, b: 0.2999423, a: 1}
+  m_IndirectSpecularColor: {r: 0.17412737, g: 0.21774727, b: 0.29994345, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3395,33 +3395,22 @@ PrefabInstance:
     - target: {fileID: 5964733846762761526, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
       propertyPath: sourceCode
-      value: "$.onStart(() => {\n    $.state.customData = {};\n    $.getItemsNear($.getPosition(),
-        0.1).forEach(item => {\n        if (item.id === \"5570182165721890090\")
-        { // ConditionManager\n            item.send(\"exp_conditionDependentObject\",
-        true);\n        }\n    });\n})\n\n$.onUpdate(() => {\n    if ($.getStateCompat(\"this\",
-        \"exp_conditionChanged\", \"boolean\")) {\n        $.setStateCompat(\"this\",
-        \"exp_conditionChanged\", false);\n        $.state.currentCondition = $.state.conditions[$.getStateCompat(\"global\",
-        \"exp_conditionID\", \"integer\")];\n    }\n\n    if ($.getStateCompat(\"this\",
-        \"exp_recordCustomData\", \"boolean\")) {\n        $.setStateCompat(\"this\",
-        \"exp_recordCustomData\", false);\n        recordData();\n    }\n    if ($.getStateCompat(\"this\",
-        \"exp_uploadCustomData\", \"boolean\")) {\n        $.setStateCompat(\"this\",
-        \"exp_uploadCustomData\", false);\n        uploadData();\n    }\n})\n\n$.onReceive((messageType,
-        arg, sender) => {\n    if (messageType === \"exp_updateConditions\") {\n       
-        $.state.conditions = arg;\n        $.setStateCompat(\"this\", \"exp_conditionChanged\",
-        true);\n    }\n})\n\nfunction recordData () {\n    $.state.customData = calculateData();\n}\n\nfunction
-        uploadData () {\n    $.log(\"Send final answers: \" + JSON.stringify($.state.customData));\n   
-        let request = { type: \"uploadCustomData\", dataByFileName: JSON.stringify($.state.customData)
-        };\n    $.callExternal(JSON.stringify(request), \"customDataUploaded\");\n}\n\n$.onExternalCallEnd((res,
-        meta, err) =>\n{\n    if (res == null) {\n        $.log(\"callExternal ERROR:
-        \" + err);\n        return;\n    }\n\n    if (meta === \"customDataUploaded\")
-        {\n        $.log(\"Custom recorded data uploaded\");\n    }\n});\r\nfunction
-        calculateData () {\n    let fileName = \"taskTime\";\n    if (!$.state.currentCondition)
-        return $.state.customData || {};\n    \n    return { ...$.state.customData,\n       
-        [fileName]: [\n            ...($.state.customData[fileName] || []),\n           
-        {\n                q: $.state.currentCondition[\"question\"],\n               
-        l: $.state.currentCondition[\"lang\"],\n                w: $.state.currentCondition[\"wordObject\"],\n               
+      value: "const expID = \"wppImWcEar\";\r\n\r\nfunction calculateData () {\r\n   
+        let fileName = \"taskTime\";\r\n    if (!$.state.currentCondition) return
+        $.state.customData || {};\r\n    \r\n    return { ...$.state.customData,\r\n       
+        [fileName]: [\r\n            ...($.state.customData[fileName] || []),\r\n           
+        {\r\n                q: $.state.currentCondition[\"question\"],\r\n               
+        l: $.state.currentCondition[\"lang\"],\r\n                w: $.state.currentCondition[\"wordObject\"],\r\n               
         t: Math.round($.getStateCompat(\"owner\", \"taskTime\", \"float\") * 10000)
-        / 10000\n            }\n        ]\n    };\n}"
+        / 10000\r\n            }\r\n        ]\r\n    };\r\n}\r\nfunction calculateData
+        () {\r\n    let fileName = \"sampleFileName\";\r\n    // Implement your calculation
+        for custom data to record & upload\r\n    // $.state.currentCondition is
+        available if this script is combined with CustomDataUploader.js\r\n    \r\n   
+        // Return the data in the following format:\r\n    return { ...$.state.customData,
+        [fileName]: {} }; // $.state.customData is the custom data recorded before\r\n   
+        /*\r\n    e.g.\r\n    return { ...$.state.customData, [fileName]: {\r\n     
+        ...($.state.customData[fileName] || {}),\r\n      labelName: calculationResult\r\n   
+        } };\r\n    */\r\n}"
       objectReference: {fileID: 0}
     - target: {fileID: 5964733846762761527, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
