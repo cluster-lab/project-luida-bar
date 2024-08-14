@@ -2,6 +2,7 @@
 using ClusterVR.CreatorKit.Item.Implements;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Text.RegularExpressions;
@@ -333,6 +334,9 @@ public class ExperimentVariablesEditor : EditorWindow
                         scriptCombiner.AppendScript(scriptAsset, null, true);
                     }
                 }
+
+                EditorUtility.SetDirty(scriptCombiner);
+                EditorSceneManager.MarkSceneDirty(conditionManager.scene);
             }
             else
             {
