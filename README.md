@@ -51,7 +51,7 @@ You can use the default states and transitions as they are, while customization 
 
 1. From top menu, select `Window > State List Editor` to open the state list editor window. Notice that changes in this editor window only work for the currently opened scene.
 ![スクリーンショット 2024-08-07 230959](https://github.com/user-attachments/assets/ea7829e7-d4e6-423d-a791-8027ad81fe1a)
-2. Basically you can leave these states as they are, while you can still make some editions. Your edit will be immediately reflected to the scene, so you don't need to click on any button to confirm or apply changes.
+2. Basically you can leave these states as they are, while you can still make some editions. Your edit will be immediately reflected to the scene (the gameobject named `States`), so you don't need to click on any button to confirm or apply changes.
 ![スクリーンショット 2024-08-07 233636](https://github.com/user-attachments/assets/563e53ea-bf1c-4328-8af0-4ec341a4701c)
 
 Explanation for each field:
@@ -75,7 +75,11 @@ Invoke a global signal trigger with key `state_triggerTransition` from anywhere,
 
 You can have your CCK gimmick components, logic components or script listen to the global integer key `state_currentID` which represents current state's ID (you can confirm it on the State List Editor window). You can also listen to the global signal key `state_entered` or `state_exited`.
 
-If you need a state-specific execution, consider the following:
+Also, you can add state-specific gameobjects into `EnabledObjects` under each state gameobject inside the `States` gameobject, as depicted in the screenshot below, so that these state-specific gameobjects are displayed only during the state they depend on (as `EnabledObjects` has a CCK component `Set Game Object Active Gimmick` attached):
+
+<img width="637" alt="スクリーンショット 2024-08-14 15 45 32" src="https://github.com/user-attachments/assets/b0472dee-783d-408b-8ebf-9bfcf46fdef2">
+
+If you need more customized state-specific executions, consider the following:
 1. Open the State dependent object editor window:
 ![スクリーンショット 2024-08-08 094614](https://github.com/user-attachments/assets/0f5775d0-222c-485e-91a6-ace003b0f44e)
 2. Click the Create New stateDependentObject button
