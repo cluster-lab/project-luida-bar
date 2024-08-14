@@ -17,6 +17,7 @@ const attrsByQuestionType = [
 ]
 
 $.onStart(() => {
+    $.setStateCompat("this", "form_set_start_hint_active", true);
     reset();
 })
 
@@ -29,7 +30,7 @@ $.onUpdate(() => {
         $.callExternal(JSON.stringify(request), "getQuestions");
     }
     if ($.state.waitBeforeSpawningAnswerOption) {
-        if ($.state.timer < 10) {
+        if ($.state.timer < 6) {
             $.state.timer = $.state.timer + 1;
         } else {
             $.state.waitBeforeSpawningAnswerOption = false;
@@ -38,7 +39,7 @@ $.onUpdate(() => {
         }
     }
     if ($.state.waitBeforeInitQuestion) {
-        if ($.state.timer < 10) {
+        if ($.state.timer < 12) {
             $.state.timer = $.state.timer + 1;
         } else {
             $.state.waitBeforeInitQuestion = false;
@@ -50,6 +51,7 @@ $.onUpdate(() => {
 
 $.onInteract(() => {
     $.setStateCompat("this", "form_set_content_active", true);
+    $.setStateCompat("this", "form_set_start_hint_active", false);
 });
 
 $.onReceive((messageType, arg, sender) => {

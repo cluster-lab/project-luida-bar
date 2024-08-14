@@ -23,24 +23,22 @@ $.onReceive((messageType, arg, sender) => {
     }
 })
 
+const wordMeanings = ["R", "G", "B"];
+const wordFontColors = ["B", "R", "G"];
+
 // Execution when condition changed
-function onConditionChanged () {
-    if (!$.state.currentCondition) return;
-    let wordObject;
-    for (var word of ["R", "G", "B"]) {
-        for (var lang of ["ja", "en"]) {
-            $.log(word + "_" + lang);
-            wordObject = $.subNode(word + "_" + lang);
-            wordObject?.setEnabled(word === $.state.currentCondition["word"] && lang === $.state.currentCondition["lang"]);
-        }
-    }
-    for (var question of ["font", "meaning"]) {
-        wordObject = $.subNode("question_" + question);
-        wordObject?.setEnabled(question === $.state.currentCondition["question"]);
-    }
-}
+function onConditionChanged () {}
 
 // Real-time execution depending on current condition
 function tick () {
     // e.g. if ($.state.currentCondition["color"] === "R") $.setStateCompat("this", "isEnabled", true);
 }
+
+$.onInteract(() => {
+    const aID = $.getStateCompat("this", "answerID", "integer");
+    if (!$.state.currentCondition) return;
+    const q = $.state.currentCondition["question"];
+    if ($.state.currentCondition["wordObject"] === (q === "fontColor" ? wordFontColors[aID] : wordMeanings[aID])) {
+        $.sendSignalCompat("this", "exp_setAnswer");
+    }
+})
