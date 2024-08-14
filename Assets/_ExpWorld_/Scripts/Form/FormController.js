@@ -30,7 +30,7 @@ $.onUpdate(() => {
         $.callExternal(JSON.stringify(request), "getQuestions");
     }
     if ($.state.waitBeforeSpawningAnswerOption) {
-        if ($.state.timer < 6) {
+        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 10 : 7)) {
             $.state.timer = $.state.timer + 1;
         } else {
             $.state.waitBeforeSpawningAnswerOption = false;
@@ -39,7 +39,7 @@ $.onUpdate(() => {
         }
     }
     if ($.state.waitBeforeInitQuestion) {
-        if ($.state.timer < 12) {
+        if ($.state.timer < 10) {
             $.state.timer = $.state.timer + 1;
         } else {
             $.state.waitBeforeInitQuestion = false;
@@ -171,7 +171,13 @@ function saveAnswer () {
 
 function submitAnswers () {
     $.log("Send final answers: " + JSON.stringify($.state.answers));
-    let request = {type: "questionAnswers", eID: expID, qID: $.getStateCompat("this", "qID", "integer"), answers: JSON.stringify($.state.answers)};
+    let request = {
+        type: "questionAnswers",
+        eID: expID || "0",
+        qID: $.getStateCompat("this", "qID", "integer"),
+        pID: $.getStateCompat("owner", "exp_pID", "integer") || 0, // TODO: retrieve pID through cluster Player Script
+        answers: JSON.stringify($.state.answers)
+    };
     $.getItemsNear($.getPosition(), 0.1).forEach(item => {
         if (item.id === "5570182165721890090") { // ConditionManager
             item.send("exp_questionnaire_answer", $.state.answers);
