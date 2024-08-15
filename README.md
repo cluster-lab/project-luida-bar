@@ -108,8 +108,8 @@ Here is a recommended procedure to do so:
 #### Initialize
 
 1. Create a gameobject from prefab `Assets\_ExpWorld_\Prefabs\CustomDataRecorder\CustomDataRecorder.prefab`
-2. Duplicate JavaScript asset `Assets\_ExpWorld_\Scripts\CustomDataRecorder\CustomDataRecorderCalculatorTemplate.js` and assign it to the gameobject's `CS Combiner` component's second field for cluster scripts.
-![スクリーンショット 2024-08-08 095306 copy](https://github.com/user-attachments/assets/7c521ca6-a194-4596-82bc-7a522d23f8c2)
+2. Duplicate JavaScript asset `Assets\_ExpWorld_\Scripts\CustomDataRecorder\CustomDataRecorderCalculatorTemplate.js` and assign it to the gameobject's `CS Combiner` component's last field for cluster scripts.
+![image (1)](https://github.com/user-attachments/assets/9aca381b-0cab-451a-b1c4-a39ec4117142)
 3. Complete the implementation of the duplicated JavaScript asset.
 
 #### Record and upload data
