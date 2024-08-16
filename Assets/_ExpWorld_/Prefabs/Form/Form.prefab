@@ -474,18 +474,18 @@ MonoBehaviour:
     { questionType: \"Toggle\",                       answerType: \"toggle\",   aTemplateName:
     \"toggle\" },\r\n    { questionType: \"Text\",                         answerType:
     \"text\",     aTemplateName: \"text_input\" },\r\n]\r\n\r\n$.onStart(() => {\r\n   
-    $.setStateCompat(\"this\", \"form_set_start_hint_active\", true);\r\n    reset();\r\n})\r\n\r\n$.onUpdate(()
-    => {\r\n    if (!$.state.isInitiated && $.getStateCompat(\"this\", \"form_set_content_active\",
-    \"boolean\")) {\r\n        $.state.isInitiated = true;\r\n        $.state.qID
-    = 0;\r\n        \r\n        let request = {type: \"questions\", eID: expID, qID:
-    $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n        $.callExternal(JSON.stringify(request),
-    \"getQuestions\");\r\n    }\r\n    if ($.state.waitBeforeSpawningAnswerOption)
-    {\r\n        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 10 : 7)) {\r\n           
-    $.state.timer = $.state.timer + 1;\r\n        } else {\r\n            $.state.waitBeforeSpawningAnswerOption
-    = false;\r\n            $.state.timer = 0;\r\n            $.sendSignalCompat(\"this\",
-    \"form_spawn_\" + attrsByQuestionType[$.state.questionTypeID].aTemplateName);\r\n       
-    }\r\n    }\r\n    if ($.state.waitBeforeInitQuestion) {\r\n        if ($.state.timer
-    < 10) {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else {\r\n           
+    reset();\r\n})\r\n\r\n$.onUpdate(() => {\r\n    if (!$.state.isInitiated && $.getStateCompat(\"this\",
+    \"form_set_content_active\", \"boolean\")) {\r\n        $.state.isInitiated =
+    true;\r\n        $.state.qID = 0;\r\n\r\n        let request = {type: \"questions\",
+    eID: expID, qID: $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n       
+    $.callExternal(JSON.stringify(request), \"getQuestions\");\r\n    }\r\n    if
+    ($.state.waitBeforeSpawningAnswerOption) {\r\n        if ($.state.timer < ($.state.spawningAnswerID
+    === 0 ? 10 : 7)) {\r\n            $.state.timer = $.state.timer + 1;\r\n       
+    } else {\r\n            $.state.waitBeforeSpawningAnswerOption = false;\r\n           
+    $.state.timer = 0;\r\n            $.sendSignalCompat(\"this\", \"form_spawn_\"
+    + attrsByQuestionType[$.state.questionTypeID].aTemplateName);\r\n        }\r\n   
+    }\r\n    if ($.state.waitBeforeInitQuestion) {\r\n        if ($.state.timer <
+    10) {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else {\r\n           
     $.state.waitBeforeInitQuestion = false;\r\n            $.state.timer = 0;\r\n           
     initQuestion();\r\n        }\r\n    }\r\n})\r\n\r\n$.onInteract(() => {\r\n   
     $.setStateCompat(\"this\", \"form_set_content_active\", true);\r\n    $.setStateCompat(\"this\",
@@ -545,27 +545,29 @@ MonoBehaviour:
     spawnAnswerOptionUI () {\r\n    setAnswerOptionUISpawnPoint();\r\n    $.state.waitBeforeSpawningAnswerOption
     = true;\r\n}\r\n\r\nfunction destroyAnswerOptionUIs () {\r\n    $.setStateCompat(\"owner\",
     \"form_destroy_answer_option\", true);\r\n}\r\n\r\nfunction saveAnswer () {\r\n   
-    if ($.state.questions[$.state.qID].isRequired && (!$.state.tmpAnswer && $.state.tmpAnswer
-    !== false)) return;\r\n    $.state.answers = { ...$.state.answers, [$.state.qID]:
-    $.state.tmpAnswer };\r\n    $.log(\"Update answers: \" + JSON.stringify($.state.answers));\r\n   
-    toNext();\r\n}\r\n\r\nfunction submitAnswers () {\r\n    $.log(\"Send final answers:
-    \" + JSON.stringify($.state.answers));\r\n    let request = {\r\n        type:
-    \"questionAnswers\",\r\n        eID: expID || \"0\",\r\n        qID: $.getStateCompat(\"this\",
-    \"qID\", \"integer\"),\r\n        pID: $.getStateCompat(\"owner\", \"exp_pID\",
-    \"integer\") || 0, // TODO: retrieve pID through cluster Player Script\r\n       
-    answers: JSON.stringify($.state.answers)\r\n    };\r\n    $.getItemsNear($.getPosition(),
-    0.1).forEach(item => {\r\n        if (item.id === \"5570182165721890090\") {
-    // ConditionManager\r\n            item.send(\"exp_questionnaire_answer\", $.state.answers);\r\n       
-    }\r\n    });\r\n    $.callExternal(JSON.stringify(request), \"postQuestionAnswers\");\r\n   
-    reset();\r\n}\r\n\r\nfunction toNext () {\r\n    $.state.qID = $.state.qID +
-    1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n    if ($.state.qID
+    if (!$.state.questions[$.state.qID]) return;\r\n    if ($.state.questions[$.state.qID].isRequired
+    && (!$.state.tmpAnswer && $.state.tmpAnswer !== false)) return;\r\n    $.state.answers
+    = { ...$.state.answers, [$.state.qID]: $.state.tmpAnswer };\r\n    $.log(\"Update
+    answers: \" + JSON.stringify($.state.answers));\r\n    toNext();\r\n}\r\n\r\nfunction
+    submitAnswers () {\r\n    $.log(\"Send final answers: \" + JSON.stringify($.state.answers));\r\n   
+    let request = {\r\n        type: \"questionAnswers\",\r\n        eID: expID ||
+    \"0\",\r\n        qID: $.getStateCompat(\"this\", \"qID\", \"integer\"),\r\n       
+    pID: $.getStateCompat(\"owner\", \"exp_pID\", \"integer\") || 0, // TODO: retrieve
+    pID through cluster Player Script\r\n        answers: JSON.stringify($.state.answers)\r\n   
+    };\r\n    $.getItemsNear($.getPosition(), 0.1).forEach(item => {\r\n        if
+    (item.id === \"5570182165721890090\") { // ConditionManager\r\n            item.send(\"exp_questionnaire_answer\",
+    $.state.answers);\r\n        }\r\n    });\r\n    $.callExternal(JSON.stringify(request),
+    \"postQuestionAnswers\");\r\n    $.setStateCompat(\"this\", \"form_set_content_active\",
+    false);\r\n}\r\n\r\nfunction toNext () {\r\n    $.state.qID = $.state.qID + 1;\r\n   
+    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n    if ($.state.qID
     >= $.state.questions.length) {\r\n        submitAnswers();\r\n    } else {\r\n       
     destroyAnswerOptionUIs();\r\n        $.state.tmpAnswer = null;\r\n        //
     TODO: hide selection indicator\r\n        tryInitQuestion();\r\n    }\r\n}\r\n\r\nfunction
     toPrev () {\r\n    if ($.state.qID <= 0) return;\r\n    destroyAnswerOptionUIs();\r\n   
     $.state.qID = $.state.qID - 1;\r\n    $.state.tmpAnswer = null;\r\n    // TODO:
     hide selection indicator\r\n    tryInitQuestion();\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n}\r\n\r\nfunction
-    reset () {\r\n    destroyAnswerOptionUIs();\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
+    reset () {\r\n    destroyAnswerOptionUIs();\r\n    $.setStateCompat(\"this\",
+    \"form_set_start_hint_active\", true);\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
     $.state.answers = {};\r\n    $.state.qID = 0;\r\n    $.state.answerType = -1;\r\n   
     $.state.tmpAnswer = null;\r\n    $.state.isInitiated = false;\r\n    $.state.waitBeforeSpawningAnswerOption
     = false;\r\n    $.state.waitBeforeInitQuestion = false;\r\n    $.state.timer
@@ -579,8 +581,8 @@ MonoBehaviour:
     // {\r\n        //     const questTitle = $.subNode(\"Quest_\" + i);\r\n       
     //     if (questTitle) questTitle.setText(parsedRes.quests[i].title);\r\n       
     // }\r\n    }\r\n\r\n    if (meta === \"postQuestionAnswers\") {\r\n        $.log(\"Answers
-    recorded!\");\r\n        $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n   
-    }\r\n});"
+    recorded!\");\r\n        $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n       
+    reset();\r\n    }\r\n});"
 --- !u!114 &5697374075709122382
 MonoBehaviour:
   m_ObjectHideFlags: 0
