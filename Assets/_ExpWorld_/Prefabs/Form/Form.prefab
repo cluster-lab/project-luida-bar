@@ -501,8 +501,8 @@ MonoBehaviour:
     ($.state.questionTypeID) {\r\n                case 0: // radio buttons\r\n               
     case 1: // linear scale\r\n                    $.subNode(\"RadioButtonIndicator\").setEnabled(true);\r\n                   
     $.subNode(\"RadioButtonIndicator\").setPosition($.state.answerOptionLocalPositions[arg
-    - 1].clone());\r\n                case 3: // toggle\r\n                case 4:
-    // text\r\n                    $.state.tmpAnswer = arg;\r\n                   
+    - 1].clone());\r\n                    break;\r\n                case 3: // toggle\r\n               
+    case 4: // text\r\n                    $.state.tmpAnswer = arg;\r\n                   
     break;\r\n                case 2: // checkboxes\r\n                    if (!Array.isArray($.state.tmpAnswer))
     $.state.tmpAnswer = [];\r\n                    if (arg.isOn) {\r\n                       
     if (!$.state.tmpAnswer.includes(arg.value)) $.state.tmpAnswer = [ ...$.state.tmpAnswer,
@@ -521,7 +521,7 @@ MonoBehaviour:
     $.state.questionTypeID = q.questionTypeID;\r\n    $.state.answerOptions = q.answerOptions;\r\n   
     $.state.spawningAnswerID = 0;\r\n    spawnAnswerOptionUI();\r\n}\r\n\r\nfunction
     setAnswerOptionUISpawnPoint () {\r\n    let pos = answerOptionUISpawnCenter.clone();\r\n   
-    let rot = new Quaternion();;\r\n    switch ($.state.questionTypeID) {\r\n       
+    let rot = new Quaternion();\r\n    switch ($.state.questionTypeID) {\r\n       
     case 0:\r\n        case 2:\r\n            // let maxStringLength = Math.min(30,
     $.state.answerOptions.reduce((maxLength, str) => Math.max(maxLength, str.length),
     0));\r\n            let x = 0;\r\n            // if ($.state.answerOptions.length
@@ -552,8 +552,8 @@ MonoBehaviour:
     submitAnswers () {\r\n    $.log(\"Send final answers: \" + JSON.stringify($.state.answers));\r\n   
     let request = {\r\n        type: \"questionAnswers\",\r\n        eID: expID ||
     \"0\",\r\n        qID: $.getStateCompat(\"this\", \"qID\", \"integer\"),\r\n       
-    pID: $.getStateCompat(\"owner\", \"exp_pID\", \"integer\") || 0, // TODO: retrieve
-    pID through cluster Player Script\r\n        answers: JSON.stringify($.state.answers)\r\n   
+    pID: $.getPlayersNear($.getPosition().clone(), 100)[0].idfc || \"\", // TODO:
+    retrieve idfc through cluster Player Script\r\n        answers: JSON.stringify($.state.answers)\r\n   
     };\r\n    $.getItemsNear($.getPosition(), 0.1).forEach(item => {\r\n        if
     (item.id === \"5570182165721890090\") { // ConditionManager\r\n            item.send(\"exp_questionnaire_answer\",
     $.state.answers);\r\n        }\r\n    });\r\n    $.callExternal(JSON.stringify(request),

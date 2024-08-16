@@ -3414,8 +3414,8 @@ PrefabInstance:
         uploadData () {\r\n    $.log(\"Upload custom data: \" + JSON.stringify($.state.customData));\r\n   
         let request = {\r\n        type: \"uploadCustomData\",\r\n        dataByFileName:
         JSON.stringify($.state.customData),\r\n        eID: expID || \"0\",\r\n       
-        pID: $.getStateCompat(\"owner\", \"exp_pID\", \"integer\") || 0 // TODO:
-        retrieve pID through cluster Player Script\r\n    };\r\n    $.callExternal(JSON.stringify(request),
+        pID: $.getPlayersNear($.getPosition().clone(), 100)[0].idfc || \"\" // TODO:
+        retrieve idfc through cluster Player Script\r\n    };\r\n    $.callExternal(JSON.stringify(request),
         \"customDataUploaded\");\r\n}\r\n\r\n$.onExternalCallEnd((res, meta, err)
         =>\r\n{\r\n    if (res == null) {\r\n        $.log(\"callExternal ERROR:
         \" + err);\r\n        return;\r\n    }\r\n\r\n    if (meta === \"customDataUploaded\")
@@ -3790,12 +3790,11 @@ PrefabInstance:
         aTemplateName: \"checkbox\" },\r\n    { questionType: \"Toggle\",                      
         answerType: \"toggle\",   aTemplateName: \"toggle\" },\r\n    { questionType:
         \"Text\",                         answerType: \"text\",     aTemplateName:
-        \"text_input\" },\r\n]\r\n\r\n$.onStart(() => {\r\n    $.setStateCompat(\"this\",
-        \"form_set_start_hint_active\", true);\r\n    reset();\r\n})\r\n\r\n$.onUpdate(()
+        \"text_input\" },\r\n]\r\n\r\n$.onStart(() => {\r\n    reset();\r\n})\r\n\r\n$.onUpdate(()
         => {\r\n    if (!$.state.isInitiated && $.getStateCompat(\"this\", \"form_set_content_active\",
         \"boolean\")) {\r\n        $.state.isInitiated = true;\r\n        $.state.qID
-        = 0;\r\n        \r\n        let request = {type: \"questions\", eID: expID,
-        qID: $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n        $.callExternal(JSON.stringify(request),
+        = 0;\r\n\r\n        let request = {type: \"questions\", eID: expID, qID:
+        $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n        $.callExternal(JSON.stringify(request),
         \"getQuestions\");\r\n    }\r\n    if ($.state.waitBeforeSpawningAnswerOption)
         {\r\n        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 10 : 7))
         {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else {\r\n           
@@ -3818,10 +3817,10 @@ PrefabInstance:
         ($.state.questionTypeID) {\r\n                case 0: // radio buttons\r\n               
         case 1: // linear scale\r\n                    $.subNode(\"RadioButtonIndicator\").setEnabled(true);\r\n                   
         $.subNode(\"RadioButtonIndicator\").setPosition($.state.answerOptionLocalPositions[arg
-        - 1].clone());\r\n                case 3: // toggle\r\n                case
-        4: // text\r\n                    $.state.tmpAnswer = arg;\r\n                   
-        break;\r\n                case 2: // checkboxes\r\n                    if
-        (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];\r\n                   
+        - 1].clone());\r\n                    break;\r\n                case 3: //
+        toggle\r\n                case 4: // text\r\n                    $.state.tmpAnswer
+        = arg;\r\n                    break;\r\n                case 2: // checkboxes\r\n                   
+        if (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];\r\n                   
         if (arg.isOn) {\r\n                        if (!$.state.tmpAnswer.includes(arg.value))
         $.state.tmpAnswer = [ ...$.state.tmpAnswer, arg.value ];\r\n                   
         } else {\r\n                        if ($.state.tmpAnswer.includes(arg.value))
@@ -3840,7 +3839,7 @@ PrefabInstance:
         = q.questionTypeID;\r\n    $.state.answerOptions = q.answerOptions;\r\n   
         $.state.spawningAnswerID = 0;\r\n    spawnAnswerOptionUI();\r\n}\r\n\r\nfunction
         setAnswerOptionUISpawnPoint () {\r\n    let pos = answerOptionUISpawnCenter.clone();\r\n   
-        let rot = new Quaternion();;\r\n    switch ($.state.questionTypeID) {\r\n       
+        let rot = new Quaternion();\r\n    switch ($.state.questionTypeID) {\r\n       
         case 0:\r\n        case 2:\r\n            // let maxStringLength = Math.min(30,
         $.state.answerOptions.reduce((maxLength, str) => Math.max(maxLength, str.length),
         0));\r\n            let x = 0;\r\n            // if ($.state.answerOptions.length
@@ -3865,20 +3864,21 @@ PrefabInstance:
         spawnAnswerOptionUI () {\r\n    setAnswerOptionUISpawnPoint();\r\n    $.state.waitBeforeSpawningAnswerOption
         = true;\r\n}\r\n\r\nfunction destroyAnswerOptionUIs () {\r\n    $.setStateCompat(\"owner\",
         \"form_destroy_answer_option\", true);\r\n}\r\n\r\nfunction saveAnswer ()
-        {\r\n    if ($.state.questions[$.state.qID].isRequired && (!$.state.tmpAnswer
-        && $.state.tmpAnswer !== false)) return;\r\n    $.state.answers = { ...$.state.answers,
-        [$.state.qID]: $.state.tmpAnswer };\r\n    $.log(\"Update answers: \" + JSON.stringify($.state.answers));\r\n   
-        toNext();\r\n}\r\n\r\nfunction submitAnswers () {\r\n    $.log(\"Send final
-        answers: \" + JSON.stringify($.state.answers));\r\n    let request = {\r\n       
-        type: \"questionAnswers\",\r\n        eID: expID || \"0\",\r\n        qID:
-        $.getStateCompat(\"this\", \"qID\", \"integer\"),\r\n        pID: $.getStateCompat(\"owner\",
-        \"exp_pID\", \"integer\") || 0, // TODO: retrieve pID through cluster Player
-        Script\r\n        answers: JSON.stringify($.state.answers)\r\n    };\r\n   
-        $.getItemsNear($.getPosition(), 0.1).forEach(item => {\r\n        if (item.id
-        === \"5570182165721890090\") { // ConditionManager\r\n            item.send(\"exp_questionnaire_answer\",
-        $.state.answers);\r\n        }\r\n    });\r\n    $.callExternal(JSON.stringify(request),
-        \"postQuestionAnswers\");\r\n    reset();\r\n}\r\n\r\nfunction toNext ()
-        {\r\n    $.state.qID = $.state.qID + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
+        {\r\n    if (!$.state.questions[$.state.qID]) return;\r\n    if ($.state.questions[$.state.qID].isRequired
+        && (!$.state.tmpAnswer && $.state.tmpAnswer !== false)) return;\r\n    $.state.answers
+        = { ...$.state.answers, [$.state.qID]: $.state.tmpAnswer };\r\n    $.log(\"Update
+        answers: \" + JSON.stringify($.state.answers));\r\n    toNext();\r\n}\r\n\r\nfunction
+        submitAnswers () {\r\n    $.log(\"Send final answers: \" + JSON.stringify($.state.answers));\r\n   
+        let request = {\r\n        type: \"questionAnswers\",\r\n        eID: expID
+        || \"0\",\r\n        qID: $.getStateCompat(\"this\", \"qID\", \"integer\"),\r\n       
+        pID: $.getPlayersNear($.getPosition().clone(), 100)[0].idfc || \"\", // TODO:
+        retrieve idfc through cluster Player Script\r\n        answers: JSON.stringify($.state.answers)\r\n   
+        };\r\n    $.getItemsNear($.getPosition(), 0.1).forEach(item => {\r\n       
+        if (item.id === \"5570182165721890090\") { // ConditionManager\r\n           
+        item.send(\"exp_questionnaire_answer\", $.state.answers);\r\n        }\r\n   
+        });\r\n    $.callExternal(JSON.stringify(request), \"postQuestionAnswers\");\r\n   
+        $.setStateCompat(\"this\", \"form_set_content_active\", false);\r\n}\r\n\r\nfunction
+        toNext () {\r\n    $.state.qID = $.state.qID + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
         if ($.state.qID >= $.state.questions.length) {\r\n        submitAnswers();\r\n   
         } else {\r\n        destroyAnswerOptionUIs();\r\n        $.state.tmpAnswer
         = null;\r\n        // TODO: hide selection indicator\r\n        tryInitQuestion();\r\n   
@@ -3886,7 +3886,8 @@ PrefabInstance:
         destroyAnswerOptionUIs();\r\n    $.state.qID = $.state.qID - 1;\r\n    $.state.tmpAnswer
         = null;\r\n    // TODO: hide selection indicator\r\n    tryInitQuestion();\r\n   
         $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n}\r\n\r\nfunction
-        reset () {\r\n    destroyAnswerOptionUIs();\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
+        reset () {\r\n    destroyAnswerOptionUIs();\r\n    $.setStateCompat(\"this\",
+        \"form_set_start_hint_active\", true);\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
         $.state.answers = {};\r\n    $.state.qID = 0;\r\n    $.state.answerType =
         -1;\r\n    $.state.tmpAnswer = null;\r\n    $.state.isInitiated = false;\r\n   
         $.state.waitBeforeSpawningAnswerOption = false;\r\n    $.state.waitBeforeInitQuestion
@@ -3901,8 +3902,8 @@ PrefabInstance:
         // {\r\n        //     const questTitle = $.subNode(\"Quest_\" + i);\r\n       
         //     if (questTitle) questTitle.setText(parsedRes.quests[i].title);\r\n       
         // }\r\n    }\r\n\r\n    if (meta === \"postQuestionAnswers\") {\r\n       
-        $.log(\"Answers recorded!\");\r\n        $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n   
-        }\r\n});"
+        $.log(\"Answers recorded!\");\r\n        $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n       
+        reset();\r\n    }\r\n});"
       objectReference: {fileID: 0}
     - target: {fileID: 616927345791600452, guid: 94dc2c46b2e66e340ba5848adad0ebab,
         type: 3}
@@ -3942,12 +3943,11 @@ PrefabInstance:
         aTemplateName: \"checkbox\" },\r\n    { questionType: \"Toggle\",                      
         answerType: \"toggle\",   aTemplateName: \"toggle\" },\r\n    { questionType:
         \"Text\",                         answerType: \"text\",     aTemplateName:
-        \"text_input\" },\r\n]\r\n\r\n$.onStart(() => {\r\n    $.setStateCompat(\"this\",
-        \"form_set_start_hint_active\", true);\r\n    reset();\r\n})\r\n\r\n$.onUpdate(()
+        \"text_input\" },\r\n]\r\n\r\n$.onStart(() => {\r\n    reset();\r\n})\r\n\r\n$.onUpdate(()
         => {\r\n    if (!$.state.isInitiated && $.getStateCompat(\"this\", \"form_set_content_active\",
         \"boolean\")) {\r\n        $.state.isInitiated = true;\r\n        $.state.qID
-        = 0;\r\n        \r\n        let request = {type: \"questions\", eID: expID,
-        qID: $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n        $.callExternal(JSON.stringify(request),
+        = 0;\r\n\r\n        let request = {type: \"questions\", eID: expID, qID:
+        $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n        $.callExternal(JSON.stringify(request),
         \"getQuestions\");\r\n    }\r\n    if ($.state.waitBeforeSpawningAnswerOption)
         {\r\n        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 10 : 7))
         {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else {\r\n           
@@ -3970,10 +3970,10 @@ PrefabInstance:
         ($.state.questionTypeID) {\r\n                case 0: // radio buttons\r\n               
         case 1: // linear scale\r\n                    $.subNode(\"RadioButtonIndicator\").setEnabled(true);\r\n                   
         $.subNode(\"RadioButtonIndicator\").setPosition($.state.answerOptionLocalPositions[arg
-        - 1].clone());\r\n                case 3: // toggle\r\n                case
-        4: // text\r\n                    $.state.tmpAnswer = arg;\r\n                   
-        break;\r\n                case 2: // checkboxes\r\n                    if
-        (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];\r\n                   
+        - 1].clone());\r\n                    break;\r\n                case 3: //
+        toggle\r\n                case 4: // text\r\n                    $.state.tmpAnswer
+        = arg;\r\n                    break;\r\n                case 2: // checkboxes\r\n                   
+        if (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];\r\n                   
         if (arg.isOn) {\r\n                        if (!$.state.tmpAnswer.includes(arg.value))
         $.state.tmpAnswer = [ ...$.state.tmpAnswer, arg.value ];\r\n                   
         } else {\r\n                        if ($.state.tmpAnswer.includes(arg.value))
@@ -3992,7 +3992,7 @@ PrefabInstance:
         = q.questionTypeID;\r\n    $.state.answerOptions = q.answerOptions;\r\n   
         $.state.spawningAnswerID = 0;\r\n    spawnAnswerOptionUI();\r\n}\r\n\r\nfunction
         setAnswerOptionUISpawnPoint () {\r\n    let pos = answerOptionUISpawnCenter.clone();\r\n   
-        let rot = new Quaternion();;\r\n    switch ($.state.questionTypeID) {\r\n       
+        let rot = new Quaternion();\r\n    switch ($.state.questionTypeID) {\r\n       
         case 0:\r\n        case 2:\r\n            // let maxStringLength = Math.min(30,
         $.state.answerOptions.reduce((maxLength, str) => Math.max(maxLength, str.length),
         0));\r\n            let x = 0;\r\n            // if ($.state.answerOptions.length
@@ -4017,20 +4017,21 @@ PrefabInstance:
         spawnAnswerOptionUI () {\r\n    setAnswerOptionUISpawnPoint();\r\n    $.state.waitBeforeSpawningAnswerOption
         = true;\r\n}\r\n\r\nfunction destroyAnswerOptionUIs () {\r\n    $.setStateCompat(\"owner\",
         \"form_destroy_answer_option\", true);\r\n}\r\n\r\nfunction saveAnswer ()
-        {\r\n    if ($.state.questions[$.state.qID].isRequired && (!$.state.tmpAnswer
-        && $.state.tmpAnswer !== false)) return;\r\n    $.state.answers = { ...$.state.answers,
-        [$.state.qID]: $.state.tmpAnswer };\r\n    $.log(\"Update answers: \" + JSON.stringify($.state.answers));\r\n   
-        toNext();\r\n}\r\n\r\nfunction submitAnswers () {\r\n    $.log(\"Send final
-        answers: \" + JSON.stringify($.state.answers));\r\n    let request = {\r\n       
-        type: \"questionAnswers\",\r\n        eID: expID || \"0\",\r\n        qID:
-        $.getStateCompat(\"this\", \"qID\", \"integer\"),\r\n        pID: $.getStateCompat(\"owner\",
-        \"exp_pID\", \"integer\") || 0, // TODO: retrieve pID through cluster Player
-        Script\r\n        answers: JSON.stringify($.state.answers)\r\n    };\r\n   
-        $.getItemsNear($.getPosition(), 0.1).forEach(item => {\r\n        if (item.id
-        === \"5570182165721890090\") { // ConditionManager\r\n            item.send(\"exp_questionnaire_answer\",
-        $.state.answers);\r\n        }\r\n    });\r\n    $.callExternal(JSON.stringify(request),
-        \"postQuestionAnswers\");\r\n    reset();\r\n}\r\n\r\nfunction toNext ()
-        {\r\n    $.state.qID = $.state.qID + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
+        {\r\n    if (!$.state.questions[$.state.qID]) return;\r\n    if ($.state.questions[$.state.qID].isRequired
+        && (!$.state.tmpAnswer && $.state.tmpAnswer !== false)) return;\r\n    $.state.answers
+        = { ...$.state.answers, [$.state.qID]: $.state.tmpAnswer };\r\n    $.log(\"Update
+        answers: \" + JSON.stringify($.state.answers));\r\n    toNext();\r\n}\r\n\r\nfunction
+        submitAnswers () {\r\n    $.log(\"Send final answers: \" + JSON.stringify($.state.answers));\r\n   
+        let request = {\r\n        type: \"questionAnswers\",\r\n        eID: expID
+        || \"0\",\r\n        qID: $.getStateCompat(\"this\", \"qID\", \"integer\"),\r\n       
+        pID: $.getPlayersNear($.getPosition().clone(), 100)[0].idfc || \"\", // TODO:
+        retrieve idfc through cluster Player Script\r\n        answers: JSON.stringify($.state.answers)\r\n   
+        };\r\n    $.getItemsNear($.getPosition(), 0.1).forEach(item => {\r\n       
+        if (item.id === \"5570182165721890090\") { // ConditionManager\r\n           
+        item.send(\"exp_questionnaire_answer\", $.state.answers);\r\n        }\r\n   
+        });\r\n    $.callExternal(JSON.stringify(request), \"postQuestionAnswers\");\r\n   
+        $.setStateCompat(\"this\", \"form_set_content_active\", false);\r\n}\r\n\r\nfunction
+        toNext () {\r\n    $.state.qID = $.state.qID + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
         if ($.state.qID >= $.state.questions.length) {\r\n        submitAnswers();\r\n   
         } else {\r\n        destroyAnswerOptionUIs();\r\n        $.state.tmpAnswer
         = null;\r\n        // TODO: hide selection indicator\r\n        tryInitQuestion();\r\n   
@@ -4038,7 +4039,8 @@ PrefabInstance:
         destroyAnswerOptionUIs();\r\n    $.state.qID = $.state.qID - 1;\r\n    $.state.tmpAnswer
         = null;\r\n    // TODO: hide selection indicator\r\n    tryInitQuestion();\r\n   
         $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n}\r\n\r\nfunction
-        reset () {\r\n    destroyAnswerOptionUIs();\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
+        reset () {\r\n    destroyAnswerOptionUIs();\r\n    $.setStateCompat(\"this\",
+        \"form_set_start_hint_active\", true);\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
         $.state.answers = {};\r\n    $.state.qID = 0;\r\n    $.state.answerType =
         -1;\r\n    $.state.tmpAnswer = null;\r\n    $.state.isInitiated = false;\r\n   
         $.state.waitBeforeSpawningAnswerOption = false;\r\n    $.state.waitBeforeInitQuestion
@@ -4053,8 +4055,8 @@ PrefabInstance:
         // {\r\n        //     const questTitle = $.subNode(\"Quest_\" + i);\r\n       
         //     if (questTitle) questTitle.setText(parsedRes.quests[i].title);\r\n       
         // }\r\n    }\r\n\r\n    if (meta === \"postQuestionAnswers\") {\r\n       
-        $.log(\"Answers recorded!\");\r\n        $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n   
-        }\r\n});"
+        $.log(\"Answers recorded!\");\r\n        $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n       
+        reset();\r\n    }\r\n});"
       objectReference: {fileID: 0}
     - target: {fileID: 616927345844514440, guid: 94dc2c46b2e66e340ba5848adad0ebab,
         type: 3}
@@ -4089,12 +4091,11 @@ PrefabInstance:
         aTemplateName: \"checkbox\" },\r\n    { questionType: \"Toggle\",                      
         answerType: \"toggle\",   aTemplateName: \"toggle\" },\r\n    { questionType:
         \"Text\",                         answerType: \"text\",     aTemplateName:
-        \"text_input\" },\r\n]\r\n\r\n$.onStart(() => {\r\n    $.setStateCompat(\"this\",
-        \"form_set_start_hint_active\", true);\r\n    reset();\r\n})\r\n\r\n$.onUpdate(()
+        \"text_input\" },\r\n]\r\n\r\n$.onStart(() => {\r\n    reset();\r\n})\r\n\r\n$.onUpdate(()
         => {\r\n    if (!$.state.isInitiated && $.getStateCompat(\"this\", \"form_set_content_active\",
         \"boolean\")) {\r\n        $.state.isInitiated = true;\r\n        $.state.qID
-        = 0;\r\n        \r\n        let request = {type: \"questions\", eID: expID,
-        qID: $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n        $.callExternal(JSON.stringify(request),
+        = 0;\r\n\r\n        let request = {type: \"questions\", eID: expID, qID:
+        $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n        $.callExternal(JSON.stringify(request),
         \"getQuestions\");\r\n    }\r\n    if ($.state.waitBeforeSpawningAnswerOption)
         {\r\n        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 10 : 7))
         {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else {\r\n           
@@ -4117,10 +4118,10 @@ PrefabInstance:
         ($.state.questionTypeID) {\r\n                case 0: // radio buttons\r\n               
         case 1: // linear scale\r\n                    $.subNode(\"RadioButtonIndicator\").setEnabled(true);\r\n                   
         $.subNode(\"RadioButtonIndicator\").setPosition($.state.answerOptionLocalPositions[arg
-        - 1].clone());\r\n                case 3: // toggle\r\n                case
-        4: // text\r\n                    $.state.tmpAnswer = arg;\r\n                   
-        break;\r\n                case 2: // checkboxes\r\n                    if
-        (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];\r\n                   
+        - 1].clone());\r\n                    break;\r\n                case 3: //
+        toggle\r\n                case 4: // text\r\n                    $.state.tmpAnswer
+        = arg;\r\n                    break;\r\n                case 2: // checkboxes\r\n                   
+        if (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];\r\n                   
         if (arg.isOn) {\r\n                        if (!$.state.tmpAnswer.includes(arg.value))
         $.state.tmpAnswer = [ ...$.state.tmpAnswer, arg.value ];\r\n                   
         } else {\r\n                        if ($.state.tmpAnswer.includes(arg.value))
@@ -4139,7 +4140,7 @@ PrefabInstance:
         = q.questionTypeID;\r\n    $.state.answerOptions = q.answerOptions;\r\n   
         $.state.spawningAnswerID = 0;\r\n    spawnAnswerOptionUI();\r\n}\r\n\r\nfunction
         setAnswerOptionUISpawnPoint () {\r\n    let pos = answerOptionUISpawnCenter.clone();\r\n   
-        let rot = new Quaternion();;\r\n    switch ($.state.questionTypeID) {\r\n       
+        let rot = new Quaternion();\r\n    switch ($.state.questionTypeID) {\r\n       
         case 0:\r\n        case 2:\r\n            // let maxStringLength = Math.min(30,
         $.state.answerOptions.reduce((maxLength, str) => Math.max(maxLength, str.length),
         0));\r\n            let x = 0;\r\n            // if ($.state.answerOptions.length
@@ -4164,20 +4165,21 @@ PrefabInstance:
         spawnAnswerOptionUI () {\r\n    setAnswerOptionUISpawnPoint();\r\n    $.state.waitBeforeSpawningAnswerOption
         = true;\r\n}\r\n\r\nfunction destroyAnswerOptionUIs () {\r\n    $.setStateCompat(\"owner\",
         \"form_destroy_answer_option\", true);\r\n}\r\n\r\nfunction saveAnswer ()
-        {\r\n    if ($.state.questions[$.state.qID].isRequired && (!$.state.tmpAnswer
-        && $.state.tmpAnswer !== false)) return;\r\n    $.state.answers = { ...$.state.answers,
-        [$.state.qID]: $.state.tmpAnswer };\r\n    $.log(\"Update answers: \" + JSON.stringify($.state.answers));\r\n   
-        toNext();\r\n}\r\n\r\nfunction submitAnswers () {\r\n    $.log(\"Send final
-        answers: \" + JSON.stringify($.state.answers));\r\n    let request = {\r\n       
-        type: \"questionAnswers\",\r\n        eID: expID || \"0\",\r\n        qID:
-        $.getStateCompat(\"this\", \"qID\", \"integer\"),\r\n        pID: $.getStateCompat(\"owner\",
-        \"exp_pID\", \"integer\") || 0, // TODO: retrieve pID through cluster Player
-        Script\r\n        answers: JSON.stringify($.state.answers)\r\n    };\r\n   
-        $.getItemsNear($.getPosition(), 0.1).forEach(item => {\r\n        if (item.id
-        === \"5570182165721890090\") { // ConditionManager\r\n            item.send(\"exp_questionnaire_answer\",
-        $.state.answers);\r\n        }\r\n    });\r\n    $.callExternal(JSON.stringify(request),
-        \"postQuestionAnswers\");\r\n    reset();\r\n}\r\n\r\nfunction toNext ()
-        {\r\n    $.state.qID = $.state.qID + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
+        {\r\n    if (!$.state.questions[$.state.qID]) return;\r\n    if ($.state.questions[$.state.qID].isRequired
+        && (!$.state.tmpAnswer && $.state.tmpAnswer !== false)) return;\r\n    $.state.answers
+        = { ...$.state.answers, [$.state.qID]: $.state.tmpAnswer };\r\n    $.log(\"Update
+        answers: \" + JSON.stringify($.state.answers));\r\n    toNext();\r\n}\r\n\r\nfunction
+        submitAnswers () {\r\n    $.log(\"Send final answers: \" + JSON.stringify($.state.answers));\r\n   
+        let request = {\r\n        type: \"questionAnswers\",\r\n        eID: expID
+        || \"0\",\r\n        qID: $.getStateCompat(\"this\", \"qID\", \"integer\"),\r\n       
+        pID: $.getPlayersNear($.getPosition().clone(), 100)[0].idfc || \"\", // TODO:
+        retrieve idfc through cluster Player Script\r\n        answers: JSON.stringify($.state.answers)\r\n   
+        };\r\n    $.getItemsNear($.getPosition(), 0.1).forEach(item => {\r\n       
+        if (item.id === \"5570182165721890090\") { // ConditionManager\r\n           
+        item.send(\"exp_questionnaire_answer\", $.state.answers);\r\n        }\r\n   
+        });\r\n    $.callExternal(JSON.stringify(request), \"postQuestionAnswers\");\r\n   
+        $.setStateCompat(\"this\", \"form_set_content_active\", false);\r\n}\r\n\r\nfunction
+        toNext () {\r\n    $.state.qID = $.state.qID + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
         if ($.state.qID >= $.state.questions.length) {\r\n        submitAnswers();\r\n   
         } else {\r\n        destroyAnswerOptionUIs();\r\n        $.state.tmpAnswer
         = null;\r\n        // TODO: hide selection indicator\r\n        tryInitQuestion();\r\n   
@@ -4185,7 +4187,8 @@ PrefabInstance:
         destroyAnswerOptionUIs();\r\n    $.state.qID = $.state.qID - 1;\r\n    $.state.tmpAnswer
         = null;\r\n    // TODO: hide selection indicator\r\n    tryInitQuestion();\r\n   
         $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n}\r\n\r\nfunction
-        reset () {\r\n    destroyAnswerOptionUIs();\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
+        reset () {\r\n    destroyAnswerOptionUIs();\r\n    $.setStateCompat(\"this\",
+        \"form_set_start_hint_active\", true);\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
         $.state.answers = {};\r\n    $.state.qID = 0;\r\n    $.state.answerType =
         -1;\r\n    $.state.tmpAnswer = null;\r\n    $.state.isInitiated = false;\r\n   
         $.state.waitBeforeSpawningAnswerOption = false;\r\n    $.state.waitBeforeInitQuestion
@@ -4200,8 +4203,8 @@ PrefabInstance:
         // {\r\n        //     const questTitle = $.subNode(\"Quest_\" + i);\r\n       
         //     if (questTitle) questTitle.setText(parsedRes.quests[i].title);\r\n       
         // }\r\n    }\r\n\r\n    if (meta === \"postQuestionAnswers\") {\r\n       
-        $.log(\"Answers recorded!\");\r\n        $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n   
-        }\r\n});"
+        $.log(\"Answers recorded!\");\r\n        $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n       
+        reset();\r\n    }\r\n});"
       objectReference: {fileID: 0}
     - target: {fileID: 616927346054444270, guid: 94dc2c46b2e66e340ba5848adad0ebab,
         type: 3}
@@ -4246,12 +4249,11 @@ PrefabInstance:
         aTemplateName: \"checkbox\" },\r\n    { questionType: \"Toggle\",                      
         answerType: \"toggle\",   aTemplateName: \"toggle\" },\r\n    { questionType:
         \"Text\",                         answerType: \"text\",     aTemplateName:
-        \"text_input\" },\r\n]\r\n\r\n$.onStart(() => {\r\n    $.setStateCompat(\"this\",
-        \"form_set_start_hint_active\", true);\r\n    reset();\r\n})\r\n\r\n$.onUpdate(()
+        \"text_input\" },\r\n]\r\n\r\n$.onStart(() => {\r\n    reset();\r\n})\r\n\r\n$.onUpdate(()
         => {\r\n    if (!$.state.isInitiated && $.getStateCompat(\"this\", \"form_set_content_active\",
         \"boolean\")) {\r\n        $.state.isInitiated = true;\r\n        $.state.qID
-        = 0;\r\n        \r\n        let request = {type: \"questions\", eID: expID,
-        qID: $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n        $.callExternal(JSON.stringify(request),
+        = 0;\r\n\r\n        let request = {type: \"questions\", eID: expID, qID:
+        $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n        $.callExternal(JSON.stringify(request),
         \"getQuestions\");\r\n    }\r\n    if ($.state.waitBeforeSpawningAnswerOption)
         {\r\n        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 10 : 7))
         {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else {\r\n           
@@ -4274,10 +4276,10 @@ PrefabInstance:
         ($.state.questionTypeID) {\r\n                case 0: // radio buttons\r\n               
         case 1: // linear scale\r\n                    $.subNode(\"RadioButtonIndicator\").setEnabled(true);\r\n                   
         $.subNode(\"RadioButtonIndicator\").setPosition($.state.answerOptionLocalPositions[arg
-        - 1].clone());\r\n                case 3: // toggle\r\n                case
-        4: // text\r\n                    $.state.tmpAnswer = arg;\r\n                   
-        break;\r\n                case 2: // checkboxes\r\n                    if
-        (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];\r\n                   
+        - 1].clone());\r\n                    break;\r\n                case 3: //
+        toggle\r\n                case 4: // text\r\n                    $.state.tmpAnswer
+        = arg;\r\n                    break;\r\n                case 2: // checkboxes\r\n                   
+        if (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];\r\n                   
         if (arg.isOn) {\r\n                        if (!$.state.tmpAnswer.includes(arg.value))
         $.state.tmpAnswer = [ ...$.state.tmpAnswer, arg.value ];\r\n                   
         } else {\r\n                        if ($.state.tmpAnswer.includes(arg.value))
@@ -4296,7 +4298,7 @@ PrefabInstance:
         = q.questionTypeID;\r\n    $.state.answerOptions = q.answerOptions;\r\n   
         $.state.spawningAnswerID = 0;\r\n    spawnAnswerOptionUI();\r\n}\r\n\r\nfunction
         setAnswerOptionUISpawnPoint () {\r\n    let pos = answerOptionUISpawnCenter.clone();\r\n   
-        let rot = new Quaternion();;\r\n    switch ($.state.questionTypeID) {\r\n       
+        let rot = new Quaternion();\r\n    switch ($.state.questionTypeID) {\r\n       
         case 0:\r\n        case 2:\r\n            // let maxStringLength = Math.min(30,
         $.state.answerOptions.reduce((maxLength, str) => Math.max(maxLength, str.length),
         0));\r\n            let x = 0;\r\n            // if ($.state.answerOptions.length
@@ -4321,20 +4323,21 @@ PrefabInstance:
         spawnAnswerOptionUI () {\r\n    setAnswerOptionUISpawnPoint();\r\n    $.state.waitBeforeSpawningAnswerOption
         = true;\r\n}\r\n\r\nfunction destroyAnswerOptionUIs () {\r\n    $.setStateCompat(\"owner\",
         \"form_destroy_answer_option\", true);\r\n}\r\n\r\nfunction saveAnswer ()
-        {\r\n    if ($.state.questions[$.state.qID].isRequired && (!$.state.tmpAnswer
-        && $.state.tmpAnswer !== false)) return;\r\n    $.state.answers = { ...$.state.answers,
-        [$.state.qID]: $.state.tmpAnswer };\r\n    $.log(\"Update answers: \" + JSON.stringify($.state.answers));\r\n   
-        toNext();\r\n}\r\n\r\nfunction submitAnswers () {\r\n    $.log(\"Send final
-        answers: \" + JSON.stringify($.state.answers));\r\n    let request = {\r\n       
-        type: \"questionAnswers\",\r\n        eID: expID || \"0\",\r\n        qID:
-        $.getStateCompat(\"this\", \"qID\", \"integer\"),\r\n        pID: $.getStateCompat(\"owner\",
-        \"exp_pID\", \"integer\") || 0, // TODO: retrieve pID through cluster Player
-        Script\r\n        answers: JSON.stringify($.state.answers)\r\n    };\r\n   
-        $.getItemsNear($.getPosition(), 0.1).forEach(item => {\r\n        if (item.id
-        === \"5570182165721890090\") { // ConditionManager\r\n            item.send(\"exp_questionnaire_answer\",
-        $.state.answers);\r\n        }\r\n    });\r\n    $.callExternal(JSON.stringify(request),
-        \"postQuestionAnswers\");\r\n    reset();\r\n}\r\n\r\nfunction toNext ()
-        {\r\n    $.state.qID = $.state.qID + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
+        {\r\n    if (!$.state.questions[$.state.qID]) return;\r\n    if ($.state.questions[$.state.qID].isRequired
+        && (!$.state.tmpAnswer && $.state.tmpAnswer !== false)) return;\r\n    $.state.answers
+        = { ...$.state.answers, [$.state.qID]: $.state.tmpAnswer };\r\n    $.log(\"Update
+        answers: \" + JSON.stringify($.state.answers));\r\n    toNext();\r\n}\r\n\r\nfunction
+        submitAnswers () {\r\n    $.log(\"Send final answers: \" + JSON.stringify($.state.answers));\r\n   
+        let request = {\r\n        type: \"questionAnswers\",\r\n        eID: expID
+        || \"0\",\r\n        qID: $.getStateCompat(\"this\", \"qID\", \"integer\"),\r\n       
+        pID: $.getPlayersNear($.getPosition().clone(), 100)[0].idfc || \"\", // TODO:
+        retrieve idfc through cluster Player Script\r\n        answers: JSON.stringify($.state.answers)\r\n   
+        };\r\n    $.getItemsNear($.getPosition(), 0.1).forEach(item => {\r\n       
+        if (item.id === \"5570182165721890090\") { // ConditionManager\r\n           
+        item.send(\"exp_questionnaire_answer\", $.state.answers);\r\n        }\r\n   
+        });\r\n    $.callExternal(JSON.stringify(request), \"postQuestionAnswers\");\r\n   
+        $.setStateCompat(\"this\", \"form_set_content_active\", false);\r\n}\r\n\r\nfunction
+        toNext () {\r\n    $.state.qID = $.state.qID + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
         if ($.state.qID >= $.state.questions.length) {\r\n        submitAnswers();\r\n   
         } else {\r\n        destroyAnswerOptionUIs();\r\n        $.state.tmpAnswer
         = null;\r\n        // TODO: hide selection indicator\r\n        tryInitQuestion();\r\n   
@@ -4342,7 +4345,8 @@ PrefabInstance:
         destroyAnswerOptionUIs();\r\n    $.state.qID = $.state.qID - 1;\r\n    $.state.tmpAnswer
         = null;\r\n    // TODO: hide selection indicator\r\n    tryInitQuestion();\r\n   
         $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n}\r\n\r\nfunction
-        reset () {\r\n    destroyAnswerOptionUIs();\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
+        reset () {\r\n    destroyAnswerOptionUIs();\r\n    $.setStateCompat(\"this\",
+        \"form_set_start_hint_active\", true);\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
         $.state.answers = {};\r\n    $.state.qID = 0;\r\n    $.state.answerType =
         -1;\r\n    $.state.tmpAnswer = null;\r\n    $.state.isInitiated = false;\r\n   
         $.state.waitBeforeSpawningAnswerOption = false;\r\n    $.state.waitBeforeInitQuestion
@@ -4357,8 +4361,8 @@ PrefabInstance:
         // {\r\n        //     const questTitle = $.subNode(\"Quest_\" + i);\r\n       
         //     if (questTitle) questTitle.setText(parsedRes.quests[i].title);\r\n       
         // }\r\n    }\r\n\r\n    if (meta === \"postQuestionAnswers\") {\r\n       
-        $.log(\"Answers recorded!\");\r\n        $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n   
-        }\r\n});"
+        $.log(\"Answers recorded!\");\r\n        $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n       
+        reset();\r\n    }\r\n});"
       objectReference: {fileID: 0}
     - target: {fileID: 616927346609269576, guid: 94dc2c46b2e66e340ba5848adad0ebab,
         type: 3}
@@ -4777,11 +4781,11 @@ PrefabInstance:
     - target: {fileID: 2963938157378484328, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: sourceCode
-      value: "const trialsCountForEachUniqueCondition = 2;\nconst within_subjects_variables
-        = [\n    { name: \"question\", values: [\"fontColor\", \"meaning\"], isRandom:
-        false },\n    { name: \"wordObject\", values: [\"R\", \"G\", \"B\"], isRandom:
-        true },\n];\nconst between_subjects_variables = [\n    { name: \"lang\",
-        values: [\"ja\", \"en\"], isRandom: false },\n];\n\r\nconst within_subjects_variables_dummy
+      value: "const trialsCountForEachUniqueCondition = 2;\r\nconst within_subjects_variables
+        = [\r\n    { name: \"question\", values: [\"fontColor\", \"meaning\"], isRandom:
+        false },\r\n    { name: \"wordObject\", values: [\"R\", \"G\", \"B\"], isRandom:
+        true },\r\n];\r\nconst between_subjects_variables = [\r\n    { name: \"lang\",
+        values: [\"ja\", \"en\"], isRandom: false },\r\n];\r\n\r\nconst within_subjects_variables_dummy
         = [\r\n    { name: \"color\", values: [\"R\", \"G\", \"B\"], isRandom: false
         },\r\n    { name: \"size\", values: [5, 10, 15], isRandom: true },\r\n];\r\n\r\nconst
         between_subjects_variables_dummy = [\r\n    { name: \"method\", values: [\"old\",

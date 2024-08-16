@@ -40,7 +40,7 @@ function uploadData () {
         type: "uploadCustomData",
         dataByFileName: JSON.stringify($.state.customData),
         eID: expID || "0",
-        pID: $.getStateCompat("owner", "exp_pID", "integer") || 0 // TODO: retrieve pID through cluster Player Script
+        pID: $.getPlayersNear($.getPosition().clone(), 100)[0].idfc || "" // TODO: retrieve idfc through cluster Player Script
     };
     $.callExternal(JSON.stringify(request), "customDataUploaded");
 }

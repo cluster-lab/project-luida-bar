@@ -71,6 +71,7 @@ $.onReceive((messageType, arg, sender) => {
                 case 1: // linear scale
                     $.subNode("RadioButtonIndicator").setEnabled(true);
                     $.subNode("RadioButtonIndicator").setPosition($.state.answerOptionLocalPositions[arg - 1].clone());
+                    break;
                 case 3: // toggle
                 case 4: // text
                     $.state.tmpAnswer = arg;
@@ -120,7 +121,7 @@ function initQuestion () { // options: array of string
 
 function setAnswerOptionUISpawnPoint () {
     let pos = answerOptionUISpawnCenter.clone();
-    let rot = new Quaternion();;
+    let rot = new Quaternion();
     switch ($.state.questionTypeID) {
         case 0:
         case 2:
@@ -175,7 +176,7 @@ function submitAnswers () {
         type: "questionAnswers",
         eID: expID || "0",
         qID: $.getStateCompat("this", "qID", "integer"),
-        pID: $.getStateCompat("owner", "exp_pID", "integer") || 0, // TODO: retrieve pID through cluster Player Script
+        pID: $.getPlayersNear($.getPosition().clone(), 100)[0].idfc || "", // TODO: retrieve idfc through cluster Player Script
         answers: JSON.stringify($.state.answers)
     };
     $.getItemsNear($.getPosition(), 0.1).forEach(item => {
