@@ -17,7 +17,6 @@ const attrsByQuestionType = [
 ]
 
 $.onStart(() => {
-    $.setStateCompat("this", "form_set_start_hint_active", true);
     reset();
 })
 
@@ -25,7 +24,7 @@ $.onUpdate(() => {
     if (!$.state.isInitiated && $.getStateCompat("this", "form_set_content_active", "boolean")) {
         $.state.isInitiated = true;
         $.state.qID = 0;
-        
+
         let request = {type: "questions", eID: expID, qID: $.getStateCompat("this", "qID", "integer")};
         $.callExternal(JSON.stringify(request), "getQuestions");
     }
@@ -163,6 +162,7 @@ function destroyAnswerOptionUIs () {
 }
 
 function saveAnswer () {
+    if (!$.state.questions[$.state.qID]) return;
     if ($.state.questions[$.state.qID].isRequired && (!$.state.tmpAnswer && $.state.tmpAnswer !== false)) return;
     $.state.answers = { ...$.state.answers, [$.state.qID]: $.state.tmpAnswer };
     $.log("Update answers: " + JSON.stringify($.state.answers));
@@ -184,7 +184,7 @@ function submitAnswers () {
         }
     });
     $.callExternal(JSON.stringify(request), "postQuestionAnswers");
-    reset();
+    $.setStateCompat("this", "form_set_content_active", false);
 }
 
 function toNext () {
@@ -212,6 +212,7 @@ function toPrev () {
 
 function reset () {
     destroyAnswerOptionUIs();
+    $.setStateCompat("this", "form_set_start_hint_active", true);
     $.subNode("RadioButtonIndicator").setEnabled(false);
     $.state.answers = {};
     $.state.qID = 0;
@@ -249,5 +250,6 @@ $.onExternalCallEnd((res, meta, err) =>
     if (meta === "postQuestionAnswers") {
         $.log("Answers recorded!");
         $.sendSignalCompat("this", "state_triggerTransition");
+        reset();
     }
 });
