@@ -3796,7 +3796,7 @@ PrefabInstance:
         = 0;\r\n\r\n        let request = {type: \"questions\", eID: expID, qID:
         $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n        $.callExternal(JSON.stringify(request),
         \"getQuestions\");\r\n    }\r\n    if ($.state.waitBeforeSpawningAnswerOption)
-        {\r\n        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 10 : 7))
+        {\r\n        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 20 : 15))
         {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else {\r\n           
         $.state.waitBeforeSpawningAnswerOption = false;\r\n            $.state.timer
         = 0;\r\n            $.sendSignalCompat(\"this\", \"form_spawn_\" + attrsByQuestionType[$.state.questionTypeID].aTemplateName);\r\n       
@@ -3817,10 +3817,10 @@ PrefabInstance:
         ($.state.questionTypeID) {\r\n                case 0: // radio buttons\r\n               
         case 1: // linear scale\r\n                    $.subNode(\"RadioButtonIndicator\").setEnabled(true);\r\n                   
         $.subNode(\"RadioButtonIndicator\").setPosition($.state.answerOptionLocalPositions[arg
-        - 1].clone());\r\n                    break;\r\n                case 3: //
-        toggle\r\n                case 4: // text\r\n                    $.state.tmpAnswer
-        = arg;\r\n                    break;\r\n                case 2: // checkboxes\r\n                   
-        if (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];\r\n                   
+        - 1].clone());\r\n                case 3: // toggle\r\n                case
+        4: // text\r\n                    $.state.tmpAnswer = arg;\r\n                   
+        break;\r\n                case 2: // checkboxes\r\n                    if
+        (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];\r\n                   
         if (arg.isOn) {\r\n                        if (!$.state.tmpAnswer.includes(arg.value))
         $.state.tmpAnswer = [ ...$.state.tmpAnswer, arg.value ];\r\n                   
         } else {\r\n                        if ($.state.tmpAnswer.includes(arg.value))
@@ -3903,7 +3903,7 @@ PrefabInstance:
         //     if (questTitle) questTitle.setText(parsedRes.quests[i].title);\r\n       
         // }\r\n    }\r\n\r\n    if (meta === \"postQuestionAnswers\") {\r\n       
         $.log(\"Answers recorded!\");\r\n        $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n       
-        reset();\r\n    }\r\n});"
+        reset();\r\n    }\r\n});\r\n"
       objectReference: {fileID: 0}
     - target: {fileID: 616927345791600452, guid: 94dc2c46b2e66e340ba5848adad0ebab,
         type: 3}
@@ -3949,7 +3949,7 @@ PrefabInstance:
         = 0;\r\n\r\n        let request = {type: \"questions\", eID: expID, qID:
         $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n        $.callExternal(JSON.stringify(request),
         \"getQuestions\");\r\n    }\r\n    if ($.state.waitBeforeSpawningAnswerOption)
-        {\r\n        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 10 : 7))
+        {\r\n        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 20 : 15))
         {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else {\r\n           
         $.state.waitBeforeSpawningAnswerOption = false;\r\n            $.state.timer
         = 0;\r\n            $.sendSignalCompat(\"this\", \"form_spawn_\" + attrsByQuestionType[$.state.questionTypeID].aTemplateName);\r\n       
@@ -3970,10 +3970,10 @@ PrefabInstance:
         ($.state.questionTypeID) {\r\n                case 0: // radio buttons\r\n               
         case 1: // linear scale\r\n                    $.subNode(\"RadioButtonIndicator\").setEnabled(true);\r\n                   
         $.subNode(\"RadioButtonIndicator\").setPosition($.state.answerOptionLocalPositions[arg
-        - 1].clone());\r\n                    break;\r\n                case 3: //
-        toggle\r\n                case 4: // text\r\n                    $.state.tmpAnswer
-        = arg;\r\n                    break;\r\n                case 2: // checkboxes\r\n                   
-        if (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];\r\n                   
+        - 1].clone());\r\n                case 3: // toggle\r\n                case
+        4: // text\r\n                    $.state.tmpAnswer = arg;\r\n                   
+        break;\r\n                case 2: // checkboxes\r\n                    if
+        (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];\r\n                   
         if (arg.isOn) {\r\n                        if (!$.state.tmpAnswer.includes(arg.value))
         $.state.tmpAnswer = [ ...$.state.tmpAnswer, arg.value ];\r\n                   
         } else {\r\n                        if ($.state.tmpAnswer.includes(arg.value))
@@ -4056,7 +4056,7 @@ PrefabInstance:
         //     if (questTitle) questTitle.setText(parsedRes.quests[i].title);\r\n       
         // }\r\n    }\r\n\r\n    if (meta === \"postQuestionAnswers\") {\r\n       
         $.log(\"Answers recorded!\");\r\n        $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n       
-        reset();\r\n    }\r\n});"
+        reset();\r\n    }\r\n});\r\n"
       objectReference: {fileID: 0}
     - target: {fileID: 616927345844514440, guid: 94dc2c46b2e66e340ba5848adad0ebab,
         type: 3}
@@ -4097,7 +4097,7 @@ PrefabInstance:
         = 0;\r\n\r\n        let request = {type: \"questions\", eID: expID, qID:
         $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n        $.callExternal(JSON.stringify(request),
         \"getQuestions\");\r\n    }\r\n    if ($.state.waitBeforeSpawningAnswerOption)
-        {\r\n        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 10 : 7))
+        {\r\n        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 20 : 15))
         {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else {\r\n           
         $.state.waitBeforeSpawningAnswerOption = false;\r\n            $.state.timer
         = 0;\r\n            $.sendSignalCompat(\"this\", \"form_spawn_\" + attrsByQuestionType[$.state.questionTypeID].aTemplateName);\r\n       
@@ -4118,10 +4118,10 @@ PrefabInstance:
         ($.state.questionTypeID) {\r\n                case 0: // radio buttons\r\n               
         case 1: // linear scale\r\n                    $.subNode(\"RadioButtonIndicator\").setEnabled(true);\r\n                   
         $.subNode(\"RadioButtonIndicator\").setPosition($.state.answerOptionLocalPositions[arg
-        - 1].clone());\r\n                    break;\r\n                case 3: //
-        toggle\r\n                case 4: // text\r\n                    $.state.tmpAnswer
-        = arg;\r\n                    break;\r\n                case 2: // checkboxes\r\n                   
-        if (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];\r\n                   
+        - 1].clone());\r\n                case 3: // toggle\r\n                case
+        4: // text\r\n                    $.state.tmpAnswer = arg;\r\n                   
+        break;\r\n                case 2: // checkboxes\r\n                    if
+        (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];\r\n                   
         if (arg.isOn) {\r\n                        if (!$.state.tmpAnswer.includes(arg.value))
         $.state.tmpAnswer = [ ...$.state.tmpAnswer, arg.value ];\r\n                   
         } else {\r\n                        if ($.state.tmpAnswer.includes(arg.value))
@@ -4204,7 +4204,7 @@ PrefabInstance:
         //     if (questTitle) questTitle.setText(parsedRes.quests[i].title);\r\n       
         // }\r\n    }\r\n\r\n    if (meta === \"postQuestionAnswers\") {\r\n       
         $.log(\"Answers recorded!\");\r\n        $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n       
-        reset();\r\n    }\r\n});"
+        reset();\r\n    }\r\n});\r\n"
       objectReference: {fileID: 0}
     - target: {fileID: 616927346054444270, guid: 94dc2c46b2e66e340ba5848adad0ebab,
         type: 3}
@@ -4255,7 +4255,7 @@ PrefabInstance:
         = 0;\r\n\r\n        let request = {type: \"questions\", eID: expID, qID:
         $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n        $.callExternal(JSON.stringify(request),
         \"getQuestions\");\r\n    }\r\n    if ($.state.waitBeforeSpawningAnswerOption)
-        {\r\n        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 10 : 7))
+        {\r\n        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 20 : 15))
         {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else {\r\n           
         $.state.waitBeforeSpawningAnswerOption = false;\r\n            $.state.timer
         = 0;\r\n            $.sendSignalCompat(\"this\", \"form_spawn_\" + attrsByQuestionType[$.state.questionTypeID].aTemplateName);\r\n       
@@ -4276,10 +4276,10 @@ PrefabInstance:
         ($.state.questionTypeID) {\r\n                case 0: // radio buttons\r\n               
         case 1: // linear scale\r\n                    $.subNode(\"RadioButtonIndicator\").setEnabled(true);\r\n                   
         $.subNode(\"RadioButtonIndicator\").setPosition($.state.answerOptionLocalPositions[arg
-        - 1].clone());\r\n                    break;\r\n                case 3: //
-        toggle\r\n                case 4: // text\r\n                    $.state.tmpAnswer
-        = arg;\r\n                    break;\r\n                case 2: // checkboxes\r\n                   
-        if (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];\r\n                   
+        - 1].clone());\r\n                case 3: // toggle\r\n                case
+        4: // text\r\n                    $.state.tmpAnswer = arg;\r\n                   
+        break;\r\n                case 2: // checkboxes\r\n                    if
+        (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];\r\n                   
         if (arg.isOn) {\r\n                        if (!$.state.tmpAnswer.includes(arg.value))
         $.state.tmpAnswer = [ ...$.state.tmpAnswer, arg.value ];\r\n                   
         } else {\r\n                        if ($.state.tmpAnswer.includes(arg.value))
@@ -4362,7 +4362,7 @@ PrefabInstance:
         //     if (questTitle) questTitle.setText(parsedRes.quests[i].title);\r\n       
         // }\r\n    }\r\n\r\n    if (meta === \"postQuestionAnswers\") {\r\n       
         $.log(\"Answers recorded!\");\r\n        $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n       
-        reset();\r\n    }\r\n});"
+        reset();\r\n    }\r\n});\r\n"
       objectReference: {fileID: 0}
     - target: {fileID: 616927346609269576, guid: 94dc2c46b2e66e340ba5848adad0ebab,
         type: 3}
