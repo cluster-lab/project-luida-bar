@@ -29,7 +29,7 @@ $.onUpdate(() => {
         $.callExternal(JSON.stringify(request), "getQuestions");
     }
     if ($.state.waitBeforeSpawningAnswerOption) {
-        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 10 : 7)) {
+        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 20 : 15)) {
             $.state.timer = $.state.timer + 1;
         } else {
             $.state.waitBeforeSpawningAnswerOption = false;
@@ -71,7 +71,6 @@ $.onReceive((messageType, arg, sender) => {
                 case 1: // linear scale
                     $.subNode("RadioButtonIndicator").setEnabled(true);
                     $.subNode("RadioButtonIndicator").setPosition($.state.answerOptionLocalPositions[arg - 1].clone());
-                    break;
                 case 3: // toggle
                 case 4: // text
                     $.state.tmpAnswer = arg;
