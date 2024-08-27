@@ -46,9 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textMesh: {fileID: 0}
-  text: 'Click to start answering
-
-    this questionnaire'
+  text: "Click to start answering\nthis questionnaire\n\u30AF\u30EA\u30C3\u30AF\u3057\u3066\u30A2\u30F3\u30B1\u30FC\u30C8\u306E\n\u56DE\u7B54\u3092\u59CB\u3081\u3066\u304F\u3060\u3055\u3044"
   size: 0.1
   textAnchor: 4
   textAlignment: 1
@@ -228,7 +226,7 @@ Transform:
   m_GameObject: {fileID: 5697374075333026451}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 2, z: 2}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5697374076674148512}
@@ -449,8 +447,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "const expID = \"wppImWcEar\";\r\n\r\nconst dummyQuestions = [\r\n   
-    { title: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
+  sourceCode: "const expID = \"\";\r\n\r\nconst dummyQuestions = [\r\n    { title:
+    \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
     description: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
     questionTypeID: 0, answerOptions: [\"\u306A\u3057\", \"\u5E74\u306B\u4E00\u56DE\u672A\u6E80\",
     \"\u5E74\u306B\u4E00\u56DE\u4EE5\u4E0A\", \"\u6708\u306B1~2\u56DE\u304F\u3089\u3044\",
@@ -480,7 +478,7 @@ MonoBehaviour:
     eID: expID, qID: $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n       
     $.callExternal(JSON.stringify(request), \"getQuestions\");\r\n    }\r\n    if
     ($.state.waitBeforeSpawningAnswerOption) {\r\n        if ($.state.timer < ($.state.spawningAnswerID
-    === 0 ? 10 : 7)) {\r\n            $.state.timer = $.state.timer + 1;\r\n       
+    === 0 ? 20 : 15)) {\r\n            $.state.timer = $.state.timer + 1;\r\n       
     } else {\r\n            $.state.waitBeforeSpawningAnswerOption = false;\r\n           
     $.state.timer = 0;\r\n            $.sendSignalCompat(\"this\", \"form_spawn_\"
     + attrsByQuestionType[$.state.questionTypeID].aTemplateName);\r\n        }\r\n   
@@ -501,8 +499,8 @@ MonoBehaviour:
     ($.state.questionTypeID) {\r\n                case 0: // radio buttons\r\n               
     case 1: // linear scale\r\n                    $.subNode(\"RadioButtonIndicator\").setEnabled(true);\r\n                   
     $.subNode(\"RadioButtonIndicator\").setPosition($.state.answerOptionLocalPositions[arg
-    - 1].clone());\r\n                    break;\r\n                case 3: // toggle\r\n               
-    case 4: // text\r\n                    $.state.tmpAnswer = arg;\r\n                   
+    - 1].clone());\r\n                case 3: // toggle\r\n                case 4:
+    // text\r\n                    $.state.tmpAnswer = arg;\r\n                   
     break;\r\n                case 2: // checkboxes\r\n                    if (!Array.isArray($.state.tmpAnswer))
     $.state.tmpAnswer = [];\r\n                    if (arg.isOn) {\r\n                       
     if (!$.state.tmpAnswer.includes(arg.value)) $.state.tmpAnswer = [ ...$.state.tmpAnswer,
@@ -582,7 +580,7 @@ MonoBehaviour:
     //     if (questTitle) questTitle.setText(parsedRes.quests[i].title);\r\n       
     // }\r\n    }\r\n\r\n    if (meta === \"postQuestionAnswers\") {\r\n        $.log(\"Answers
     recorded!\");\r\n        $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n       
-    reset();\r\n    }\r\n});"
+    reset();\r\n    }\r\n});\r\n"
 --- !u!114 &5697374075709122382
 MonoBehaviour:
   m_ObjectHideFlags: 0
