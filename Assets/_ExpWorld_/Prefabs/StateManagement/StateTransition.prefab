@@ -616,6 +616,64 @@ MonoBehaviour:
               operatorExpression:
                 operator: 0
                 operands: []
+--- !u!114 &2433543529064378537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4709724582268777031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d06d8dc2ce9e442ab2712de694945b2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 4709724582268777034}
+  key:
+    target: 0
+    key: state_tryTryTriggerTransition
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 0
+          key: state_tryTriggerTransition
+          parameterType: 0
+        expression:
+          type: 0
+          value:
+            type: 1
+            constant:
+              type: 1
+              boolValue: 0
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 0
+              key: state_isActive
+              type: 1
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 0
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
 --- !u!114 &6151350006285620672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -771,7 +829,7 @@ MonoBehaviour:
   key:
     target: 0
     key: state_tryTriggerTransitionFromGlobal
-  delayTimeSeconds: 0.1
+  delayTimeSeconds: 0.2
   triggers:
   - target: 0
     specifiedTargetItem: {fileID: 0}
@@ -953,64 +1011,6 @@ MonoBehaviour:
                   target: 0
                   key: state_isActive
                   type: 1
-              operatorExpression:
-                operator: 0
-                operands: []
---- !u!114 &2433543529064378537
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4709724582268777031}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d06d8dc2ce9e442ab2712de694945b2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item: {fileID: 4709724582268777034}
-  key:
-    target: 0
-    key: state_tryTryTriggerTransition
-  logic:
-    statements:
-    - singleStatement:
-        targetState:
-          target: 0
-          key: state_tryTriggerTransition
-          parameterType: 0
-        expression:
-          type: 0
-          value:
-            type: 1
-            constant:
-              type: 1
-              boolValue: 0
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 0
-              key: state_isActive
-              type: 1
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 0
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 0
-                  key: 
-                  type: 6
               operatorExpression:
                 operator: 0
                 operands: []
