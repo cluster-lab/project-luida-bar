@@ -25,7 +25,7 @@ $.onUpdate(() => {
         $.state.isInitiated = true;
         $.state.qID = 0;
 
-        let request = {type: "questions", eID: expID, qID: $.getStateCompat("this", "qID", "integer")};
+        let request = {type: "questions", token: token || "", eID: expID || "", qID: $.getStateCompat("this", "qID", "integer") || 0};
         $.callExternal(JSON.stringify(request), "getQuestions");
     }
     if ($.state.waitBeforeSpawningAnswerOption) {
@@ -173,8 +173,9 @@ function submitAnswers () {
     $.log("Send final answers: " + JSON.stringify($.state.answers));
     let request = {
         type: "questionAnswers",
-        eID: expID || "0",
-        qID: $.getStateCompat("this", "qID", "integer"),
+        token: token || "",
+        eID: expID || "",
+        qID: $.getStateCompat("this", "qID", "integer") || 0,
         pID: $.getPlayersNear($.getPosition().clone(), 100)[0].idfc || "", // TODO: retrieve idfc through cluster Player Script
         answers: JSON.stringify($.state.answers)
     };
