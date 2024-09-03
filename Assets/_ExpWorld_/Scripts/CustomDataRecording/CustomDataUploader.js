@@ -38,9 +38,10 @@ function uploadData () {
     $.log("Upload custom data: " + JSON.stringify($.state.customData));
     let request = {
         type: "uploadCustomData",
+        token: token || "",
         dataByFileName: JSON.stringify($.state.customData),
-        eID: expID || "0",
-        pID: $.getPlayersNear($.getPosition().clone(), 100)[0].idfc || "" // TODO: retrieve idfc through cluster Player Script
+        eID: expID || "",
+        pID: $.getPlayersNear($.getPosition().clone(), Infinity)[0].idfc || "" // TODO: retrieve idfc through cluster Player Script
     };
     $.callExternal(JSON.stringify(request), "customDataUploaded");
 }

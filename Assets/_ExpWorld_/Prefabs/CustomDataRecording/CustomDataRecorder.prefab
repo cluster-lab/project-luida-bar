@@ -66,9 +66,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "const expID = \"\";\r\n\r\n$.onStart(() => {\r\n    $.state.customData
-    = {};\r\n    $.getItemsNear($.getPosition(), 0.1).forEach(item => {\r\n       
-    if (item.id === \"5570182165721890090\") { // ConditionManager\r\n           
+  sourceCode: "const expID = \"\";\r\nconst token = \"\";\r\n\r\n$.onStart(() =>
+    {\r\n    $.state.customData = {};\r\n    $.getItemsNear($.getPosition(), 0.1).forEach(item
+    => {\r\n        if (item.id === \"5570182165721890090\") { // ConditionManager\r\n           
     item.send(\"exp_conditionDependentObject\", true);\r\n        }\r\n    });\r\n})\r\n\r\n$.onUpdate(()
     => {\r\n    if ($.getStateCompat(\"this\", \"exp_conditionChanged\", \"boolean\"))
     {\r\n        $.setStateCompat(\"this\", \"exp_conditionChanged\", false);\r\n       
@@ -83,21 +83,21 @@ MonoBehaviour:
     true);\r\n    }\r\n})\r\n\r\nfunction recordData () {\r\n    $.state.customData
     = calculateData();\r\n}\r\n\r\nfunction uploadData () {\r\n    $.log(\"Upload
     custom data: \" + JSON.stringify($.state.customData));\r\n    let request = {\r\n       
-    type: \"uploadCustomData\",\r\n        dataByFileName: JSON.stringify($.state.customData),\r\n       
-    eID: expID || \"0\",\r\n        pID: $.getPlayersNear($.getPosition().clone(),
-    100)[0].idfc || \"\" // TODO: retrieve idfc through cluster Player Script\r\n   
-    };\r\n    $.callExternal(JSON.stringify(request), \"customDataUploaded\");\r\n}\r\n\r\n$.onExternalCallEnd((res,
-    meta, err) =>\r\n{\r\n    if (res == null) {\r\n        $.log(\"callExternal
-    ERROR: \" + err);\r\n        return;\r\n    }\r\n\r\n    if (meta === \"customDataUploaded\")
-    {\r\n        $.log(\"Custom recorded data uploaded\");\r\n    }\r\n});\r\nfunction
-    calculateData () {\r\n    let fileName = \"sampleFileName\";\r\n    // Implement
-    your calculation for custom data to record & upload\r\n    // $.state.currentCondition
-    is available if this script is combined with CustomDataUploader.js\r\n    \r\n   
-    // Return the data in the following format:\r\n    return { ...$.state.customData,
-    [fileName]: {} }; // $.state.customData is the custom data recorded before\r\n   
-    /*\r\n    e.g.\r\n    return { ...$.state.customData, [fileName]: {\r\n     
-    ...($.state.customData[fileName] || {}),\r\n      labelName: calculationResult\r\n   
-    } };\r\n    */\r\n}"
+    type: \"uploadCustomData\",\r\n        token: token || \"\",\r\n        dataByFileName:
+    JSON.stringify($.state.customData),\r\n        eID: expID || \"\",\r\n       
+    pID: $.getPlayersNear($.getPosition().clone(), Infinity)[0].idfc || \"\" // TODO:
+    retrieve idfc through cluster Player Script\r\n    };\r\n    $.callExternal(JSON.stringify(request),
+    \"customDataUploaded\");\r\n}\r\n\r\n$.onExternalCallEnd((res, meta, err) =>\r\n{\r\n   
+    if (res == null) {\r\n        $.log(\"callExternal ERROR: \" + err);\r\n       
+    return;\r\n    }\r\n\r\n    if (meta === \"customDataUploaded\") {\r\n       
+    $.log(\"Custom recorded data uploaded\");\r\n    }\r\n});\r\nfunction calculateData
+    () {\r\n    let fileName = \"sampleFileName\";\r\n    // Implement your calculation
+    for custom data to record & upload\r\n    // $.state.currentCondition is available
+    if this script is combined with CustomDataUploader.js\r\n    \r\n    // Return
+    the data in the following format:\r\n    return { ...$.state.customData, [fileName]:
+    {} }; // $.state.customData is the custom data recorded before\r\n    /*\r\n   
+    e.g.\r\n    return { ...$.state.customData, [fileName]: {\r\n      ...($.state.customData[fileName]
+    || {}),\r\n      labelName: calculationResult\r\n    } };\r\n    */\r\n}"
 --- !u!114 &5964733846762761521
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17412737, g: 0.21774727, b: 0.29994345, a: 1}
+  m_IndirectSpecularColor: {r: 0.17412753, g: 0.21774767, b: 0.29994398, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3395,9 +3395,9 @@ PrefabInstance:
     - target: {fileID: 5964733846762761526, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
       propertyPath: sourceCode
-      value: "const expID = \"wppImWcEar\";\r\n\r\n$.onStart(() => {\r\n    $.state.customData
-        = {};\r\n    $.getItemsNear($.getPosition(), 0.1).forEach(item => {\r\n       
-        if (item.id === \"5570182165721890090\") { // ConditionManager\r\n           
+      value: "const expID = \"\";\r\nconst token = \"\";\r\n\r\n$.onStart(() => {\r\n   
+        $.state.customData = {};\r\n    $.getItemsNear($.getPosition(), 0.1).forEach(item
+        => {\r\n        if (item.id === \"5570182165721890090\") { // ConditionManager\r\n           
         item.send(\"exp_conditionDependentObject\", true);\r\n        }\r\n    });\r\n})\r\n\r\n$.onUpdate(()
         => {\r\n    if ($.getStateCompat(\"this\", \"exp_conditionChanged\", \"boolean\"))
         {\r\n        $.setStateCompat(\"this\", \"exp_conditionChanged\", false);\r\n       
@@ -3412,13 +3412,13 @@ PrefabInstance:
         $.setStateCompat(\"this\", \"exp_conditionChanged\", true);\r\n    }\r\n})\r\n\r\nfunction
         recordData () {\r\n    $.state.customData = calculateData();\r\n}\r\n\r\nfunction
         uploadData () {\r\n    $.log(\"Upload custom data: \" + JSON.stringify($.state.customData));\r\n   
-        let request = {\r\n        type: \"uploadCustomData\",\r\n        dataByFileName:
-        JSON.stringify($.state.customData),\r\n        eID: expID || \"0\",\r\n       
-        pID: $.getPlayersNear($.getPosition().clone(), 100)[0].idfc || \"\" // TODO:
-        retrieve idfc through cluster Player Script\r\n    };\r\n    $.callExternal(JSON.stringify(request),
-        \"customDataUploaded\");\r\n}\r\n\r\n$.onExternalCallEnd((res, meta, err)
-        =>\r\n{\r\n    if (res == null) {\r\n        $.log(\"callExternal ERROR:
-        \" + err);\r\n        return;\r\n    }\r\n\r\n    if (meta === \"customDataUploaded\")
+        let request = {\r\n        type: \"uploadCustomData\",\r\n        token:
+        token || \"\",\r\n        dataByFileName: JSON.stringify($.state.customData),\r\n       
+        eID: expID || \"\",\r\n        pID: $.getPlayersNear($.getPosition().clone(),
+        Infinity)[0].idfc || \"\" // TODO: retrieve idfc through cluster Player Script\r\n   
+        };\r\n    $.callExternal(JSON.stringify(request), \"customDataUploaded\");\r\n}\r\n\r\n$.onExternalCallEnd((res,
+        meta, err) =>\r\n{\r\n    if (res == null) {\r\n        $.log(\"callExternal
+        ERROR: \" + err);\r\n        return;\r\n    }\r\n\r\n    if (meta === \"customDataUploaded\")
         {\r\n        $.log(\"Custom recorded data uploaded\");\r\n    }\r\n});\r\nfunction
         calculateData () {\r\n    let fileName = \"taskTime\";\r\n    if (!$.state.currentCondition)
         return $.state.customData || {};\r\n    \r\n    return { ...$.state.customData,\r\n       
@@ -3765,8 +3765,8 @@ PrefabInstance:
     - target: {fileID: 616927345791600449, guid: 94dc2c46b2e66e340ba5848adad0ebab,
         type: 3}
       propertyPath: sourceCode
-      value: "const expID = \"wppImWcEar\";\r\n\r\nconst dummyQuestions = [\r\n   
-        { title: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
+      value: "const expID = \"\";\r\nconst token = \"\";\r\n\r\nconst dummyQuestions
+        = [\r\n    { title: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
         description: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
         questionTypeID: 0, answerOptions: [\"\u306A\u3057\", \"\u5E74\u306B\u4E00\u56DE\u672A\u6E80\",
         \"\u5E74\u306B\u4E00\u56DE\u4EE5\u4E0A\", \"\u6708\u306B1~2\u56DE\u304F\u3089\u3044\",
@@ -3793,13 +3793,14 @@ PrefabInstance:
         \"text_input\" },\r\n]\r\n\r\n$.onStart(() => {\r\n    reset();\r\n})\r\n\r\n$.onUpdate(()
         => {\r\n    if (!$.state.isInitiated && $.getStateCompat(\"this\", \"form_set_content_active\",
         \"boolean\")) {\r\n        $.state.isInitiated = true;\r\n        $.state.qID
-        = 0;\r\n\r\n        let request = {type: \"questions\", eID: expID, qID:
-        $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n        $.callExternal(JSON.stringify(request),
-        \"getQuestions\");\r\n    }\r\n    if ($.state.waitBeforeSpawningAnswerOption)
-        {\r\n        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 20 : 15))
-        {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else {\r\n           
-        $.state.waitBeforeSpawningAnswerOption = false;\r\n            $.state.timer
-        = 0;\r\n            $.sendSignalCompat(\"this\", \"form_spawn_\" + attrsByQuestionType[$.state.questionTypeID].aTemplateName);\r\n       
+        = 0;\r\n\r\n        let request = {type: \"questions\", token: token || \"\",
+        eID: expID || \"\", qID: $.getStateCompat(\"this\", \"qID\", \"integer\")
+        || 0};\r\n        $.callExternal(JSON.stringify(request), \"getQuestions\");\r\n   
+        }\r\n    if ($.state.waitBeforeSpawningAnswerOption) {\r\n        if ($.state.timer
+        < ($.state.spawningAnswerID === 0 ? 20 : 15)) {\r\n            $.state.timer
+        = $.state.timer + 1;\r\n        } else {\r\n            $.state.waitBeforeSpawningAnswerOption
+        = false;\r\n            $.state.timer = 0;\r\n            $.sendSignalCompat(\"this\",
+        \"form_spawn_\" + attrsByQuestionType[$.state.questionTypeID].aTemplateName);\r\n       
         }\r\n    }\r\n    if ($.state.waitBeforeInitQuestion) {\r\n        if ($.state.timer
         < 10) {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else
         {\r\n            $.state.waitBeforeInitQuestion = false;\r\n            $.state.timer
@@ -3869,16 +3870,17 @@ PrefabInstance:
         = { ...$.state.answers, [$.state.qID]: $.state.tmpAnswer };\r\n    $.log(\"Update
         answers: \" + JSON.stringify($.state.answers));\r\n    toNext();\r\n}\r\n\r\nfunction
         submitAnswers () {\r\n    $.log(\"Send final answers: \" + JSON.stringify($.state.answers));\r\n   
-        let request = {\r\n        type: \"questionAnswers\",\r\n        eID: expID
-        || \"0\",\r\n        qID: $.getStateCompat(\"this\", \"qID\", \"integer\"),\r\n       
-        pID: $.getPlayersNear($.getPosition().clone(), 100)[0].idfc || \"\", // TODO:
-        retrieve idfc through cluster Player Script\r\n        answers: JSON.stringify($.state.answers)\r\n   
-        };\r\n    $.getItemsNear($.getPosition(), 0.1).forEach(item => {\r\n       
-        if (item.id === \"5570182165721890090\") { // ConditionManager\r\n           
-        item.send(\"exp_questionnaire_answer\", $.state.answers);\r\n        }\r\n   
-        });\r\n    $.callExternal(JSON.stringify(request), \"postQuestionAnswers\");\r\n   
-        $.setStateCompat(\"this\", \"form_set_content_active\", false);\r\n}\r\n\r\nfunction
-        toNext () {\r\n    $.state.qID = $.state.qID + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
+        let request = {\r\n        type: \"questionAnswers\",\r\n        token: token
+        || \"\",\r\n        eID: expID || \"\",\r\n        qID: $.getStateCompat(\"this\",
+        \"qID\", \"integer\") || 0,\r\n        pID: $.getPlayersNear($.getPosition().clone(),
+        100)[0].idfc || \"\", // TODO: retrieve idfc through cluster Player Script\r\n       
+        answers: JSON.stringify($.state.answers)\r\n    };\r\n    $.getItemsNear($.getPosition(),
+        0.1).forEach(item => {\r\n        if (item.id === \"5570182165721890090\")
+        { // ConditionManager\r\n            item.send(\"exp_questionnaire_answer\",
+        $.state.answers);\r\n        }\r\n    });\r\n    $.callExternal(JSON.stringify(request),
+        \"postQuestionAnswers\");\r\n    $.setStateCompat(\"this\", \"form_set_content_active\",
+        false);\r\n}\r\n\r\nfunction toNext () {\r\n    $.state.qID = $.state.qID
+        + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
         if ($.state.qID >= $.state.questions.length) {\r\n        submitAnswers();\r\n   
         } else {\r\n        destroyAnswerOptionUIs();\r\n        $.state.tmpAnswer
         = null;\r\n        // TODO: hide selection indicator\r\n        tryInitQuestion();\r\n   
@@ -3918,8 +3920,8 @@ PrefabInstance:
     - target: {fileID: 616927345807148084, guid: 94dc2c46b2e66e340ba5848adad0ebab,
         type: 3}
       propertyPath: sourceCode
-      value: "const expID = \"wppImWcEar\";\r\n\r\nconst dummyQuestions = [\r\n   
-        { title: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
+      value: "const expID = \"\";\r\nconst token = \"\";\r\n\r\nconst dummyQuestions
+        = [\r\n    { title: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
         description: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
         questionTypeID: 0, answerOptions: [\"\u306A\u3057\", \"\u5E74\u306B\u4E00\u56DE\u672A\u6E80\",
         \"\u5E74\u306B\u4E00\u56DE\u4EE5\u4E0A\", \"\u6708\u306B1~2\u56DE\u304F\u3089\u3044\",
@@ -3946,13 +3948,14 @@ PrefabInstance:
         \"text_input\" },\r\n]\r\n\r\n$.onStart(() => {\r\n    reset();\r\n})\r\n\r\n$.onUpdate(()
         => {\r\n    if (!$.state.isInitiated && $.getStateCompat(\"this\", \"form_set_content_active\",
         \"boolean\")) {\r\n        $.state.isInitiated = true;\r\n        $.state.qID
-        = 0;\r\n\r\n        let request = {type: \"questions\", eID: expID, qID:
-        $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n        $.callExternal(JSON.stringify(request),
-        \"getQuestions\");\r\n    }\r\n    if ($.state.waitBeforeSpawningAnswerOption)
-        {\r\n        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 20 : 15))
-        {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else {\r\n           
-        $.state.waitBeforeSpawningAnswerOption = false;\r\n            $.state.timer
-        = 0;\r\n            $.sendSignalCompat(\"this\", \"form_spawn_\" + attrsByQuestionType[$.state.questionTypeID].aTemplateName);\r\n       
+        = 0;\r\n\r\n        let request = {type: \"questions\", token: token || \"\",
+        eID: expID || \"\", qID: $.getStateCompat(\"this\", \"qID\", \"integer\")
+        || 0};\r\n        $.callExternal(JSON.stringify(request), \"getQuestions\");\r\n   
+        }\r\n    if ($.state.waitBeforeSpawningAnswerOption) {\r\n        if ($.state.timer
+        < ($.state.spawningAnswerID === 0 ? 20 : 15)) {\r\n            $.state.timer
+        = $.state.timer + 1;\r\n        } else {\r\n            $.state.waitBeforeSpawningAnswerOption
+        = false;\r\n            $.state.timer = 0;\r\n            $.sendSignalCompat(\"this\",
+        \"form_spawn_\" + attrsByQuestionType[$.state.questionTypeID].aTemplateName);\r\n       
         }\r\n    }\r\n    if ($.state.waitBeforeInitQuestion) {\r\n        if ($.state.timer
         < 10) {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else
         {\r\n            $.state.waitBeforeInitQuestion = false;\r\n            $.state.timer
@@ -4022,16 +4025,17 @@ PrefabInstance:
         = { ...$.state.answers, [$.state.qID]: $.state.tmpAnswer };\r\n    $.log(\"Update
         answers: \" + JSON.stringify($.state.answers));\r\n    toNext();\r\n}\r\n\r\nfunction
         submitAnswers () {\r\n    $.log(\"Send final answers: \" + JSON.stringify($.state.answers));\r\n   
-        let request = {\r\n        type: \"questionAnswers\",\r\n        eID: expID
-        || \"0\",\r\n        qID: $.getStateCompat(\"this\", \"qID\", \"integer\"),\r\n       
-        pID: $.getPlayersNear($.getPosition().clone(), 100)[0].idfc || \"\", // TODO:
-        retrieve idfc through cluster Player Script\r\n        answers: JSON.stringify($.state.answers)\r\n   
-        };\r\n    $.getItemsNear($.getPosition(), 0.1).forEach(item => {\r\n       
-        if (item.id === \"5570182165721890090\") { // ConditionManager\r\n           
-        item.send(\"exp_questionnaire_answer\", $.state.answers);\r\n        }\r\n   
-        });\r\n    $.callExternal(JSON.stringify(request), \"postQuestionAnswers\");\r\n   
-        $.setStateCompat(\"this\", \"form_set_content_active\", false);\r\n}\r\n\r\nfunction
-        toNext () {\r\n    $.state.qID = $.state.qID + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
+        let request = {\r\n        type: \"questionAnswers\",\r\n        token: token
+        || \"\",\r\n        eID: expID || \"\",\r\n        qID: $.getStateCompat(\"this\",
+        \"qID\", \"integer\") || 0,\r\n        pID: $.getPlayersNear($.getPosition().clone(),
+        100)[0].idfc || \"\", // TODO: retrieve idfc through cluster Player Script\r\n       
+        answers: JSON.stringify($.state.answers)\r\n    };\r\n    $.getItemsNear($.getPosition(),
+        0.1).forEach(item => {\r\n        if (item.id === \"5570182165721890090\")
+        { // ConditionManager\r\n            item.send(\"exp_questionnaire_answer\",
+        $.state.answers);\r\n        }\r\n    });\r\n    $.callExternal(JSON.stringify(request),
+        \"postQuestionAnswers\");\r\n    $.setStateCompat(\"this\", \"form_set_content_active\",
+        false);\r\n}\r\n\r\nfunction toNext () {\r\n    $.state.qID = $.state.qID
+        + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
         if ($.state.qID >= $.state.questions.length) {\r\n        submitAnswers();\r\n   
         } else {\r\n        destroyAnswerOptionUIs();\r\n        $.state.tmpAnswer
         = null;\r\n        // TODO: hide selection indicator\r\n        tryInitQuestion();\r\n   
@@ -4066,8 +4070,8 @@ PrefabInstance:
     - target: {fileID: 616927345844514445, guid: 94dc2c46b2e66e340ba5848adad0ebab,
         type: 3}
       propertyPath: sourceCode
-      value: "const expID = \"wppImWcEar\";\r\n\r\nconst dummyQuestions = [\r\n   
-        { title: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
+      value: "const expID = \"\";\r\nconst token = \"\";\r\n\r\nconst dummyQuestions
+        = [\r\n    { title: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
         description: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
         questionTypeID: 0, answerOptions: [\"\u306A\u3057\", \"\u5E74\u306B\u4E00\u56DE\u672A\u6E80\",
         \"\u5E74\u306B\u4E00\u56DE\u4EE5\u4E0A\", \"\u6708\u306B1~2\u56DE\u304F\u3089\u3044\",
@@ -4094,13 +4098,14 @@ PrefabInstance:
         \"text_input\" },\r\n]\r\n\r\n$.onStart(() => {\r\n    reset();\r\n})\r\n\r\n$.onUpdate(()
         => {\r\n    if (!$.state.isInitiated && $.getStateCompat(\"this\", \"form_set_content_active\",
         \"boolean\")) {\r\n        $.state.isInitiated = true;\r\n        $.state.qID
-        = 0;\r\n\r\n        let request = {type: \"questions\", eID: expID, qID:
-        $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n        $.callExternal(JSON.stringify(request),
-        \"getQuestions\");\r\n    }\r\n    if ($.state.waitBeforeSpawningAnswerOption)
-        {\r\n        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 20 : 15))
-        {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else {\r\n           
-        $.state.waitBeforeSpawningAnswerOption = false;\r\n            $.state.timer
-        = 0;\r\n            $.sendSignalCompat(\"this\", \"form_spawn_\" + attrsByQuestionType[$.state.questionTypeID].aTemplateName);\r\n       
+        = 0;\r\n\r\n        let request = {type: \"questions\", token: token || \"\",
+        eID: expID || \"\", qID: $.getStateCompat(\"this\", \"qID\", \"integer\")
+        || 0};\r\n        $.callExternal(JSON.stringify(request), \"getQuestions\");\r\n   
+        }\r\n    if ($.state.waitBeforeSpawningAnswerOption) {\r\n        if ($.state.timer
+        < ($.state.spawningAnswerID === 0 ? 20 : 15)) {\r\n            $.state.timer
+        = $.state.timer + 1;\r\n        } else {\r\n            $.state.waitBeforeSpawningAnswerOption
+        = false;\r\n            $.state.timer = 0;\r\n            $.sendSignalCompat(\"this\",
+        \"form_spawn_\" + attrsByQuestionType[$.state.questionTypeID].aTemplateName);\r\n       
         }\r\n    }\r\n    if ($.state.waitBeforeInitQuestion) {\r\n        if ($.state.timer
         < 10) {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else
         {\r\n            $.state.waitBeforeInitQuestion = false;\r\n            $.state.timer
@@ -4170,16 +4175,17 @@ PrefabInstance:
         = { ...$.state.answers, [$.state.qID]: $.state.tmpAnswer };\r\n    $.log(\"Update
         answers: \" + JSON.stringify($.state.answers));\r\n    toNext();\r\n}\r\n\r\nfunction
         submitAnswers () {\r\n    $.log(\"Send final answers: \" + JSON.stringify($.state.answers));\r\n   
-        let request = {\r\n        type: \"questionAnswers\",\r\n        eID: expID
-        || \"0\",\r\n        qID: $.getStateCompat(\"this\", \"qID\", \"integer\"),\r\n       
-        pID: $.getPlayersNear($.getPosition().clone(), 100)[0].idfc || \"\", // TODO:
-        retrieve idfc through cluster Player Script\r\n        answers: JSON.stringify($.state.answers)\r\n   
-        };\r\n    $.getItemsNear($.getPosition(), 0.1).forEach(item => {\r\n       
-        if (item.id === \"5570182165721890090\") { // ConditionManager\r\n           
-        item.send(\"exp_questionnaire_answer\", $.state.answers);\r\n        }\r\n   
-        });\r\n    $.callExternal(JSON.stringify(request), \"postQuestionAnswers\");\r\n   
-        $.setStateCompat(\"this\", \"form_set_content_active\", false);\r\n}\r\n\r\nfunction
-        toNext () {\r\n    $.state.qID = $.state.qID + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
+        let request = {\r\n        type: \"questionAnswers\",\r\n        token: token
+        || \"\",\r\n        eID: expID || \"\",\r\n        qID: $.getStateCompat(\"this\",
+        \"qID\", \"integer\") || 0,\r\n        pID: $.getPlayersNear($.getPosition().clone(),
+        100)[0].idfc || \"\", // TODO: retrieve idfc through cluster Player Script\r\n       
+        answers: JSON.stringify($.state.answers)\r\n    };\r\n    $.getItemsNear($.getPosition(),
+        0.1).forEach(item => {\r\n        if (item.id === \"5570182165721890090\")
+        { // ConditionManager\r\n            item.send(\"exp_questionnaire_answer\",
+        $.state.answers);\r\n        }\r\n    });\r\n    $.callExternal(JSON.stringify(request),
+        \"postQuestionAnswers\");\r\n    $.setStateCompat(\"this\", \"form_set_content_active\",
+        false);\r\n}\r\n\r\nfunction toNext () {\r\n    $.state.qID = $.state.qID
+        + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
         if ($.state.qID >= $.state.questions.length) {\r\n        submitAnswers();\r\n   
         } else {\r\n        destroyAnswerOptionUIs();\r\n        $.state.tmpAnswer
         = null;\r\n        // TODO: hide selection indicator\r\n        tryInitQuestion();\r\n   
@@ -4224,8 +4230,8 @@ PrefabInstance:
     - target: {fileID: 616927346504707998, guid: 94dc2c46b2e66e340ba5848adad0ebab,
         type: 3}
       propertyPath: sourceCode
-      value: "const expID = \"wppImWcEar\";\r\n\r\nconst dummyQuestions = [\r\n   
-        { title: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
+      value: "const expID = \"\";\r\nconst token = \"\";\r\n\r\nconst dummyQuestions
+        = [\r\n    { title: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
         description: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
         questionTypeID: 0, answerOptions: [\"\u306A\u3057\", \"\u5E74\u306B\u4E00\u56DE\u672A\u6E80\",
         \"\u5E74\u306B\u4E00\u56DE\u4EE5\u4E0A\", \"\u6708\u306B1~2\u56DE\u304F\u3089\u3044\",
@@ -4252,13 +4258,14 @@ PrefabInstance:
         \"text_input\" },\r\n]\r\n\r\n$.onStart(() => {\r\n    reset();\r\n})\r\n\r\n$.onUpdate(()
         => {\r\n    if (!$.state.isInitiated && $.getStateCompat(\"this\", \"form_set_content_active\",
         \"boolean\")) {\r\n        $.state.isInitiated = true;\r\n        $.state.qID
-        = 0;\r\n\r\n        let request = {type: \"questions\", eID: expID, qID:
-        $.getStateCompat(\"this\", \"qID\", \"integer\")};\r\n        $.callExternal(JSON.stringify(request),
-        \"getQuestions\");\r\n    }\r\n    if ($.state.waitBeforeSpawningAnswerOption)
-        {\r\n        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 20 : 15))
-        {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else {\r\n           
-        $.state.waitBeforeSpawningAnswerOption = false;\r\n            $.state.timer
-        = 0;\r\n            $.sendSignalCompat(\"this\", \"form_spawn_\" + attrsByQuestionType[$.state.questionTypeID].aTemplateName);\r\n       
+        = 0;\r\n\r\n        let request = {type: \"questions\", token: token || \"\",
+        eID: expID || \"\", qID: $.getStateCompat(\"this\", \"qID\", \"integer\")
+        || 0};\r\n        $.callExternal(JSON.stringify(request), \"getQuestions\");\r\n   
+        }\r\n    if ($.state.waitBeforeSpawningAnswerOption) {\r\n        if ($.state.timer
+        < ($.state.spawningAnswerID === 0 ? 20 : 15)) {\r\n            $.state.timer
+        = $.state.timer + 1;\r\n        } else {\r\n            $.state.waitBeforeSpawningAnswerOption
+        = false;\r\n            $.state.timer = 0;\r\n            $.sendSignalCompat(\"this\",
+        \"form_spawn_\" + attrsByQuestionType[$.state.questionTypeID].aTemplateName);\r\n       
         }\r\n    }\r\n    if ($.state.waitBeforeInitQuestion) {\r\n        if ($.state.timer
         < 10) {\r\n            $.state.timer = $.state.timer + 1;\r\n        } else
         {\r\n            $.state.waitBeforeInitQuestion = false;\r\n            $.state.timer
@@ -4328,16 +4335,17 @@ PrefabInstance:
         = { ...$.state.answers, [$.state.qID]: $.state.tmpAnswer };\r\n    $.log(\"Update
         answers: \" + JSON.stringify($.state.answers));\r\n    toNext();\r\n}\r\n\r\nfunction
         submitAnswers () {\r\n    $.log(\"Send final answers: \" + JSON.stringify($.state.answers));\r\n   
-        let request = {\r\n        type: \"questionAnswers\",\r\n        eID: expID
-        || \"0\",\r\n        qID: $.getStateCompat(\"this\", \"qID\", \"integer\"),\r\n       
-        pID: $.getPlayersNear($.getPosition().clone(), 100)[0].idfc || \"\", // TODO:
-        retrieve idfc through cluster Player Script\r\n        answers: JSON.stringify($.state.answers)\r\n   
-        };\r\n    $.getItemsNear($.getPosition(), 0.1).forEach(item => {\r\n       
-        if (item.id === \"5570182165721890090\") { // ConditionManager\r\n           
-        item.send(\"exp_questionnaire_answer\", $.state.answers);\r\n        }\r\n   
-        });\r\n    $.callExternal(JSON.stringify(request), \"postQuestionAnswers\");\r\n   
-        $.setStateCompat(\"this\", \"form_set_content_active\", false);\r\n}\r\n\r\nfunction
-        toNext () {\r\n    $.state.qID = $.state.qID + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
+        let request = {\r\n        type: \"questionAnswers\",\r\n        token: token
+        || \"\",\r\n        eID: expID || \"\",\r\n        qID: $.getStateCompat(\"this\",
+        \"qID\", \"integer\") || 0,\r\n        pID: $.getPlayersNear($.getPosition().clone(),
+        100)[0].idfc || \"\", // TODO: retrieve idfc through cluster Player Script\r\n       
+        answers: JSON.stringify($.state.answers)\r\n    };\r\n    $.getItemsNear($.getPosition(),
+        0.1).forEach(item => {\r\n        if (item.id === \"5570182165721890090\")
+        { // ConditionManager\r\n            item.send(\"exp_questionnaire_answer\",
+        $.state.answers);\r\n        }\r\n    });\r\n    $.callExternal(JSON.stringify(request),
+        \"postQuestionAnswers\");\r\n    $.setStateCompat(\"this\", \"form_set_content_active\",
+        false);\r\n}\r\n\r\nfunction toNext () {\r\n    $.state.qID = $.state.qID
+        + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
         if ($.state.qID >= $.state.questions.length) {\r\n        submitAnswers();\r\n   
         } else {\r\n        destroyAnswerOptionUIs();\r\n        $.state.tmpAnswer
         = null;\r\n        // TODO: hide selection indicator\r\n        tryInitQuestion();\r\n   
