@@ -2,7 +2,7 @@
 // const position = $.getPosition().clone();
 // const rotation = new Quaternion().identity();
 const data = ["Hello", "Cluster", "from", "Cyber", "Lab"];
-const numberPerPage = 5;
+const numberPerPage = 30;
 
 $.onStart(() => {
     $.state.allQuestsCount = 0;
