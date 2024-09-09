@@ -33,7 +33,8 @@ $.onExternalCallEnd((res, meta, err) =>
 
         $.subNode("Title").setText(quest.title);
         $.subNode("Description").setText(quest.description);
-        $.subNode("Prerequisite").setText(quest.prerequisite);
+        $.subNode("Prerequisite").setText("参加条件：" + quest.prerequisite);
+        $.subNode("Reward").setText("報酬：" + quest.reward);
         $.setStateCompat("owner", "currentQuestID", ($.state.currentQuestBoardPage - 1) * numberPerPage + $.getStateCompat("owner", "triggerQuest", "integer")) + 1;
 
         $.setStateCompat("this", "AllowJoinExp", +quest.playersCount === 0);
