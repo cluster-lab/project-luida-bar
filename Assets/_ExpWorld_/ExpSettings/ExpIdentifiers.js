@@ -1,2 +1,2 @@
-const expID = "";
-const token = "";
+expID = "expID_example";
+token = "token_example";

@@ -676,7 +676,7 @@ PrefabInstance:
     - target: {fileID: 616927345791600449, guid: 94dc2c46b2e66e340ba5848adad0ebab,
         type: 3}
       propertyPath: sourceCode
-      value: "const expID = \"\";\r\nconst token = \"\";\r\n\r\nconst dummyQuestions
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\nconst dummyQuestions
         = [\r\n    { title: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
         description: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
         questionTypeID: 0, answerOptions: [\"\u306A\u3057\", \"\u5E74\u306B\u4E00\u56DE\u672A\u6E80\",
@@ -821,7 +821,7 @@ PrefabInstance:
     - target: {fileID: 616927345807148084, guid: 94dc2c46b2e66e340ba5848adad0ebab,
         type: 3}
       propertyPath: sourceCode
-      value: "const expID = \"\";\r\nconst token = \"\";\r\n\r\nconst dummyQuestions
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\nconst dummyQuestions
         = [\r\n    { title: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
         description: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
         questionTypeID: 0, answerOptions: [\"\u306A\u3057\", \"\u5E74\u306B\u4E00\u56DE\u672A\u6E80\",
@@ -966,7 +966,7 @@ PrefabInstance:
     - target: {fileID: 616927345844514445, guid: 94dc2c46b2e66e340ba5848adad0ebab,
         type: 3}
       propertyPath: sourceCode
-      value: "const expID = \"\";\r\nconst token = \"\";\r\n\r\nconst dummyQuestions
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\nconst dummyQuestions
         = [\r\n    { title: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
         description: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
         questionTypeID: 0, answerOptions: [\"\u306A\u3057\", \"\u5E74\u306B\u4E00\u56DE\u672A\u6E80\",
@@ -1111,7 +1111,7 @@ PrefabInstance:
     - target: {fileID: 616927346504707998, guid: 94dc2c46b2e66e340ba5848adad0ebab,
         type: 3}
       propertyPath: sourceCode
-      value: "const expID = \"\";\r\nconst token = \"\";\r\n\r\nconst dummyQuestions
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\nconst dummyQuestions
         = [\r\n    { title: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
         description: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
         questionTypeID: 0, answerOptions: [\"\u306A\u3057\", \"\u5E74\u306B\u4E00\u56DE\u672A\u6E80\",
@@ -1278,7 +1278,32 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 3822314174647931315, guid: 94dc2c46b2e66e340ba5848adad0ebab,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3822314174792583817, guid: 94dc2c46b2e66e340ba5848adad0ebab,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3822314174908510508, guid: 94dc2c46b2e66e340ba5848adad0ebab,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3822314175018632553, guid: 94dc2c46b2e66e340ba5848adad0ebab,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3822314175518376242, guid: 94dc2c46b2e66e340ba5848adad0ebab,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3822314175532702480, guid: 94dc2c46b2e66e340ba5848adad0ebab,
         type: 3}
       propertyPath: delayTimeSeconds
       value: 0
@@ -1288,7 +1313,32 @@ PrefabInstance:
       propertyPath: delayTimeSeconds
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3822314175960642871, guid: 94dc2c46b2e66e340ba5848adad0ebab,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3822314176105781757, guid: 94dc2c46b2e66e340ba5848adad0ebab,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3822314176177076851, guid: 94dc2c46b2e66e340ba5848adad0ebab,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3822314176253445301, guid: 94dc2c46b2e66e340ba5848adad0ebab,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3822314176398808238, guid: 94dc2c46b2e66e340ba5848adad0ebab,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3822314176576170393, guid: 94dc2c46b2e66e340ba5848adad0ebab,
         type: 3}
       propertyPath: delayTimeSeconds
       value: 0
@@ -1357,6 +1407,11 @@ PrefabInstance:
         type: 3}
       propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7097229996344111849, guid: 94dc2c46b2e66e340ba5848adad0ebab,
+        type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8538786018449658169, guid: 94dc2c46b2e66e340ba5848adad0ebab,
         type: 3}

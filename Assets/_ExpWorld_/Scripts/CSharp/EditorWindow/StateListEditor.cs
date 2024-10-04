@@ -12,13 +12,12 @@ public class StateListEditor : EditorWindow
 
     private readonly string[] FixedStateNames = new string[] {"Preparation", "Trial - Task", "Trial - Rest", "Trial - Questionnaire"};
 
-    [MenuItem("Window/State List Editor")]
-    public static void ShowWindow()
+    public void OnEnable()
     {
-        GetWindow<StateListEditor>("State List Editor");
+        // Initialization code if needed
     }
 
-    private void OnGUI()
+    public void OnGUI()
     {
         string scenePath = UnityEngine.SceneManagement.SceneManager.GetActiveScene().path;
         string stateListPath = scenePath.Replace("Scenes", "ExpSettings/StateList").Replace(".unity", ".asset");
