@@ -21,18 +21,12 @@ public class ExperimentVariablesEditor : EditorWindow
     private string variablesAssetPath;
     private string betweenSubjectsConditionSetterPath;
 
-    [MenuItem("Window/Experiment Variables Editor")]
-    public static void ShowWindow()
-    {
-        GetWindow<ExperimentVariablesEditor>("Experiment Variables Editor");
-    }
-
-    private void OnEnable()
+    public void OnEnable()
     {
         RetrieveJavaScriptAsset();
     }
 
-    private void OnGUI()
+    public void OnGUI()
     {
         if (variablesAsset == null)
         {

@@ -447,8 +447,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "const expID = \"\";\r\nconst token = \"\";\r\n\r\nconst dummyQuestions
-    = [\r\n    { title: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
+  sourceCode: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\nconst
+    dummyQuestions = [\r\n    { title: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
     description: \"\u3069\u306E\u304F\u3089\u3044\u306E\u983B\u5EA6\u3067VR\u3092\u4F53\u9A13\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F\",
     questionTypeID: 0, answerOptions: [\"\u306A\u3057\", \"\u5E74\u306B\u4E00\u56DE\u672A\u6E80\",
     \"\u5E74\u306B\u4E00\u56DE\u4EE5\u4E0A\", \"\u6708\u306B1~2\u56DE\u304F\u3089\u3044\",

@@ -66,8 +66,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "const expID = \"\";\r\nconst token = \"\";\r\n\r\n$.onStart(() =>
-    {\r\n    $.state.customData = {};\r\n    $.getItemsNear($.getPosition(), 0.1).forEach(item
+  sourceCode: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\n$.onStart(()
+    => {\r\n    $.state.customData = {};\r\n    $.getItemsNear($.getPosition(), 0.1).forEach(item
     => {\r\n        if (item.id === \"5570182165721890090\") { // ConditionManager\r\n           
     item.send(\"exp_conditionDependentObject\", true);\r\n        }\r\n    });\r\n})\r\n\r\n$.onUpdate(()
     => {\r\n    if ($.getStateCompat(\"this\", \"exp_conditionChanged\", \"boolean\"))
