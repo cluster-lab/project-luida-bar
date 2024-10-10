@@ -31,5 +31,9 @@ public class ScriptableClusterScriptCombiner : CSCombiner
         if (playerScript != null) playerScripts[playerScriptIndex] = playerScript;
         if (combineNow) Combine();
     }
+
+    public void CombineScripts() {
+        Combine();
+    }
 }
 #endif

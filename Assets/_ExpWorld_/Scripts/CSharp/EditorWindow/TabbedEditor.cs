@@ -4,10 +4,11 @@ using UnityEngine;
 public class TabbedEditor : EditorWindow
 {
     private int currentTab = 0;
-    private string[] tabNames = { "Experiment Identifiers", "State List Editor", "Experiment Variables Editor", "Questionnaire Setter" };
+    private string[] tabNames = { "Experiment Identifiers", "State List Editor", "State Dependent Objects Editor", "Experiment Variables Editor", "Questionnaire Setter" };
 
     private ExpIdentifierEditor expIdentifierEditor;
     private StateListEditor stateListEditor;
+    private StateDependentObjectEditor stateDependentObjectEditor;
     private ExperimentVariablesEditor experimentVariablesEditor;
     private QuestionnaireSetter questionnaireSetter;
 
@@ -21,11 +22,13 @@ public class TabbedEditor : EditorWindow
     {
         expIdentifierEditor = new ExpIdentifierEditor();
         stateListEditor = new StateListEditor();
+        stateDependentObjectEditor = new StateDependentObjectEditor();
         experimentVariablesEditor = new ExperimentVariablesEditor();
         questionnaireSetter = new QuestionnaireSetter();
 
         expIdentifierEditor.OnEnable();
         stateListEditor.OnEnable();
+        stateDependentObjectEditor.OnEnable();
         experimentVariablesEditor.OnEnable();
         questionnaireSetter.OnEnable();
     }
@@ -43,9 +46,12 @@ public class TabbedEditor : EditorWindow
                 stateListEditor.OnGUI();
                 break;
             case 2:
-                experimentVariablesEditor.OnGUI();
+                stateDependentObjectEditor.OnGUI();
                 break;
             case 3:
+                experimentVariablesEditor.OnGUI();
+                break;
+            case 4:
                 questionnaireSetter.OnGUI();
                 break;
         }
