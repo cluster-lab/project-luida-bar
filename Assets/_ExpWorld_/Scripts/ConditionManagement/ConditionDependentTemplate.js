@@ -1,10 +1,9 @@
 /* Don't edit the code below unless you are not accessing experiment conditions! */
 $.onStart(() => {
-    $.getItemsNear($.getPosition(), 0.1).forEach(item => {
-        if (item.id === "5570182165721890090") { // ConditionManager
-            item.send("exp_conditionDependentObject", true);
-        }
-    });
+    const conditionManager = $.worldItemReference("ConditionManager");
+    if (conditionManager) {
+        conditionManager.send("exp_conditionDependentObject", true);
+    }
     init();
 })
 
