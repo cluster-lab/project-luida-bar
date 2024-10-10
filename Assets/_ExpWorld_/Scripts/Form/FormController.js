@@ -182,11 +182,10 @@ function submitAnswers () {
         pID: $.getPlayersNear($.getPosition().clone(), 100)[0].idfc || "", // TODO: retrieve idfc through cluster Player Script
         answers: JSON.stringify($.state.answers)
     };
-    $.getItemsNear($.getPosition(), 0.1).forEach(item => {
-        if (item.id === "5570182165721890090") { // ConditionManager
-            item.send("exp_questionnaire_answer", $.state.answers);
-        }
-    });
+    const conditionManager = $.worldItemReference("ConditionManager");
+    if (conditionManager) {
+        conditionManager.send("exp_questionnaire_answer", $.state.answers);
+    }
     $.callExternal(JSON.stringify(request), "postQuestionAnswers");
     $.setStateCompat("this", "form_set_content_active", false);
 }
