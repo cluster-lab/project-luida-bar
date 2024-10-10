@@ -1,0 +1,2 @@
+﻿GameObjectに追加しEmulateClassesで必要な機能を提供するComponentを配置する。
+CSEmulator.Editor以外を参照してはいけない。
