@@ -4,11 +4,12 @@ using UnityEngine;
 public class TabbedEditor : EditorWindow
 {
     private int currentTab = 0;
-    private string[] tabNames = { "State List Editor", "Experiment Variables Editor", "Experiment Identifiers" };
+    private string[] tabNames = { "Experiment Identifiers", "State List Editor", "Experiment Variables Editor", "Questionnaire Setter" };
 
+    private ExpIdentifierEditor expIdentifierEditor;
     private StateListEditor stateListEditor;
     private ExperimentVariablesEditor experimentVariablesEditor;
-    private ExpIdentifierEditor expIdentifierEditor;
+    private QuestionnaireSetter questionnaireSetter;
 
     [MenuItem("Window/Luida Editor")]
     public static void ShowWindow()
@@ -18,13 +19,15 @@ public class TabbedEditor : EditorWindow
 
     private void OnEnable()
     {
+        expIdentifierEditor = new ExpIdentifierEditor();
         stateListEditor = new StateListEditor();
         experimentVariablesEditor = new ExperimentVariablesEditor();
-        expIdentifierEditor = new ExpIdentifierEditor();
+        questionnaireSetter = new QuestionnaireSetter();
 
+        expIdentifierEditor.OnEnable();
         stateListEditor.OnEnable();
         experimentVariablesEditor.OnEnable();
-        expIdentifierEditor.OnEnable();
+        questionnaireSetter.OnEnable();
     }
 
     private void OnGUI()
@@ -34,13 +37,16 @@ public class TabbedEditor : EditorWindow
         switch (currentTab)
         {
             case 0:
-                stateListEditor.OnGUI();
+                expIdentifierEditor.OnGUI();
                 break;
             case 1:
-                experimentVariablesEditor.OnGUI();
+                stateListEditor.OnGUI();
                 break;
             case 2:
-                expIdentifierEditor.OnGUI();
+                experimentVariablesEditor.OnGUI();
+                break;
+            case 3:
+                questionnaireSetter.OnGUI();
                 break;
         }
     }

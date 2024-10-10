@@ -25,8 +25,11 @@ $.onUpdate(() => {
         $.state.isInitiated = true;
         $.state.qID = 0;
 
-        let request = {type: "questions", token: token || "", eID: expID || "", qID: $.getStateCompat("this", "qID", "integer") || 0};
-        $.callExternal(JSON.stringify(request), "getQuestions");
+        const questionnaireID = $.getStateCompat("this", "qID", "integer") || -1;
+        if (questionnaireID !== -1) {
+            let request = {type: "questions", token: token || "", eID: expID || "", qID: questionnaireID};
+            $.callExternal(JSON.stringify(request), "getQuestions");
+        }
     }
     if ($.state.waitBeforeSpawningAnswerOption) {
         if ($.state.timer < ($.state.spawningAnswerID === 0 ? 20 : 15)) {
