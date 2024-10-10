@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5660514857068071924}
   - component: {fileID: 5660514857068071927}
   - component: {fileID: 7617053289787406505}
+  - component: {fileID: 833797841801743093}
   m_Layer: 0
   m_Name: StateDependentObject
   m_TagString: Untagged
@@ -125,7 +126,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 5022602860645237092, guid: e228c7ca8dec0428ba2fb1c353edbb9e,
     type: 3}
-  sourceCode: 
+  sourceCode: "$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\", \"state_exit\",
+    \"boolean\")) {\n        OnStateExit();\n        $.setStateCompat(\"this\", \"state_exit\",
+    false);\n    }\n    if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\"))
+    {\n        $.setStateCompat(\"this\", \"state_enter\", false);\n        OnStateEnter();\n   
+    }\n    if ($.getStateCompat(\"this\", \"state_isActive\", \"boolean\")) {\n       
+    DuringState(deltaTime);\n    }\n})\n\r\nfunction OnStateEnter() {}\n\nfunction
+    OnStateExit () {}\n\nfunction DuringState (deltaTime) {}"
 --- !u!114 &5660514857068071924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -414,3 +421,21 @@ MonoBehaviour:
       integerValue: 0
       vector2Value: {x: 0, y: 0}
       vector3Value: {x: 0, y: 0, z: 0}
+--- !u!114 &833797841801743093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5660514857068071925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466c56cb3cb32ec48b21ffb81ad21213, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clusterScripts:
+  - {fileID: 5022602860645237092, guid: 695ee6946997a415aac1845484e25dee, type: 3}
+  - {fileID: 5022602860645237092, guid: 825e28fa5a0f04d41bb2033f0bca45fc, type: 3}
+  playerScripts: []
+  clusterScriptMD5s: []
+  playerScriptMD5s: []

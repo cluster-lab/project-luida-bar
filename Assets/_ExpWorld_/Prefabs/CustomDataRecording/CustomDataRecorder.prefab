@@ -67,20 +67,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
   sourceCode: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\n$.onStart(()
-    => {\n    $.state.customData = {};\n    $.getItemsNear($.getPosition(), 0.1).forEach(item
-    => {\n        if (item.id === \"5570182165721890090\") { // ConditionManager\n           
-    item.send(\"exp_conditionDependentObject\", true);\n        }\n    });\n})\n\n$.onUpdate(()
-    => {\n    if ($.getStateCompat(\"this\", \"exp_conditionChanged\", \"boolean\"))
-    {\n        $.setStateCompat(\"this\", \"exp_conditionChanged\", false);\n       
-    $.state.currentCondition = $.state.conditions[$.getStateCompat(\"global\", \"exp_conditionID\",
-    \"integer\")];\n    }\n\n    if ($.getStateCompat(\"this\", \"exp_recordCustomData\",
-    \"boolean\")) {\n        $.setStateCompat(\"this\", \"exp_recordCustomData\",
-    false);\n        recordData();\n    }\n    if ($.getStateCompat(\"this\", \"exp_uploadCustomData\",
-    \"boolean\")) {\n        $.setStateCompat(\"this\", \"exp_uploadCustomData\",
-    false);\n        uploadData();\n    }\n})\n\n$.onReceive((messageType, arg, sender)
-    => {\n    if (messageType === \"exp_updateConditions\") {\n        $.state.conditions
-    = arg;\n        $.setStateCompat(\"this\", \"exp_conditionChanged\", true);\n   
-    }\n})\n\nfunction recordData () {\n    $.state.customData = calculateData();\n}\n\nfunction
+    => {\n    $.state.customData = {};\n    const conditionManager = $.worldItemReference(\"ConditionManager\");\n   
+    if (conditionManager) {\n        conditionManager.send(\"exp_conditionDependentObject\",
+    true);\n    }\n})\n\n$.onUpdate(() => {\n    if ($.getStateCompat(\"this\", \"exp_conditionChanged\",
+    \"boolean\")) {\n        $.setStateCompat(\"this\", \"exp_conditionChanged\",
+    false);\n        $.state.currentCondition = $.state.conditions[$.getStateCompat(\"global\",
+    \"exp_conditionID\", \"integer\")];\n    }\n\n    if ($.getStateCompat(\"this\",
+    \"exp_recordCustomData\", \"boolean\")) {\n        $.setStateCompat(\"this\",
+    \"exp_recordCustomData\", false);\n        recordData();\n    }\n    if ($.getStateCompat(\"this\",
+    \"exp_uploadCustomData\", \"boolean\")) {\n        $.setStateCompat(\"this\",
+    \"exp_uploadCustomData\", false);\n        uploadData();\n    }\n})\n\n$.onReceive((messageType,
+    arg, sender) => {\n    if (messageType === \"exp_updateConditions\") {\n       
+    $.state.conditions = arg;\n        $.setStateCompat(\"this\", \"exp_conditionChanged\",
+    true);\n    }\n})\n\nfunction recordData () {\n    $.state.customData = calculateData();\n}\n\nfunction
     uploadData () {\n    $.log(\"Upload custom data: \" + JSON.stringify($.state.customData));\n   
     let request = {\n        type: \"uploadCustomData\",\n        token: token ||
     \"\",\n        dataByFileName: JSON.stringify($.state.customData),\n        eID:
