@@ -61,6 +61,8 @@ public class StateListEditor : EditorWindow
 
         serializedStateList.Update();
 
+        var stateOrderChanged = false;
+
         for (int i = 0; i < statesProperty.arraySize; i++)
         {
             EditorGUILayout.BeginHorizontal();
@@ -120,6 +122,7 @@ public class StateListEditor : EditorWindow
                 if (i > 0)
                 {
                     statesProperty.MoveArrayElement(i, i - 1);
+                    stateOrderChanged = true;
                 }
             }
 
@@ -129,6 +132,7 @@ public class StateListEditor : EditorWindow
                 if (i < statesProperty.arraySize - 1)
                 {
                     statesProperty.MoveArrayElement(i, i + 1);
+                    stateOrderChanged = true;
                 }
             }
 
@@ -136,6 +140,7 @@ public class StateListEditor : EditorWindow
             {
                 GUI.FocusControl(null); // Unfocus any field
                 statesProperty.DeleteArrayElementAtIndex(i);
+                stateOrderChanged = true;
             }
             EditorGUI.EndDisabledGroup();
 
@@ -231,6 +236,9 @@ public class StateListEditor : EditorWindow
         serializedStateList.ApplyModifiedProperties();
 
         UpdateSceneObjects();
+        if (stateOrderChanged) {
+            UpdateStateDependentObjectsAfterReorder();
+        }
     }
 
     private void UpdateSceneObjects()
@@ -534,6 +542,61 @@ public class StateListEditor : EditorWindow
             else
             {
                 Debug.LogWarning("Property not found: logic.statements");
+            }
+        }
+    }
+
+    private void UpdateStateDependentObjectsAfterReorder()
+    {
+        GameObject statesObject = GameObject.Find("States");
+        if (statesObject != null)
+        {
+            for (int i = 0; i < stateList.States.Length; i++)
+            {
+                string stateName = stateList.States[i].StateName;
+                Transform stateTransform = statesObject.transform.Find(stateName);
+
+                if (stateTransform != null)
+                {
+                    Transform objectsTransform = stateTransform.Find("Objects");
+                    if (objectsTransform != null)
+                    {
+                        foreach (Transform objTransform in objectsTransform)
+                        {
+                            GameObject stateDependentObject = objTransform.gameObject;
+                            UpdateStateIdForObject(stateDependentObject, i); // Update with the new state_id
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void UpdateStateIdForObject(GameObject obj, int newStateId)
+    {
+        // Retrieve the ItemLogic component and update the state_id
+        Component itemLogic = obj.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
+        if (itemLogic != null)
+        {
+            SerializedObject serializedComp = new SerializedObject(itemLogic);
+            SerializedProperty specificProperty = serializedComp.FindProperty("logic.statements");
+
+            if (specificProperty != null && specificProperty.isArray)
+            {
+                for (int i = 0; i < specificProperty.arraySize; i++)
+                {
+                    SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
+                    if (targetKey != null && targetKey.stringValue == "state_id")
+                    {
+                        SerializedProperty stateIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
+                        if (stateIdProp != null)
+                        {
+                            stateIdProp.intValue = newStateId; // Set the new state_id
+                            serializedComp.ApplyModifiedProperties();
+                            break;
+                        }
+                    }
+                }
             }
         }
     }

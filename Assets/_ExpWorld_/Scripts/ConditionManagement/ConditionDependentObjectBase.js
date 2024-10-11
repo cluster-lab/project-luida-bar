@@ -1,19 +1,18 @@
-/* Don't edit the code below unless you are not accessing experiment conditions! */
 $.onStart(() => {
     const conditionManager = $.worldItemReference("ConditionManager");
     if (conditionManager) {
         conditionManager.send("exp_conditionDependentObject", true);
     }
-    init();
+    Awake();
 })
 
 $.onUpdate((deltaTime) => {
     if ($.getStateCompat("this", "exp_conditionChanged", "boolean")) {
         $.setStateCompat("this", "exp_conditionChanged", false);
         $.state.currentCondition = $.state.conditions[$.getStateCompat("global", "exp_conditionID", "integer")];
-        onConditionChanged();
+        OnConditionChanged();
     }
-    tick(deltaTime);
+    Update(deltaTime);
 })
 
 $.onReceive((messageType, arg, sender) => {
@@ -21,20 +20,13 @@ $.onReceive((messageType, arg, sender) => {
         $.state.conditions = arg;
         $.setStateCompat("this", "exp_conditionChanged", true);
     }
+    OnReceive(messageType, arg, sender);
 })
-/* Don't edit the code above unless you are not accessing experiment conditions! */
 
-// Execution when initialized
-function init() {
-    
-}
+function Awake() {}
 
-// Execution on every frame
-function tick (deltaTime) {
-    // e.g. if ($.state.currentCondition["color"] === "R") $.state.timer = $.state.timer + deltaTime;
-}
+function Update (deltaTime) {}
 
-// Execution when condition changed
-function onConditionChanged () {
-    // e.g. if ($.state.currentCondition["color"] === "R") $.setStateCompat("this", "isEnabled", true);
-}
+function OnConditionChanged () {}
+
+function OnReceive (messageType, arg, sender) {}

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7109300922016184403}
   - component: {fileID: 7109300922016184400}
   - component: {fileID: 2996382208203581802}
+  - component: {fileID: 2159745739191523396}
   m_Layer: 0
   m_Name: ConditionDependentObject
   m_TagString: Untagged
@@ -62,9 +63,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e61061896c654489a41575fc291bf4a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sourceCodeAsset: {fileID: 5022602860645237092, guid: 784839739034343af91996ecc0e3c21a,
-    type: 3}
-  sourceCode: 
+  sourceCodeAsset: {fileID: 0}
+  sourceCode: "$.onStart(() => {\n    const conditionManager = $.worldItemReference(\"ConditionManager\");\n   
+    if (conditionManager) {\n        conditionManager.send(\"exp_conditionDependentObject\",
+    true);\n    }\n    Awake();\n})\n\n$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\",
+    \"exp_conditionChanged\", \"boolean\")) {\n        $.setStateCompat(\"this\",
+    \"exp_conditionChanged\", false);\n        $.state.currentCondition = $.state.conditions[$.getStateCompat(\"global\",
+    \"exp_conditionID\", \"integer\")];\n        OnConditionChanged();\n    }\n   
+    Update(deltaTime);\n})\n\n$.onReceive((messageType, arg, sender) => {\n    if
+    (messageType === \"exp_updateConditions\") {\n        $.state.conditions = arg;\n       
+    $.setStateCompat(\"this\", \"exp_conditionChanged\", true);\n    }\n})\r\n//
+    Execution on initialization\nfunction Awake() {\n    \n}\n\n// Execution on every
+    frame\nfunction Update (deltaTime) {\n    // e.g. if ($.state.currentCondition[\"color\"]
+    === \"R\") $.state.timer = $.state.timer + deltaTime;\n}\n\n// Execution when
+    condition changed\nfunction OnConditionChanged () {\n    // e.g. if ($.state.currentCondition[\"color\"]
+    === \"R\") $.setStateCompat(\"this\", \"isEnabled\", true);\n}"
 --- !u!114 &2996382208203581802
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123,3 +136,21 @@ MonoBehaviour:
               operatorExpression:
                 operator: 0
                 operands: []
+--- !u!114 &2159745739191523396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7109300922016184401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466c56cb3cb32ec48b21ffb81ad21213, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clusterScripts:
+  - {fileID: 5022602860645237092, guid: e6415ce490ab34c5796924e103ed3325, type: 3}
+  - {fileID: 5022602860645237092, guid: ac451bbf4738d43518b3f4eb2ae9a1f1, type: 3}
+  playerScripts: []
+  clusterScriptMD5s: []
+  playerScriptMD5s: []
