@@ -10,4 +10,13 @@ $.onUpdate((deltaTime) => {
     if ($.getStateCompat("this", "state_isActive", "boolean")) {
         DuringState(deltaTime);
     }
+    Update(deltaTime);
 })
+
+function OnStateEnter() {}
+
+function OnStateExit () {}
+
+function DuringState (deltaTime) {}
+
+function Update (deltaTime) {}
