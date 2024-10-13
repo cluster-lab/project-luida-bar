@@ -5,9 +5,6 @@
 $.onStart(() => {
     $.state.answerValue = null;
     $.state.destroyable = false;
-    $.getItemsNear($.getPosition(), 0.1).forEach(item => {
-        item.send("form_on_answer_option_spawned", true);
-    });
 })
 
 $.onUpdate(() => {

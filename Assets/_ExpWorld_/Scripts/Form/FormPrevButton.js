@@ -1,5 +1,3 @@
 $.onInteract(() => {
-    $.getItemsNear($.getPosition(), 0.1).forEach(item => {
-        item.send("form_to_prev", true);
-    });
+    $.worldItemReference("FormController").send("form_to_prev", true);
 })

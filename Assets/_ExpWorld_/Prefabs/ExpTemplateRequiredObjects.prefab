@@ -31,6 +31,7 @@ Transform:
   - {fileID: 2963938157378484329}
   - {fileID: 5780940465525030907}
   - {fileID: 6324218061196038480}
+  - {fileID: 1488493987227822950}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -171,6 +172,93 @@ MonoBehaviour:
   worldItemReferences:
   - id: ConditionManager
     item: {fileID: 2963938157378484330}
+--- !u!1 &8009137371772992329
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1488493987227822950}
+  - component: {fileID: 7311121729470545767}
+  - component: {fileID: 7159572344244222357}
+  m_Layer: 0
+  m_Name: WorldItemTemplateList
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1488493987227822950
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8009137371772992329}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8428161057630051971}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7311121729470545767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8009137371772992329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id:
+    value: 0
+  itemName: 
+  size: {x: 0, y: 0, z: 0}
+--- !u!114 &7159572344244222357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8009137371772992329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02f60bfc9a2c4b04bcd3524b54a1e838, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldItemTemplates:
+  - id: answer-option-radio-button
+    worldItemTemplate: {fileID: 3154859385316323940, guid: e0135150919d3425d9321a1d6b839390,
+      type: 3}
+    itemTemplateId:
+      value: 0
+  - id: answer-option-scale-button
+    worldItemTemplate: {fileID: 5655618349765678224, guid: d87eaf88df6164b3691ec804ee4b20f6,
+      type: 3}
+    itemTemplateId:
+      value: 0
+  - id: answer-option-checkbox
+    worldItemTemplate: {fileID: 4079270697995583237, guid: adacc751b651243649d6bd01aed5edd7,
+      type: 3}
+    itemTemplateId:
+      value: 0
+  - id: answer-option-toggle
+    worldItemTemplate: {fileID: 8114133903284080281, guid: 615257e460f9342fe96cfb1047607cd6,
+      type: 3}
+    itemTemplateId:
+      value: 0
+  - id: answer-option-text-input
+    worldItemTemplate: {fileID: 4606635516652285656, guid: 3cef5beb514bb46b79880a139be71bbc,
+      type: 3}
+    itemTemplateId:
+      value: 0
 --- !u!1001 &7533049804082866632
 PrefabInstance:
   m_ObjectHideFlags: 0

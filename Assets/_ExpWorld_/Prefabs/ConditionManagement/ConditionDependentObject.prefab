@@ -64,20 +64,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "$.onStart(() => {\n    const conditionManager = $.worldItemReference(\"ConditionManager\");\n   
-    if (conditionManager) {\n        conditionManager.send(\"exp_conditionDependentObject\",
-    true);\n    }\n    Awake();\n})\n\n$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\",
-    \"exp_conditionChanged\", \"boolean\")) {\n        $.setStateCompat(\"this\",
-    \"exp_conditionChanged\", false);\n        $.state.currentCondition = $.state.conditions[$.getStateCompat(\"global\",
-    \"exp_conditionID\", \"integer\")];\n        OnConditionChanged();\n    }\n   
-    Update(deltaTime);\n})\n\n$.onReceive((messageType, arg, sender) => {\n    if
-    (messageType === \"exp_updateConditions\") {\n        $.state.conditions = arg;\n       
-    $.setStateCompat(\"this\", \"exp_conditionChanged\", true);\n    }\n})\r\n//
-    Execution on initialization\nfunction Awake() {\n    \n}\n\n// Execution on every
-    frame\nfunction Update (deltaTime) {\n    // e.g. if ($.state.currentCondition[\"color\"]
-    === \"R\") $.state.timer = $.state.timer + deltaTime;\n}\n\n// Execution when
-    condition changed\nfunction OnConditionChanged () {\n    // e.g. if ($.state.currentCondition[\"color\"]
-    === \"R\") $.setStateCompat(\"this\", \"isEnabled\", true);\n}"
+  sourceCode: "$.onStart(() => {\r\n    const conditionManager = $.worldItemReference(\"ConditionManager\");\r\n   
+    if (conditionManager) {\r\n        conditionManager.send(\"exp_conditionDependentObject\",
+    true);\r\n    }\r\n    Awake();\r\n})\r\n\r\n$.onUpdate((deltaTime) => {\r\n   
+    if ($.getStateCompat(\"this\", \"exp_conditionChanged\", \"boolean\")) {\r\n       
+    $.setStateCompat(\"this\", \"exp_conditionChanged\", false);\r\n        $.state.currentCondition
+    = $.state.conditions[$.getStateCompat(\"global\", \"exp_conditionID\", \"integer\")];\r\n       
+    OnConditionChanged();\r\n    }\r\n    Update(deltaTime);\r\n})\r\n\r\n$.onReceive((messageType,
+    arg, sender) => {\r\n    if (messageType === \"exp_updateConditions\") {\r\n       
+    $.state.conditions = arg;\r\n        $.setStateCompat(\"this\", \"exp_conditionChanged\",
+    true);\r\n    }\r\n    OnReceive(messageType, arg, sender);\r\n})\r\n\r\nfunction
+    Awake() {}\r\n\r\nfunction Update (deltaTime) {}\r\n\r\nfunction OnConditionChanged
+    () {}\r\n\r\nfunction OnReceive (messageType, arg, sender) {}\r\n/*\r\n    *****
+    Don't use $.onStart in this file! *****\r\n    Implement the Awake function below
+    for executions on initialization\r\n*/\r\nfunction Awake() {\r\n    \r\n}\r\n/*\r\n   
+    ***** Don't use $.onUpdate! *****\r\n    Implement the Update function below
+    for executions every frame\r\n*/\r\nfunction Update (deltaTime) {\r\n    // e.g.
+    if ($.state.currentCondition[\"color\"] === \"R\") $.state.timer = $.state.timer
+    + deltaTime;\r\n}\r\n\r\n/*\r\n    Implement the OnConditionChanged function
+    below for executions when moving to next trial (i.e. experimental condition is
+    changed)\r\n*/\r\nfunction OnConditionChanged () {\r\n    // e.g. if ($.state.currentCondition[\"color\"]
+    === \"R\") $.setStateCompat(\"this\", \"isEnabled\", true);\r\n}\r\n\r\n/*\r\n   
+    ***** Don't use $.onReceive in this file! *****\r\n    If necessary, implement
+    the OnReceive function below\r\n*/\r\n// function OnReceive (messageType, arg,
+    sender) {}"
 --- !u!114 &2996382208203581802
 MonoBehaviour:
   m_ObjectHideFlags: 0
