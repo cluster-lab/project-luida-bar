@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 using System.IO;
@@ -77,3 +78,4 @@ public class ExpIdentifierEditor
         Debug.Log($"Experiment identifiers saved to {filePath}");
     }
 }
+#endif

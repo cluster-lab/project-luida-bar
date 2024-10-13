@@ -126,13 +126,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 5022602860645237092, guid: e228c7ca8dec0428ba2fb1c353edbb9e,
     type: 3}
-  sourceCode: "$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\", \"state_exit\",
-    \"boolean\")) {\n        OnStateExit();\n        $.setStateCompat(\"this\", \"state_exit\",
-    false);\n    }\n    if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\"))
-    {\n        $.setStateCompat(\"this\", \"state_enter\", false);\n        OnStateEnter();\n   
-    }\n    if ($.getStateCompat(\"this\", \"state_isActive\", \"boolean\")) {\n       
-    DuringState(deltaTime);\n    }\n})\n\r\nfunction OnStateEnter() {}\n\nfunction
-    OnStateExit () {}\n\nfunction DuringState (deltaTime) {}"
+  sourceCode: "$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\",
+    \"state_exit\", \"boolean\")) {\r\n        OnStateExit();\r\n        $.setStateCompat(\"this\",
+    \"state_exit\", false);\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
+    \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
+    OnStateEnter();\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_isActive\",
+    \"boolean\")) {\r\n        DuringState(deltaTime);\r\n    }\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
+    OnStateEnter() {}\r\n\r\nfunction OnStateExit () {}\r\n\r\nfunction DuringState
+    (deltaTime) {}\r\n\r\nfunction Update (deltaTime) {}\r\nfunction OnStateEnter()
+    {}\r\n\r\nfunction OnStateExit () {}\r\n\r\nfunction DuringState (deltaTime)
+    {}\r\n\r\n/*\r\n    ***** Don't use $.onUpdate in this file! *****\r\n    In
+    addition to function DuringState,\r\n    if you need any other executions to
+    run every frame,\r\n    implement them inside the Update function below.\r\n*/\r\n//
+    function Update (deltaTime) {}"
 --- !u!114 &5660514857068071924
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,98 +1,44 @@
-const dummyQuestions = [
-    { title: "どのくらいの頻度でVRを体験していますか？", description: "どのくらいの頻度でVRを体験していますか？", questionTypeID: 0, answerOptions: ["なし", "年に一回未満", "年に一回以上", "月に1~2回くらい", "週1回くらい", "週2~3回くらい", "週4回以上"], isRequired: true },
-    { title: "VRについて興味ありますか？", description: "1:全く興味ない、7:とても興味ある", questionTypeID: 1, answerOptions: [1, 2, 3, 4, 5, 6, 7], isRequired: true },
-    { title: "VRデバイスのメーカーとして認識している会社を選んでください", description: "会社として聞いたことはあるが、VRメーカーであることは知っていなければ、選択しないでください", questionTypeID: 2, answerOptions: ["Meta (Oculus)", "Vive", "Valve", "Sony", "Pico", "DPVR"], isRequired: true },
-    { title: "10歳以上ですか？", description: "10歳未満の方はVRデバイスの使用をお控えください", questionTypeID: 3, answerOptions: [], isRequired: true },
-    { title: "コメント", description: "何かコメントがあればどうぞ！", questionTypeID: 4, answerOptions: [], isRequired: false }
-]
-
-const answerOptionUISpawnCenter = new Vector3(0, -0.3, 0);
-
-const attrsByQuestionType = [
-    { questionType: "Options (single answer)",      answerType: "radio",    aTemplateName: "radio_button" },
-    { questionType: "Linear scale",                 answerType: "radio",    aTemplateName: "scale_button" },
-    { questionType: "Options (multiple answers)",   answerType: "check",    aTemplateName: "checkbox" },
-    { questionType: "Toggle",                       answerType: "toggle",   aTemplateName: "toggle" },
-    { questionType: "Text",                         answerType: "text",     aTemplateName: "text_input" },
-]
-
 $.onStart(() => {
     reset();
-})
+});
 
-$.onUpdate(() => {
+$.onUpdate((deltaTime) => {
+    // Ensure that the question is only initialized after all currently displayed answer options are destroyed
     if (!$.state.isInitiated && $.getStateCompat("this", "form_set_content_active", "boolean")) {
         $.state.isInitiated = true;
         $.state.qID = 0;
+        $.subNode("LoadingHint").setEnabled(true);
 
-        const questionnaireID = $.getStateCompat("this", "qID", "integer") || -1;
+        // Reintroduced callExternal to get questions
+        const questionnaireID = $.getStateCompat("this", "qID", "integer");
         if (questionnaireID !== -1) {
-            let request = {type: "questions", token: token || "", eID: expID || "", qID: questionnaireID};
+            let request = { type: "questions", token: token || "", eID: expID || "", qID: questionnaireID };
             $.callExternal(JSON.stringify(request), "getQuestions");
         }
     }
-    if ($.state.waitBeforeSpawningAnswerOption) {
-        if ($.state.timer < ($.state.spawningAnswerID === 0 ? 20 : 15)) {
-            $.state.timer = $.state.timer + 1;
-        } else {
-            $.state.waitBeforeSpawningAnswerOption = false;
-            $.state.timer = 0;
-            $.sendSignalCompat("this", "form_spawn_" + attrsByQuestionType[$.state.questionTypeID].aTemplateName);
-        }
+
+    if ($.state.tryInitQuestion && !$.state.answerOptionUIs.some(ans => ans.exists())) {
+        initQuestion();
     }
-    if ($.state.waitBeforeInitQuestion) {
-        if ($.state.timer < 10) {
-            $.state.timer = $.state.timer + 1;
-        } else {
-            $.state.waitBeforeInitQuestion = false;
-            $.state.timer = 0;
-            initQuestion();
-        }
+
+    // Timer to trigger batch generation of answer options
+    $.state.timer = ($.state.timer || 0) + deltaTime;
+    if ($.state.timer > 0.2 && $.state.pendingAnswerOptions && $.state.pendingAnswerOptions.length > 0) {
+        spawnNextAnswerOption();
+        $.state.timer = 0; // Reset the timer after generating a batch
     }
-})
+});
 
 $.onInteract(() => {
     $.setStateCompat("this", "form_set_content_active", true);
     $.setStateCompat("this", "form_set_start_hint_active", false);
 });
 
-$.onReceive((messageType, arg, sender) => {
+$.onReceive((messageType, arg) => {
     if (!$.state.isInitiated) return;
     switch (messageType) {
-        case "form_on_answer_option_spawned":
-            if (arg && $.state.answerOptions) {
-                sender.send("form_init_answer_option", { value: $.state.spawningAnswerID + 1, label: $.state.answerOptions[$.state.spawningAnswerID] });
-                if ($.state.spawningAnswerID < $.state.answerOptions.length - 1) {
-                    $.state.spawningAnswerID = $.state.spawningAnswerID + 1;
-                    spawnAnswerOptionUI();
-                }
-            }
-            break;
         case "form_answer":
-            switch ($.state.questionTypeID) {
-                case 0: // radio buttons
-                case 1: // linear scale
-                    $.subNode("RadioButtonIndicator").setEnabled(true);
-                    $.subNode("RadioButtonIndicator").setPosition($.state.answerOptionLocalPositions[arg - 1].clone());
-                case 3: // toggle
-                case 4: // text
-                    $.state.tmpAnswer = arg;
-                    break;
-                case 2: // checkboxes
-                    if (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];
-                    if (arg.isOn) {
-                        if (!$.state.tmpAnswer.includes(arg.value)) $.state.tmpAnswer = [ ...$.state.tmpAnswer, arg.value ];
-                    } else {
-                        if ($.state.tmpAnswer.includes(arg.value)) {
-                            $.state.tmpAnswer = $.state.tmpAnswer.filter(item => {
-                                return item !== arg.value;
-                            });
-                        }
-                    }
-                    break;
-                default:
-                    break;
-            }
+            handleFormAnswer(arg);
             break;
         case "form_to_next":
             saveAnswer();
@@ -100,79 +46,137 @@ $.onReceive((messageType, arg, sender) => {
         case "form_to_prev":
             toPrev();
             break;
-        default:
-            break;
     }
-})
+});
 
-function tryInitQuestion () {
-    $.state.timer = 0;
-    $.state.waitBeforeInitQuestion = true;
+function tryInitQuestion() {
+    $.state.tryInitQuestion = true;
 }
 
-function initQuestion () { // options: array of string
+function initQuestion() {
+    // Prepare to stop destruction of answer options and initialize a new question
+    $.sendSignalCompat("this", "form_stop_destroy_answer_option");
+    $.state.tryInitQuestion = false;
+    $.state.answerOptionUIs = [];
     $.state.answerOptionLocalPositions = [];
-    q = $.state.questions[$.state.qID]
+    const q = $.state.questions[$.state.qID];
     $.subNode("Title").setText(q.title);
     $.subNode("Description").setText(q.description);
     $.state.questionTypeID = q.questionTypeID;
     $.state.answerOptions = q.answerOptions;
-    $.state.spawningAnswerID = 0;
     spawnAnswerOptionUI();
 }
 
-function setAnswerOptionUISpawnPoint () {
-    let pos = answerOptionUISpawnCenter.clone();
-    let rot = new Quaternion();
+function spawnAnswerOptionUI() {
+    $.state.pendingAnswerOptions = $.state.answerOptions.slice();
+    $.state.answerOptionIndex = 0;
+}
+
+function addAnswerOption (id, localPos, rot, ansId) {
+    const itemHandle = $.createItem(id, $.getPosition().clone().add(localPos.clone().applyQuaternion(rot)), rot);
+    $.state.answerOptionUIs = [...$.state.answerOptionUIs, itemHandle];
+    $.state.answerOptionLocalPositions = [...$.state.answerOptionLocalPositions, localPos];
+    itemHandle.send("form_init_answer_option", { value: ansId + 1, label: $.state.answerOptions[ansId] });
+}
+
+function spawnNextAnswerOption() {
+    const n = $.state.pendingAnswerOptions.length || 0;
+    if ($.state.answerOptionIndex >= n) {
+        $.state.pendingAnswerOptions = [];
+        return;
+    }
+
+    let rotOffset = $.getRotation().clone();
+    let answerUiId = "";
+
+    // Maximum number of rows (per column)
+    const maxRows = 5;
+    const batchSize = 3; // Number of options to generate in each batch
+    const numColumns = Math.ceil(n / maxRows); // Calculate number of columns based on total options and max rows per column
+
+    // Adjust x-position based on number of columns to center them
+    const totalWidth = numColumns * 0.5; // Adjust total width depending on your frame size
+    let i = 0;
+
+    for (i = 0; i < batchSize && $.state.answerOptionIndex < n; i++) {
+        let columnIndex = Math.floor($.state.answerOptionIndex / maxRows);
+        let rowIndex = $.state.answerOptionIndex % maxRows;
+
+        // Calculate dynamic x and y positions
+        let x = (columnIndex - (numColumns - 1) / 2) - 0.2; // Adjust 0.5 for spacing between columns
+        let y = ((maxRows - 1) / 2 - rowIndex) * 0.2 - 0.1; // 0.2 is the vertical spacing between rows
+
+        switch ($.state.questionTypeID) {
+            case 0: // Radio Buttons (single answer)
+            case 2: // Checkbox (multiple answers)
+                answerUiId = new WorldItemTemplateId($.state.questionTypeID === 0
+                    ? "answer-option-radio-button"
+                    : "answer-option-checkbox");
+
+                // Add the option at calculated x and y positions
+                addAnswerOption(answerUiId, new Vector3(x, y, 0), rotOffset, $.state.answerOptionIndex);
+                break;
+
+            case 1: // Linear Scale
+                answerUiId = new WorldItemTemplateId("answer-option-scale-button");
+
+                let scaleX = ((n > 11 ? 3 : 2) / (n - 1)) * ($.state.answerOptionIndex - (n - 1) / 2);
+                addAnswerOption(answerUiId, new Vector3(scaleX, 0, 0), rotOffset, $.state.answerOptionIndex);
+                break;
+
+            case 3: // Toggle
+                answerUiId = new WorldItemTemplateId("answer-option-toggle");
+                addAnswerOption(answerUiId, new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);
+                break;
+
+            case 4: // Text Input
+                answerUiId = new WorldItemTemplateId("answer-option-text-input");
+                addAnswerOption(answerUiId, new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);
+                break;
+
+            default:
+                break;
+        }
+
+        $.state.answerOptionIndex += 1;
+    }
+}
+
+function destroyAnswerOptionUIs() {
+    // Send a signal to destroy the current answer option UI elements
+    $.sendSignalCompat("this", "form_destroy_answer_option");
+}
+
+function handleFormAnswer(arg) {
+    let posOffset = $.getPosition().clone();
     switch ($.state.questionTypeID) {
-        case 0:
-        case 2:
-            // let maxStringLength = Math.min(30, $.state.answerOptions.reduce((maxLength, str) => Math.max(maxLength, str.length), 0));
-            let x = 0;
-            // if ($.state.answerOptions.length <= 5) {
-            //     x = -0.1 - 0.3 * ((maxStringLength - 1) / 7)
-            // }
-            // $.log(x);
-            let y = (($.state.answerOptions.length - 1 - $.state.spawningAnswerID) - ($.state.answerOptions.length - 1) / 2) * 0.3;
-            pos = pos.add(new Vector3(x, y, 0));
-            // let textSize = 0.05;
-            // max 5 options (rows) per column
-            // 1 columns: x = -0.1 - 0.3 * ((chars - 1) / 7), textsize = 0.05, max 30 chars per text line, 1~2 lines
-            // 2 columns: x = -0.5 - 0.065 * (chars - 1) & 0.2, textsize = 0.04, 15 chars per text line, 1~2 lines; textsize = 0.03 for 3 lines
-            // > 3 columns: x = -1.5 + 0.1 + (3 / columnCnt) * columnID, textsize = 0.05 - chars * (0.025/(max chars per line)), max chars per line = 3->15, 4->10, 5->6, 6->4 = (60/columnCnt - 5)
+        case 0: // Radio Buttons
+        case 1: // Linear Scale
+            $.subNode("RadioButtonIndicator").setEnabled(true);
+            $.subNode("RadioButtonIndicator").setPosition($.state.answerOptionLocalPositions[arg - 1].clone());
+        case 3: // Toggle
+        case 4: // Text Input
+            $.state.tmpAnswer = arg;
             break;
-        case 1:
-            pos = pos.add(new Vector3((($.state.answerOptions.length > 11 ? 3 : 2) / ($.state.answerOptions.length - 1)) * ($.state.spawningAnswerID - ($.state.answerOptions.length - 1) / 2), 0, 0));
-            break;
-        case 3:
-        case 4:
-            break;
-        default:
+        case 2: // Checkbox
+            if (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];
+            if (arg.isOn) {
+                if (!$.state.tmpAnswer.includes(arg.value)) $.state.tmpAnswer = [...$.state.tmpAnswer, arg.value];
+            } else {
+                $.state.tmpAnswer = $.state.tmpAnswer.filter(item => item !== arg.value);
+            }
             break;
     }
-    $.state.answerOptionLocalPositions = [ ...$.state.answerOptionLocalPositions, pos.clone() ];
-    $.subNode("AnswerOptionSpawnPoint").setPosition(pos.clone());
-    $.subNode("AnswerOptionSpawnPoint").setRotation(rot.clone());
 }
 
-function spawnAnswerOptionUI () {
-    setAnswerOptionUISpawnPoint();
-    $.state.waitBeforeSpawningAnswerOption = true;
-}
-
-function destroyAnswerOptionUIs () {
-    $.setStateCompat("owner", "form_destroy_answer_option", true);
-}
-
-function saveAnswer () {
+function saveAnswer() {
     if (!$.state.questions[$.state.qID]) return;
     if ($.state.questions[$.state.qID].isRequired && (!$.state.tmpAnswer && $.state.tmpAnswer !== false)) return;
     $.state.answers = { ...$.state.answers, [$.state.qID]: $.state.tmpAnswer };
-    $.log("Update answers: " + JSON.stringify($.state.answers));
     toNext();
 }
 
-function submitAnswers () {
+function submitAnswers() {
     $.log("Send final answers: " + JSON.stringify($.state.answers));
     let request = {
         type: "questionAnswers",
@@ -188,71 +192,61 @@ function submitAnswers () {
     }
     $.callExternal(JSON.stringify(request), "postQuestionAnswers");
     $.setStateCompat("this", "form_set_content_active", false);
+    reset(false);
 }
 
-function toNext () {
+function toNext() {
+    destroyAnswerOptionUIs(); // Ensure previous UI elements are destroyed
     $.state.qID = $.state.qID + 1;
     $.subNode("RadioButtonIndicator").setEnabled(false);
     if ($.state.qID >= $.state.questions.length) {
         submitAnswers();
     } else {
-        destroyAnswerOptionUIs();
         $.state.tmpAnswer = null;
-        // TODO: hide selection indicator
         tryInitQuestion();
     }
 }
 
-function toPrev () {
+function toPrev() {
     if ($.state.qID <= 0) return;
-    destroyAnswerOptionUIs();
+    destroyAnswerOptionUIs(); // Ensure previous UI elements are destroyed
+    $.subNode("RadioButtonIndicator").setEnabled(false);
     $.state.qID = $.state.qID - 1;
     $.state.tmpAnswer = null;
-    // TODO: hide selection indicator
     tryInitQuestion();
-    $.subNode("RadioButtonIndicator").setEnabled(false);
 }
 
-function reset () {
-    destroyAnswerOptionUIs();
-    $.setStateCompat("this", "form_set_start_hint_active", true);
+function reset(showStartHint = true) {
+    destroyAnswerOptionUIs(); // Reset will also destroy any existing answer option UIs
+    $.setStateCompat("this", "form_set_start_hint_active", showStartHint);
     $.subNode("RadioButtonIndicator").setEnabled(false);
     $.state.answers = {};
     $.state.qID = 0;
-    $.state.answerType = -1;
-    $.state.tmpAnswer = null;
     $.state.isInitiated = false;
-    $.state.waitBeforeSpawningAnswerOption = false;
-    $.state.waitBeforeInitQuestion = false;
-    $.state.timer = 0;
+    $.state.tryInitQuestion = false;
+    $.state.answerOptionUIs = [];
     $.state.answerOptionLocalPositions = [];
+    $.state.answerOptionIndex = 0;
+    $.state.pendingAnswerOptions = [];
     $.setStateCompat("this", "form_set_content_active", false);
-    // TODO: hide selection indicator
 }
 
-$.onExternalCallEnd((res, meta, err) =>
-{
+$.onExternalCallEnd((res, meta, err) => {
     if (res == null) {
         $.log("callExternal ERROR: " + err);
         return;
     }
 
     if (meta === "getQuestions") {
-        // $.log(res);
-        let parsedRes = JSON.parse(res);
+        const parsedRes = JSON.parse(res);
         $.state.questions = parsedRes.questions;
+        $.subNode("LoadingHint").setEnabled(false);
         tryInitQuestion();
-
-        // for(let i = 0; i < Math.min(parsedRes.quests.length, numberPerPage); i++)
-        // {
-        //     const questTitle = $.subNode("Quest_" + i);
-        //     if (questTitle) questTitle.setText(parsedRes.quests[i].title);
-        // }
     }
 
     if (meta === "postQuestionAnswers") {
         $.log("Answers recorded!");
         $.sendSignalCompat("this", "state_triggerTransition");
-        reset();
+        reset(false);
     }
 });
