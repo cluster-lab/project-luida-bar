@@ -73,3 +73,6 @@ crashlytics-build.properties
 # probuilder settings
 /ProjectSettings/Packages/com.unity.probuilder/*
 .vsconfig
+
+# JetBrains Rider
+**/.idea/
