@@ -1,2 +1,2 @@
-expID = "test";
-token = "test";
+expID = "expID_example";
+token = "token_example";

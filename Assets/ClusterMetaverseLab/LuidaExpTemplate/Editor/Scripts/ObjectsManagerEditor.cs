@@ -56,6 +56,18 @@ public class ObjectsManagerEditor : EditorWindow
 
     public void OnGUI()
     {
+        if (stateList == null)
+        {
+            string scenePath = UnityEngine.SceneManagement.SceneManager.GetActiveScene().path;
+            string stateListPath = scenePath.Replace("Scenes", "Settings/StateList").Replace(".unity", ".asset");
+            stateList = AssetDatabase.LoadAssetAtPath<StateList>(stateListPath);
+            if (stateList != null)
+            {
+                serializedStateList = new SerializedObject(stateList);
+                statesProperty = serializedStateList.FindProperty("States");
+            }
+        }
+
         scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition); // Start scrollable area
 
         // Instruction text
@@ -68,6 +80,7 @@ public class ObjectsManagerEditor : EditorWindow
         if (stateList == null)
         {
             EditorGUILayout.HelpBox("StateList not found. Please ensure you're in the correct scene with the StateList asset.", MessageType.Error);
+            EditorGUILayout.EndScrollView();
             return;
         }
 
