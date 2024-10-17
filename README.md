@@ -1,15 +1,153 @@
-# Luida's Bar Project - Experiment World Template
+# LUIDA's Implement Template for Experiment Worlds
 
-## Main Features
-- Automatically determine number of trials & condition of each trial by registered within/between-subject variables
-  - Editor window to register the variables
-  - Template script to implement decision of condition from between-subject variables
-- State management
-  - This template follows a State design pattern. We have prepared default states and their transitions for you to use without additional edition, while you can still make your customization (e.g. skip a state, enable auto transition in xx seconds, etc.) with an editor window.
-- Questionnaire generation
-  - You don't need to create game objects for each question or answer. Just register your questionnaire on the web console, retrieve its identifier `qID`, and paste it in the designated field of the questionnaire gameobject in your Unity scene. Game objects for each question and answer will be automatically generated on cluster during the exact experiment session.
-- Data recorder/uploader
-  - cluster continuously records players' positions, poses, actions, to name a few. These data will be formatted to display on the web console. Meanwhile, you can also collect custom data with a provided data recorder/uploader gameobject.
+## Table of Contents
+
+- [Main Features](#main-features)
+- [Tutorial](#tutorial)
+- [Documentation (under construction...)](#documentation-under-construction)
+
+-----
+
+# Main Features
+
+#### Experimental variables & trials management
+This implement template automatically determine number of trials & condition of each trial by registered within/between-subject variables. You can complete the setup within the provided editor window.
+
+We also provided a template script to implement decision of the experimental conditions from between-subject variables.
+
+本実装テンプレートは、登録された参加者内/参加者間変数に基づいて、自動的に試行の数と各試行における実験条件を決定します。
+その設定は提供された設定画面から行うことができます。
+
+また、参加者間変数から実験条件を決定するためのスクリプトのテンプレートも提供しています。
+
+![image](https://github.com/user-attachments/assets/3c2994f4-5bc3-40a7-9812-29f4999d59d6)
+
+#### State management
+This implement template follows a State design pattern. We have prepared default states and their transitions for you to use without additional edition, while you can still make your customization (e.g. skip a state, enable auto transition in xx seconds, etc.) with an editor window.
+
+本実装テンプレートは、ステートデザインパターンに従っています。デフォルトのステートとその遷移が用意されており、追加編集なしで使用可能です。
+ただし、提供されたエディタウィンドウを使って、ステートを追加・削除・スキップ・繰り返したり、XX秒後に自動遷移を有効にしたりといったカスタマイズも可能です。
+
+![image](https://github.com/user-attachments/assets/d59d3e5c-e30e-429d-b83a-2ebca1550eb7)
+
+#### Manage gameobjects by states or experimental conditions
+This implement template enables gameobjects to follow state transitions or experiment conditions. You can add such gameobjects from the provided editor window, and then access the attached scripts to edit them. The scripts are also provided with templates to help you implement smoother.
+
+本実装テンプレートでは、ステートの遷移や実験条件に従うゲームオブジェクトを作成できます。
+提供された設定画面からこれらのゲームオブジェクトを作成し、付属のスクリプトにアクセスして編集できます。
+そのスクリプトをスムーズに実装するためのテンプレートも用意されています。
+
+![image](https://github.com/user-attachments/assets/b4a2c257-3979-438c-af12-2140ad33d5c0)
+![image](https://github.com/user-attachments/assets/93e9ee07-be0c-4b18-b165-27972d1eacc1)
+
+#### Questionnaire generation
+You don't need to create game objects for each question or answer. Just register your questionnaire on LUIDA's web console, and paste its ID the designated field on the provided editor window. Gameobjects for each question and answer will be automatically generated on cluster during the exact experiment session.
+
+質問紙の質問や回答ごとにゲームオブジェクトを作成する必要はありません。
+LUIDA専用のウェブコンソールに質問紙内容を登録し、提供された設定画面の指定フィールドにIDを貼り付けるだけで、cluster上の実験実施中に自動的にゲームオブジェクトが生成されます。
+
+#### Data recording
+During the exact experiment session, Cluster continuously records players' positions, poses, actions, to name a few. These data will be formatted and display on the web console.
+
+Meanwhile, you can also setup recorders for customized data inside this template in advance.
+The collected data will be listed on LUIDA's web console for you to confirm and download.
+
+実験実施中、clusterはプレイヤーの位置、姿勢、動作などを継続的に記録します。これらのデータはLUIDA専用のウェブコンソール上で整形・表示されます。
+
+同時に、カスタマイズなデータ記録を事前に本実装テンプレート内で設定することも可能です。
+収集されたデータはLUIDA専用のウェブコンソールから確認・ダウンロードできます。
+
+![image](https://github.com/user-attachments/assets/8e227057-d100-4e89-8b41-42f7d394557a)
+
+-----
+
+# Tutorial
+
+### Recommended preliminary knowledge
+
+We recommend you to at least acquire some basic knowledges of the following:
+- Unity
+- JavaScript
+- [Cluster Creator Kit (CCK)](https://docs.cluster.mu/creatorkit/)
+
+### Preparation
+
+[clusterアカウント作成](https://help.cluster.mu/hc/articles/115000827112)
+と
+[本実装テンプレートに必要なバージョンのUnityのインストール](https://docs.cluster.mu/creatorkit/installation/install-unity/)
+を行う。
+本実装テンプレートをCloneする
+
+### Register experiment information on web console
+
+1. ウェブコンソールを開く：https://cluster-lab.github.io/project-luida-web-console/
+（GitHubアカウントを持たず、ウェブコンソールを開けない場合、先にGitHubアカウントを作っておく）
+
+2. 登録してログインする
+
+3. 実験の募集情報を登録する：
+    1. 「Register New Experiment」リンクをクリックして、新しい実験の募集情報を登録する
+    2. 下の画像に示したフィールドを埋める（チュートリアルのため任意の文字列で大丈夫）。その他のフィールドは空白かデフォルト値のまま。
+<table>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/3ccc2bb5-cb02-495e-b876-da06d21b4b14" alt="Image 1" width="500"/></td>
+    <td><img src="https://github.com/user-attachments/assets/f75c5f36-3030-4f72-bbf4-1259d42dac09" alt="Image 2" width="500"/></td>
+  </tr>
+</table>
+
+4. Registerボタンを押すと、情報が保存され、次の画面に表示される。そこで自動的に生成された実験の識別子（eID）を確認する
+
+![image](https://github.com/user-attachments/assets/758a26d4-0fda-47d4-8528-cb98f3f2f2c7)
+
+
+5. 質問紙を登録する：
+    1. 「Questionnaires」ボタンを押して、質問紙一覧画面に移動する
+    2. 「Register New Questionnaire」ボタンをクリックして、実験に使用する質問紙の登録画面に移動する
+        ![image](https://github.com/user-attachments/assets/a21f6e34-a220-4d7f-8956-374d96ad3cb2)
+    3. 質問紙の内容を入力する
+        1. [身体化体験に関する質問紙]([https://rothnroll.de/download/VEQ-Questionnaire-jpJP4.pdf](https://sites.google.com/view/virtualembodimentquestionnaire/download-the-questionnaire))の中から「AC1 私の身体」と「CO1 私の動作 」の質問だけを登録する（現状では全ての質問を登録すると、実験実施中にCCKの送信制限を超える可能性があるため、登録する質問はこの2つに限定してください。
+        2. 各質問に対し、「Add Question」ボタンを押して質問の枠を増やし、図に従ってフィールドを埋めてください。
+        3. すべての質問が入力できたら、「Register」ボタンを押して登録を完了してください。
+          ![image](https://github.com/user-attachments/assets/ab4d5a9d-8b26-4adf-a0c1-c5e31d19ac70)
+    4. 質問紙を確認する：画面が遷移したら、登録された質問紙を確認してください。
+
+![image](https://github.com/user-attachments/assets/3f6dd78e-781c-4406-9d67-3c8b5cc0c258)
+
+### Open the implement template
+
+ダウンロードした実装テンプレートをUnity Hubから起動する
+
+### Link with your cluster account
+
+1. トップメニューからCluster > 外部通信(callExternal)接続先URLを選択する
+![image](https://github.com/user-attachments/assets/9ac1311a-aa09-4e28-95a0-a2081e9883f4)
+
+3. Webでトークン発行ボタンをクリックしてブラウザでトークン発行画面を開く。そこで「トークン作成」ボタンをクリックし、表示されたトークンをコピーしておく。
+<table>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/2c0d3212-e301-417d-a594-8ed1f7dec08f" alt="Image 1" width="400"/></td>
+    <td><img src="https://github.com/user-attachments/assets/4395e140-b709-48ee-b659-52e6a93009fa" alt="Image 2" width="400"/></td>
+    <td><img src="https://github.com/user-attachments/assets/2b5ca13b-14cf-4c77-ae06-ed7ca7792705" alt="Image 2" width="400"/></td>
+  </tr>
+</table>
+
+3. Unityに戻り、トークンを貼り付けて「このトークンを使用」ボタンを押す
+
+![image](https://github.com/user-attachments/assets/df24aab2-684f-4f5b-b287-b451f3c65f6d)
+
+
+### 外部通信用トークンの取得
+
+1. アカウント紐づけ後に現れる画面で、「URLの登録」に以下のURLを」貼り付ける：`https://script.google.com/macros/s/AKfycbyamdYZGjweG65Dkykdw1oT7MxU4ZXoeqPDT3csW1M2mS3jj8gq9kZzO2iKhSBUOfx0Zg/exec`
+2. 表示された「verify用トークン」をコピーしておく
+
+![image](https://github.com/user-attachments/assets/e780e28d-4427-426d-9dc6-fde4d12b6120)
+![image](https://github.com/user-attachments/assets/8c5bea04-d868-4f8c-a664-ae8ae3abcf52)
+
+
+-----
+
+# Documentation (under construction...)
 
 ## Getting started
 
