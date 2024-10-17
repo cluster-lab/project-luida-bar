@@ -647,7 +647,7 @@ PrefabInstance:
     - target: {fileID: 5964733846762761526, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"AOrno6NYYO\";\ntoken = \"cce40841-0061-4e0b-bbed-7789ad91005d\";\n\r\n$.onStart(()
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\n$.onStart(()
         => {\n    $.state.customData = {};\n    const conditionManager = $.worldItemReference(\"ConditionManager\");\n   
         if (conditionManager) {\n        conditionManager.send(\"exp_conditionDependentObject\",
         true);\n    }\n})\n\n$.onUpdate(() => {\n    if ($.getStateCompat(\"this\",
@@ -660,8 +660,7 @@ PrefabInstance:
         \"exp_uploadCustomData\", false);\n        uploadData();\n    }\n})\n\n$.onReceive((messageType,
         arg, sender) => {\n    if (messageType === \"exp_updateConditions\") {\n       
         $.state.conditions = arg;\n        $.setStateCompat(\"this\", \"exp_conditionChanged\",
-        true);\n    }\n})\n\nfunction recordData () {\n    $.log(\"recordData\");\n   
-        $.state.customData = calculateData();\n    $.log(\"recordData done\");\n}\n\nfunction
+        true);\n    }\n})\n\nfunction recordData () {\n    $.state.customData = calculateData();\n}\n\nfunction
         uploadData () {\n    $.log(\"Upload custom data: \" + JSON.stringify($.state.customData));\n   
         let request = {\n        type: \"uploadCustomData\",\n        token: token
         || \"\",\n        dataByFileName: JSON.stringify($.state.customData),\n       
@@ -4766,7 +4765,7 @@ PrefabInstance:
     - target: {fileID: 5697374075709122390, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"AOrno6NYYO\";\ntoken = \"cce40841-0061-4e0b-bbed-7789ad91005d\";\n\r\n$.onStart(()
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\n$.onStart(()
         => {\n    reset();\n});\n\n$.onUpdate((deltaTime) => {\n    // Ensure that
         the question is only initialized after all currently displayed answer options
         are destroyed\n    if (!$.state.isInitiated && $.getStateCompat(\"this\",
