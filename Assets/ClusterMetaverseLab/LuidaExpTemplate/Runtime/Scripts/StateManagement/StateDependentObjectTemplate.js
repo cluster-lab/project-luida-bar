@@ -1,3 +1,7 @@
+$.onStart(() => {
+    
+})
+
 function OnStateEnter() {}
 
 function OnStateExit () {}
