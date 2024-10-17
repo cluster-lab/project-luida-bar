@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEditor;
 using System.IO;
 using System.Linq;
@@ -15,6 +16,8 @@ public class ObjectsManagerEditor : EditorWindow
     private string jsStateTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/StateManagement/StateDependentObjectTemplate.js";
     private string jsConditionTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/ConditionManagement/ConditionDependentObjectTemplate.js";
     private string identifiersAssetPath = "Assets/_Experiment_/Settings/ExpIdentifiers.js";
+    private const string RequiredObjectsWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
+    private const string WorldItemRefListObjectName = "WorldItemRefList";
     
     // Dictionaries to store text field input for each state
     private Dictionary<string, string> objectNames = new Dictionary<string, string>();
@@ -411,7 +414,10 @@ public class ObjectsManagerEditor : EditorWindow
                         var identifiersAsset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(identifiersAssetPath);
                         ScriptableClusterScriptCombiner combiner = formController.GetComponent<ScriptableClusterScriptCombiner>();
                         combiner.ReplaceScript(identifiersAsset, 0, null, 0, true);
-                        
+                        EditorUtility.SetDirty(combiner);
+                        EditorUtility.SetDirty(identifiersAsset);
+                        AssetDatabase.SaveAssets();
+
                         UpdateQID(formController, qID);
 
                         // Paste WorldItemReferenceList component to FormController
@@ -502,6 +508,9 @@ public class ObjectsManagerEditor : EditorWindow
             ScriptableClusterScriptCombiner combiner = scriptCombinerObject.GetComponent<ScriptableClusterScriptCombiner>();
             var newScriptAsset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(newScriptPath);
             combiner.ReplaceScript(newScriptAsset, 1, null, 0, true);
+            EditorUtility.SetDirty(combiner);
+            EditorUtility.SetDirty(newScriptAsset);
+            AssetDatabase.SaveAssets();
         } else {
             // Remove ScriptableClusterScriptCombiner and ScriptableItem if they exist on the instance
             var scriptableClusterScriptCombiner = newObject.GetComponent<ScriptableClusterScriptCombiner>();
@@ -516,6 +525,8 @@ public class ObjectsManagerEditor : EditorWindow
                 DestroyImmediate(scriptableItem); // Remove the ScriptableItem component
             }
         }
+
+        if (jsTemplatePath.Contains("ConditionManagement") ) CopyWorldItemReferenceListToNewObject(newObject);
 
         // Add the created object to the list for display
         createdObjects.Add(newObject);
@@ -645,28 +656,36 @@ public class ObjectsManagerEditor : EditorWindow
     
     private void CopyWorldItemReferenceListToNewObject(GameObject newObject)
     {
-        // Find the WorldItemRefList in the scene
-        GameObject worldItemRefList = GameObject.Find("WorldItemRefList");
-
-        if (worldItemRefList != null)
+        GameObject expTemplateInstance = FindRequiredObjectsWrapperInstance();
+        if (expTemplateInstance != null)
         {
-            // Get the WorldItemReferenceList component
-            var worldItemRefComponent = worldItemRefList.GetComponent<ClusterVR.CreatorKit.Item.Implements.WorldItemReferenceList>();
+            // Find the WorldItemRefList in the scene
+            GameObject worldItemRefList = expTemplateInstance.transform.Find(WorldItemRefListObjectName).gameObject;
 
-            if (worldItemRefComponent != null)
+            if (worldItemRefList != null)
             {
-                // Copy the WorldItemReferenceList component to the new object
-                UnityEditorInternal.ComponentUtility.CopyComponent(worldItemRefComponent);
-                UnityEditorInternal.ComponentUtility.PasteComponentAsNew(newObject);
+                // Get the WorldItemReferenceList component
+                var worldItemRefComponent = worldItemRefList.GetComponent<ClusterVR.CreatorKit.Item.Implements.WorldItemReferenceList>();
+
+                if (worldItemRefComponent != null)
+                {
+                    // Copy the WorldItemReferenceList component to the new object
+                    UnityEditorInternal.ComponentUtility.CopyComponent(worldItemRefComponent);
+                    UnityEditorInternal.ComponentUtility.PasteComponentAsNew(newObject);
+                }
+                else
+                {
+                    Debug.LogError("WorldItemReferenceList component not found on WorldItemRefList.");
+                }
             }
             else
             {
-                Debug.LogError("WorldItemReferenceList component not found on WorldItemRefList.");
+                Debug.LogError("WorldItemRefList object not found in the scene.");
             }
         }
         else
         {
-            Debug.LogError("WorldItemRefList object not found in the scene.");
+            Debug.LogError("ExpTemplateRequiredObjects prefab instance not found in the scene.");
         }
     }
     
@@ -678,28 +697,51 @@ public class ObjectsManagerEditor : EditorWindow
             return;
         }
 
-        // Find the WorldItemRefList in the scene
-        GameObject worldItemRefList = GameObject.Find("WorldItemRefList");
-
-        if (worldItemRefList != null)
+        GameObject expTemplateInstance = FindRequiredObjectsWrapperInstance();
+        if (expTemplateInstance != null)
         {
-            // Get the WorldItemReferenceList component
-            var worldItemRefComponent = worldItemRefList.GetComponent<ClusterVR.CreatorKit.Item.Implements.WorldItemReferenceList>();
+            // Find the WorldItemRefList in the scene
+            GameObject worldItemRefList = expTemplateInstance.transform.Find(WorldItemRefListObjectName).gameObject;
 
-            if (worldItemRefComponent != null)
+            if (worldItemRefList != null)
             {
-                // Copy the WorldItemReferenceList component and paste it into the FormController
-                UnityEditorInternal.ComponentUtility.CopyComponent(worldItemRefComponent);
-                UnityEditorInternal.ComponentUtility.PasteComponentAsNew(formController);
+                // Get the WorldItemReferenceList component
+                var worldItemRefComponent = worldItemRefList.GetComponent<ClusterVR.CreatorKit.Item.Implements.WorldItemReferenceList>();
+
+                if (worldItemRefComponent != null)
+                {
+                    // Copy the WorldItemReferenceList component to the new object
+                    UnityEditorInternal.ComponentUtility.CopyComponent(worldItemRefComponent);
+                    UnityEditorInternal.ComponentUtility.PasteComponentAsNew(formController);
+                }
+                else
+                {
+                    Debug.LogError("WorldItemReferenceList component not found on WorldItemRefList.");
+                }
             }
             else
             {
-                Debug.LogError("WorldItemReferenceList component not found on WorldItemRefList.");
+                Debug.LogError("WorldItemRefList object not found in the scene.");
             }
         }
         else
         {
-            Debug.LogError("WorldItemRefList object not found in the scene.");
+            Debug.LogError("ExpTemplateRequiredObjects prefab instance not found in the scene.");
         }
+    }
+
+    private GameObject FindRequiredObjectsWrapperInstance()
+    {
+        GameObject[] rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
+
+        foreach (GameObject obj in rootObjects)
+        {
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == RequiredObjectsWrapperPrefabPath)
+            {
+                Debug.Log(obj.name);
+                return obj;
+            }
+        }
+        return null;
     }
 }
