@@ -1,15 +1,23 @@
 function calculateData () {
-    let fileName = "sampleFileName";
-    // Implement your calculation for custom data to record & upload
-    // $.state.currentCondition is available if this script is combined with CustomDataUploader.js
-    
-    // Return the data in the following format:
-    return { ...$.state.customData, [fileName]: {} }; // $.state.customData is the custom data recorded before
+    let fileName = "yourFileName";
+    let returnData = $.state.customData;
+
     /*
-    e.g.
-    return { ...$.state.customData, [fileName]: {
-      ...($.state.customData[fileName] || {}),
-      labelName: calculationResult
-    } };
+      Change the value of `fileName`
+      And implement your calculation for data to record
+      Then save the calculation result into the `newRecord` variable below
+      * $.state.currentCondition is accessible
     */
+    
+    const newRecord = {
+      // yourKey: yourValue
+    };
+
+    if (fileName in returnData && Array.isArray(returnData[fileName])) {
+      returnData[fileName].push(newRecord);
+    } else {
+      returnData[fileName] = [newRecord];
+    }
+  
+    return returnData;
 }
