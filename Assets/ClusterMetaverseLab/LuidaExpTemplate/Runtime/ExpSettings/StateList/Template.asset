@@ -84,11 +84,18 @@ MonoBehaviour:
     RepeatDestStateName: 
     RepeatCount: 1
   - StateName: Trial - Rest
-    DestStateName: Questionnaire (post-exp)
+    DestStateName: AfterTrials
     HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
     RepeatDestStateName: Trial - Task
+    RepeatCount: 1
+  - StateName: AfterTrials
+    DestStateName: Questionnaire (post-exp)
+    HasExitTime: 0
+    ExitTime: 0
+    IsRepeated: 0
+    RepeatDestStateName: 
     RepeatCount: 1
   - StateName: Questionnaire (post-exp)
     DestStateName: End
@@ -102,5 +109,5 @@ MonoBehaviour:
     HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
-    RepeatDestStateName: Start
+    RepeatDestStateName: 
     RepeatCount: 1
