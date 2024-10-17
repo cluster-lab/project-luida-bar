@@ -211,6 +211,10 @@ public class DataRecorderListEditor : EditorWindow
         {
             scriptCombiner.ReplaceScript(identifiersAsset, 0, null, 0, false);
             scriptCombiner.ReplaceScript(newCalculatorAsset, 2, null, 0, true);
+            EditorUtility.SetDirty(scriptCombiner);
+            EditorUtility.SetDirty(identifiersAsset);
+            EditorUtility.SetDirty(newCalculatorAsset);
+            AssetDatabase.SaveAssets();
             Debug.Log("Scripts added to ScriptableClusterScriptCombiner.");
         }
         else
