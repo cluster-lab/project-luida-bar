@@ -670,8 +670,8 @@ PrefabInstance:
         meta, err) =>\n{\n    if (res == null) {\n        $.log(\"callExternal ERROR:
         \" + err);\n        return;\n    }\n\n    if (meta === \"customDataUploaded\")
         {\n        $.log(\"Custom recorded data uploaded\");\n    }\n});\r\nfunction
-        calculateData () {\n  let fileName = \"taskAnswers\";\n  let returnData =
-        $.state.customData;\n\n  const newRecord = {\n    g: $.state.currentCondition[\"gain\"],
+        calculateData () {\n  let fileName = \"reachingTaskAnswers\";\n  let returnData
+        = $.state.customData;\n\n  const newRecord = {\n    g: $.state.currentCondition[\"gain\"],
         // \u73FE\u5728\u306E\u30B2\u30A4\u30F3\u6761\u4EF6\n    a: $.getStateCompat(\"global\",
         \"isFaster\", \"boolean\") ? \"F\" : \"S\" // \u300C\u901F\u3044\u300D\u300C\u9045\u3044\u300D\u306E\u3069\u3061\u3089\u3092\u9078\u3093\u3060\u304B\n 
         };\n\n  if (fileName in returnData && Array.isArray(returnData[fileName]))
