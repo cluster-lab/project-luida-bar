@@ -133,11 +133,11 @@ MonoBehaviour:
     }\n    if ($.getStateCompat(\"this\", \"state_isActive\", \"boolean\")) {\n       
     DuringState(deltaTime);\n    }\n    Update(deltaTime);\n})\n\nfunction OnStateEnter()
     {}\n\nfunction OnStateExit () {}\n\nfunction DuringState (deltaTime) {}\n\nfunction
-    Update (deltaTime) {}\r\nfunction OnStateEnter() {}\n\nfunction OnStateExit ()
-    {}\n\nfunction DuringState (deltaTime) {}\n\n/*\n    ***** Don't use $.onUpdate
-    in this file! *****\n    In addition to function DuringState,\n    if you need
-    any other executions to run every frame,\n    implement them inside the Update
-    function below.\n*/\n// function Update (deltaTime) {}"
+    Update (deltaTime) {}\r\n$.onStart(() => {\n    \n})\n\nfunction OnStateEnter()
+    {}\n\nfunction OnStateExit () {}\n\nfunction DuringState (deltaTime) {}\n\n/*\n   
+    ***** Don't use $.onUpdate in this file! *****\n    In addition to function DuringState,\n   
+    if you need any other executions to run every frame,\n    implement them inside
+    the Update function below.\n*/\n// function Update (deltaTime) {}"
 --- !u!114 &5660514857068071924
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -50,6 +50,20 @@ public class DataRecorderListEditor : EditorWindow
                     GUILayout.Label("No Calculator Found");
                 }
 
+                if (GUILayout.Button("Update Script", GUILayout.Width(150)))
+                {
+                    var scriptCombiner = customDataRecorders[i].GetComponent<ScriptableClusterScriptCombiner>();
+                    if (scriptCombiner != null)
+                    {
+                        scriptCombiner.CombineScripts();
+                        Debug.Log("Scripts updated for: " + customDataRecorders[i].name);
+                    }
+                    else
+                    {
+                        Debug.LogError("ScriptableClusterScriptCombiner component not found on: " + customDataRecorders[i].name);
+                    }
+                }
+
                 // Add a button to remove the Custom Data Recorder
                 if (GUILayout.Button("Remove", GUILayout.Width(60)))
                 {
