@@ -21,6 +21,7 @@ public class ObjectsManagerEditor : EditorWindow
     private Dictionary<string, string> conditionObjectNames = new Dictionary<string, string>();
     private Dictionary<string, int> questionnaireQIDs = new Dictionary<string, int>();
     private Dictionary<string, bool> showQuestionnaireForm = new Dictionary<string, bool>();
+    private Dictionary<string, bool> isScriptableState = new Dictionary<string, bool>(); // Track if the object is scriptable per state
 
     private List<GameObject> createdObjects = new List<GameObject>(); // Store created objects for display
 
@@ -182,30 +183,38 @@ public class ObjectsManagerEditor : EditorWindow
         serializedStateList.ApplyModifiedProperties();
     }
 
-    // Displays a row for creating a new object
+    private Dictionary<string, GameObject> objectReferences = new Dictionary<string, GameObject>(); // Store GameObject references
+
     private void DisplayNewObjectRow(string stateName, int stateId, string prefabPath, string jsTemplatePath, string label)
     {
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField(label, GUILayout.Width(200));
 
         EditorGUILayout.LabelField("Name", GUILayout.Width(35));
-        // Initialize text field storage for the state
-        if (!objectNames.ContainsKey(stateName))
-        {
-            objectNames[stateName] = string.Empty;
-        }
-
-        // Text field for new object name
+        if (!objectNames.ContainsKey(stateName)) objectNames[stateName] = string.Empty;
         objectNames[stateName] = EditorGUILayout.TextField(objectNames[stateName], GUILayout.Width(200));
 
         GUILayout.Space(30);
 
-        // Add Object button
+        // Add the GameObject reference field
+        EditorGUILayout.LabelField("Create with existing GameObject", GUILayout.Width(200));
+        if (!objectReferences.ContainsKey(stateName)) objectReferences[stateName] = null;
+        objectReferences[stateName] = (GameObject)EditorGUILayout.ObjectField(objectReferences[stateName], typeof(GameObject), true, GUILayout.Width(200));
+
+        bool isStateDependent = jsTemplatePath.Contains("StateManagement");
+        if (isStateDependent)
+        {
+            if (!isScriptableState.ContainsKey(stateName)) isScriptableState[stateName] = true; // Default to true
+            isScriptableState[stateName] = EditorGUILayout.Toggle("Is Scriptable", isScriptableState[stateName]);
+            GUILayout.Space(30);
+        }
+
         EditorGUI.BeginDisabledGroup(string.IsNullOrEmpty(objectNames[stateName]));
         if (GUILayout.Button("Add Object", GUILayout.Width(150)))
         {
-            AddObject(stateName, stateId, objectNames[stateName], prefabPath, jsTemplatePath);
-            objectNames[stateName] = string.Empty;  // Clear the text field after adding an object
+            AddObject(stateName, stateId, objectNames[stateName], prefabPath, jsTemplatePath, isStateDependent ? isScriptableState[stateName] : true, objectReferences[stateName]);
+            objectNames[stateName] = string.Empty;
+            objectReferences[stateName] = null;  // Clear after adding
         }
         EditorGUI.EndDisabledGroup();
         EditorGUILayout.EndHorizontal();
@@ -416,7 +425,7 @@ public class ObjectsManagerEditor : EditorWindow
     }
 
     // Adds the new state-dependent object or condition-dependent object and its corresponding JS script
-    private void AddObject(string stateName, int stateId, string objectName, string prefabPath, string jsTemplatePath)
+    private void AddObject(string stateName, int stateId, string objectName, string prefabPath, string jsTemplatePath, bool isScriptable, GameObject referenceObject)
     {
         GameObject stateObject = GameObject.Find("States")?.transform.Find(stateName)?.Find("Objects")?.gameObject;
         if (stateObject == null)
@@ -429,48 +438,106 @@ public class ObjectsManagerEditor : EditorWindow
         GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
         GameObject newObject = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
         newObject.name = objectName;
-        newObject.transform.SetParent(stateObject.transform);  // Place under Objects
+        newObject.transform.SetParent(stateObject.transform);
 
-        // Set the state_id property (similar to qID setting)
+        // Handle the case where the referenceObject is provided
+        if (referenceObject != null)
+        {
+            // Copy values from the reference object's Item component to the new object's Item component (without removing it)
+            var referenceItem = referenceObject.GetComponent<ClusterVR.CreatorKit.Item.Implements.Item>();
+            var newItem = newObject.GetComponent<ClusterVR.CreatorKit.Item.Implements.Item>();
+
+            if (referenceItem != null && newItem != null)
+            {
+                CopyItemComponentValues(referenceItem, newItem);
+            }
+
+            // Copy the Transform component values from the reference object to the new object
+            newObject.transform.position = referenceObject.transform.position;
+            newObject.transform.rotation = referenceObject.transform.rotation;
+            newObject.transform.localScale = referenceObject.transform.localScale;
+
+            // Copy all other components (excluding ScriptableItem and ScriptableClusterScriptCombiner)
+            var components = referenceObject.GetComponents<Component>().Where(c => !(c is ClusterVR.CreatorKit.Item.Implements.ScriptableItem) && !(c is ScriptableClusterScriptCombiner) && !(c is Transform));
+            foreach (var component in components)
+            {
+                if (component is ClusterVR.CreatorKit.Item.Implements.Item) continue;
+                UnityEditorInternal.ComponentUtility.CopyComponent(component);
+                UnityEditorInternal.ComponentUtility.PasteComponentAsNew(newObject);
+            }
+
+            // Copy all child GameObjects
+            foreach (Transform child in referenceObject.transform)
+            {
+                GameObject newChild = GameObject.Instantiate(child.gameObject, newObject.transform);
+                newChild.name = child.name;
+            }
+        }
+
+        // Set the state_id property
         SetStateIdForObject(newObject, stateId);
 
-        // Copy WorldItemReferenceList component from WorldItemRefList
-        CopyWorldItemReferenceListToNewObject(newObject);
+        // Rest of the process (replacing script, etc.)
+        if (isScriptable)
+        {
+            // Ensure the folder for the current scene exists
+            string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            string scriptFolderPath = jsTemplatePath.Contains("StateManagement") 
+                ? $"Assets/_Experiment_/Scripts/StateManagement/{sceneName}" 
+                : $"Assets/_Experiment_/Scripts/ConditionManagement/{sceneName}";
 
-        // Ensure the folder for the current scene exists
-        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        string scriptFolderPath = "";
-        if (jsTemplatePath.Contains("StateManagement"))
-        {
-            scriptFolderPath = $"Assets/_Experiment_/Scripts/StateManagement/{sceneName}";
-        }
-        else if (jsTemplatePath.Contains("ConditionManagement"))
-        {
-            scriptFolderPath = $"Assets/_Experiment_/Scripts/ConditionManagement/{sceneName}";
-        }
+            if (!Directory.Exists(scriptFolderPath))
+            {
+                Directory.CreateDirectory(scriptFolderPath);
+                AssetDatabase.Refresh();
+            }
 
-        if (!Directory.Exists(scriptFolderPath))
-        {
-            Directory.CreateDirectory(scriptFolderPath);
+            // Duplicate the JS script
+            string newScriptPath = $"{scriptFolderPath}/{objectName}.js";
+            AssetDatabase.CopyAsset(jsTemplatePath, newScriptPath);
             AssetDatabase.Refresh();
+
+            // Retrieve the ScriptableClusterScriptCombiner and run ReplaceScript
+            GameObject scriptCombinerObject = newObject.GetComponent<ScriptableClusterScriptCombiner>().gameObject;
+            ScriptableClusterScriptCombiner combiner = scriptCombinerObject.GetComponent<ScriptableClusterScriptCombiner>();
+            var newScriptAsset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(newScriptPath);
+            combiner.ReplaceScript(newScriptAsset, 1, null, 0, true);
+        } else {
+            // Remove ScriptableClusterScriptCombiner and ScriptableItem if they exist on the instance
+            var scriptableClusterScriptCombiner = newObject.GetComponent<ScriptableClusterScriptCombiner>();
+            if (scriptableClusterScriptCombiner != null)
+            {
+                DestroyImmediate(scriptableClusterScriptCombiner); // Remove the ScriptableClusterScriptCombiner component
+            }
+
+            var scriptableItem = newObject.GetComponent<ClusterVR.CreatorKit.Item.Implements.ScriptableItem>();
+            if (scriptableItem != null)
+            {
+                DestroyImmediate(scriptableItem); // Remove the ScriptableItem component
+            }
         }
-
-        // Duplicate the JS script
-        string newScriptPath = $"{scriptFolderPath}/{objectName}.js";
-        AssetDatabase.CopyAsset(jsTemplatePath, newScriptPath);
-        AssetDatabase.Refresh();
-
-        // Retrieve the ScriptableClusterScriptCombiner and run ReplaceScript
-        GameObject scriptCombinerObject = newObject.GetComponent<ScriptableClusterScriptCombiner>().gameObject;
-        ScriptableClusterScriptCombiner combiner = scriptCombinerObject.GetComponent<ScriptableClusterScriptCombiner>();
-        var newScriptAsset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(newScriptPath);
-        combiner.ReplaceScript(newScriptAsset, 1, null, 0, true);
 
         // Add the created object to the list for display
         createdObjects.Add(newObject);
 
         // Refresh the UI
         Repaint();
+    }
+
+    private void CopyItemComponentValues(ClusterVR.CreatorKit.Item.Implements.Item sourceItem, ClusterVR.CreatorKit.Item.Implements.Item targetItem)
+    {
+        // Use SerializedObject to copy field values between components
+        SerializedObject sourceSerializedItem = new SerializedObject(sourceItem);
+        SerializedObject targetSerializedItem = new SerializedObject(targetItem);
+
+        // Iterate over all properties of the Item component and copy values from source to target
+        SerializedProperty property = sourceSerializedItem.GetIterator();
+        while (property.NextVisible(true))
+        {
+            targetSerializedItem.CopyFromSerializedProperty(property);
+        }
+
+        targetSerializedItem.ApplyModifiedProperties(); // Apply changes to the target Item component
     }
 
     // Sets the state_id for the newly instantiated object
@@ -545,17 +612,17 @@ public class ObjectsManagerEditor : EditorWindow
         ScriptableClusterScriptCombiner combiner = obj.GetComponent<ScriptableClusterScriptCombiner>();
         if (combiner != null)
         {
-            // Reference to the JS script asset
+            // Reference to the JS script asset (Only show if scriptable)
             EditorGUILayout.LabelField("JS Script", GUILayout.Width(60));
             EditorGUILayout.ObjectField(combiner.ClusterScripts[1], typeof(ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset), true, GUILayout.Width(200));
-        }
 
-        GUILayout.Space(20); // Add space between columns
+            GUILayout.Space(20); // Add space between columns
 
-        // Update Script button
-        if (GUILayout.Button("Update Script", GUILayout.Width(150)))
-        {
-            combiner?.CombineScripts();
+            // Update Script button
+            if (GUILayout.Button("Update Script", GUILayout.Width(150)))
+            {
+                combiner?.CombineScripts();
+            }
         }
 
         // Remove button
