@@ -72,11 +72,10 @@ We recommend you to at least acquire some basic knowledges of the following:
 
 ### Preparation
 
-[clusterアカウント作成](https://help.cluster.mu/hc/articles/115000827112)
-と
-[本実装テンプレートに必要なバージョンのUnityのインストール](https://docs.cluster.mu/creatorkit/installation/install-unity/)
+1. [clusterアカウント作成](https://help.cluster.mu/hc/articles/115000827112)
+2. [clusterに必要なバージョンのUnityのインストール](https://docs.cluster.mu/creatorkit/installation/install-unity/)
 を行う。
-本実装テンプレートをCloneする
+3. 本実装テンプレートをCloneする
 
 ### Register experiment information on web console
 
@@ -86,8 +85,8 @@ We recommend you to at least acquire some basic knowledges of the following:
 2. 登録してログインする
 
 3. 実験の募集情報を登録する：
-    1. 「Register New Experiment」リンクをクリックして、新しい実験の募集情報を登録する
-    2. 下の画像に示したフィールドを埋める（チュートリアルのため任意の文字列で大丈夫）。その他のフィールドは空白かデフォルト値のまま。
+    1. 「Register New Experiment」リンクをクリックして、新しい実験の募集情報を登録します。
+    2. 下の画像に示したフィールドを埋めます（チュートリアルのため任意の文字列で大丈夫です）。その他のフィールドは空白かデフォルト値のままにします。
 <table>
   <tr>
     <td><img src="https://github.com/user-attachments/assets/3ccc2bb5-cb02-495e-b876-da06d21b4b14" alt="Image 1" width="500"/></td>
@@ -95,34 +94,33 @@ We recommend you to at least acquire some basic knowledges of the following:
   </tr>
 </table>
 
-4. Registerボタンを押すと、情報が保存され、次の画面に表示される。そこで自動的に生成された実験の識別子（eID）を確認する
+4. Registerボタンを押すと、情報が保存され、次の画面に表示されます。そこで自動的に生成された実験の識別子（eID）を確認します。
 
 ![image](https://github.com/user-attachments/assets/758a26d4-0fda-47d4-8528-cb98f3f2f2c7)
 
 
 5. 質問紙を登録する：
-    1. 「Questionnaires」ボタンを押して、質問紙一覧画面に移動する
-    2. 「Register New Questionnaire」ボタンをクリックして、実験に使用する質問紙の登録画面に移動する
+    1. 「Questionnaires」ボタンを押して、質問紙一覧画面に移動します。
+    2. 「Register New Questionnaire」ボタンをクリックして、実験に使用する質問紙の登録画面に移動します。
         ![image](https://github.com/user-attachments/assets/a21f6e34-a220-4d7f-8956-374d96ad3cb2)
-    3. 質問紙の内容を入力する
-        1. [身体化体験に関する質問紙]([https://rothnroll.de/download/VEQ-Questionnaire-jpJP4.pdf](https://sites.google.com/view/virtualembodimentquestionnaire/download-the-questionnaire))の中から「AC1 私の身体」と「CO1 私の動作 」の質問だけを登録する（現状では全ての質問を登録すると、実験実施中にCCKの送信制限を超える可能性があるため、登録する質問はこの2つに限定してください。
-        2. 各質問に対し、「Add Question」ボタンを押して質問の枠を増やし、図に従ってフィールドを埋めてください。
-        3. すべての質問が入力できたら、「Register」ボタンを押して登録を完了してください。
+    3. 質問紙の内容を入力する：
+        1. [身体化体験に関する質問紙]([https://rothnroll.de/download/VEQ-Questionnaire-jpJP4.pdf](https://sites.google.com/view/virtualembodimentquestionnaire/download-the-questionnaire))の中から「AC1 私の身体」と「CO1 私の動作 」の質問だけを登録します。
+        2. 各質問に対し、「Add Question」ボタンを押して質問の枠を増やし、図に従ってフィールドを埋めます。
+        3. すべての質問が入力できたら、「Register」ボタンを押して登録を完了します。
           ![image](https://github.com/user-attachments/assets/ab4d5a9d-8b26-4adf-a0c1-c5e31d19ac70)
-    4. 質問紙を確認する：画面が遷移したら、登録された質問紙を確認してください。
+    4. 質問紙を確認する：画面が遷移したら、登録された質問紙を確認します。
 
 ![image](https://github.com/user-attachments/assets/3f6dd78e-781c-4406-9d67-3c8b5cc0c258)
 
 ### Open the implement template
 
-ダウンロードした実装テンプレートをUnity Hubから起動する
+ダウンロードした実装テンプレートをUnity Hubから起動します。
 
 ### Link with your cluster account
 
-1. トップメニューからCluster > 外部通信(callExternal)接続先URLを選択する
+1. トップメニューからCluster > 外部通信(callExternal)接続先URLを選択します。
 ![image](https://github.com/user-attachments/assets/9ac1311a-aa09-4e28-95a0-a2081e9883f4)
-
-3. Webでトークン発行ボタンをクリックしてブラウザでトークン発行画面を開く。そこで「トークン作成」ボタンをクリックし、表示されたトークンをコピーしておく。
+2. Webでトークン発行ボタンをクリックしてブラウザでトークン発行画面を開きます。そこで「トークン作成」ボタンをクリックし、表示されたトークンをコピーしておきます。
 <table>
   <tr>
     <td><img src="https://github.com/user-attachments/assets/2c0d3212-e301-417d-a594-8ed1f7dec08f" alt="Image 1" width="400"/></td>
@@ -131,19 +129,89 @@ We recommend you to at least acquire some basic knowledges of the following:
   </tr>
 </table>
 
-3. Unityに戻り、トークンを貼り付けて「このトークンを使用」ボタンを押す
+3. Unityに戻り、トークンを貼り付けて、「このトークンを使用」ボタンを押します。
 
 ![image](https://github.com/user-attachments/assets/df24aab2-684f-4f5b-b287-b451f3c65f6d)
 
+### Retrieve verify token for external call
 
-### 外部通信用トークンの取得
-
-1. アカウント紐づけ後に現れる画面で、「URLの登録」に以下のURLを」貼り付ける：`https://script.google.com/macros/s/AKfycbyamdYZGjweG65Dkykdw1oT7MxU4ZXoeqPDT3csW1M2mS3jj8gq9kZzO2iKhSBUOfx0Zg/exec`
-2. 表示された「verify用トークン」をコピーしておく
+1. アカウント紐づけ後に現れる画面で、「URLの登録」に以下のURLを」貼り付けます：`https://script.google.com/macros/s/AKfycbyamdYZGjweG65Dkykdw1oT7MxU4ZXoeqPDT3csW1M2mS3jj8gq9kZzO2iKhSBUOfx0Zg/exec`
+2. 表示された「verify用トークン」をコピーしてどこかに保存しておきます。
 
 ![image](https://github.com/user-attachments/assets/e780e28d-4427-426d-9dc6-fde4d12b6120)
 ![image](https://github.com/user-attachments/assets/8c5bea04-d868-4f8c-a664-ae8ae3abcf52)
 
+### Register experiment ID and verify token for external call
+1. From the top menu, open `Window > Luida Editor`.
+![image](https://github.com/user-attachments/assets/ff78908a-2277-4a07-a37f-3a1502146343)
+2. Input a name for your new scene and click the 'Create and open scene' button.
+![image](https://github.com/user-attachments/assets/21b1f40a-4367-4448-8277-244593682525)
+3. In the `Experiment Identifiers` tab, fill in `Experiment ID` with the `eID` displayed on the web console.
+4. In the `Experiment Identifiers` tab, fill in `Token` with the verify token for external call you just copied.
+![image](https://github.com/user-attachments/assets/e7229049-3d8d-4cee-a5d5-19f5f70a2168)
+
+### Setup experiment variables & trials count
+1. Open `Window > Luida Editor` and switch to the `Experiment Variables Editor` tab.
+2. Fill in the fields following the image below
+    1. Values (comma-separated): `0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25`
+![image](https://github.com/user-attachments/assets/15fde214-9fc0-4e27-9d3c-aaab31a46863)
+3. Click the 'Apply Updated Variables' button to save the changes
+4. Save the scene.
+
+### Adjust state transitions
+
+Open `Window > Luida Editor` and switch to the `State List Editor` tab.
+
+The state transitions in this tutorial will be like this: 
+```
+Start → Instruction → Practice - Task → Practice - Questionnaire → Practice - Rest → Preparation → Trial - Task → Trial - Questionnaire → Trial - Rest → AfterTrials → Questionnaire (post-exp) → End
+```
+
+Among them,
+- `Practice - Task → Practice - Questionnaire → Practice - Rest` repeats 3 times
+- `Trial - Task → Trial - Questionnaire → Trial - Rest` repeats `number of variable `gain`'s values ×2` times
+
+Edit the transition in the editor window:
+
+- Start: Set `Transit destination state` to `Instruction`
+- Acclimatization: Press the `Remove` button to remove it
+- Questionnaire (pre-exp): Press the `Remove` button to remove it
+- Practice - Rest:
+    - Check `Has Exit Time`, and set `Exit Time` to `5` (to automatically trigger state transition after 5 seconds)
+    - Check `Is Repeated`, and set `Repeat destination state` to `Practice - Task`, and set `Repeat Count` to `3` (to repeat the practice session 3 times)	
+- Trial - Rest:
+    - Check `Has Exit Time`, and set `Exit Time` to `5` (to automatically trigger state transition after 5 seconds)
+    - (The repetition for `Trial` states are controlled by the variables and trials count we setup in the `Experiment Variables Editor` tab, so we don't make additional setup here for the repetition)
+
+![image](https://github.com/user-attachments/assets/972b97af-3b00-42d8-b0d5-82039d5d39dd)
+
+### Prefabs for the tutorial
+
+Take a look at the prefabs under `Assets/_Experiment_/Prefabs/Sample_HR/`.
+These are for the sample scene `Sample_HR`, and we will use them in this tutorial as well.
+
+#### NextStateButton
+A button to trigger transiting to the next state when clicked.
+
+It is attached with a CCK component `Interact Item Trigger`.
+According to its value, when this button is clicked, it broadcast a Signal with the key `state_triggerTransition` globally.
+This implement template listens to this Signal and trigger a transition to the next state.
+
+![image](https://github.com/user-attachments/assets/2ec1b241-9ee3-4b62-8c00-95dc82788118)
+
+#### Message
+
+Simply a large message panel.
+You can use it to give participants instructions.
+Edit its child gameObject's `TextView` component to change its content.
+![image](https://github.com/user-attachments/assets/b3401797-2c57-4036-971c-fa0bfce4cef5)
+
+#### RightHand
+
+Move into the `RightHand` folder to find the `RightHand` prefab.
+A small sphere collider is attached on the tip of the index finger.
+
+![image](https://github.com/user-attachments/assets/eb3d93d2-2ac9-4811-a503-57d43d81271e)
 
 -----
 
