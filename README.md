@@ -1,15 +1,49 @@
-# Luida's Bar Project - Experiment World Template
+# LUIDA's Implement Template for Experiment Worlds
+
+## Table of Contents
+
+- [Main Features](#main-features)
+- [Tutorial](#tutorial)
+- [Documentation (under construction...)](#documentation-under-construction)
 
 ## Main Features
-- Automatically determine number of trials & condition of each trial by registered within/between-subject variables
-  - Editor window to register the variables
-  - Template script to implement decision of condition from between-subject variables
-- State management
-  - This template follows a State design pattern. We have prepared default states and their transitions for you to use without additional edition, while you can still make your customization (e.g. skip a state, enable auto transition in xx seconds, etc.) with an editor window.
-- Questionnaire generation
-  - You don't need to create game objects for each question or answer. Just register your questionnaire on the web console, retrieve its identifier `qID`, and paste it in the designated field of the questionnaire gameobject in your Unity scene. Game objects for each question and answer will be automatically generated on cluster during the exact experiment session.
-- Data recorder/uploader
-  - cluster continuously records players' positions, poses, actions, to name a few. These data will be formatted to display on the web console. Meanwhile, you can also collect custom data with a provided data recorder/uploader gameobject.
+#### Experimental variables & trials management
+This implement template automatically determine number of trials & condition of each trial by registered within/between-subject variables. You can complete the setup within the provided editor window.
+
+We also provided a template script to implement decision of the experimental conditions from between-subject variables.
+
+![image](https://github.com/user-attachments/assets/3c2994f4-5bc3-40a7-9812-29f4999d59d6)
+
+#### State management
+This template follows a State design pattern. We have prepared default states and their transitions for you to use without additional edition, while you can still make your customization (e.g. skip a state, enable auto transition in xx seconds, etc.) with an editor window.
+
+![image](https://github.com/user-attachments/assets/d59d3e5c-e30e-429d-b83a-2ebca1550eb7)
+
+#### Manage gameobjects by states or experimental conditions
+This template provides a template for gameobjects that follow state transitions or experiment conditions. You can add such gameobjects from the editor window, and then access the attached scripts to edit them. The scripts are also provided with templates to help you implement smoother.
+
+![image](https://github.com/user-attachments/assets/b4a2c257-3979-438c-af12-2140ad33d5c0)
+![image](https://github.com/user-attachments/assets/93e9ee07-be0c-4b18-b165-27972d1eacc1)
+
+#### Questionnaire generation
+You don't need to create game objects for each question or answer. Just register your questionnaire on the web console, and paste its ID the designated field on the editor window. Gameobjects for each question and answer will be automatically generated on cluster during the exact experiment session.
+
+#### Data recording
+During the exact experiment session, Cluster continuously records players' positions, poses, actions, to name a few. These data will be formatted to display on the web console.
+
+Meanwhile, you can also setup recorders for customized data inside this template in advance.
+
+![image](https://github.com/user-attachments/assets/8e227057-d100-4e89-8b41-42f7d394557a)
+
+-----
+
+# Tutorial
+
+
+
+-----
+
+# Documentation (under construction...)
 
 ## Getting started
 
