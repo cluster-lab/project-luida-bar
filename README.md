@@ -63,6 +63,8 @@ The collected data will be listed on LUIDA's web console for you to confirm and 
 
 # Tutorial
 
+Let's implement an experiment of hand redirection in this tutorial.
+
 ### Recommended preliminary knowledge
 
 We recommend you to at least acquire some basic knowledges of the following:
@@ -153,7 +155,8 @@ We recommend you to at least acquire some basic knowledges of the following:
 ### Setup experiment variables & trials count
 1. Open `Window > Luida Editor` and switch to the `Experiment Variables Editor` tab.
 2. Fill in the fields following the image below
-    1. Values (comma-separated): `0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25`
+    1. Name: `gain`
+    2. Values (comma-separated): `0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25`
 ![image](https://github.com/user-attachments/assets/15fde214-9fc0-4e27-9d3c-aaab31a46863)
 3. Click the 'Apply Updated Variables' button to save the changes
 4. Save the scene.
@@ -212,6 +215,239 @@ Move into the `RightHand` folder to find the `RightHand` prefab.
 A small sphere collider is attached on the tip of the index finger.
 
 ![image](https://github.com/user-attachments/assets/eb3d93d2-2ac9-4811-a503-57d43d81271e)
+
+### Add objects for each state
+
+To add gameobjects for each state, open `Window > Luida Editor` and switch to the `Objects Manager` tab.
+
+Here is a video to show how to add a gameobject (not scriptable) from a prefab:
+https://github.com/user-attachments/assets/06f8656e-7f9d-42a9-8830-b6586e9481ca
+
+Let's add gameobjects for each state according to the following specification:
+
+- **Start**: NextStateButton × 1 (Change text to `Start`)
+- **Instruction**: NextStateButton × 1 (Change text to `Practice`), Message × 1 (Change text to an instruction of the practice session)
+        <details>
+            <summary>Instruction example</summary>
+            ```text
+            これからは、右手の人差し指で緑の玉を触って、
+            質問に答える、というタスクを行っていただきます。
+            まずは何回か練習しましょう。
+            準備ができたら、設定画面でコントローラを非表示にし、
+            前を見て「練習」ボタンを押してください。
+            ```
+        </details>
+- **Practice**: explained later
+- **Preparation**: NextStateButton × 1 (Change text to `Start`), Message × 1 (Change text to an instruction of the trial session)
+        <details>
+            <summary>Instruction example</summary>
+            ```text
+            練習（3回）は以上になります。
+            ここからは本番です。
+            同じ手順でタスクを22回行ってください。
+            準備ができたら、前を見て開始ボタンを押してください
+            ```
+        </details>
+- **Trial**: explained later
+- **AfterTrials**: explained later
+- **Questionnaire (post-exp)**: explained later
+- **End**
+  - Message × 1 (Change text to an instruction of leaving the experiment)
+    <details>
+        <summary>Instruction example</summary>
+        ```text
+        実験は以上になります。
+        ご参加いただきありがとうございました！
+        謝礼のcluster pointは後日に付与します。
+        目の前のゲートに潜って退室してください。
+        ```
+    </details>
+  - World gate prefab (`Assets/ClusterGAMEWORLDCENTER/Prefabs/WorldGateToClusterLobby.prefab`) × 1. After added:
+    - Set the position to (0, 0, 1.5)
+    - Delete its child gameobject `SignBoard`
+    - On its child gameobject `WorldGate`, set the value of field `World Or Event Id` to `006d765e-f961-435b-a183-77c35a42e241` (World ID of LUIDA recruitment world)
+
+![image](https://github.com/user-attachments/assets/6cc12262-b05f-468d-ab5d-f266be6bde95)
+
+### Implement main trials
+
+タスク内容：
+1. 試行開始：緑の玉が原点（頭の下30センチ＋前30センチ）に戻る
+2. リセット：実験参加者が原点にある緑の玉に触れる。すると緑の玉が目標地点（頭の下30センチ＋前60センチ）に移動する。
+3. リダイレクション中のリーチングタスク：参加者が腕を伸ばし、もう一度その玉に触れる。腕を伸ばしている間、バーチャルの手がリダイレクションを受けている（手の位置にゲインがかかっており、実際の手の位置からズレている）
+4. 試行後（質問の表示）：「バーチャルの手が実身体の手より速いか？遅いか」の質問文と、二択の回答ボタン「速い」と「遅い」が表示される
+5. 次の試行へ：実験参加者がいずれかのボタンを選択したら、数秒の休憩の後、次の試行に移行する
+
+This experiment requires changing the gain on the virtual hand for each trial, so we need objects that can access the values of the experiment condition `gain`.
+The following video shows how to create such condition dependent objects.
+https://github.com/user-attachments/assets/c58aa9c0-7562-40cb-952a-6c3b767f099d
+
+Follow the steps below:
+
+#### Create a Task Manager object
+1. Refer to the video above to create a condition dependent object named `TaskManager` in state `Trial - Task`. Confirm that the gameobject and a cluster script asset `TaskManager.js` are generated.
+2. Edit `TaskManager.js` as follows
+    <details>
+    
+    <summary>Replace the code inside function `init`</summary>
+    
+    ```
+    $.state.timer = 0; // タイマーの初期化
+    $.state.isTouchable = true; // 緑の玉を触れられるようにするフラグ
+    $.state.handOffset = new Quaternion().setFromEulerAngles(new Vector3(0, 90, 0)); // 実身体の手（コントローラ）とバーチャル手の回転の差を補正するオフセットを設定する
+    ```
+    
+    </details>
+    
+    <details>
+    
+    <summary>Replace the code inside function `onConditionChanged`</summary>
+    
+    ```
+    // 変数の値の初期化：プレイヤー、原点、目標地点
+    if (!$.state.player || !$.state.originPos || !$.state.targetPos) {
+       $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];
+       $.state.originPos = $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new Vector3(0, -0.3, 0.3));
+       $.state.targetPos = $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new Vector3(0, -0.3, 0.6));
+    }
+    
+    $.state.gain = 1; // 原点に触れる前はゲインの値が1のまま
+    $.subNode("Sphere").setPosition($.state.originPos); // 緑の玉を原点に動かす
+    ```
+    
+    </details>
+    
+    <details>
+    
+    <summary>Replace the code inside function `tick`</summary>
+    
+    ```
+    if (!$.state.player || !$.state.originPos) return;
+    
+    // バーチャル手の位置を計算する：原点からの実身体の手（コントローラ）の相対位置×ゲイン
+    $.subNode("RightHandAnchor").setPosition(
+       $.state.originPos.clone()
+           .add($.state.player.getHumanoidBonePosition(HumanoidBone.RightHand).clone()
+               .sub($.state.originPos)
+               .multiplyScalar($.state.gain || 1)));
+    
+    // バーチャル手の回転を実身体の手と同期させる
+    $.subNode("RightHandAnchor").setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand).clone().multiply($.state.handOffset));
+    
+    if (!$.state.isTouchable) { // 緑の玉が触れられたばかりで、しばらく触れても反応させてはいけない場合
+       $.state.timer = $.state.timer + 1; // タイマー + 1
+      
+       if ($.state.timer > 10) { //　緑の玉が触れられた時点から10フレーム経ったら
+           $.state.isTouchable = true; // 次のフレームから緑の玉を再び触れられるようにする
+           $.state.timer = 0; // タイマーを0に戻す
+       } else {
+           $.setStateCompat("this", "isSphereTouched", false); // 緑の玉が触れられたと検知するフラグをfalseに固定させる
+       }
+    } else if ($.getStateCompat("this", "isSphereTouched", "boolean")) { // 緑の玉が触れられたと検知したら（trueになったら）
+       /*
+           緑の玉が触れられたら　$.getStateCompat("this", "isSphereTouched", "boolean")　の値が変わるように、
+           このスクリプトが付いたアイテムにCCKのコンポーネント`On Collide Item Trigger`を追加し、
+           このアイテムに向けてキー`isSphereTouched`で、メッセージ内容=trueを発信するようにしてください
+       */
+    
+       $.state.isTouchable = false; // 二重クリックを防ぐために、緑の玉を触れられるようにするフラグをfalseにする
+       $.setStateCompat("this", "isSphereTouched", false); // 緑の玉が触れられたと検知するフラグをfalseに戻す
+    
+       if ($.state.isReaching) {
+           // 目標地点にある緑の玉が触れられる場合
+           onTargetTouched();
+       } else {
+           // 原点にある緑の玉が触れられる場合
+           onOriginTouched();
+       }
+    }
+    ```
+    
+    </details>
+    
+    <details>
+    
+    <summary>Add functions at the bottom of this script file</summary>
+    
+    ```
+    // 原点にある緑の玉が触れられる時に実行される
+    function onOriginTouched () {
+       $.subNode("Sphere").setPosition($.state.targetPos); // 緑の玉を目標地点に動かし
+       $.state.gain = $.state.currentCondition["gain"] ? parseFloat($.state.currentCondition["gain"]) : 1; // この試行におけるゲインの値を設定する
+       $.state.isReaching = true; // リーチング（目標地点まで手を伸ばす）フラグをtrueにする
+    }
+    
+    
+    // 目標地点にある緑の玉が触れられる時に実行される
+    function onTargetTouched () {
+       $.sendSignalCompat("this", "state_triggerTransition"); // 次のステート（質問に回答するフェーズ）に遷移させる
+       /*
+           この関数が実行されると次のフェーズに遷移されるように、
+           このスクリプトが付いたアイテムにCCKのコンポーネント`Global Logic`を追加してください。
+           その`Global Logic`の中身を、このアイテムに向けたキー`state_triggerTransition`を検知し、
+           globalに向けたキー`state_triggerTransition`でsignalを発信するようにしてください
+       */
+    
+       $.state.isReaching = false; // リーチング（目標地点まで手を伸ばす）フラグをfalseにする
+    }
+    ```
+    
+    </details>
+3. Add CCK components to the `TaskManager` gameobject: TaskManager ゲームオブジェクトに、図に従ってCCKのコンポーネントを追加し、値を設定する。それぞれのコンポーネントの追加理由、および図の通りに設定された場合の動作を以下で説明：
+    - Global Logic
+        - 目的：移動後の玉に触れたら次のステートに遷移するために
+        - 実際の動作：自分からのキーstate_triggerTransitionを持つシグナル（e.g., TaskManager.js > onTargetTouched関数の一行目）を受信し、Globalに向けてキーstate_triggerTransition付きのシグナルを発信する
+    - On Collide Item Trigger
+        - 目的：玉との接触を検知するために
+        - 実際の動作：他のオブジェクトとCollideした際、自分に向けてisSphereTouchedをtrueに設定する
+            - その際、TaskManager.js > tick関数の if ($.getStateCompat("this", "isSphereTouched", "boolean"))でそれを受け取って処理する
+
+![image](https://github.com/user-attachments/assets/91a095bb-9ca8-4126-adc9-6ff89b3e7d5c)
+
+#### Prepare objects to be manipulated during the task
+
+
+#### Add a message panel in state `Trial - Task`
+
+For state `Trial - Task`, create a gameobject from the `Message` prefab.
+
+<details>
+    
+<summary>Text content</summary>
+
+```
+右手の人差し指で、
+目の前に現れた緑の玉に触れてください。
+玉は触れられたら30cm先まで移動します。
+移動後の玉にもう一度触れてください。
+```
+
+</details>
+
+If you forgot how to create one, review the video in Section `Add objects for each state`.
+
+#### 試行時の質問＆回答の選択肢の作成
+
+#### Add a message panel in state `Trial - Rest`
+
+Create a gameobject from the `Message` prefab, and change its text to the following:
+
+```
+Put your arm down
+```
+
+#### Trigger uploading data after trials
+
+For state `AfterTrials`, create a gameobject named `UploadAndNextButton` from the `NextStateButton` prefab.
+
+On its `Interact Item Trigger` component, add one more trigger item:
+```
+Target: Global exp_uploadCustomData
+Value: Signal
+```
+![image](https://github.com/user-attachments/assets/d441f574-50aa-434c-95b8-031bc43d1221)
+
+
 
 -----
 
