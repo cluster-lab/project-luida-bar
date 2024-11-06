@@ -473,7 +473,7 @@ Value: Signal
 
 </details>
 
-### 試行セッションのゲームオブジェクトを練習セッションに複製
+### 試行セッションのゲームオブジェクトを練習セッションに複製（下記の動画を参照）
 
 1. ステート`Trial - XXX`の以下に挙げられたゲームオブジェクトを、ステート`Practice - XXX`に複製します（`States > Trial - XXX > Objects`の子ゲームオブジェクトを`States > Practice - XXX > Objects`に子ゲームオブジェクトとして複製します）：
     - `Trial - Task`の`Message`、`RightHandWrapper`　→　`Practice - Task`
@@ -481,12 +481,12 @@ Value: Signal
     - `Trial - Rest`の`Message`　→　`Practice - Rest`
 2. `Luida Editor`の`Objects Manager`タブを開き（開いている場合は一回閉じてから開く）、ステート`Practice - XXX`で`Fix state_id`ボタンを全て押します。
 
-(動画)
+https://github.com/user-attachments/assets/14c40fdc-b412-4990-b994-32bae7aaffe9
 
 ### ステート`Practice - Task`で、PracticeTaskManagerオブジェクトを作成する
 1. 下記のビデオを参照し、`Luida Editor`の`Objects Manager`タブを開き、ステート`Practice - Task`用に`PracticeTaskManager`というスクリプト付きのゲームオブジェクトを作成します。作成したゲームオブジェクトと、`PracticeTaskManager.js`というClusterスクリプトアセットが生成されることを確認します。
 
-（動画）
+https://github.com/user-attachments/assets/4937f73b-7eec-4c86-9183-1251c2b22c52
 
 2. `PracticeTaskManager.js`を以下のように編集します。
 
@@ -600,7 +600,7 @@ function onTargetTouched () {
 1. `PracticeTaskManager`の子オブジェクトとして、`RightHandAnchor`という名前の空のゲームオブジェクトを作成します。
 2. `RightHandWrapper`の子ゲームオブジェクト`RightHand`で、`ParentConstraint`コンポーネントの`Sources`を、`PracticeTaskManager`の子オブジェクト`RightHandAnchor`ゲームオブジェクトに設定してから、Activateボタンを押します。
 
-（画像）
+<img width="620" alt="スクリーンショット 2024-11-06 19 18 26" src="https://github.com/user-attachments/assets/2dcbe85e-1659-4eff-83f7-e8f607f640b4">
 
 ### ステート`Practice - Questionnaire`で、複製された回答ボタンの設定を直す
 
