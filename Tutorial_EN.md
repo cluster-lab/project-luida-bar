@@ -302,7 +302,10 @@ Follow the steps below to implement the trials session:
     
     </details>
 
-3. Add the following CCK components to the `TaskManager` gameobject:
+3. Once you have finished editing the script, press the `Update Script` button in the `Objects Manager` tab of the `Luida Editor`.
+<img width="1179" alt="スクリーンショット 2024-11-06 20 30 20" src="https://github.com/user-attachments/assets/a6eca71d-a67f-45f1-a103-8d4258f8c4f6">
+
+4. Add the following CCK components to the `TaskManager` gameobject:
 
 **Global Logic**
 
@@ -572,6 +575,9 @@ function onTargetTouched () {
 
 </details>
 
+3. Once you have finished editing the script, press the `Update Script` button in the `Objects Manager` tab of the `Luida Editor`.
+<img width="1203" alt="Screenshot 2024-11-06 20 29 50" src="https://github.com/user-attachments/assets/f603a55c-08db-45af-ba40-076b7868b545">
+
 ### Adjust the Following of the Duplicated Virtual Hand in the `Practice - Task` State
 
 1. Create an empty game object named `RightHandAnchor` as a child of the `PracticeTaskManager` object.
@@ -582,3 +588,39 @@ function onTargetTouched () {
 ### Adjust the Settings of the Duplicated Answer Buttons in the `Practice - Questionnaire` State
 
 Remove the triggers containing the keys `isFaster` and `exp_recordCustomData` from the `Interact Item Trigger` components of `FasterButton` and `SlowerButton`.
+
+## Adding Data Recording and Upload Objects
+
+1. Press the `Add Custom Data Recorder` button in the `Data Recorders List` tab of the `Luida Editor`. Confirm that a game object and script have been generated.
+![create-data-recorder](https://github.com/user-attachments/assets/06a8a5bd-c475-4f3a-b86d-5005393ad1c0)
+2. Open the script file and replace the contents of the function `calculateData` with the following.
+
+<details>
+    
+<summary>Replace the contents of the function `calculateData`</summary>
+
+```javascript
+let fileName = "reachingTaskAnswers";
+let returnData = $.state.customData;
+
+const newRecord = {
+ g: $.state.currentCondition["gain"], // Current gain condition
+ a: $.getStateCompat("global", "isFaster", "boolean") ? "F" : "S" // Whether 'Fast' or 'Slow' was chosen
+};
+
+if (fileName in returnData && Array.isArray(returnData[fileName])) {
+ returnData[fileName].push(newRecord);
+} else {
+ returnData[fileName] = [newRecord];
+}
+
+return returnData;
+```
+
+Explanation: The value of "gain" for each trial and the value of `isFaster` chosen by the participant are saved. If 'Fast' is chosen, `isFaster` is recorded as true; if 'Slow' is chosen, it is recorded as false.
+
+</details>
+
+3. Once you have finished editing the script, press the `Update Script` button in the `Data Recorders List` tab of the `Luida Editor`.
+
+<img width="1209" alt="Screenshot 2024-11-06 20 45 59" src="https://github.com/user-attachments/assets/e153eaff-38d2-453f-9c18-375cc954bcee">
