@@ -319,7 +319,10 @@ https://github.com/user-attachments/assets/c58aa9c0-7562-40cb-952a-6c3b767f099d
     
     </details>
 
-3. 次のCCKコンポーネントを`TaskManager`ゲームオブジェクトに追加します。
+3. スクリプトの編集が終わったら、`Luida Editor`の`Objects Manager`タブで`Update Script`ボタンを押します。
+<img width="1179" alt="スクリーンショット 2024-11-06 20 30 20" src="https://github.com/user-attachments/assets/a6eca71d-a67f-45f1-a103-8d4258f8c4f6">
+   
+4. 次のCCKコンポーネントを`TaskManager`ゲームオブジェクトに追加します。
 
 **Global Logic**
 
@@ -595,6 +598,10 @@ function onTargetTouched () {
 
 </details>
 
+3. スクリプトの編集が終わったら、`Luida Editor`の`Objects Manager`タブで`Update Script`ボタンを押します。
+<img width="1203" alt="スクリーンショット 2024-11-06 20 29 50" src="https://github.com/user-attachments/assets/f603a55c-08db-45af-ba40-076b7868b545">
+
+
 ### ステート`Practice - Task`で、複製されたバーチャル手の追従設定を直す
 
 1. `PracticeTaskManager`の子オブジェクトとして、`RightHandAnchor`という名前の空のゲームオブジェクトを作成します。
@@ -604,4 +611,40 @@ function onTargetTouched () {
 
 ### ステート`Practice - Questionnaire`で、複製された回答ボタンの設定を直す
 
-`FasterButton`と`SlowerButton`の`Interact Item Trigger`コンポーネントで、キー`isFaster`と`exp_recordCustomData`を含んだトリガーを削除します。
+`FasterButton`と`SlowerButton`の`Interact Item Trigger`コンポーネントで、キー`isFaster`と`exp_recordCustomData`を含んだトリガー2つを削除します。
+
+## データ記録・アップロード用オブジェクトの追加
+
+1. `Luida Editor`の`Data Recorders List`タブで`Add Custom Data Recorder`ボタンを押します。ゲームオブジェクトとスクリプトが生成されたか確認します。
+![create-data-recorder](https://github.com/user-attachments/assets/06a8a5bd-c475-4f3a-b86d-5005393ad1c0)
+2. そのスクリプトファイルを開いて、関数`calculateData`の中身を以下の内容に置き換えます。
+
+<details>
+    
+<summary>関数`calculateData`の中身を置き換える</summary>
+
+```javascript
+let fileName = "reachingTaskAnswers";
+let returnData = $.state.customData;
+
+const newRecord = {
+ g: $.state.currentCondition["gain"], // 現在のゲイン条件
+ a: $.getStateCompat("global", "isFaster", "boolean") ? "F" : "S" // 「速い」「遅い」のどちらを選んだか
+};
+
+if (fileName in returnData && Array.isArray(returnData[fileName])) {
+ returnData[fileName].push(newRecord);
+} else {
+ returnData[fileName] = [newRecord];
+}
+
+return returnData;
+```
+
+説明：試行ごとの条件である「ゲイン（gain）」の値と、参加者が選択した isFaster の値を保存します。「速い」を選択した場合は isFaster = true、「遅い」を選択した場合は isFaster = false としてデータが記録されます。
+
+</details>
+
+3. スクリプトの編集が終わったら、`Luida Editor`の`Data Recorders List`タブで`Update Script`ボタンを押します。
+
+<img width="1209" alt="スクリーンショット 2024-11-06 20 45 59" src="https://github.com/user-attachments/assets/e153eaff-38d2-453f-9c18-375cc954bcee">
