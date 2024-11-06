@@ -141,7 +141,7 @@ public class ObjectsManagerEditor : EditorWindow
                 List<GameObject> stateDependentObjects = createdObjects.Where(o => o.transform.parent != null && PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(o) == stateDependentObjectPrefabPath && (o.transform.parent.parent.name == stateName || o.transform.parent.name == stateName)).ToList();
                 foreach (var obj in stateDependentObjects)
                 {
-                    DisplayObjectRow(obj, stateName);
+                    DisplayObjectRow(obj, stateName, i);
                 }
             }
 
@@ -152,7 +152,7 @@ public class ObjectsManagerEditor : EditorWindow
                 List<GameObject> conditionDependentObjects = createdObjects.Where(o => o.transform.parent != null && PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(o) == conditionDependentObjectPrefabPath && (o.transform.parent.parent.name == stateName || o.transform.parent.name == stateName)).ToList();
                 foreach (var obj in conditionDependentObjects)
                 {
-                    DisplayObjectRow(obj, stateName);
+                    DisplayObjectRow(obj, stateName, i);
                 }
             }
 
@@ -609,7 +609,7 @@ public class ObjectsManagerEditor : EditorWindow
     }
 
     // Displays a row for each existing state-dependent or condition-dependent object
-    private void DisplayObjectRow(GameObject obj, string stateName)
+    private void DisplayObjectRow(GameObject obj, string stateName, int stateId)
     {
         EditorGUILayout.BeginHorizontal();
 
@@ -643,6 +643,47 @@ public class ObjectsManagerEditor : EditorWindow
         }
 
         EditorGUILayout.EndHorizontal();
+
+        // Now, check for state_id mismatch
+        Component itemLogic = obj.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
+        if (itemLogic != null)
+        {
+            SerializedObject serializedComp = new SerializedObject(itemLogic);
+            SerializedProperty statementsProperty = serializedComp.FindProperty("logic.statements");
+
+            if (statementsProperty != null && statementsProperty.isArray)
+            {
+                for (int i = 0; i < statementsProperty.arraySize; i++)
+                {
+                    SerializedProperty statement = statementsProperty.GetArrayElementAtIndex(i);
+                    SerializedProperty targetKeyProp = statement.FindPropertyRelative("singleStatement.targetState.key");
+                    if (targetKeyProp != null && targetKeyProp.stringValue == "state_id")
+                    {
+                        SerializedProperty stateIdProp = statement.FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
+                        if (stateIdProp != null)
+                        {
+                            int objStateId = stateIdProp.intValue;
+                            if (objStateId != stateId)
+                            {
+                                // Display hint and fix button
+                                EditorGUILayout.BeginHorizontal();
+                                GUILayout.Space(20); // Indent
+                                EditorGUILayout.HelpBox("State ID mismatch: object's state_id does not match this state's id.", MessageType.Warning);
+                                if (GUILayout.Button("Fix state_id", GUILayout.Width(100)))
+                                {
+                                    // Fix the state_id
+                                    stateIdProp.intValue = stateId;
+                                    serializedComp.ApplyModifiedProperties();
+                                    Debug.Log($"state_id of object {obj.name} updated to {stateId}");
+                                }
+                                EditorGUILayout.EndHorizontal();
+                            }
+                            break; // We found state_id, no need to check further
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // Removes the GameObject and the corresponding row from the editor
