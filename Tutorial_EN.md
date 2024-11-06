@@ -449,21 +449,7 @@ The practice session is similar to the trial session, but we will only use the g
 
 Please follow the steps below to implement the practice session.
 
-### Display Task Instructions in the `Practice - Task` State
-
-Open the `Objects Manager` tab in the `Luida Editor` and create a game object from the prefab `Message` for the state `Practice - Task`.
-
-<details>
-    
-<summary>Example of Instruction Content</summary>
-
-```
-Please touch the green sphere that appears in front of you with your right index finger. The sphere will move 30 cm away once touched. Please touch the sphere again after it has moved.
-```
-
-</details>
-
-### Duplicate Game Objects from the Trial Session to the Practice Session
+### Duplicate Game Objects from the Trial Session to the Practice Session (Check the video below)
 
 1. Duplicate the following game objects from the `Trial - XXX` state into the `Practice - XXX` state (copy the child game objects from `States > Trial - XXX > Objects` to `States > Practice - XXX > Objects`):
     - From `Trial - Task`: `Message`, `RightHandWrapper` → to `Practice - Task`
@@ -471,13 +457,13 @@ Please touch the green sphere that appears in front of you with your right index
     - From `Trial - Rest`: `Message` → to `Practice - Rest`
 2. Open the `Objects Manager` tab in the `Luida Editor` (if it’s already open, close and reopen it), and press the `Fix state_id` button for all items in the `Practice - XXX` state.
 
-(Video)
+https://github.com/user-attachments/assets/14c40fdc-b412-4990-b994-32bae7aaffe9
 
 ### Create the PracticeTaskManager Object in the `Practice - Task` State
 
 1. Refer to the video above, open the `Objects Manager` tab in the `Luida Editor`, and create a game object with a script called `PracticeTaskManager` for the `Practice - Task` state. Ensure that the created game object and a Cluster script asset named `PracticeTaskManager.js` are generated.
 
-(Video)
+https://github.com/user-attachments/assets/4937f73b-7eec-4c86-9183-1251c2b22c52
 
 2. Edit `PracticeTaskManager.js` as follows.
 
@@ -591,7 +577,7 @@ function onTargetTouched () {
 1. Create an empty game object named `RightHandAnchor` as a child of the `PracticeTaskManager` object.
 2. Set the `Sources` of the `ParentConstraint` component in the child game object `RightHand` of `RightHandWrapper` to the `RightHandAnchor` game object of the `PracticeTaskManager`, then press the Activate button.
 
-(Image)
+<img width="619" alt="RightHand in Practice session" src="https://github.com/user-attachments/assets/80255eb0-9c0b-4514-a931-8adea53ed5c9">
 
 ### Adjust the Settings of the Duplicated Answer Buttons in the `Practice - Questionnaire` State
 
