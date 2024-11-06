@@ -96,11 +96,11 @@
 3. 「Apply Updated Variables」ボタンをクリックして変更を保存します。
 4. シーンを保存します。
 
-### 状態遷移を調整する
+### ステート遷移を調整する
 
 `Window > Luida Editor`を開き、`State List Editor`タブに切り替えます。
 
-このチュートリアルでは、以下のような状態遷移を行います。 
+このチュートリアルでは、以下のようなステート遷移を行います。 
 
 ```text
 Start → Instruction → Practice - Task → Practice - Questionnaire → Practice - Rest → Preparation → Trial - Task → Trial - Questionnaire → Trial - Rest → AfterTrials → Questionnaire (post-exp) → End
@@ -117,11 +117,11 @@ Start → Instruction → Practice - Task → Practice - Questionnaire → Pract
 - Acclimatization：`Remove`ボタンを押して削除します。
 - Questionnaire (pre-exp)：`Remove`ボタンを押して削除します。
 - Practice - Rest：
-    - `Has Exit Time`にチェックを入れ、`Exit Time`を5に設定します（5秒後に自動的に状態遷移します）。
+    - `Has Exit Time`にチェックを入れ、`Exit Time`を5に設定します（5秒後に自動的にステート遷移します）。
     - `Is Repeated`にチェックを入れ、`Repeat destination state`を`Practice - Task`に設定し、`Repeat Count`を3に設定します（練習セッションを3回繰り返します）。	
 - Trial - Rest：
-    - `Has Exit Time`にチェックを入れ、`Exit Time`を5に設定します（5秒後に自動的に状態遷移します）。
-    - （`Trial`状態の繰り返しは`Experiment Variables Editor`タブで設定した変数と試行回数で制御されるため、ここでの追加設定は不要です）
+    - `Has Exit Time`にチェックを入れ、`Exit Time`を5に設定します（5秒後に自動的にステート遷移します）。
+    - （`Trial`ステートの繰り返しは`Experiment Variables Editor`タブで設定した変数と試行回数で制御されるため、ここでの追加設定は不要です）
 
 ![image](https://github.com/user-attachments/assets/972b97af-3b00-42d8-b0d5-82039d5d39dd)
 
@@ -131,10 +131,10 @@ Start → Instruction → Practice - Task → Practice - Questionnaire → Pract
 これらはサンプルシーン`Sample_HR`用ですが、このチュートリアルでも使用します。
 
 #### NextStateButton
-クリック時に次の状態に遷移するボタンです。
+クリック時に次のステートに遷移するボタンです。
 
 CCKコンポーネント`Interact Item Trigger`が付いており、このボタンがクリックされると`state_triggerTransition`というキーを持つシグナルがグローバルにブロードキャストされます。
-この実装テンプレートはこのシグナルを受信し、次の状態に遷移します。
+この実装テンプレートはこのシグナルを受信し、次のステートに遷移します。
 
 ![image](https://github.com/user-attachments/assets/2ec1b241-9ee3-4b62-8c00-95dc82788118)
 
@@ -152,11 +152,11 @@ CCKコンポーネント`Interact Item Trigger`が付いており、このボタ
 
 ![image](https://github.com/user-attachments/assets/eb3d93d2-2ac9-4811-a503-57d43d81271e)
 
-### 各状態にオブジェクトを追加する
+### 各ステートにオブジェクトを追加する
 
-各状態にゲームオブジェクトを追加するには、`Window > Luida Editor`を開き、`Objects Manager`タブに切り替えます。
+各ステートにゲームオブジェクトを追加するには、`Window > Luida Editor`を開き、`Objects Manager`タブに切り替えます。
 
-以下の仕様に従って各状態にゲームオブジェクトを追加します。
+以下の仕様に従って各ステートにゲームオブジェクトを追加します。
 
 - **Start**: NextStateButton × 1（テキストを`Start`に変更）
 - **Instruction**: NextStateButton × 1（テキストを`Practice`に変更）、Message × 1（練習セッションの指示文にテキストを変更）
@@ -229,7 +229,7 @@ CCKコンポーネント`Interact Item Trigger`が付いており、このボタ
 この実験では、各試行でバーチャルの手にかかるゲインを変更する必要があるため、実験条件`gain`の値にアクセスできるオブジェクトが必要です。
 
 #### TaskManagerオブジェクトを作成する
-1. 上記のビデオを参照し、状態`Trial - Task`で`TaskManager`という名前の条件依存オブジェクトを作成します。作成したゲームオブジェクトと、`TaskManager.js`というClusterスクリプトアセットが生成されることを確認します。
+1. 上記のビデオを参照し、ステート`Trial - Task`で`TaskManager`という名前の条件依存オブジェクトを作成します。作成したゲームオブジェクトと、`TaskManager.js`というClusterスクリプトアセットが生成されることを確認します。
 2. `TaskManager.js`を以下のように編集します。
 
     <details>
@@ -364,14 +364,14 @@ CCKコンポーネント`Interact Item Trigger`が付いており、このボタ
 
 2. バーチャル手がユーザーの手の位置を追従するようにする
     1. `TaskManager`ゲームオブジェクトの子オブジェクトとして、`RightHandAnchor`という名前の空のゲームオブジェクトを作成します。
-    2. `Luida Editor`の`Objects Manager`タブを開き、状態`Trial - Task`用に`RightHandWrapper`というゲームオブジェクトを作成します。
+    2. `Luida Editor`の`Objects Manager`タブを開き、ステート`Trial - Task`用に`RightHandWrapper`というゲームオブジェクトを作成します。
     3. シーンにバーチャル手のプレハブを`TaskManager`ゲームオブジェクトの子オブジェクトとして追加します。
     4. 追加した`RightHand`ゲームオブジェクトに`ParentConstraint`コンポーネントを追加し、`Sources`を`RightHandAnchor`ゲームオブジェクトに設定してから、Activateボタンを押します。
     <img width="613" alt="スクリーンショット 2024-11-06 15 22 29" src="https://github.com/user-attachments/assets/b47957a1-3ba3-4fcf-963f-b1f5e69f7157">
 
-#### 状態`Trial - Task`にメッセージパネルを追加
+#### ステート`Trial - Task`にメッセージパネルを追加
 
-`Luida Editor`の`Objects Manager`タブを開き、状態`Trial - Task`用にプレハブ`Message`からゲームオブジェクトを作成します。
+`Luida Editor`の`Objects Manager`タブを開き、ステート`Trial - Task`用にプレハブ`Message`からゲームオブジェクトを作成します。
 
 <details>
     
@@ -386,11 +386,11 @@ CCKコンポーネント`Interact Item Trigger`が付いており、このボタ
 
 </details>
 
-#### 状態`Trial - Questionnaire`で質問パネルと回答ボタンを追加
+#### ステート`Trial - Questionnaire`で質問パネルと回答ボタンを追加
 
-1. `Luida Editor`の`Objects Manager`タブを開き、状態`Trial - Questionnaire`用に、プレハブ`Message`から`Question`という名前のゲームオブジェクト、`NextStateButton`から`FasterButton`と`SlowerButton`という名前のゲームオブジェクトをそれぞれ作成します。
+1. `Luida Editor`の`Objects Manager`タブを開き、ステート`Trial - Questionnaire`用に、プレハブ`Message`から`Question`という名前のゲームオブジェクト、`NextStateButton`から`FasterButton`と`SlowerButton`という名前のゲームオブジェクトをそれぞれ作成します。
 
-![image](https://github.com/user-attachments/assets/b9ae7a08-7f5d-4b1b-889c-0bb5afed96d2)
+https://github.com/user-attachments/assets/b9ae7a08-7f5d-4b1b-889c-0bb5afed96d2
 
 2. `Question`ゲームオブジェクトのテキスト内容を編集します。
 
@@ -433,13 +433,13 @@ CCKコンポーネント`Interact Item Trigger`が付いており、このボタ
   </tr>
 </table>
 
-#### 状態`Trial - Rest`でメッセージを追加
+#### ステート`Trial - Rest`でメッセージを追加
 
 `Message`プレハブからゲームオブジェクトを作成し、テキストを`腕を下ろしてください`に変更します。
 
 #### 試行終了後にデータをアップロードするトリガーを追加
 
-状態`AfterTrials`用に`NextStateButton`プレハブから`UploadAndNextButton`というゲームオブジェクトを作成します。
+ステート`AfterTrials`用に`NextStateButton`プレハブから`UploadAndNextButton`というゲームオブジェクトを作成します。
 
 `Interact Item Trigger`コンポーネントに次のトリガーを追加します。
 
