@@ -1,6 +1,6 @@
 # Tutorial
 
-Let's implement an experiment of hand redirection in this tutorial.
+In this tutorial, we will use this LUIDA's implementation template to implement a hand redirection experiment that can be executed on LUIDA.
 
 ## Recommended Preliminary Knowledge
 
@@ -624,3 +624,66 @@ Explanation: The value of "gain" for each trial and the value of `isFaster` chos
 3. Once you have finished editing the script, press the `Update Script` button in the `Data Recorders List` tab of the `Luida Editor`.
 
 <img width="1209" alt="Screenshot 2024-11-06 20 45 59" src="https://github.com/user-attachments/assets/e153eaff-38d2-453f-9c18-375cc954bcee">
+
+## Linking the Questionnaire
+
+When the experiment is actually run on the cluster, the questions and answer options of the questionnaires registered in the web console are generated automatically. However, you first need to link the questionnaire object in the scene with this implementation template. Please follow the steps below:
+
+1. Check the value of the qID of the questionnaire registered in the web console.
+![image](https://github.com/user-attachments/assets/0e8c0d75-4673-4bec-8689-888abc9c628c)
+2. Open the `Objects Manager` tab in `Luida Editor`.
+3. If there is already a Questionnaire object in the state `Questionnaire (post-exp)`, change the qID to the one registered in the web console.
+https://github.com/user-attachments/assets/9afd89be-2726-4467-84d7-7d08c901d05c
+4. If there is no Questionnaire object in the state `Questionnaire (post-exp)`, create one and set the qID to the one registered in the web console.
+![create-questionnaire](https://github.com/user-attachments/assets/3013b077-206b-448e-bcd1-f916dfce8cb7)
+5. Adjust the position of the questionnaire: set the position of the Questionnaire object to `(0, 1.5, 1)`.
+
+## Preparation Before Uploading
+
+1. Enable beta features.
+![image](https://github.com/user-attachments/assets/af786e5e-07fe-4126-b350-1ed7c0401ecd)
+2. Open `Window > かおもラボ > CSCombiner` and press the `全更新` button.
+![image](https://github.com/user-attachments/assets/12cd1c5e-0dcc-4d91-b340-900ed0a35041)
+3. Save the scene.
+4. Test play locally: Press the play button in the Unity editor to check if the experiment runs as expected.
+   - **This implementation template is a Unity project for cluster, and currently, local testing can only be done in desktop mode. If testing is difficult without VR features, please utilize the "Test Space" feature of cluster described later.**
+   - **In local testing, external calls via cluster cannot be made, so the automatic generation of the questionnaire object and data upload will not function. If the questionnaire object does not generate automatically and you cannot transition to the next state, please delete that questionnaire object, play, and revert before uploading to the cluster.**
+
+Example video capture of local testing :
+https://github.com/user-attachments/assets/c3c6c913-a70a-4397-8852-6ffb08f3fb4c
+
+## Upload to cluster
+
+1. Follow [these steps](https://creator.cluster.mu/2020/03/28/%E5%88%B6%E4%BD%9C%E3%81%97%E3%81%9F%E3%83%AF%E3%83%BC%E3%83%AB%E3%83%89%E3%82%92%E3%80%8Ccluster%E3%80%8D%E3%81%AB%E3%82%A2%E3%83%83%E3%83%97%E3%83%AD%E3%83%BC%E3%83%89%E3%81%99%E3%82%8B/) to upload as a world on cluster. Once uploaded, enter the room yourself, experience the flow of the experiment thoroughly, and confirm its operation.
+   - At this point, avatars can still be freely selected, but once the experiment is officially published, only transparent avatars will be selectable.
+2. If any bugs are found after uploading and you want to fix them and recheck functionality, you can perform a "test upload" and confirm it in cluster's "[Test Space](https://creator.cluster.mu/2024/05/24/testspace/)".
+  - Once the bug fixes are made, don't forget to upload the version that is not for testing again.
+3. After experiencing everything to the end, check the web console to see if the responses to the questionnaire and the uploaded data (task time by target coordinates and sizes) are displayed.
+![image](https://github.com/user-attachments/assets/a8a75569-b631-4f56-8fbe-ed2137ee699f)
+
+## Register World ID
+
+1. Access the "My Content" section of the cluster website from your browser and check if the experimental world you created appears in the list of your worlds.
+2. Select the relevant world, and the alphanumeric string at the end of the URL of that world's page is the World ID. Register this World ID in the experimental recruitment information edit screen of the web console.
+![image](https://github.com/user-attachments/assets/44821568-fa20-4f75-9cf1-c49f38b9d4e5)
+![image](https://github.com/user-attachments/assets/e69ff5cc-f22d-41bc-a519-d810a33cbeb7)
+![image](https://github.com/user-attachments/assets/b33e8c1c-fbda-483a-ac23-f98a193725a2)
+
+## Register (Hide) Avatar
+
+We don't need visible avatars in this experiment, so follow the steps below to force participants to use a specified transparent avatar during the experiment.
+
+1. Open LUIDA's web console, open the experiment page you registered, and press the `Set Avatar by World` button.
+
+![image](https://github.com/user-attachments/assets/8d1c30d1-2292-4979-873d-f27679c6d05e)
+
+2. Press the `Add World-Avatar Set`. Then, fill in the world ID, check the `Hide avatar` checkbox, and press `Submit`.
+
+![image](https://github.com/user-attachments/assets/1b8b048b-4316-4c7b-a077-8001db0f814b)
+
+
+## Automatic Listing in Participant Recruitment World
+
+A few days later*, the experiment you created with this implementation template will be published in the [LUIDA participant recruitment world](https://cluster.mu/w/006d765e-f961-435b-a183-77c35a42e241). Please wait a moment.
+
+*We plan to improve LUIDA's functionality to enable publication on the same day.
