@@ -694,6 +694,19 @@ https://github.com/user-attachments/assets/c3c6c913-a70a-4397-8852-6ffb08f3fb4c
 ![image](https://github.com/user-attachments/assets/e69ff5cc-f22d-41bc-a519-d810a33cbeb7)
 ![image](https://github.com/user-attachments/assets/b33e8c1c-fbda-483a-ac23-f98a193725a2)
 
+## アバターの登録（非表示にする）
+
+この実験では、見えるアバターは必要ないため、参加者が実験中に指定された透明なアバターを強制的に使用するよう、以下の手順に従ってください。
+
+1. LUIDAのウェブコンソールを開き、登録した実験ページを開いて、`Set Avatar by World`ボタンを押します。
+
+![image](https://github.com/user-attachments/assets/8d1c30d1-2292-4979-873d-f27679c6d05e)
+
+2. `Add World-Avatar Set`を押します。次に、ワールドIDを入力し、`Hide avatar`のチェックボックスをオンにして、`Submit`を押します。
+
+![image](https://github.com/user-attachments/assets/1b8b048b-4316-4c7b-a077-8001db0f814b)
+
+
 ## 参加者募集ワールドに自動掲載
 
 数日後*にあなたが本実装テンプレートで作成したこの実験は、LUIDAの参加者募集ワールドに掲載されます。しばらくお待ちください。
