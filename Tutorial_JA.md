@@ -1,6 +1,6 @@
 # チュートリアル
 
-このチュートリアルで、手のリダイレクションの実験を実装してみましょう。
+このチュートリアルでは本実装テンプレートを用いて、LUIDAで実施できるハンドリダイレクションの実験を実装してみましょう。
 
 ## 推奨する予備知識
 
@@ -78,7 +78,7 @@
 ![image](https://github.com/user-attachments/assets/e780e28d-4427-426d-9dc6-fde4d12b6120)
 ![image](https://github.com/user-attachments/assets/8c5bea04-d868-4f8c-a664-ae8ae3abcf52)
 
-## 外部呼び出し用に実験IDと確認用トークンを登録する
+## シーンを作成し、実験IDと外部呼び出しの確認用トークンを登録する
 1. トップメニューから`Window > Luida Editor`を開きます。
 ![image](https://github.com/user-attachments/assets/ff78908a-2277-4a07-a37f-3a1502146343)
 2. 新しいシーンの名前を入力し、「Create and open scene」ボタンをクリックします。
@@ -648,3 +648,54 @@ return returnData;
 3. スクリプトの編集が終わったら、`Luida Editor`の`Data Recorders List`タブで`Update Script`ボタンを押します。
 
 <img width="1209" alt="スクリーンショット 2024-11-06 20 45 59" src="https://github.com/user-attachments/assets/e153eaff-38d2-453f-9c18-375cc954bcee">
+
+## 質問紙の紐づけ
+
+実験が実際にcluster上で実行される際、ウェブコンソールに登録された質問紙の質問文と回答選択肢が自動的に生成されます。
+ただし、まず本実装テンプレートでシーン内の質問紙オブジェクトとリンクさせる必要があります。以下の手順に従ってください：
+
+1. ウェブコンソールに登録した質問紙のqIDの値を確認します。
+![image](https://github.com/user-attachments/assets/0e8c0d75-4673-4bec-8689-888abc9c628c)
+2. `Luida Editor`の`Objects Manager`タブを開きます。
+3. ステート`Questionnaire (post-exp)`で既にQuestionnaireオブジェクトがあれば、qIDをウェブコンソールに登録されたものに変えます。
+https://github.com/user-attachments/assets/9afd89be-2726-4467-84d7-7d08c901d05c
+4. ステート`Questionnaire (post-exp)`でQuestionnaireオブジェクトがなければ、一つ作成してqIDをウェブコンソールに登録されたものに設定します。
+![create-questionnaire](https://github.com/user-attachments/assets/3013b077-206b-448e-bcd1-f916dfce8cb7)
+5. 質問紙の位置調整：Questionnaireオブジェクトの位置を`(0, 1.5, 1)`に設定します。
+
+## アップロード前の準備
+
+1. ベータ機能を有効にします。
+![image](https://github.com/user-attachments/assets/af786e5e-07fe-4126-b350-1ed7c0401ecd)
+2. `Window > かおもラボ > CSCombiner`開いて`全更新`ボタンを押します。
+![image](https://github.com/user-attachments/assets/12cd1c5e-0dcc-4d91-b340-900ed0a35041)
+3. シーンをセーブします。
+4. ローカルでテストプレイ：Unityエディターのプレイボタンを押して、実験が予想通りに回るか確認します
+   - **本実装テンプレートはcluster用のUnityプロジェクトで、現状ではローカルでのテストプレイはデスクトップモードでしか行えません。VR機能でないとテストが難しい場合、後述のclusterの「テスト用スペース」機能を活用してください。**
+   - **ローカルでのテストプレイでは、clusterを介した外部への呼び出しができないため、質問紙オブジェクトの自動生成や、データのアップロードは機能しません。もし質問紙オブジェクトが自動生成されず、次のステートに移行できなくなった場合、お手数ですが、いったんその質問紙オブジェクトを削除してからプレイし、clusterにアップロードする前に戻してください。**
+
+ローカルでテストプレイの様子：
+https://github.com/user-attachments/assets/c3c6c913-a70a-4397-8852-6ffb08f3fb4c
+
+## clusterにアップロード
+
+1. [こちらの手順](https://creator.cluster.mu/2020/03/28/%E5%88%B6%E4%BD%9C%E3%81%97%E3%81%9F%E3%83%AF%E3%83%BC%E3%83%AB%E3%83%89%E3%82%92%E3%80%8Ccluster%E3%80%8D%E3%81%AB%E3%82%A2%E3%83%83%E3%83%97%E3%83%AD%E3%83%BC%E3%83%89%E3%81%99%E3%82%8B/)に従って、clusterのワールドとしてアップロードしてます。アップロードできたら自ら入室し、実験の流れを一回一通り体験し、動作を確認します。
+   - この時点では、アバターがまだ自由に選択できますが、正式に実験が公開されたら透明アバターしか選べなくなります。
+2. もしアップロード後に何かバグが見つかり、修正して動作を再確認したい場合、「テスト用アップロード」を行い、「[テスト用スペース](https://creator.cluster.mu/2024/05/24/testspace/)」で確認することができます。
+  - バグの修正ができたら、再びのテストではない方のアップロードを忘れずに
+3. 最後まで一通り体験できたら、ウェブコンソールから質問紙への回答とアップロードしたデータ（ターゲットの座標・サイズごとのタスク時間）が表示されているか確認します。
+![image](https://github.com/user-attachments/assets/a8a75569-b631-4f56-8fbe-ed2137ee699f)
+
+## ワールドIDの登録
+
+1. ブラウザーからclusterウェブサイトの「マイコンテンツ」にアクセスし、自作のワールド一覧画面に実験ワールドが出てきたか確認します。
+2. 該当ワールドを選択し、そのワールドのページのURLの後ろにある英数字の文字列はワールドIDです。そのワールドIDをウェブコンソールの実験募集情報編集画面で登録します。
+![image](https://github.com/user-attachments/assets/44821568-fa20-4f75-9cf1-c49f38b9d4e5)
+![image](https://github.com/user-attachments/assets/e69ff5cc-f22d-41bc-a519-d810a33cbeb7)
+![image](https://github.com/user-attachments/assets/b33e8c1c-fbda-483a-ac23-f98a193725a2)
+
+## 参加者募集ワールドに自動掲載
+
+数日後*にあなたが本実装テンプレートで作成したこの実験は、LUIDAの参加者募集ワールドに掲載されます。しばらくお待ちください。
+
+*当日に掲載できるようにLUIDAの機能を改善する予定です。
