@@ -46,7 +46,7 @@ Please also complete the following steps in advance:
 3. Register the experiment recruitment information:
 
    - Click "Register New Experiment."
-   - Fill in required fields in the form, except `Image URL` and `World URL` for now.
+   - Fill in the required fields showed in the pictures below (any value is fine as this is just a tutorial), and leave other fields (especially `Image URL` and `World URL`) blank or as they are.
 
    <table>
      <tr>
@@ -374,10 +374,10 @@ Follow the steps below to implement the trials session:
 
     </details>
 
-4. Once you have finished editing the script, press the `Update Script` button in the `Objects Manager` tab of the `Luida Editor`.
+3. Once you have finished editing the script, press the `Update Script` button in the `Objects Manager` tab of the `Luida Editor`.
    <img width="1179" alt="スクリーンショット 2024-11-06 20 30 20" src="https://github.com/user-attachments/assets/a6eca71d-a67f-45f1-a103-8d4258f8c4f6">
 
-5. Add the following CCK components to the `TaskManager` gameobject:
+4. Add the following CCK components to the `TaskManager` gameobject:
 
    **Global Logic**
 
@@ -497,17 +497,15 @@ https://github.com/user-attachments/assets/b9ae7a08-7f5d-4b1b-889c-0bb5afed96d2
 ### Add Message in State `Trial - Rest`
 
 Create a gameobject for state `Trial - Rest`:
-
 `Name: Message, Create from existing GameObject: Message.prefab, Is Scriptable: false`
 
-Then change its text to `Put your arm down.`
-
 ![image](https://github.com/user-attachments/assets/00985614-e539-4ad0-b3df-1750c105d0ff)
+
+Then change its text to `Put your arm down.`
 
 ### Trigger Uploading Data After Trials
 
 1. Create a gameobject for state `AfterTrials`:
-
 `Name: UploadAndNextButton, Create from existing GameObject: NextStateButton.prefab, Is Scriptable: false`
 
 ![image](https://github.com/user-attachments/assets/5966e53f-4dbf-468b-ac64-57cee7b0a136)
@@ -522,6 +520,8 @@ Value: Signal
 ```
 
 ![image](https://github.com/user-attachments/assets/84a133c0-5619-40f7-ae6f-5f683338612e)
+
+With this settings, once this button is clicked, the system will trigger the upload of the data recorded by pressing the FasterButton or SlowButton during the task .
 
 ---
 
