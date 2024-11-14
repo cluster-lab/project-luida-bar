@@ -1,8 +1,12 @@
 # チュートリアル
 
-このチュートリアルでは本実装テンプレートを用いて、LUIDA で実施できるハンドリダイレクションの実験を実装してみましょう。
+このチュートリアルでは本実装テンプレートを用いて、LUIDA上で実行可能な実験を実装します。
 
-以下について基礎のみでも勉強しておくことを推奨します：
+このチュートリアルで実装されるハンドリダイレクションの実験では。参加者はリーチングタスクを繰り返し、その際にバーチャルハンドの移動距離が異なるゲイン値によって調整されます。
+各試行後、参加者はバーチャルハンドの動きが実際の手よりも速く感じられたか、遅く感じられたかを報告します。
+これらの回答に基づいて、実際の手とバーチャルハンドの動きの速度に違いを一貫して知覚する特定のゲイン値、すなわち知覚閾値を明らかにすることができます。
+
+以下について基礎だけでも勉強しておくことを推奨します：
 
 - Unity
 - JavaScript
@@ -42,7 +46,10 @@
 
 2. 登録してログインする
 
-3. 実験の募集情報を登録する： 1. 「Register New Experiment」リンクをクリックして、新しい実験の募集情報を登録します。 2. 下の画像に示したフィールドを埋めます（チュートリアルのため任意の文字列で大丈夫です）。その他のフィールドは空白かデフォルト値のままにします。
+3. 実験の募集情報を登録する：
+
+   - 「Register New Experiment」リンクをクリックします。
+   - 下の画像に示したフィールドを埋めます（チュートリアルのため任意の文字列で大丈夫です）。その他のフィールド（特にWorld URLとImage URl）は空白かデフォルト値のままにします。
 <table>
   <tr>
     <td><img src="https://github.com/user-attachments/assets/3ccc2bb5-cb02-495e-b876-da06d21b4b14" alt="Image 1" width="500"/></td>
@@ -112,6 +119,12 @@
 
 ## 実験変数と試行回数を設定する
 
+この実験では、参加者がリーチングタスクを繰り返し行い、その際にバーチャルハンドの移動距離がそれぞれのゲイン値によって拡大または縮小されます。
+
+各試行では0.75から1.25の範囲からランダムに選択されたゲイン値が使用され、タスクは「ゲイン値の候補数 × 2」回繰り返されます。
+
+この繰り返しを実現するために、以下の設定を行ってください。
+
 1. `Window > Luida Editor`を開き、`Experiment Variables Editor`タブに切り替えます。
 2. 下の画像に従ってフィールドを入力します 1. Name: `gain` 2. Values (カンマ区切り): `0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25`
    ![image](https://github.com/user-attachments/assets/15fde214-9fc0-4e27-9d3c-aaab31a46863)
@@ -146,6 +159,8 @@
   - （`Trial`ステートの繰り返しは`Experiment Variables Editor`タブで設定した変数と試行回数で制御されるため、ここでの追加設定は不要です）
 
 ![image](https://github.com/user-attachments/assets/972b97af-3b00-42d8-b0d5-82039d5d39dd)
+
+設定が終わったらシーンのセーブを忘れずに.
 
 ---
 
@@ -187,20 +202,18 @@ CCK コンポーネント`Interact Item Trigger`が付いており、このボ�
 
 | Step                         | Action Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Start**                    | NextStateButton × 1 (Change text to `Start`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| **Instruction**              | NextStateButton × 1 (Change text to `Practice`), Message × 1 (Change instruction text for practice session) <br><details> <summary>Instruction text example</summary> <pre>これからは、右手の人差し指で緑の玉を触って、質問に答える、というタスクを行っていただきます。まずは何回か練習しましょう。準備ができたら、設定画面でコントローラを非表示にし、前を見て「練習」ボタンを押してください。</pre></details>                                                                                                                                                                                                                                                     |
-| **Practice - Task**          | 後述                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| **Practice - Questionnaire** | Questionnaire オブジェクトは使わないため削除。他は後述。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| **Practice - Rest**          | 後述                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| **Preparation**              | NextStateButton × 1 (Change text to `Start`), Message × 1 (Change instruction text for trial session) <br><details> <summary>Instruction text example</summary> <pre>練習（3 回）は以上になります。ここからは本番です。同じ手順でタスクを 22 回行ってください。準備ができたら、前を見て開始ボタンを押してください。</pre></details>                                                                                                                                                                                                                                                                                                                                 |
-| **Trial - Task**             | 後述                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| **Trial - Questionnaire**    | Questionnaire オブジェクトは使わないため削除。他は後述。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| **Trial - Rest**             | 後述                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| **AfterTrials**              | 後述                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| **Questionnaire (post-exp)** | 後述                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| **End**                      | 1. Message × 1 (Change instruction text for experiment completion) <br><details> <summary>Instruction text example</summary> <pre>実験は以上になります。ご参加いただきありがとうございました！謝礼の cluster point は後日に付与します。目の前のゲートに潜って退室してください。</pre></details> <br> 2. ワールドゲートのプレハブ (`Assets/ClusterGAMEWORLDCENTER/Prefabs/WorldGateToClusterLobby.prefab`) × 1.<br>追加後： <br> a. 位置を(0, 0, 1.5)に設定 <br> b. 子ゲームオブジェクト`SignBoard`の削除 <br> c. 子ゲームオブジェクト`WorldGate`のフィールド`World Or Event Id`を`006d765e-f961-435b-a183-77c35a42e241`に設定 (LUIDA 参加者募集ワールドの World ID) |
-
-![image](https://github.com/user-attachments/assets/6cc12262-b05f-468d-ab5d-f266be6bde95)
+| **Start**                    | 1. `Create with existing GameObject: NextStateButton.prefab, Is Scriptable: false`. <br> `Add Object`ボタンを押したら、テキストを`開始`に変更します。 <br> <img src="https://github.com/user-attachments/assets/0a1e663d-7326-4ff0-85eb-ab080629005c" width="1000" alt="Description"> |
+| **Instruction**              | `Create with existing GameObject: NextStateButton.prefab, Is Scriptable: false`. <br> `Add Object`ボタンを押したら、テキストを`練習`に変更します。 <br> <img src="https://github.com/user-attachments/assets/62d62cc6-bd76-486c-b641-f11627e8713c" width="1000" alt="Description"> <br><br> 2. `Create with existing GameObject: Message.prefab, Is Scriptable: false`. <br> `Add Object`ボタンを押したら、テキストを以下に変更します。 <br> <pre>これからは、右手の人差し指で緑の玉を触って、<br>質問に答える、というタスクを行っていただきます。<br>まずは何回か練習しましょう。<br>準備ができたら、設定画面でコントローラを非表示にし、<br>前を見て「練習」ボタンを押してください。</pre> <br> <img src="https://github.com/user-attachments/assets/0cf6b118-9bd8-4935-a1b0-5032d1a76705" width="1000" alt="Description"> |
+| **Practice - Task**          | 後述 |
+| **Practice - Questionnaire** | Questionnaire オブジェクトは使わないため削除。他は後述。 <br> <img src="https://github.com/user-attachments/assets/9ecd7005-3592-47fa-b05a-fc0c65d0b8fc" width="1000" alt="Description"> |
+| **Practice - Rest**          | 後述 |
+| **Preparation**              | 1. `Create with existing GameObject: NextStateButton.prefab, Is Scriptable: false`. <br> `Add Object`ボタンを押したら、テキストを`開始`に変更します。 <br> <img src="https://github.com/user-attachments/assets/5e8d4cdc-acc6-42e8-a7e6-df40644ab489" width="1000" alt="Description"> <br><br>2. `Create with existing GameObject: Message.prefab, Is Scriptable: false`. <br> `Add Object`ボタンを押したら、テキストを以下に変更します。 <br> <pre>練習（3 回）は以上になります。ここからは本番です。<br>同じ手順でタスクを 22 回行ってください。<br>準備ができたら、前を見て開始ボタンを押してください。</pre> <img src="https://github.com/user-attachments/assets/7c4897ab-0307-4cd7-ab64-8cb62b18d135" width="1000" alt="Description"> |
+| **Trial - Task**             | 後述 |
+| **Trial - Questionnaire**    | Questionnaire オブジェクトは使わないため削除。他は後述。 <br> <img src="https://github.com/user-attachments/assets/3b076805-6aed-48ef-b013-3fd59ebcd179" width="1000" alt="Description"> |
+| **Trial - Rest**             | 後述 |
+| **AfterTrials**              | 後述 |
+| **Questionnaire (post-exp)** | 後述 |
+| **End**                      | 1. `Create with existing GameObject: Message.prefab, Is Scriptable: false`. <br> `Add Object`ボタンを押したら、テキストを以下に変更します。 <br> <pre>実験は以上になります。ご参加いただきありがとうございました！<br>謝礼の cluster point は後日に付与します。<br>目の前のゲートに潜って退室してください。</pre> <br> <img src="https://github.com/user-attachments/assets/f602085f-03ac-4d09-91a0-3f3e265bc293" width="1000" alt="Description"> <br><br> 2. `Create with existing GameObject: Assets/ClusterGAMEWORLDCENTER/Prefabs/WorldGateToClusterLobby.prefab, Is Scriptable: false`. <br> `Add Object`ボタンを押したら： <br> a. 位置を(0, 0, 1.5)に設定 <br> b. 子ゲームオブジェクト`SignBoard`の削除 <br> c. 子ゲームオブジェクト`WorldGate`のフィールド`World Or Event Id`を`006d765e-f961-435b-a183-77c35a42e241`に設定 (LUIDA 参加者募集ワールドの World ID) <br> <img src="https://github.com/user-attachments/assets/6e3a18be-546d-4047-aa04-d76b77cefe1e" width="1000" alt="Description"> <br><br> <img src="https://github.com/user-attachments/assets/6cc12262-b05f-468d-ab5d-f266be6bde95" width="1000" alt="Description"> |
 
 ---
 
@@ -221,31 +234,17 @@ https://github.com/user-attachments/assets/c58aa9c0-7562-40cb-952a-6c3b767f099d
 
 それでは、以下の手順に従って試行セッションを実装してください。
 
-### ステート`Trial - Task`で、タスクの指示を表示する
-
-`Luida Editor`の`Objects Manager`タブを開き、ステート`Trial - Task`用にプレハブ`Message`からゲームオブジェクトを作成します。
-
-<details>
-
-<summary>テキスト内容</summary>
-
-```text
-右手の人差し指で、
-目の前に現れた緑の玉に触れてください。
-玉は触れられたら30cm先まで移動します。
-移動後の玉にもう一度触れてください。
-```
-
-</details>
-
 ### ステート`Trial - Task`で、TaskManager オブジェクトを作成する
 
 1. 上記のビデオを参照し、ステート`Trial - Task`で`TaskManager`という名前の condition-dependent オブジェクトを作成します。作成したゲームオブジェクトと、`TaskManager.js`という Cluster スクリプトアセットが生成されることを確認します。
+
+![image](https://github.com/user-attachments/assets/e394cbfd-c6a3-4f15-bcf7-4589a58a114f)
+
 2. `TaskManager.js`を以下のように編集します。
 
    <details>
 
-   <summary>関数`init`内のコードを置き換える</summary>
+   <summary>関数`Awake`内のコードを置き換える</summary>
 
    ```javascript
    $.state.timer = 0; // タイマーの初期化
@@ -283,7 +282,7 @@ https://github.com/user-attachments/assets/c58aa9c0-7562-40cb-952a-6c3b767f099d
 
    <details>
 
-   <summary>関数`tick`内のコードを置き換える</summary>
+   <summary>関数`Update`内のコードを置き換える</summary>
 
    ```javascript
    if (!$.state.player || !$.state.originPos) return;
@@ -354,8 +353,6 @@ https://github.com/user-attachments/assets/c58aa9c0-7562-40cb-952a-6c3b767f099d
        : 1; // この試行におけるゲインの値を設定する
      $.state.isReaching = true; // リーチング（目標地点まで手を伸ばす）フラグをtrueにする
    }
-   ```
-
 
     // 目標地点にある緑の玉が触れられる時に実行される
     function onTargetTouched () {
@@ -380,46 +377,32 @@ https://github.com/user-attachments/assets/c58aa9c0-7562-40cb-952a-6c3b767f099d
 
    **Global Logic**
 
-   追加目的：移動後にターゲットに触れたら次のステートに遷移するため。
-
-   <details>
-
-   <summary>コンポーネントの設定</summary>
-
-   ```text
-   Target: Item
-   Key: state_triggerTransition
-   Item: TaskManagerゲームオブジェクト自身
-   ----------
-   Global state_triggerTransition Signal
-   = Constant Bool true
-   ```
-
-   説明：自分自身から state_triggerTransition キーを持つシグナルを受信し（例：TaskManager.js の onTargetTouched 関数の一行目）、グローバルに向けて state_triggerTransition キーを持つシグナルを発信します。
-
-   </details>
+   - 追加目的：移動後にターゲットに触れたら次のステートに遷移するため。
+   - コンポーネントの設定
+      ```text
+      Target: Item
+      Key: state_triggerTransition
+      Item: TaskManagerゲームオブジェクト自身
+      ----------
+      Global state_triggerTransition Signal
+      = Constant Bool true
+      ```
+   - 説明：自分自身から state_triggerTransition キーを持つシグナルを受信し（例：TaskManager.js の onTargetTouched 関数の一行目）、グローバルに向けて state_triggerTransition キーを持つシグナルを発信します。
 
    **On Collide Item Trigger**
 
-   追加目的：ターゲットとの接触を検知するため。
-
-   <details>
-
-   <summary>コンポーネントの設定</summary>
-
-   ```text
-   Collision Event Type: Enter
-   Collision Type: Collision
-
-   Triggers
-   ----------
-   Target: This isSphereTouched
-   Value: Bool true
-   ```
-
-   説明：他のオブジェクトと衝突した際に、isSphereTouched を true に設定し、TaskManager.js の tick 関数で if (\$.getStateCompat("this", "isSphereTouched", "boolean"))を使用して処理します。
-
-   </details>
+   - 追加目的：ターゲットとの接触を検知するため。
+   - コンポーネントの設定
+      ```text
+      Collision Event Type: Enter
+      Collision Type: Collision
+   
+      Triggers
+      ----------
+      Target: This isSphereTouched
+      Value: Bool true
+      ```
+   - 説明：他のオブジェクトと衝突した際に、isSphereTouched を true に設定し、TaskManager.js の tick 関数で if (\$.getStateCompat("this", "isSphereTouched", "boolean"))を使用して処理します。
 
 ![image](https://github.com/user-attachments/assets/91a095bb-9ca8-4126-adc9-6ff89b3e7d5c)
 
@@ -437,11 +420,29 @@ https://github.com/user-attachments/assets/c58aa9c0-7562-40cb-952a-6c3b767f099d
 </table>
 
 2. バーチャル手がユーザーの手の位置を追従するようにする
+
    1. `TaskManager`ゲームオブジェクトの子オブジェクトとして、`RightHandAnchor`という名前の空のゲームオブジェクトを作成します。
    2. `Luida Editor`の`Objects Manager`タブを開き、ステート`Trial - Task`用に`RightHandWrapper`というゲームオブジェクトを作成します。
+         ![add-gameobject-to-state-no-prefab-no-script](https://github.com/user-attachments/assets/2896fba5-99d2-4609-bfb7-b59802a1266c)
    3. シーンにバーチャル手のプレハブを`RightHandWrapper`ゲームオブジェクトの子オブジェクトとして追加します。
    4. 追加した`RightHand`ゲームオブジェクトに`ParentConstraint`コンポーネントを追加し、`Sources`を`RightHandAnchor`ゲームオブジェクトに設定してから、Activate ボタンを押します。
-      <img width="613" alt="スクリーンショット 2024-11-06 15 22 29" src="https://github.com/user-attachments/assets/b47957a1-3ba3-4fcf-963f-b1f5e69f7157">
+      <img width="613" alt="スクリーンショット 2024-11-06 15 22 29" src="https://github.com/user-attachments/assets/1238b42f-b4fe-4524-9213-4f56fda689aa">
+
+### ステート`Trial - Task`で、タスクの指示を表示する
+
+`Luida Editor`の`Objects Manager`タブを開き、ステート`Trial - Task`用のMessageゲームオブジェクトを作成します：
+`Create with existing GameObject: Message.prefab, is Scriptable: false`
+
+![image](https://github.com/user-attachments/assets/42415129-29fa-44b9-80ab-2152eef8a860)
+
+そしてMessageのテキスト内容を以下に変更：
+
+```text
+右手の人差し指で、
+目の前に現れた緑の玉に触れてください。
+玉は触れられたら30cm先まで移動します。
+移動後の玉にもう一度触れてください。
+```
 
 ### ステート`Trial - Questionnaire`で、質問パネルと回答ボタンを追加する
 
@@ -449,11 +450,7 @@ https://github.com/user-attachments/assets/c58aa9c0-7562-40cb-952a-6c3b767f099d
 
 https://github.com/user-attachments/assets/b9ae7a08-7f5d-4b1b-889c-0bb5afed96d2
 
-2. `Question`ゲームオブジェクトのテキスト内容を編集します。
-
-   <details>
-
-   <summary>質問のテキスト内容</summary>
+2. `Question`ゲームオブジェクトのテキスト内容を編集します：
 
    ```text
    Q: バーチャル空間の中の手は実身体の手より
@@ -461,9 +458,7 @@ https://github.com/user-attachments/assets/b9ae7a08-7f5d-4b1b-889c-0bb5afed96d2
    分からない場合はどちらかのボタンを押してください
    ```
 
-   </details>
-
-3. `FasterButton`: 位置を`(-0.75, 0.75, -0.5)`に設定し、`Interact Item Trigger`コンポーネントに以下のトリガーを追加します。
+3. `FasterButton`: 位置を`(-0.75, 0.75, -0.5)`に設定し、`Interact Item Trigger`コンポーネントに以下のトリガーを順番通りに追加します：
 
    ```text
    Target: Global isFaster
@@ -473,7 +468,7 @@ https://github.com/user-attachments/assets/b9ae7a08-7f5d-4b1b-889c-0bb5afed96d2
    Value: Signal
    ```
 
-4. `SlowerButton`: 位置を`(0.75, 0.75, -0.5)`に設定し、`Interact Item Trigger`コンポーネントに以下のトリガーを追加します。
+4. `SlowerButton`: 位置を`(0.75, 0.75, -0.5)`に設定し、`Interact Item Trigger`コンポーネントに以下のトリガーを順番通りに追加します：
 
    ```text
    Target: Global isFaster
@@ -485,27 +480,39 @@ https://github.com/user-attachments/assets/b9ae7a08-7f5d-4b1b-889c-0bb5afed96d2
 
 <table>
   <tr>
-    <td><img width="621" alt="Faster Button" src="https://github.com/user-attachments/assets/fc967e8f-0258-4ccc-a7f5-9c1e423d5bd5" width="500"></td>
-    <td><img width="610" alt="Slower Button" src="https://github.com/user-attachments/assets/2f87fbab-e9f3-4ac7-8281-4b8d170ee660" width="500"></td>
+    <td><img width="621" alt="Faster Button" src="https://github.com/user-attachments/assets/9198ab1d-8f4e-41c2-9654-97b87b5cb4e1" width="500"></td>
+    <td><img width="610" alt="Slower Button" src="https://github.com/user-attachments/assets/04e530e3-ace5-4ebc-9edd-334e94c86897" width="500"></td>
   </tr>
 </table>
 
 ### ステート`Trial - Rest`でメッセージを追加する
 
-`Message`プレハブからゲームオブジェクトを作成し、テキストを`腕を下ろしてください`に変更します。
+ステート`Trial - Rest`用のゲームオブジェクトを作成します：
+`Create with existing GameObject: Message.prefab, is Scriptable: false`
+
+![image](https://github.com/user-attachments/assets/00985614-e539-4ad0-b3df-1750c105d0ff)
+
+そして作られたMessageゲームオブジェクトのテキストを`腕を下ろしてください`に変更します。
 
 ### ステート`AfterTrials`で、試行終了後にデータをアップロードするトリガーを追加する
 
-ステート`AfterTrials`用に`NextStateButton`プレハブから`UploadAndNextButton`というゲームオブジェクトを作成します。
+1. ステート`AfterTrials`用にゲームオブジェクトを作成します：
+`Name: UploadAndNextButton, Create from existing GameObject: NextStateButton.prefab, Is Scriptable: false`
 
-`Interact Item Trigger`コンポーネントに次のトリガーを追加します。
+![image](https://github.com/user-attachments/assets/5966e53f-4dbf-468b-ac64-57cee7b0a136)
+
+2. 作られたボタンのテキストを`次へ`にする
+
+3. 作られたボタンの`Interact Item Trigger`コンポーネントに次のトリガーを追加します。
 
 ```text
 Target: Global exp_uploadCustomData
 Value: Signal
 ```
 
-![image](https://github.com/user-attachments/assets/d441f574-50aa-434c-95b8-031bc43d1221)
+![image](https://github.com/user-attachments/assets/84a133c0-5619-40f7-ae6f-5f683338612e)
+
+これにより、このボタンが押されたら、試行中にFasterButtonやSlowButtonの押下によって記録されたデータをアップロードするためのトリガーを発火します。
 
 ---
 
@@ -514,23 +521,6 @@ Value: Signal
 試行セッションと大体一緒ですが、ゲインを `0.75 (最小値), 1, 1.25 (最大値)` のみにします。また、実験条件へのアクセスもデータの記録も行いません。
 
 以下の手順に従って練習セッションを実装してください。
-
-### ステート`Trial - Task`で、タスクの指示を表示する
-
-`Luida Editor`の`Objects Manager`タブを開き、ステート`Practice - Task`用にプレハブ`Message`からゲームオブジェクトを作成します。
-
-<details>
-
-<summary>指示内容の例文</summary>
-
-```text
-右手の人差し指で、
-目の前に現れた緑の玉に触れてください。
-玉は触れられたら30cm先まで移動します。
-移動後の玉にもう一度触れてください。
-```
-
-</details>
 
 ### 試行セッションのゲームオブジェクトを練習セッションに複製（下記の動画を参照）
 
@@ -547,6 +537,10 @@ https://github.com/user-attachments/assets/14c40fdc-b412-4990-b994-32bae7aaffe9
 1. 下記のビデオを参照し、`Luida Editor`の`Objects Manager`タブを開き、ステート`Practice - Task`用に`PracticeTaskManager`というスクリプト付きのゲームオブジェクトを作成します。作成したゲームオブジェクトと、`PracticeTaskManager.js`という Cluster スクリプトアセットが生成されることを確認します。
 
 https://github.com/user-attachments/assets/4937f73b-7eec-4c86-9183-1251c2b22c52
+
+![image](https://github.com/user-attachments/assets/5795fa28-ef26-4a02-a7cc-1821c4531018)
+
+![image](https://github.com/user-attachments/assets/a1af8d0a-165d-4105-981d-12e627dfa4f2)
 
 2. `PracticeTaskManager.js`を以下のように編集します。
 
@@ -680,11 +674,13 @@ function onTargetTouched() {
 1. `PracticeTaskManager`の子オブジェクトとして、`RightHandAnchor`という名前の空のゲームオブジェクトを作成します。
 2. `RightHandWrapper`の子ゲームオブジェクト`RightHand`で、`ParentConstraint`コンポーネントの`Sources`を、`PracticeTaskManager`の子オブジェクト`RightHandAnchor`ゲームオブジェクトに設定してから、Activate ボタンを押します。
 
-<img width="620" alt="スクリーンショット 2024-11-06 19 18 26" src="https://github.com/user-attachments/assets/2dcbe85e-1659-4eff-83f7-e8f607f640b4">
+<img width="620" alt="スクリーンショット 2024-11-06 19 18 26" src="https://github.com/user-attachments/assets/68621951-b956-43b7-aeca-83bb0d8039ba">
 
 ### ステート`Practice - Questionnaire`で、複製された回答ボタンの設定を直す
 
 `FasterButton`と`SlowerButton`の`Interact Item Trigger`コンポーネントで、キー`isFaster`と`exp_recordCustomData`を含んだトリガー 2 つを削除します。
+
+![image](https://github.com/user-attachments/assets/eefd63d7-8475-4471-b0ee-974021ac9cfb)
 
 ---
 
@@ -735,7 +731,9 @@ return returnData;
    ![image](https://github.com/user-attachments/assets/0e8c0d75-4673-4bec-8689-888abc9c628c)
 2. `Luida Editor`の`Objects Manager`タブを開きます。
 3. ステート`Questionnaire (post-exp)`で既に Questionnaire オブジェクトがあれば、qID をウェブコンソールに登録されたものに変えます。
+
    https://github.com/user-attachments/assets/9afd89be-2726-4467-84d7-7d08c901d05c
+
 4. ステート`Questionnaire (post-exp)`で Questionnaire オブジェクトがなければ、一つ作成して qID をウェブコンソールに登録されたものに設定します。
    ![create-questionnaire](https://github.com/user-attachments/assets/3013b077-206b-448e-bcd1-f916dfce8cb7)
 5. 質問紙の位置調整：Questionnaire オブジェクトの位置を`(0, 1.5, 1)`に設定します。
@@ -754,6 +752,7 @@ return returnData;
    - **ローカルでのテストプレイでは、cluster を介した外部への呼び出しができないため、質問紙オブジェクトの自動生成や、データのアップロードは機能しません。もし質問紙オブジェクトが自動生成されず、次のステートに移行できなくなった場合、お手数ですが、いったんその質問紙オブジェクトを削除してからプレイし、cluster にアップロードする前に戻してください。**
 
 ローカルでテストプレイの様子：
+
 https://github.com/user-attachments/assets/c3c6c913-a70a-4397-8852-6ffb08f3fb4c
 
 ---
@@ -761,7 +760,7 @@ https://github.com/user-attachments/assets/c3c6c913-a70a-4397-8852-6ffb08f3fb4c
 ## cluster にアップロード
 
 1. [こちらの手順](https://creator.cluster.mu/2020/03/28/%E5%88%B6%E4%BD%9C%E3%81%97%E3%81%9F%E3%83%AF%E3%83%BC%E3%83%AB%E3%83%89%E3%82%92%E3%80%8Ccluster%E3%80%8D%E3%81%AB%E3%82%A2%E3%83%83%E3%83%97%E3%83%AD%E3%83%BC%E3%83%89%E3%81%99%E3%82%8B/)に従って、cluster のワールドとしてアップロードしてます。アップロードできたら自ら入室し、実験の流れを一回一通り体験し、動作を確認します。
-   - この時点では、アバターがまだ自由に選択できますが、正式に実験が公開されたら透明アバターしか選べなくなります。
+   - この時点では、アバターがまだ自由に選択できますが、アバターの設定を終え（後述）、正式に実験が公開されたら、ユーザがこの実験ワールドに入室する際に透明アバターしか選べなくなります。
 2. もしアップロード後に何かバグが見つかり、修正して動作を再確認したい場合、「テスト用アップロード」を行い、「[テスト用スペース](https://creator.cluster.mu/2024/05/24/testspace/)」で確認することができます。
 
 - バグの修正ができたら、再びのテストではない方のアップロードを忘れずに
@@ -799,4 +798,4 @@ https://github.com/user-attachments/assets/c3c6c913-a70a-4397-8852-6ffb08f3fb4c
 
 数日後\*にあなたが本実装テンプレートで作成したこの実験は、LUIDA の参加者募集ワールドに掲載されます。しばらくお待ちください。
 
-\*当日に掲載できるように LUIDA の機能を改善する予定です。
+\*新たに登録された実験が1日で公開できるように、LUIDAに毎日更新の仕組みを実装する予定です。
