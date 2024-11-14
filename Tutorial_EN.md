@@ -42,7 +42,7 @@ Please also complete the following steps in advance:
 3. Register the experiment recruitment information:
 
    - Click "Register New Experiment."
-   - Fill in the required fields as shown below. You can use any sample values for this tutorial. Leave other fields as default.
+   - Fill in required fields in the form, except `Image URL` and `World URL` for now.
 
    <table>
      <tr>
@@ -113,9 +113,23 @@ Launch the downloaded implementation template from Unity Hub, and continue the f
 
 ## Setup Experiment Variables & Trials Count
 
+In this experiment, participants perform a repeated reaching task in which the virtual hand’s movement distance is scaled by a specific gain value.
+
+Each trial uses a randomly selected gain value from a range of 0.75 to 1.25, and the task is repeated "number of gain values × 2" times to ensure a balanced assessment across the gain range.
+
+To realize the repetition, complete the settings below:
+
 1. Open `Window > Luida Editor` and switch to the `Experiment Variables Editor` tab.
-2. Fill in the fields following the image below: 1. Name: `gain` 2. Values (comma-separated): `0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25`
-   ![image](https://github.com/user-attachments/assets/15fde214-9fc0-4e27-9d3c-aaab31a46863)
+2. Fill in the fields following the image below:
+   1. Trials count per Condition: `2`
+   2. Variables of Within-Subject Conditions
+      1. Legnth: `1`
+      2. Name: `gain`
+      3. Values: `0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25`
+      4. isRandom: `false`
+
+![image](https://github.com/user-attachments/assets/15fde214-9fc0-4e27-9d3c-aaab31a46863)
+
 3. Click the 'Apply Updated Variables' button to save the changes.
 4. Save the scene.
 
@@ -148,6 +162,8 @@ To realize this transition, edit the transition in the editor window:
 
 ![image](https://github.com/user-attachments/assets/972b97af-3b00-42d8-b0d5-82039d5d39dd)
 
+Then remember to save the scene finally.
+
 ---
 
 ## Confirm Prefabs for the Tutorial
@@ -179,28 +195,26 @@ Move into the `RightHand` folder to find the `RightHand` prefab. A small sphere 
 
 To add gameobjects for each state, open `Window > Luida Editor` and switch to the `Objects Manager` tab.
 
-Here is a video to show how to add a gameobject (not scriptable) from a prefab for a specific state:
+Here is an example video to show how to add a gameobject (not scriptable) from a prefab for a specific state:
 
 https://github.com/user-attachments/assets/06f8656e-7f9d-42a9-8830-b6586e9481ca
 
-Let's add gameobjects for each state according to the following specifications:
+Using the same method, let's add gameobjects for each state according to the following specifications:
 
 | Step                         | Action Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Start**                    | NextStateButton × 1 (Change text to `Start`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| **Instruction**              | NextStateButton × 1 (Change text to `Practice`), Message × 1 (Change instruction text for practice session) <br><details> <summary>Instruction text example</summary> <pre>From now on, you will perform the task of touching the green ball with your right index finger and answering questions. First, let's practice a few times. When you are ready, please hide the controller in the settings screen, look ahead, and press the "Practice" button.</pre></details>                                                                                                                                                                                                                                   |
-| **Practice - Task**          | To be explained later.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| **Practice - Questionnaire** | Remove the Questionnaire object. Other required changes will be explained later.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| **Practice - Rest**          | To be explained later.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| **Preparation**              | NextStateButton × 1 (Change text to `Start`), Message × 1 (Change instruction text for trial session) <br><details> <summary>Instruction text example</summary> <pre>The practice session (3 times) is now complete. From here, it is the real thing. Please perform the task 22 times following the same procedure. When you are ready, look ahead and press the start button.</pre></details>                                                                                                                                                                                                                                                                                                             |
-| **Trial - Task**             | To be explained later.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| **Trial - Questionnaire**    | Remove the Questionnaire object. Other required changes will be explained later.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| **Trial - Rest**             | To be explained later.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| **AfterTrials**              | To be explained later.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| **Questionnaire (post-exp)** | To be explained later.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| **End**                      | 1. Message × 1 (Change instruction text for experiment completion) <br><details> <summary>Instruction text example</summary> <pre>The experiment is now complete. Thank you for participating! The cluster points as a reward will be granted on a later date. Please pass through the gate in front of you to exit.</pre></details> <br> 2. World gate prefab (`Assets/ClusterGAMEWORLDCENTER/Prefabs/WorldGateToClusterLobby.prefab`) × 1 <br> After adding: <br> a. Set position to (0, 0, 1.5). <br> b. Delete child object `SignBoard`. <br> c. Set the value of child object `WorldGate`'s `World Or Event Id` field to `006d765e-f961-435b-a183-77c35a42e241` (World ID of LUIDA recruitment world). |
-
-![image](https://github.com/user-attachments/assets/6cc12262-b05f-468d-ab5d-f266be6bde95)
+| **Start**                    | 1. `Create with existing GameObject: NextStateButton.prefab, Is Scriptable: false`. <br> After pressing `Add Object` button, change the button's text to `Start` <br> <img src="https://github.com/user-attachments/assets/0a1e663d-7326-4ff0-85eb-ab080629005c" width="1000" alt="Description"> |
+| **Instruction**              | 1. `Create with existing GameObject: NextStateButton.prefab, Is Scriptable: false`. <br> After pressing `Add Object` button, change the button's text to `Practice` <br> <img src="https://github.com/user-attachments/assets/62d62cc6-bd76-486c-b641-f11627e8713c" width="1000" alt="Description"> <br> 2. `Create with existing GameObject: Message.prefab, Is Scriptable: false`. <br> After pressing `Add Object` button, change the message's text to: <br> <pre>From now on, you will perform the task of touching the green ball <br> with your right index finger and answering questions. <br> First, let's practice a few times. When you are ready, <br> please hide the controller in the settings screen, look ahead, <br> and press the "Practice" button.</pre> <br> <img src="https://github.com/user-attachments/assets/0cf6b118-9bd8-4935-a1b0-5032d1a76705" width="1000" alt="Description"> |
+| **Practice - Task**          | To be explained later. |
+| **Practice - Questionnaire** | Remove the Questionnaire object. Other required changes will be explained later. <br> <img src="https://github.com/user-attachments/assets/9ecd7005-3592-47fa-b05a-fc0c65d0b8fc" width="1000" alt="Description"> |
+| **Practice - Rest**          | To be explained later. |
+| **Preparation**              | 1. `Create with existing GameObject: NextStateButton.prefab, Is Scriptable: false`. <br> After pressing `Add Object` button, change the button's text to `Start` <br> <img src="https://github.com/user-attachments/assets/5e8d4cdc-acc6-42e8-a7e6-df40644ab489" width="1000" alt="Description"> 2. `Create with existing GameObject: Message.prefab, Is Scriptable: false`. <br> After pressing `Add Object` button, change the message's text to: <br> <pre>The practice session (3 times) is now complete.<br>The actual trials begin from now on.<br>Please perform the task 22 times following the same procedure.<br>When you are ready, look ahead and press the start button.</pre> <img src="https://github.com/user-attachments/assets/7c4897ab-0307-4cd7-ab64-8cb62b18d135" width="1000" alt="Description"> |
+| **Trial - Task**             | To be explained later. |
+| **Trial - Questionnaire**    | Remove the Questionnaire object. Other required changes will be explained later. <br> <img src="https://github.com/user-attachments/assets/3b076805-6aed-48ef-b013-3fd59ebcd179" width="1000" alt="Description"> |
+| **Trial - Rest**             | To be explained later. |
+| **AfterTrials**              | To be explained later. |
+| **Questionnaire (post-exp)** | To be explained later. |
+| **End**                      | 1. `Create with existing GameObject: Message.prefab, Is Scriptable: false`. <br> After pressing `Add Object` button, change the message's text to: <br> <pre>The experiment is now complete. Thank you for participating!<br>The cluster points as a reward will be granted on a later date.<br>Please pass through the gate in front of you to exit.</pre> <br> <img src="https://github.com/user-attachments/assets/f602085f-03ac-4d09-91a0-3f3e265bc293" width="1000" alt="Description"> <br> 2. `Create with existing GameObject: Assets/ClusterGAMEWORLDCENTER/Prefabs/WorldGateToClusterLobby.prefab, Is Scriptable: false`. <br> After pressing `Add Object` button: <br> a. Set position to (0, 0, 1.5). <br> b. Delete child object `SignBoard`. <br> c. Set the value of child object `WorldGate`'s `World Or Event Id` field to `006d765e-f961-435b-a183-77c35a42e241` (World ID of LUIDA recruitment world). <br> <img src="https://github.com/user-attachments/assets/6e3a18be-546d-4047-aa04-d76b77cefe1e" width="1000" alt="Description"> <br><br> <img src="https://github.com/user-attachments/assets/6cc12262-b05f-468d-ab5d-f266be6bde95" width="1000" alt="Description"> |
 
 ---
 
@@ -223,11 +237,14 @@ Follow the steps below to implement the trials session:
 ### Create a Task Manager Object
 
 1. Refer to the video above to create a condition-dependent object named `TaskManager` in the state `Trial - Task`. Confirm that the gameobject and a cluster script asset `TaskManager.js` are generated.
+
+![image](https://github.com/user-attachments/assets/e394cbfd-c6a3-4f15-bcf7-4589a58a114f)
+
 2. Edit `TaskManager.js` as follows.
 
    <details>
 
-   <summary>Replace the code in the `init` function</summary>
+   <summary>Replace the code in the `Awake` function</summary>
 
    ```javascript
    $.state.timer = 0; // Initialize the timer
@@ -265,7 +282,7 @@ Follow the steps below to implement the trials session:
 
    <details>
 
-   <summary>Replace the code in the `tick` function</summary>
+   <summary>Replace the code in the `Update` function</summary>
 
    ```javascript
    if (!$.state.player || !$.state.originPos) return;
@@ -336,8 +353,6 @@ Follow the steps below to implement the trials session:
        : 1; // Set the gain value for this trial
      $.state.isReaching = true; // Set the reaching (extending hand to the target position) flag to true
    }
-   ```
-
 
     // Executed when the green ball at the target position is touched
     function onTargetTouched () {
@@ -355,53 +370,39 @@ Follow the steps below to implement the trials session:
 
     </details>
 
-3. Once you have finished editing the script, press the `Update Script` button in the `Objects Manager` tab of the `Luida Editor`.
+4. Once you have finished editing the script, press the `Update Script` button in the `Objects Manager` tab of the `Luida Editor`.
    <img width="1179" alt="スクリーンショット 2024-11-06 20 30 20" src="https://github.com/user-attachments/assets/a6eca71d-a67f-45f1-a103-8d4258f8c4f6">
 
-4. Add the following CCK components to the `TaskManager` gameobject:
+5. Add the following CCK components to the `TaskManager` gameobject:
 
    **Global Logic**
 
-   Purpose: To transition to the next state when the sphere is touched after moving.
-
-   <details>
-
-   <summary>Configure the component</summary>
-
-   ```text
-   Target: Item
-   Key: state_triggerTransition
-   Item: the TaskManager gameobject itself
-   ----------
-   Global state_triggerTransition Signal
-   = Constant Bool true
-   ```
-
-   Explanation: It receives a signal with key `state_triggerTransition` from itself (e.g., the first line of the onTargetTouched function in TaskManager.js) and broadcasts a signal with key `state_triggerTransition` globally.
-
-   </details>
+   - Purpose: To transition to the next state when the sphere is touched after moving.
+   - Configure the component:
+      ```text
+      Target: Item
+      Key: state_triggerTransition
+      Item: the TaskManager gameobject itself
+      ----------
+      Global state_triggerTransition Signal
+      = Constant Bool true
+      ```
+   - Explanation: It receives a signal with key `state_triggerTransition` from itself (e.g., the first line of the onTargetTouched function in TaskManager.js) and broadcasts a signal with key `state_triggerTransition` globally.
 
    **On Collide Item Trigger**
 
-   Purpose: To detect contacts with the sphere.
-
-   <details>
-
-   <summary>Configure the component</summary>
-
-   ```text
-   Collision Event Type: Enter
-   Collision Type: Collision
-
-   Triggers
-   ----------
-   Target: This isSphereTouched
-   Value: Bool true
-   ```
-
-   Explanation: When colliding with other objects, it sets `isSphereTouched` to true directed towards itself, which is then processed in TaskManager.js > tick function using `if ($.getStateCompat("this", "isSphereTouched", "boolean"))`.
-
-   </details>
+   - Purpose: To detect contacts with the sphere.
+   - Configure the component:
+      ```text
+      Collision Event Type: Enter
+      Collision Type: Collision
+   
+      Triggers
+      ----------
+      Target: This isSphereTouched
+      Value: Bool true
+      ```
+   - Explanation: When colliding with other objects, it sets `isSphereTouched` to true directed towards itself, which is then processed in TaskManager.js > tick function using `if ($.getStateCompat("this", "isSphereTouched", "boolean"))`.
 
 ![image](https://github.com/user-attachments/assets/91a095bb-9ca8-4126-adc9-6ff89b3e7d5c)
 
@@ -418,26 +419,31 @@ Follow the steps below to implement the trials session:
   </tr>
 </table>
 
-2.  **Make the Virtual Hand Follow the User's Hand Position** 1. Create an empty gameobject named `RightHandAnchor` as a child of the `TaskManager` gameobject. 2. Open the `Objects Manager` tab in the `Luida Editor` to create a gameobject named `RightHandWrapper` for the state `Trial - Task`.
-    ![add-gameobject-to-state-no-prefab-no-script](https://github.com/user-attachments/assets/2896fba5-99d2-4609-bfb7-b59802a1266c)
+2.  **Make the Virtual Hand Follow the User's Hand Position**
 
-        3. Add the virtual hand prefab to the scene as a child gameobject of `RightHandWrapper`.
-        4. On the newly added RightHand gameobject, add a `ParentConstraint` component, set `Sources` to the `RightHandAnchor` gameobject, and then press the Activate button.
-            <img width="613" alt="Screenshot 2024-11-06 15 22 29" src="https://github.com/user-attachments/assets/b47957a1-3ba3-4fcf-963f-b1f5e69f7157">
+    1. Create an empty gameobject named `RightHandAnchor` as a child of the `TaskManager` gameobject.
+    2. Open the `Objects Manager` tab in the `Luida Editor` to create a gameobject named `RightHandWrapper` for the state `Trial - Task`.
+         ![add-gameobject-to-state-no-prefab-no-script](https://github.com/user-attachments/assets/2896fba5-99d2-4609-bfb7-b59802a1266c)
+    3. Add the virtual hand prefab to the scene as a child gameobject of `RightHandWrapper`.
+    4. On the newly added RightHand gameobject, add a `ParentConstraint` component, set `Sources` to the `RightHandAnchor` gameobject, and then press the Activate button.
+         <img width="613" alt="Screenshot 2024-11-06 15 22 29" src="https://github.com/user-attachments/assets/1238b42f-b4fe-4524-9213-4f56fda689aa">
+
 
 ### Add a Message Panel in State `Trial - Task`
 
-Open the `Objects Manager` tab in the `Luida Editor` to create a gameobject from prefab `Message` for the state `Trial - Task`.
+Open the `Objects Manager` tab in the `Luida Editor` to create a gameobject from prefab `Message` for the state `Trial - Task`:
+`Create with existing GameObject: Message.prefab, is Scriptable: false`
 
-<details>
+![image](https://github.com/user-attachments/assets/42415129-29fa-44b9-80ab-2152eef8a860)
 
-<summary>Text Content</summary>
+Then change the text to:
 
 ```text
-Please touch the green sphere that appears in front of you with your right index finger. When touched, the sphere will move 30 cm away. Please touch the sphere again after it has moved.
+Please touch the green sphere that appears
+in front of you with your right index finger.
+When touched, the sphere will move 30 cm away.
+Please touch the sphere again after it has moved.
 ```
-
-</details>
 
 ### Add Question Panel and Answer Buttons in State `Trial - Questionnaire`
 
@@ -445,18 +451,20 @@ Please touch the green sphere that appears in front of you with your right index
 
 https://github.com/user-attachments/assets/b9ae7a08-7f5d-4b1b-889c-0bb5afed96d2
 
-2. Edit the text content of the `Question` gameobject.
-<details>
+![image](https://github.com/user-attachments/assets/a0f97bf3-9569-4f30-af6d-ffdca18a1821)
+![image](https://github.com/user-attachments/assets/115ff046-09f8-42dd-af79-12761ca2ffb2)
+![image](https://github.com/user-attachments/assets/ba06a126-d33b-4e23-a11a-f9ba7a67e29e)
 
-<summary>Text Content for `Question`</summary>
 
-```text
-Q: Did the hand in the virtual space move faster or slower than the actual hand? If you are unsure, please press either button.
-```
+2. Edit the text content of the `Question` gameobject. Change the text to:
 
-</details>
+   ```text
+   Q: Did the hand in the virtual space move faster or slower than the actual hand?
+   If you are unsure, please press either button.
+   ```
 
-3. **FasterButton**: Set position to `(-0.75, 0.75, -0.5)` and add the following triggers to the `Interact Item Trigger` component:
+
+3. **FasterButton**: Set position to `(-0.75, 0.75, -0.5)` and add the following triggers to the `Interact Item Trigger` component in order:
    ```text
    Target: Global isFaster
    Value: Bool true
@@ -464,7 +472,7 @@ Q: Did the hand in the virtual space move faster or slower than the actual hand?
    Target: Global exp_recordCustomData
    Value: Signal
    ```
-4. **SlowerButton**: Set position to `(0.75, 0.75, -0.5)` and add the following triggers to the `Interact Item Trigger` component:
+4. **SlowerButton**: Set position to `(0.75, 0.75, -0.5)` and add the following triggers to the `Interact Item Trigger` component in order:
    ```text
    Target: Global isFaster
    Value: Bool false
@@ -475,27 +483,41 @@ Q: Did the hand in the virtual space move faster or slower than the actual hand?
 
 <table>
   <tr>
-    <td><img width="621" alt="Faster Button" src="https://github.com/user-attachments/assets/fc967e8f-0258-4ccc-a7f5-9c1e423d5bd5" width="500"></td>
-    <td><img width="610" alt="Slower Button" src="https://github.com/user-attachments/assets/2f87fbab-e9f3-4ac7-8281-4b8d170ee660" width="500"></td>
+    <td><img width="621" alt="Faster Button" src="https://github.com/user-attachments/assets/9198ab1d-8f4e-41c2-9654-97b87b5cb4e1" width="500"></td>
+    <td><img width="610" alt="Slower Button" src="https://github.com/user-attachments/assets/04e530e3-ace5-4ebc-9edd-334e94c86897" width="500"></td>
   </tr>
 </table>
 
+5. Change the text of these buttons to "Faster" and "Slower" respectively.
+
 ### Add Message in State `Trial - Rest`
 
-Create a gameobject from the `Message` prefab and change its text to `Put your arm down.`
+Create a gameobject for state `Trial - Rest`:
+
+`Name: Message, Create from existing GameObject: Message.prefab, Is Scriptable: false`
+
+Then change its text to `Put your arm down.`
+
+![image](https://github.com/user-attachments/assets/00985614-e539-4ad0-b3df-1750c105d0ff)
 
 ### Trigger Uploading Data After Trials
 
-For the state `AfterTrials`, create a gameobject named `UploadAndNextButton` from the `NextStateButton` prefab.
+1. Create a gameobject for state `AfterTrials`:
 
-On its `Interact Item Trigger` component, add one more trigger:
+`Name: UploadAndNextButton, Create from existing GameObject: NextStateButton.prefab, Is Scriptable: false`
+
+![image](https://github.com/user-attachments/assets/5966e53f-4dbf-468b-ac64-57cee7b0a136)
+
+2. Then change its text to `Next`
+
+3. On its `Interact Item Trigger` component, add one more trigger:
 
 ```text
 Target: Global exp_uploadCustomData
 Value: Signal
 ```
 
-![image](https://github.com/user-attachments/assets/d441f574-50aa-434c-95b8-031bc43d1221)
+![image](https://github.com/user-attachments/assets/84a133c0-5619-40f7-ae6f-5f683338612e)
 
 ---
 
@@ -517,9 +539,13 @@ https://github.com/user-attachments/assets/14c40fdc-b412-4990-b994-32bae7aaffe9
 
 ### Create the PracticeTaskManager Object in the `Practice - Task` State
 
-1. Refer to the video above, open the `Objects Manager` tab in the `Luida Editor`, and create a game object with a script called `PracticeTaskManager` for the `Practice - Task` state. Ensure that the created game object and a Cluster script asset named `PracticeTaskManager.js` are generated.
+1. Refer to the video above, open the `Objects Manager` tab in the `Luida Editor`, and create a gameObject for the `Practice - Task` state: `Name: PracticeTaskManager, Create with existing GameObject: None, Is Scriptable: true` . Ensure that the created game object and a Cluster script asset named `PracticeTaskManager.js` are generated.
 
 https://github.com/user-attachments/assets/4937f73b-7eec-4c86-9183-1251c2b22c52
+
+![image](https://github.com/user-attachments/assets/5795fa28-ef26-4a02-a7cc-1821c4531018)
+
+![image](https://github.com/user-attachments/assets/a1af8d0a-165d-4105-981d-12e627dfa4f2)
 
 2. Edit `PracticeTaskManager.js` as follows.
 
@@ -653,11 +679,14 @@ function onTargetTouched() {
 1. Create an empty game object named `RightHandAnchor` as a child of the `PracticeTaskManager` object.
 2. Set the `Sources` of the `ParentConstraint` component in the child game object `RightHand` of `RightHandWrapper` to the `RightHandAnchor` game object of the `PracticeTaskManager`, then press the Activate button.
 
-<img width="619" alt="RightHand in Practice session" src="https://github.com/user-attachments/assets/80255eb0-9c0b-4514-a931-8adea53ed5c9">
+<img width="619" alt="RightHand in Practice session" src="https://github.com/user-attachments/assets/68621951-b956-43b7-aeca-83bb0d8039ba">
+
 
 ### Adjust the Settings of the Duplicated Answer Buttons in the `Practice - Questionnaire` State
 
 Remove the triggers containing the keys `isFaster` and `exp_recordCustomData` from the `Interact Item Trigger` components of `FasterButton` and `SlowerButton`.
+
+![image](https://github.com/user-attachments/assets/eefd63d7-8475-4471-b0ee-974021ac9cfb)
 
 ---
 
@@ -707,7 +736,9 @@ When the experiment is actually run on the cluster, the questions and answer opt
    ![image](https://github.com/user-attachments/assets/0e8c0d75-4673-4bec-8689-888abc9c628c)
 2. Open the `Objects Manager` tab in `Luida Editor`.
 3. If there is already a Questionnaire object in the state `Questionnaire (post-exp)`, change the qID to the one registered in the web console.
+
    https://github.com/user-attachments/assets/9afd89be-2726-4467-84d7-7d08c901d05c
+
 4. If there is no Questionnaire object in the state `Questionnaire (post-exp)`, create one and set the qID to the one registered in the web console.
    ![create-questionnaire](https://github.com/user-attachments/assets/3013b077-206b-448e-bcd1-f916dfce8cb7)
 5. Adjust the position of the questionnaire: set the position of the Questionnaire object to `(0, 1.5, 1)`.
@@ -726,6 +757,7 @@ When the experiment is actually run on the cluster, the questions and answer opt
    - **In local testing, external calls via cluster cannot be made, so the automatic generation of the questionnaire object and data upload will not function. If the questionnaire object does not generate automatically and you cannot transition to the next state, for now, please delete that questionnaire object, play, and revert before uploading to the cluster.** We will improve this issue in near future.
 
 Example video capture of local testing :
+
 https://github.com/user-attachments/assets/c3c6c913-a70a-4397-8852-6ffb08f3fb4c
 
 ---
@@ -733,7 +765,7 @@ https://github.com/user-attachments/assets/c3c6c913-a70a-4397-8852-6ffb08f3fb4c
 ## Upload to cluster
 
 1. Follow [these steps](https://creator.cluster.mu/2020/03/28/%E5%88%B6%E4%BD%9C%E3%81%97%E3%81%9F%E3%83%AF%E3%83%BC%E3%83%AB%E3%83%89%E3%82%92%E3%80%8Ccluster%E3%80%8D%E3%81%AB%E3%82%A2%E3%83%83%E3%83%97%E3%83%AD%E3%83%BC%E3%83%89%E3%81%99%E3%82%8B/) to upload as a world on cluster. Once uploaded, enter the room yourself, experience the flow of the experiment thoroughly, and confirm its operation.
-   - At this point, avatars can still be freely selected, but once the experiment is officially published, only transparent avatars will be selectable.
+   - At this point, avatars can still be freely selected, but once the experiment is officially published after completing avatar settings (to be explained later), only transparent avatars will be selectable.
 2. If any bugs are found after uploading and you want to fix them and recheck functionality, you can perform a "test upload" and confirm it in cluster's "[Test Space](https://creator.cluster.mu/2024/05/24/testspace/)".
 
 - Once the bug fixes are made, don't forget to upload the version that is not for testing again.
@@ -771,4 +803,4 @@ We don't need visible avatars in this experiment, so follow the steps below to f
 
 A few days later\*, the experiment you created with this implementation template will be published in the [LUIDA participant recruitment world](https://cluster.mu/w/006d765e-f961-435b-a183-77c35a42e241). Please wait a moment.
 
-\*We plan to improve LUIDA's functionality to enable publication on the same day.
+\*We plan to implement a daily refreshing mechanics so that any newly registered experiment can be published in one day.
