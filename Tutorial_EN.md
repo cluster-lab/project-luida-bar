@@ -1,6 +1,10 @@
 # Tutorial
 
-In this tutorial, we will use this LUIDA's implementation template to implement a hand redirection experiment that can be executed on LUIDA.
+In this tutorial, we will use this LUIDA's implementation template to implement an experiment that can be executed on LUIDA.
+
+Here we are implementing a hand redirection experiment, where participants repeatedly perform a reaching task where the virtual hand’s movement distance is adjusted by varying gain values.
+After each trial, participants report whether the virtual hand felt faster or slower than their real hand.
+These responses allow us to determine the detection threshold: the specific gain value at which participants consistently perceive a difference between real and virtual hand movement speeds.
 
 We recommend you to at least acquire some basic knowledge of the following before trying this tutorial:
 
@@ -113,11 +117,11 @@ Launch the downloaded implementation template from Unity Hub, and continue the f
 
 ## Setup Experiment Variables & Trials Count
 
-In this experiment, participants perform a repeated reaching task in which the virtual hand’s movement distance is scaled by a specific gain value.
+In this experiment, participants perform a repeated reaching task in which the virtual hand’s movement distance is scaled by different gain values.
 
 Each trial uses a randomly selected gain value from a range of 0.75 to 1.25, and the task is repeated "number of gain values × 2" times to ensure a balanced assessment across the gain range.
 
-To realize the repetition, complete the settings below:
+To achieve such repetition, complete the settings below:
 
 1. Open `Window > Luida Editor` and switch to the `Experiment Variables Editor` tab.
 2. Fill in the fields following the image below:
