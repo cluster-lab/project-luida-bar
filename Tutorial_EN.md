@@ -18,8 +18,8 @@ Please also complete the following steps in advance:
 2. [Install the required version of Unity for Cluster](https://docs.cluster.mu/creatorkit/installation/install-unity/).
 3. Clone this implementation template Unity project.
 4. Open the cloned Unity project, **ignore the error at the first time, and import the following packages published by KaomoLab**:
-  - [**CSCombiner: Combine multiple ClusterScripts of one item inside Unity Editor**](https://vkao.booth.pm/items/5924956)
-  - [**CSEmulator: Run ClusterScripts inside Unity Editor**](https://vkao.booth.pm/items/5111235)
+  - [**CSCombiner: Combine multiple ClusterScripts of one item inside Unity Editor**](https://vkao.booth.pm/items/5924956) (ver1.01)
+  - [**CSEmulator: Run ClusterScripts inside Unity Editor**](https://vkao.booth.pm/items/5111235) (newest version)
 
 ---
 
