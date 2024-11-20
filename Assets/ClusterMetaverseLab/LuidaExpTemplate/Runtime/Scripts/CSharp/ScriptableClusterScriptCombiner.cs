@@ -8,27 +8,45 @@ using UnityEngine;
 
 public class ScriptableClusterScriptCombiner : CSCombiner
 {
-    public List<JavaScriptAsset> ClusterScripts => clusterScripts;
-    public List<JavaScriptAsset> PlayerScripts => playerScripts;
-    
     public void PrependScript(JavaScriptAsset clusterScript, JavaScriptAsset playerScript, bool combineNow = false)
     {
+        var clusterScripts = this.GetClusterScripts();
+        var playerScripts = this.GetPlayerScripts();
+
         if (clusterScript != null) clusterScripts.Insert(0, clusterScript);
         if (playerScript != null) playerScripts.Insert(0, playerScript);
+
+        this.SetClusterScripts(clusterScripts);
+        this.SetPlayerScripts(playerScripts);
+
         if (combineNow) Combine();
     }
     
     public void AppendScript(JavaScriptAsset clusterScript, JavaScriptAsset playerScript, bool combineNow = false)
     {
+        var clusterScripts = this.GetClusterScripts();
+        var playerScripts = this.GetPlayerScripts();
+
         if (clusterScript != null) clusterScripts.Add(clusterScript);
         if (playerScript != null) playerScripts.Add(playerScript);
+
+        this.SetClusterScripts(clusterScripts);
+        this.SetPlayerScripts(playerScripts);
+
         if (combineNow) Combine();
     }
     
     public void ReplaceScript(JavaScriptAsset clusterScript, int clusterScriptIndex, JavaScriptAsset playerScript, int playerScriptIndex, bool combineNow = false)
     {
+        var clusterScripts = this.GetClusterScripts();
+        var playerScripts = this.GetPlayerScripts();
+
         if (clusterScript != null) clusterScripts[clusterScriptIndex] = clusterScript;
         if (playerScript != null) playerScripts[playerScriptIndex] = playerScript;
+
+        this.SetClusterScripts(clusterScripts);
+        this.SetPlayerScripts(playerScripts);
+
         if (combineNow) Combine();
     }
 

@@ -625,7 +625,8 @@ public class ObjectsManagerEditor : EditorWindow
         {
             // Reference to the JS script asset (Only show if scriptable)
             EditorGUILayout.LabelField("JS Script", GUILayout.Width(60));
-            EditorGUILayout.ObjectField(combiner.ClusterScripts[1], typeof(ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset), true, GUILayout.Width(200));
+            var clusterScripts = combiner.GetClusterScripts();
+            EditorGUILayout.ObjectField(clusterScripts[1], typeof(ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset), true, GUILayout.Width(200));
 
             GUILayout.Space(20); // Add space between columns
 

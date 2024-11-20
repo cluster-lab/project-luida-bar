@@ -311,7 +311,7 @@ public class ExperimentVariablesEditor : EditorWindow
             var scriptCombiner = conditionManager.GetComponent<ScriptableClusterScriptCombiner>();
             if (scriptCombiner != null)
             {
-                int existingScriptIndex = scriptCombiner.ClusterScripts.IndexOf(scriptAsset);
+                int existingScriptIndex = scriptCombiner.GetClusterScripts().IndexOf(scriptAsset);
                 if (existingScriptIndex != -1)
                 {
                     scriptCombiner.ReplaceScript(scriptAsset, existingScriptIndex, null, 0, true);
