@@ -16,10 +16,7 @@ Please also complete the following steps in advance:
 
 1. [Create a cluster account](https://help.cluster.mu/hc/articles/115000827112)
 2. [Install the required version of Unity for Cluster](https://docs.cluster.mu/creatorkit/installation/install-unity/).
-3. Clone this implementation template Unity project.
-4. Open the cloned Unity project, **ignore the error at the first time, and import the following packages published by KaomoLab**:
-  - [**CSCombiner: Combine multiple ClusterScripts of one item inside Unity Editor**](https://vkao.booth.pm/items/5924956) (ver1.01)
-  - [**CSEmulator: Run ClusterScripts inside Unity Editor**](https://vkao.booth.pm/items/5111235) (newest version)
+3. Follow the instruction [here](https://github.com/cluster-lab/project-luida-bar/tree/exp-template#getting-started) to download this implement template (Unity project).
 
 ---
 
