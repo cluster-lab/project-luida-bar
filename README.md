@@ -1,6 +1,11 @@
 # LUIDA's Implement Template for Experiment Worlds
 
+To use this implement template, **please avoid directly cloning this repository.** Follow the steps in the [Getting Started](#getting-started) section to download and initialize this implement template. Please also try the tutorial we provided.
+
+本実装テンプレートを使用される場合、**このレポジトリを直接cloneしないでください。**[Getting Started](#getting-started)セクションに従って本実装テンプレートのダウンロードと初期化を行ってください。チュートリアルもぜひ試してください。
+
 - [Main Features](#main-features)
+- [Getting Started](#getting-started)
 - [Tutorial (JA)](https://github.com/cluster-lab/project-luida-bar/blob/exp-template/Tutorial_JA.md)
 - [Tutorial (EN)](https://github.com/cluster-lab/project-luida-bar/blob/exp-template/Tutorial_EN.md)
 - [Documentation (under construction...)](#documentation-under-construction)
@@ -57,6 +62,22 @@ The collected data will be listed on LUIDA's web console for you to confirm and 
 収集されたデータはLUIDA専用のウェブコンソールから確認・ダウンロードできます。
 
 ![image](https://github.com/user-attachments/assets/8e227057-d100-4e89-8b41-42f7d394557a)
+
+-----
+
+# Getting Started
+
+### English
+1. Download from the [newest release](https://github.com/cluster-lab/project-luida-bar/releases).
+2. Open the downloaded Unity project, **ignore the error at the first time, and import the following packages published by KaomoLab**.
+  - [**CSCombiner: Combine multiple ClusterScripts of one item inside Unity Editor**](https://vkao.booth.pm/items/5924956) (ver1.01)
+  - [**CSEmulator: Run ClusterScripts inside Unity Editor**](https://vkao.booth.pm/items/5111235) (newest version)
+
+### 日本語
+1. [最新リリース](https://github.com/cluster-lab/project-luida-bar/releases)からダウンロードします。
+2. ダウンロードしたUnityプロジェクトを立ち上げ、**最初はエラーを無視し、立ち上げたら以下のパッケージをインポートします**。
+  - [**CSCombiner: Cluster Scriptを Unity Editor 上で結合するツール**](https://vkao.booth.pm/items/5924956) (ver1.01)
+  - [**CSEmulator: Cluster Scriptを Unity Editor 上で再生できるようにするツール**](https://vkao.booth.pm/items/5111235) (最新バージョン)
 
 -----
 
