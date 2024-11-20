@@ -16,10 +16,7 @@
 
 1. [cluster アカウント作成](https://help.cluster.mu/hc/articles/115000827112)
 2. [cluster に必要なバージョンの Unity のインストール](https://docs.cluster.mu/creatorkit/installation/install-unity/) を行います。
-3. 本実装テンプレートを Clone します
-4. Clone した実装テンプレート（Unityプロジェクト）を立ち上げ、**最初はエラーを無視し、立ち上げたら以下のパッケージをインポートします**:
-  - [**CSCombiner: Cluster Scriptを Unity Editor 上で結合するツール**](https://vkao.booth.pm/items/5924956)　(ver1.01)
-  - [**CSEmulator: Cluster Scriptを Unity Editor 上で再生できるようにするツール**](https://vkao.booth.pm/items/5111235)　（最新バージョン）
+3. [こちらの指示](https://github.com/cluster-lab/project-luida-bar/tree/exp-template#getting-started)に従って本実装テンプレートをダウンロードして立ち上げます。
 
 ---
 
