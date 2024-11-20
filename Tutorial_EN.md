@@ -16,7 +16,7 @@ Please also complete the following steps in advance:
 
 1. [Create a cluster account](https://help.cluster.mu/hc/articles/115000827112)
 2. [Install the required version of Unity for Cluster](https://docs.cluster.mu/creatorkit/installation/install-unity/).
-3. Follow the instruction [here](https://github.com/cluster-lab/project-luida-bar/tree/exp-template#getting-started) to download this implement template (Unity project).
+3. Follow the instruction [here](https://github.com/cluster-lab/project-luida-bar/tree/exp-template#getting-started) to download this implement template (Unity project) and open it.
 
 ---
 
