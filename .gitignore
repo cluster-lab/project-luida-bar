@@ -76,3 +76,7 @@ crashlytics-build.properties
 
 # JetBrains Rider
 **/.idea/
+
+# KaomoLab
+**/KaomoLab/
+**/KaomoLab.meta
