@@ -1,12 +1,10 @@
 const numberPerPage = 30;
 
 $.onStart(() => {
+    $.state.questBoard = $.worldItemReference("QuestBoard");
     $.state.currentQuestBoardPage = 1;
     $.state.isLoading = false;
     $.setStateCompat("owner", "AllowJoinExp", true);
-    $.getItemsNear($.getPosition().clone(), 0.1).forEach(item => {
-        item.send("get_quest_board", true);
-    });
 })
 
 $.onUpdate(() => {
@@ -46,9 +44,6 @@ $.onExternalCallEnd((res, meta, err) =>
 
 $.onReceive((messageType, arg, sender) => {
     switch (messageType) {
-        case "return_quest_board":
-            $.state.questBoard = sender;
-            break;
         case "quest_board_current_page":
             $.state.currentQuestBoardPage = arg;
             sendQuestInfoRequest();

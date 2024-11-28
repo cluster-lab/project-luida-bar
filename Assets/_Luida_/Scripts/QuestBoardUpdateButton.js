@@ -1,5 +1,3 @@
 $.onInteract(() => {
-    $.getItemsNear($.getPosition(), 0.1).forEach(item => {
-        item.send("quest_board_update", true);
-    });
+    $.worldItemReference("QuestBoard").send("quest_board_update", true);
 })
