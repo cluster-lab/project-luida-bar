@@ -251,7 +251,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -414,7 +414,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -577,7 +577,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -740,7 +740,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -828,7 +828,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fa963c3f90d044a2b4abdd974160768, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  routingKey: luida-bar-exp-gate-08
+  routingKey: luida-bar-exp-gate-8
   key: 
   confirmTransition: 1
 --- !u!4 &8367897781694008225 stripped
@@ -858,7 +858,7 @@ MonoBehaviour:
   globalGimmickKey:
     key:
       target: 1
-      key: DropWorldGate08
+      key: DropWorldGate8
     item: {fileID: 0}
 --- !u!1001 &1204858308332809105
 PrefabInstance:
@@ -903,7 +903,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -1000,7 +1000,7 @@ MonoBehaviour:
   globalGimmickKey:
     key:
       target: 1
-      key: DropWorldGate05
+      key: DropWorldGate5
     item: {fileID: 0}
 --- !u!1 &6996388771248330511 stripped
 GameObject:
@@ -1020,7 +1020,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fa963c3f90d044a2b4abdd974160768, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  routingKey: luida-bar-exp-gate-05
+  routingKey: luida-bar-exp-gate-5
   key: 
   confirmTransition: 1
 --- !u!1001 &1575842553810944675
@@ -1066,7 +1066,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -1154,7 +1154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fa963c3f90d044a2b4abdd974160768, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  routingKey: luida-bar-exp-gate-06
+  routingKey: luida-bar-exp-gate-6
   key: 
   confirmTransition: 1
 --- !u!4 &7241272322493587828 stripped
@@ -1184,7 +1184,7 @@ MonoBehaviour:
   globalGimmickKey:
     key:
       target: 1
-      key: DropWorldGate06
+      key: DropWorldGate6
     item: {fileID: 0}
 --- !u!1001 &1678217695461914135
 PrefabInstance:
@@ -1229,7 +1229,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -1392,7 +1392,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -1489,7 +1489,7 @@ MonoBehaviour:
   globalGimmickKey:
     key:
       target: 1
-      key: DropWorldGate09
+      key: DropWorldGate9
     item: {fileID: 0}
 --- !u!1 &7384272950804456813 stripped
 GameObject:
@@ -1509,7 +1509,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fa963c3f90d044a2b4abdd974160768, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  routingKey: luida-bar-exp-gate-09
+  routingKey: luida-bar-exp-gate-9
   key: 
   confirmTransition: 1
 --- !u!1001 &1906816299741208215
@@ -1555,7 +1555,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -1718,7 +1718,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -1881,7 +1881,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -2044,7 +2044,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -2132,7 +2132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fa963c3f90d044a2b4abdd974160768, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  routingKey: luida-bar-exp-gate-07
+  routingKey: luida-bar-exp-gate-7
   key: 
   confirmTransition: 1
 --- !u!4 &5777360565275266471 stripped
@@ -2162,7 +2162,7 @@ MonoBehaviour:
   globalGimmickKey:
     key:
       target: 1
-      key: DropWorldGate07
+      key: DropWorldGate7
     item: {fileID: 0}
 --- !u!1001 &2552433990825592285
 PrefabInstance:
@@ -2207,7 +2207,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -2298,7 +2298,7 @@ MonoBehaviour:
   globalGimmickKey:
     key:
       target: 1
-      key: DropWorldGate04
+      key: DropWorldGate4
     item: {fileID: 0}
 --- !u!4 &5966354211524011530 stripped
 Transform:
@@ -2324,7 +2324,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fa963c3f90d044a2b4abdd974160768, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  routingKey: luida-bar-exp-gate-04
+  routingKey: luida-bar-exp-gate-4
   key: 
   confirmTransition: 1
 --- !u!1001 &2557474728837220575
@@ -2370,7 +2370,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -2533,7 +2533,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -2696,7 +2696,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -2859,7 +2859,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -3022,7 +3022,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -3185,7 +3185,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -3348,7 +3348,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -3663,7 +3663,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -3946,7 +3946,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -4034,7 +4034,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fa963c3f90d044a2b4abdd974160768, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  routingKey: luida-bar-exp-gate-01
+  routingKey: luida-bar-exp-gate-1
   key: 
   confirmTransition: 1
 --- !u!1 &2947738480001014658 stripped
@@ -4058,7 +4058,7 @@ MonoBehaviour:
   globalGimmickKey:
     key:
       target: 1
-      key: DropWorldGate01
+      key: DropWorldGate1
     item: {fileID: 0}
 --- !u!4 &2947738480001014669 stripped
 Transform:
@@ -4109,7 +4109,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -4197,7 +4197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fa963c3f90d044a2b4abdd974160768, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  routingKey: luida-bar-exp-gate-02
+  routingKey: luida-bar-exp-gate-2
   key: 
   confirmTransition: 1
 --- !u!4 &3264835289957343986 stripped
@@ -4227,7 +4227,7 @@ MonoBehaviour:
   globalGimmickKey:
     key:
       target: 1
-      key: DropWorldGate02
+      key: DropWorldGate2
     item: {fileID: 0}
 --- !u!1001 &6837397485979924091
 PrefabInstance:
@@ -4272,7 +4272,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -4435,7 +4435,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -4598,7 +4598,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -4686,7 +4686,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fa963c3f90d044a2b4abdd974160768, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  routingKey: luida-bar-exp-gate-03
+  routingKey: luida-bar-exp-gate-3
   key: 
   confirmTransition: 1
 --- !u!4 &1799976926548053892 stripped
@@ -4716,7 +4716,7 @@ MonoBehaviour:
   globalGimmickKey:
     key:
       target: 1
-      key: DropWorldGate03
+      key: DropWorldGate3
     item: {fileID: 0}
 --- !u!1001 &7846806179999490453
 PrefabInstance:
@@ -4761,7 +4761,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -5046,7 +5046,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -5209,7 +5209,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
@@ -5372,7 +5372,7 @@ PrefabInstance:
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -400.0041
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
