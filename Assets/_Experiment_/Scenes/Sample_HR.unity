@@ -650,17 +650,29 @@ PrefabInstance:
       value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\n$.onStart(()
         => {\n    $.state.customData = {};\n    const conditionManager = $.worldItemReference(\"ConditionManager\");\n   
         if (conditionManager) {\n        conditionManager.send(\"exp_conditionDependentObject\",
-        true);\n    }\n})\n\n$.onUpdate(() => {\n    if ($.getStateCompat(\"this\",
+        true);\n    }\n    $.state.bsCond = {};\n    $.state.wsVarNames = [];\n   
+        $.state.wsCondIndicesList = [];\n})\n\n$.onUpdate(() => {\n    if ($.getStateCompat(\"this\",
         \"exp_conditionChanged\", \"boolean\")) {\n        $.setStateCompat(\"this\",
-        \"exp_conditionChanged\", false);\n        $.state.currentCondition = $.state.conditions[$.getStateCompat(\"global\",
-        \"exp_conditionID\", \"integer\")];\n    }\n\n    if ($.getStateCompat(\"this\",
+        \"exp_conditionChanged\", false);\n    }\n\n    if ($.getStateCompat(\"this\",
         \"exp_recordCustomData\", \"boolean\")) {\n        $.setStateCompat(\"this\",
         \"exp_recordCustomData\", false);\n        recordData();\n    }\n    if ($.getStateCompat(\"this\",
         \"exp_uploadCustomData\", \"boolean\")) {\n        $.setStateCompat(\"this\",
         \"exp_uploadCustomData\", false);\n        uploadData();\n    }\n})\n\n$.onReceive((messageType,
         arg, sender) => {\n    if (messageType === \"exp_updateConditions\") {\n       
-        $.state.conditions = arg;\n        $.setStateCompat(\"this\", \"exp_conditionChanged\",
-        true);\n    }\n})\n\nfunction recordData () {\n    $.state.customData = calculateData();\n}\n\nfunction
+        if (arg[bsCond]) $.state.bsCond = arg[bsCond];\n        if (arg[wsVarNames])
+        $.state.wsVarNames = arg[wsVarNames];\n        if (arg[wsCondIndicesList])
+        {\n            if (!$.state.wsCondIndicesList) $.state.wsCondIndicesList
+        = [];\n            $.state.wsCondIndicesList = [ ...$.state.wsCondIndicesList,
+        arg[wsCondIndicesList] ];\n        }\n        $.state.isConditionsUpdated
+        = arg[isWsDone] || false;\n        if (arg[isWsDone] && $.state.bsCond &&
+        $.state.wsVarNames && $.state.wsCondIndicesList) {\n            $.setStateCompat(\"this\",
+        \"exp_conditionChanged\", true);\n        }\n        $.setStateCompat(\"this\",
+        \"exp_conditionChanged\", true);\n    }\n})\n\nfunction getCondition(varName)
+        {\n    if ($.state.bsCond[varName]) return $.state.bsCond[varName];\n   
+        const currentCondIndices = $.state.wsCondIndicesList[$.getStateCompat(\"global\",
+        \"exp_conditionID\", \"integer\")]\n    const varNameIndex = $.state.wsVarNames.indexOf(varName);\n   
+        return variables.v[varNameIndex][currentCondIndices[varNameIndex]];\n}\n\nfunction
+        recordData () {\n    $.state.customData = calculateData();\n}\n\nfunction
         uploadData () {\n    $.log(\"Upload custom data: \" + JSON.stringify($.state.customData));\n   
         let request = {\n        type: \"uploadCustomData\",\n        token: token
         || \"\",\n        dataByFileName: JSON.stringify($.state.customData),\n       
@@ -3084,7 +3096,7 @@ PrefabInstance:
     - target: {fileID: 5660514857068071931, guid: bdd15b6f2ac024119a233600dcc875cc,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: bdd15b6f2ac024119a233600dcc875cc,
         type: 3}
@@ -6399,19 +6411,31 @@ PrefabInstance:
       propertyPath: sourceCode
       value: "$.onStart(() => {\n    const conditionManager = $.worldItemReference(\"ConditionManager\");\n   
         if (conditionManager) {\n        conditionManager.send(\"exp_conditionDependentObject\",
-        true);\n    }\n    Awake();\n})\n\n$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\",
-        \"exp_conditionChanged\", \"boolean\")) {\n        $.setStateCompat(\"this\",
-        \"exp_conditionChanged\", false);\n        $.state.currentCondition = $.state.conditions[$.getStateCompat(\"global\",
-        \"exp_conditionID\", \"integer\")];\n        OnConditionChanged();\n    }\n   
-        Update(deltaTime);\n})\n\n$.onReceive((messageType, arg, sender) => {\n   
-        if (messageType === \"exp_updateConditions\") {\n        $.state.conditions
-        = arg;\n        $.setStateCompat(\"this\", \"exp_conditionChanged\", true);\n   
-        }\n    OnReceive(messageType, arg, sender);\n})\n\nfunction Awake() {}\n\nfunction
-        Update (deltaTime) {}\n\nfunction OnConditionChanged () {}\n\nfunction OnReceive
-        (messageType, arg, sender) {}\r\n/*\n    ***** Don't use $.onStart in this
-        file! *****\n    Implement the Awake function below for executions on initialization\n*/\nfunction
-        Awake() {\n    $.state.timer = 0; // \u30BF\u30A4\u30DE\u30FC\u306E\u521D\u671F\u5316\n   
-        $.state.isTouchable = true; // \u7DD1\u306E\u7389\u3092\u89E6\u308C\u3089\u308C\u308B\u3088\u3046\u306B\u3059\u308B\u30D5\u30E9\u30B0\n   
+        true);\n    }\n    $.state.bsCond = {};\n    $.state.wsVarNames = [];\n   
+        $.state.wsCondIndicesList = [];\n    Awake();\n})\n\n$.onUpdate((deltaTime)
+        => {\n    if ($.getStateCompat(\"this\", \"exp_conditionChanged\", \"boolean\"))
+        {\n        $.setStateCompat(\"this\", \"exp_conditionChanged\", false);\n       
+        OnConditionChanged();\n    }\n    Update(deltaTime);\n})\n\n$.onReceive((messageType,
+        arg, sender) => {\n    if (messageType === \"exp_updateConditions\") {\n       
+        if (arg[bsCond]) $.state.bsCond = arg[bsCond];\n        if (arg[wsVarNames])
+        $.state.wsVarNames = arg[wsVarNames];\n        if (arg[wsCondIndicesList])
+        {\n            if (!$.state.wsCondIndicesList) $.state.wsCondIndicesList
+        = [];\n            $.state.wsCondIndicesList = [ ...$.state.wsCondIndicesList,
+        arg[wsCondIndicesList] ];\n        }\n        $.state.isConditionsUpdated
+        = arg[isWsDone] || false;\n        if (arg[isWsDone] && $.state.bsCond &&
+        $.state.wsVarNames && $.state.wsCondIndicesList) {\n            $.setStateCompat(\"this\",
+        \"exp_conditionChanged\", true);\n        }\n        $.setStateCompat(\"this\",
+        \"exp_conditionChanged\", true);\n    }\n    OnReceive(messageType, arg,
+        sender);\n})\n\nfunction getCondition(varName) {\n    if ($.state.bsCond[varName])
+        return $.state.bsCond[varName];\n    const currentCondIndices = $.state.wsCondIndicesList[$.getStateCompat(\"global\",
+        \"exp_conditionID\", \"integer\")]\n    const varNameIndex = $.state.wsVarNames.indexOf(varName);\n   
+        return variables.v[varNameIndex][currentCondIndices[varNameIndex]];\n}\n\nfunction
+        Awake() {}\n\nfunction Update (deltaTime) {}\n\nfunction OnConditionChanged
+        () {}\n\nfunction OnReceive (messageType, arg, sender) {}\r\n/*\n    *****
+        Don't use $.onStart in this file! *****\n    Implement the Awake function
+        below for executions on initialization\n*/\nfunction Awake() {\n    $.state.timer
+        = 0; // \u30BF\u30A4\u30DE\u30FC\u306E\u521D\u671F\u5316\n    $.state.isTouchable
+        = true; // \u7DD1\u306E\u7389\u3092\u89E6\u308C\u3089\u308C\u308B\u3088\u3046\u306B\u3059\u308B\u30D5\u30E9\u30B0\n   
         $.state.handOffset = new Quaternion().setFromEulerAngles(new Vector3(0, 90,
         0)); // \u5B9F\u8EAB\u4F53\u306E\u624B\uFF08\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\uFF09\u3068\u30D0\u30FC\u30C1\u30E3\u30EB\u624B\u306E\u56DE\u8EE2\u306E\u5DEE\u3092\u88DC\u6B63\u3059\u308B\u30AA\u30D5\u30BB\u30C3\u30C8\u3092\u8A2D\u5B9A\u3059\u308B\n}\n/*\n   
         ***** Don't use $.onUpdate! *****\n    Implement the Update function below
@@ -6475,7 +6499,7 @@ PrefabInstance:
     - target: {fileID: 7109300922016184402, guid: 3fb44809d795c47bf8bd7a1e63e394f1,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7109300922016184402, guid: 3fb44809d795c47bf8bd7a1e63e394f1,
         type: 3}
@@ -8541,82 +8565,79 @@ PrefabInstance:
         = [\n    { name: \"color\", values: [\"R\", \"G\", \"B\"], isRandom: false
         },\n    { name: \"size\", values: [5, 10, 15], isRandom: true },\n];\n\nconst
         between_subjects_variables_dummy = [\n    { name: \"method\", values: [\"old\",
-        \"new\"] }\n];\n\n$.onStart(() => {\n    $.state.conditionDependentObjects
-        = [];\n    // $.state.betweenSubjectsCondition = {};\n});\n\n$.onUpdate(()
-        => {\n    if ($.getStateCompat(\"this\", \"exp_initCondition\", \"boolean\"))
-        {\n        $.setStateCompat(\"this\", \"exp_initCondition\", false);\n       
-        InitConditions();\n    }\n    if ($.state.conditions && !$.state.isLast &&
-        $.getStateCompat(\"global\", \"exp_conditionID\", \"integer\") >= $.state.conditions.length
+        \"new\"] }\n];\n\nfunction GetBetweenSubjectsCondition(questionnaireAnswers)
+        {\n    return {};\n}\n\n$.onStart(() => {\n    $.state.trialCount = -1;\n   
+        $.state.conditionDependentObjects = [];\n});\n\n$.onUpdate(() => {\n    if
+        ($.getStateCompat(\"this\", \"exp_initCondition\", \"boolean\")) {\n       
+        $.setStateCompat(\"this\", \"exp_initCondition\", false);\n        $.state.isLast
+        = false;\n        try {\n            initCondWithinSubjects(within_subjects_variables,
+        trialsCountForEachUniqueCondition);\n        } catch (error) {\n           
+        $.log(\"Within-subjects variables are not defined. Set trial count to 1 and
+        set conditions to empty object.\");\n            $.state.wsVarNames = [];\n           
+        $.state.wsCondIndicesList = [];\n            $.state.trialCount = 1;\n       
+        }\n        sendUpdates();\n    }\n    if ($.state.trialCount > 0 && !$.state.isLast
+        && $.getStateCompat(\"global\", \"exp_conditionID\", \"integer\") >= $.state.trialCount
         - 1) {\n        $.state.isLast = true;\n        $.sendSignalCompat(\"this\",
         \"exp_readyToLeaveTrials\");\n    }\n});\n\n$.onReceive((messageType, arg,
         sender) => {\n    switch (messageType) {\n        case \"exp_conditionDependentObject\":\n           
         $.state.conditionDependentObjects = [ ...$.state.conditionDependentObjects,
         sender ];\n            break;\n        case \"exp_questionnaire_answer\":\n           
-        // \u53C2\u52A0\u8005\u306B\u53C2\u52A0\u8005\u9593\u6761\u4EF6\u3092\u5272\u308A\u5F53\u3066\u308B\n           
-        InitBetweenSubjectCondition(arg);\n        default:\n            break;\n   
-        }\n});\n\nfunction InitConditions () {\n    $.state.isLast = false;\n\n   
-        if (!$.state.betweenSubjectsCondition) {\n        InitBetweenSubjectCondition(null);\n   
-        }\n    \n    try {\n        $.state.conditions = getConditions(within_subjects_variables,
-        trialsCountForEachUniqueCondition).map(cond => {\n            return { ...cond,
-        ...$.state.betweenSubjectsCondition };\n        });\n    } catch (e) {\n       
-        $.state.conditions = getConditions(within_subjects_variables_dummy).map(cond
-        => {\n            return { ...cond, ...$.state.betweenSubjectsCondition };\n       
-        });\n    }\n    \n    $.log(JSON.stringify($.state.conditions));\n    sendUpdates().catch(e
-        => $.log(e));\n}\n\nasync function sendUpdates() {\n    let sentObjectsCount
-        = 0;\n    const sendPromises = $.state.conditionDependentObjects.map(async
-        (obj, index) => {\n        if (sentObjectsCount > 10) {\n            await
-        sleep(1000);\n            sentObjectsCount = 0;\n        }\n        obj.send(\"exp_updateConditions\",
-        $.state.conditions);\n        sentObjectsCount++;\n    });\n    await Promise.all(sendPromises);\n}\n\nfunction
-        sleep(ms) {\n    return new Promise(resolve => setTimeout(resolve, ms));\n}\n\nfunction
-        InitBetweenSubjectCondition(questionnaireAnswers) {\n    try {\n        $.state.betweenSubjectsCondition
-        = GetBetweenSubjectsCondition(questionnaireAnswers);\n    }\n    catch (e)
-        {\n        $.log(\"Function GetBetweenSubjectsCondition is not defined. Randomly
-        assign between-subjects condition.\");\n        let betweenSubjectsCondition
-        = {};\n        try {\n            between_subjects_variables.forEach(v =>
-        {\n                betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random()
-        * v.values.length)];\n            });\n        } catch (e) {\n           
-        $.log(\"Between-subjects variables are not defined. Use dummy variables.\");\n           
-        between_subjects_variables_dummy.forEach(v => {\n                betweenSubjectsCondition[v.name]
-        = v.values[Math.floor(Math.random() * v.values.length)];\n            });\n       
-        }\n        $.state.betweenSubjectsCondition = betweenSubjectsCondition;\n   
-        }\n}\n\n// --------- Initialize conditions from variables ----------\n\nfunction
-        getConditions (variables, repeatPerCombination = 1) {\n    const isRepetitionRandom
-        = true;\n    \n    const allCombinations = generateCombinations(variables);\n   
-        \n    // Group by non-random variables\n    const groupedCombinations = {};\n   
-        \n    for (const combination of allCombinations) {\n        const groupKey
-        = variables\n            .filter(v => !v.isRandom)\n            .map(v =>
-        combination[v.name])\n            .join('-');\n    \n        if (!groupedCombinations[groupKey])
-        {\n            groupedCombinations[groupKey] = [];\n        }\n        groupedCombinations[groupKey].push(combination);\n   
-        }\n    \n    // Shuffle each group\n    for (const key in groupedCombinations)
-        {\n        groupedCombinations[key] = shuffleArray(groupedCombinations[key]);\n   
-        }\n    \n    // Flatten the grouped combinations into a single array\n   
-        let finalCombinations = Object.values(groupedCombinations).flat();\n    \n   
-        // Repeat each combination repeatPerCombination times\n    let conditions
-        = [];\n    for (const combination of finalCombinations) {\n        for (let
-        i = 0; i < repeatPerCombination; i++) {\n            conditions.push({ ...combination
-        });\n        }\n    }\n    \n    // If repetition should be random, shuffle
-        the repeated combinations\n    if (isRepetitionRandom) {\n        // Group
-        by non-random variables first\n        const randomGroupedCombinations =
-        {};\n        for (const combination of conditions) {\n            const groupKey
-        = variables\n                .filter(v => !v.isRandom)\n                .map(v
-        => combination[v.name])\n                .join('-');\n    \n            if
-        (!randomGroupedCombinations[groupKey]) {\n                randomGroupedCombinations[groupKey]
-        = [];\n            }\n            randomGroupedCombinations[groupKey].push(combination);\n       
-        }\n    \n        // Shuffle within each group\n        for (const key in
-        randomGroupedCombinations) {\n            randomGroupedCombinations[key]
-        = shuffleArray(randomGroupedCombinations[key]);\n        }\n    \n       
-        // Flatten the grouped combinations into a single array\n        conditions
-        = Object.values(randomGroupedCombinations).flat();\n    }\n    \n    return
-        conditions;\n}\n\nfunction shuffleArray(array) {\n    for (let i = array.length
-        - 1; i > 0; i--) {\n        const j = Math.floor(Math.random() * (i + 1));\n       
-        [array[i], array[j]] = [array[j], array[i]];\n    }\n    return array;\n}\n\nfunction
-        generateCombinations(variables) {\n    const combinations = [];\n\n    function
-        createCombination(currentCombination, currentIndex) {\n        if (currentIndex
-        === variables.length) {\n            combinations.push({ ...currentCombination
-        });\n            return;\n        }\n\n        const variable = variables[currentIndex];\n       
-        for (const value of variable.values) {\n            currentCombination[variable.name]
-        = value;\n            createCombination(currentCombination, currentIndex
-        + 1);\n        }\n    }\n\n    createCombination({}, 0);\n\n    return combinations;\n}\n"
+        $.state.bsCond = GetBetweenSubjectsCondition(arg);\n        default:\n           
+        break;\n    }\n});\n\n// --------- Initialize conditions from variables ----------\n\nfunction
+        initCondWithinSubjects(variables, repeatsPerCond = 1) {\n    variables =
+        [ ...variables.sort((a, b) => a.isRandom - b.isRandom) ];\n    const varNames
+        = variables.map(v => v.name);\n\n    let indicesPerVar = variables.map(v
+        => Array.from({ length: v.values.length }, (_, i) => i));\n    let condIndicesList
+        = indicesPerVar.reduce((acc, array) => {\n        return acc.flatMap(accItem
+        => array.map(arrayItem => [...accItem, arrayItem]));\n    }, [[]]).flatMap(condIndices
+        => Array.from({ length: repeatsPerCond }, () => condIndices));\n\n    let
+        shufflePartitionSize = 0;\n    for (let i = 0; i < variables.length; i++)
+        {\n        if (variables[i].isRandom) {\n            shufflePartitionSize
+        = shufflePartitionSize === 0 ? variables[i].values.length : shufflePartitionSize
+        * variables[i].values.length;\n        }\n    }\n    shufflePartitionSize
+        *= repeatsPerCond;\n\n    if (shufflePartitionSize > 0) {\n        const
+        result = [...condIndicesList]; // Copy the array to avoid mutating the original\n       
+        for (let i = 0; i < condIndicesList.length; i += shufflePartitionSize) {\n           
+        const partition = result.slice(i, i + shufflePartitionSize);\n           
+        partition = shuffleArray(partition);\n            result.splice(i, shufflePartitionSize,
+        ...partition);\n        }\n        condIndicesList = result;\n    }\n\n   
+        $.state.wsVarNames = varNames;\n    $.state.wsCondIndicesList = condIndicesList;\n   
+        $.state.trialCount = condIndicesList.length;\n};\n\n// ---------- Send initialized
+        conditions ----------\n\nasync function sendUpdates() {\n    const batchSize
+        = 10; // Number of objects to process per batch\n    const delay = 1000;
+        // Delay in milliseconds between batches\n\n    // Helper function to process
+        objects in batches with delay\n    async function processInBatches(objects,
+        processFn) {\n        for (let i = 0; i < objects.length; i += batchSize)
+        {\n            const batch = objects.slice(i, i + batchSize);\n           
+        await Promise.all(batch.map(processFn));\n            if (i + batchSize <
+        objects.length) {\n                await sleep(delay);\n            }\n       
+        }\n    }\n\n    // Send `exp_bsCond` and `exp_wsVarNames` once to each object\n   
+        await processInBatches($.state.conditionDependentObjects, async (obj) =>
+        {\n        obj.send(\"exp_updateConditions\", { bsCond: $.state.bsCond, wsVarNames:
+        $.state.wsVarNames });\n    });\n\n    await sleep(delay);\n\n    // Function
+        to split large data into smaller chunks\n    function splitLargeData(data,
+        maxSize) {\n        const chunks = [];\n        let currentChunk = [];\n       
+        let currentSize = 0;\n\n        for (const item of data) {\n            const
+        itemSize = $.computeSendableSize([item]); // Calculate size of a single item\n           
+        if (currentSize + itemSize > maxSize) {\n                chunks.push(currentChunk);
+        // Push current chunk and start a new one\n                currentChunk =
+        [];\n                currentSize = 0;\n            }\n            currentChunk.push(item);\n           
+        currentSize += itemSize;\n        }\n\n        if (currentChunk.length >
+        0) {\n            chunks.push(currentChunk); // Push the final chunk\n       
+        }\n\n        return chunks;\n    }\n\n    // Split `$.state.wsCondIndicesList`
+        into smaller chunks if necessary\n    const maxChunkSize = 900;\n    const
+        wsChunks = splitLargeData($.state.wsCondIndicesList, maxChunkSize);\n\n   
+        // Send each chunk of `wsCondIndicesList`\n    for (let i = 0; i < wsChunks.length;
+        i++) {\n        const isLastChunk = i === wsChunks.length - 1;\n\n       
+        await processInBatches($.state.conditionDependentObjects, async (obj) =>
+        {\n            obj.send(\"exp_updateConditions\", { \n                wsCondIndicesList:
+        wsChunks[i], \n                isWsDone: isLastChunk \n            });\n       
+        });\n\n        if (!isLastChunk) {\n            await sleep(delay);\n       
+        }\n    }\n}\n\n// ---------- Helper functions ---------\n\nfunction shuffleArray(array)
+        {\n    for (let i = array.length - 1; i > 0; i--) {\n        const j = Math.floor(Math.random()
+        * (i + 1));\n        [array[i], array[j]] = [array[j], array[i]];\n    }\n   
+        return array;\n}\n\nfunction sleep(ms) {\n    return new Promise(resolve
+        => setTimeout(resolve, ms));\n}\n"
       objectReference: {fileID: 0}
     - target: {fileID: 3660925819112729135, guid: c429a845517c96a419988cd638c846f1,
         type: 3}

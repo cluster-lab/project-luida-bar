@@ -10,14 +10,16 @@ function Awake() {
     Implement the Update function below for executions every frame
 */
 function Update (deltaTime) {
-    // e.g. if ($.state.currentCondition["color"] === "R") $.state.timer = $.state.timer + deltaTime;
+    // You can use function getCondition(variable's name) to access the current experimental condition
+    // e.g. if (getCondition("color") === "R") $.state.timer = $.state.timer + deltaTime;
 }
 
 /*
     Implement the OnConditionChanged function below for executions when moving to next trial (i.e. experimental condition is changed)
 */
 function OnConditionChanged () {
-    // e.g. if ($.state.currentCondition["color"] === "R") $.setStateCompat("this", "isEnabled", true);
+    // You can use function getCondition(variable's name) to access the current experimental condition
+    // e.g. if (getCondition("color") === "R") $.setStateCompat("this", "isEnabled", true);
 }
 
 /*

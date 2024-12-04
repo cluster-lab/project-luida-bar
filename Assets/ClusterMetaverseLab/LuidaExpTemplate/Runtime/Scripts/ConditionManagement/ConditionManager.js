@@ -7,17 +7,30 @@ const between_subjects_variables_dummy = [
     { name: "method", values: ["old", "new"] }
 ];
 
+function GetBetweenSubjectsCondition(questionnaireAnswers) {
+    return {};
+}
+
 $.onStart(() => {
+    $.state.trialCount = -1;
     $.state.conditionDependentObjects = [];
-    // $.state.betweenSubjectsCondition = {};
 });
 
 $.onUpdate(() => {
     if ($.getStateCompat("this", "exp_initCondition", "boolean")) {
         $.setStateCompat("this", "exp_initCondition", false);
-        InitConditions();
+        $.state.isLast = false;
+        try {
+            initCondWithinSubjects(within_subjects_variables, trialsCountForEachUniqueCondition);
+        } catch (error) {
+            $.log("Within-subjects variables are not defined. Set trial count to 1 and set conditions to empty object.");
+            $.state.wsVarNames = [];
+            $.state.wsCondIndicesList = [];
+            $.state.trialCount = 1;
+        }
+        sendUpdates();
     }
-    if ($.state.conditions && !$.state.isLast && $.getStateCompat("global", "exp_conditionID", "integer") >= $.state.conditions.length - 1) {
+    if ($.state.trialCount > 0 && !$.state.isLast && $.getStateCompat("global", "exp_conditionID", "integer") >= $.state.trialCount - 1) {
         $.state.isLast = true;
         $.sendSignalCompat("this", "exp_readyToLeaveTrials");
     }
@@ -29,137 +42,116 @@ $.onReceive((messageType, arg, sender) => {
             $.state.conditionDependentObjects = [ ...$.state.conditionDependentObjects, sender ];
             break;
         case "exp_questionnaire_answer":
-            // 参加者に参加者間条件を割り当てる
-            InitBetweenSubjectCondition(arg);
+            $.state.bsCond = GetBetweenSubjectsCondition(arg);
         default:
             break;
     }
 });
 
-function InitConditions () {
-    $.state.isLast = false;
-
-    if (!$.state.betweenSubjectsCondition) {
-        InitBetweenSubjectCondition(null);
-    }
-    
-    try {
-        $.state.conditions = getConditions(within_subjects_variables, trialsCountForEachUniqueCondition).map(cond => {
-            return { ...cond, ...$.state.betweenSubjectsCondition };
-        });
-    } catch (e) {
-        $.state.conditions = getConditions(within_subjects_variables_dummy).map(cond => {
-            return { ...cond, ...$.state.betweenSubjectsCondition };
-        });
-    }
-    
-    $.log(JSON.stringify($.state.conditions));
-    sendUpdates().catch(e => $.log(e));
-}
-
-async function sendUpdates() {
-    let sentObjectsCount = 0;
-    const sendPromises = $.state.conditionDependentObjects.map(async (obj, index) => {
-        if (sentObjectsCount > 10) {
-            await sleep(1000);
-            sentObjectsCount = 0;
-        }
-        obj.send("exp_updateConditions", $.state.conditions);
-        sentObjectsCount++;
-    });
-    await Promise.all(sendPromises);
-}
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function InitBetweenSubjectCondition(questionnaireAnswers) {
-    try {
-        $.state.betweenSubjectsCondition = GetBetweenSubjectsCondition(questionnaireAnswers);
-    }
-    catch (e) {
-        $.log("Function GetBetweenSubjectsCondition is not defined. Randomly assign between-subjects condition.");
-        let betweenSubjectsCondition = {};
-        try {
-            between_subjects_variables.forEach(v => {
-                betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random() * v.values.length)];
-            });
-        } catch (e) {
-            $.log("Between-subjects variables are not defined. Use dummy variables.");
-            between_subjects_variables_dummy.forEach(v => {
-                betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random() * v.values.length)];
-            });
-        }
-        $.state.betweenSubjectsCondition = betweenSubjectsCondition;
-    }
-}
-
 // --------- Initialize conditions from variables ----------
 
-function getConditions (variables, repeatPerCombination = 1) {
-    const isRepetitionRandom = true;
-    
-    const allCombinations = generateCombinations(variables);
-    
-    // Group by non-random variables
-    const groupedCombinations = {};
-    
-    for (const combination of allCombinations) {
-        const groupKey = variables
-            .filter(v => !v.isRandom)
-            .map(v => combination[v.name])
-            .join('-');
-    
-        if (!groupedCombinations[groupKey]) {
-            groupedCombinations[groupKey] = [];
-        }
-        groupedCombinations[groupKey].push(combination);
-    }
-    
-    // Shuffle each group
-    for (const key in groupedCombinations) {
-        groupedCombinations[key] = shuffleArray(groupedCombinations[key]);
-    }
-    
-    // Flatten the grouped combinations into a single array
-    let finalCombinations = Object.values(groupedCombinations).flat();
-    
-    // Repeat each combination repeatPerCombination times
-    let conditions = [];
-    for (const combination of finalCombinations) {
-        for (let i = 0; i < repeatPerCombination; i++) {
-            conditions.push({ ...combination });
+function initCondWithinSubjects(variables, repeatsPerCond = 1) {
+    variables = [ ...variables.sort((a, b) => a.isRandom - b.isRandom) ];
+    const varNames = variables.map(v => v.name);
+
+    let indicesPerVar = variables.map(v => Array.from({ length: v.values.length }, (_, i) => i));
+    let condIndicesList = indicesPerVar.reduce((acc, array) => {
+        return acc.flatMap(accItem => array.map(arrayItem => [...accItem, arrayItem]));
+    }, [[]]).flatMap(condIndices => Array.from({ length: repeatsPerCond }, () => condIndices));
+
+    let shufflePartitionSize = 0;
+    for (let i = 0; i < variables.length; i++) {
+        if (variables[i].isRandom) {
+            shufflePartitionSize = shufflePartitionSize === 0 ? variables[i].values.length : shufflePartitionSize * variables[i].values.length;
         }
     }
-    
-    // If repetition should be random, shuffle the repeated combinations
-    if (isRepetitionRandom) {
-        // Group by non-random variables first
-        const randomGroupedCombinations = {};
-        for (const combination of conditions) {
-            const groupKey = variables
-                .filter(v => !v.isRandom)
-                .map(v => combination[v.name])
-                .join('-');
-    
-            if (!randomGroupedCombinations[groupKey]) {
-                randomGroupedCombinations[groupKey] = [];
+    shufflePartitionSize *= repeatsPerCond;
+
+    if (shufflePartitionSize > 0) {
+        const result = [...condIndicesList]; // Copy the array to avoid mutating the original
+        for (let i = 0; i < condIndicesList.length; i += shufflePartitionSize) {
+            const partition = result.slice(i, i + shufflePartitionSize);
+            partition = shuffleArray(partition);
+            result.splice(i, shufflePartitionSize, ...partition);
+        }
+        condIndicesList = result;
+    }
+
+    $.state.wsVarNames = varNames;
+    $.state.wsCondIndicesList = condIndicesList;
+    $.state.trialCount = condIndicesList.length;
+};
+
+// ---------- Send initialized conditions ----------
+
+async function sendUpdates() {
+    const batchSize = 10; // Number of objects to process per batch
+    const delay = 1000; // Delay in milliseconds between batches
+
+    // Helper function to process objects in batches with delay
+    async function processInBatches(objects, processFn) {
+        for (let i = 0; i < objects.length; i += batchSize) {
+            const batch = objects.slice(i, i + batchSize);
+            await Promise.all(batch.map(processFn));
+            if (i + batchSize < objects.length) {
+                await sleep(delay);
             }
-            randomGroupedCombinations[groupKey].push(combination);
         }
-    
-        // Shuffle within each group
-        for (const key in randomGroupedCombinations) {
-            randomGroupedCombinations[key] = shuffleArray(randomGroupedCombinations[key]);
-        }
-    
-        // Flatten the grouped combinations into a single array
-        conditions = Object.values(randomGroupedCombinations).flat();
     }
-    
-    return conditions;
+
+    // Send `exp_bsCond` and `exp_wsVarNames` once to each object
+    await processInBatches($.state.conditionDependentObjects, async (obj) => {
+        obj.send("exp_updateConditions", { bsCond: $.state.bsCond, wsVarNames: $.state.wsVarNames });
+    });
+
+    await sleep(delay);
+
+    // Function to split large data into smaller chunks
+    function splitLargeData(data, maxSize) {
+        const chunks = [];
+        let currentChunk = [];
+        let currentSize = 0;
+
+        for (const item of data) {
+            const itemSize = $.computeSendableSize([item]); // Calculate size of a single item
+            if (currentSize + itemSize > maxSize) {
+                chunks.push(currentChunk); // Push current chunk and start a new one
+                currentChunk = [];
+                currentSize = 0;
+            }
+            currentChunk.push(item);
+            currentSize += itemSize;
+        }
+
+        if (currentChunk.length > 0) {
+            chunks.push(currentChunk); // Push the final chunk
+        }
+
+        return chunks;
+    }
+
+    // Split `$.state.wsCondIndicesList` into smaller chunks if necessary
+    const maxChunkSize = 900;
+    const wsChunks = splitLargeData($.state.wsCondIndicesList, maxChunkSize);
+
+    // Send each chunk of `wsCondIndicesList`
+    for (let i = 0; i < wsChunks.length; i++) {
+        const isLastChunk = i === wsChunks.length - 1;
+
+        await processInBatches($.state.conditionDependentObjects, async (obj) => {
+            obj.send("exp_updateConditions", { 
+                wsCondIndicesList: wsChunks[i], 
+                isWsDone: isLastChunk 
+            });
+        });
+
+        if (!isLastChunk) {
+            await sleep(delay);
+        }
+    }
 }
+
+// ---------- Helper functions ---------
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -169,23 +161,6 @@ function shuffleArray(array) {
     return array;
 }
 
-function generateCombinations(variables) {
-    const combinations = [];
-
-    function createCombination(currentCombination, currentIndex) {
-        if (currentIndex === variables.length) {
-            combinations.push({ ...currentCombination });
-            return;
-        }
-
-        const variable = variables[currentIndex];
-        for (const value of variable.values) {
-            currentCombination[variable.name] = value;
-            createCombination(currentCombination, currentIndex + 1);
-        }
-    }
-
-    createCombination({}, 0);
-
-    return combinations;
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
