@@ -31,11 +31,7 @@ $.onExternalCallEnd((res, meta, err) => {
     for (let i = 0; i < Math.min($.state.allQuestsCount, numberPerPage); i++) {
       const questTitle = $.subNode("Quest_" + i);
       if (questTitle) {
-        var titleStr =
-          filteredQuests[i].title +
-          "（" +
-          filteredQuests[i].playersCount +
-          "人待ち）";
+        var titleStr = filteredQuests[i].title;
         if (titleStr.length > 16) {
           titleStr =
             titleStr.substring(0, 16) +
