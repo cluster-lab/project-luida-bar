@@ -75,4 +75,7 @@ crashlytics-build.properties
 .vsconfig
 
 # .DS_Store
-**/.DS_Store
+.DS_Store
+
+# .idea/
+.idea/
