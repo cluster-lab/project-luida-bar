@@ -1,12 +1,10 @@
-const numberPerPage = 5;
+const numberPerPage = 30;
 
 $.onStart(() => {
+    $.state.questBoard = $.worldItemReference("QuestBoard");
     $.state.currentQuestBoardPage = 1;
     $.state.isLoading = false;
     $.setStateCompat("owner", "AllowJoinExp", true);
-    $.getItemsNear($.getPosition().clone(), 0.1).forEach(item => {
-        item.send("get_quest_board", true);
-    });
 })
 
 $.onUpdate(() => {
@@ -33,7 +31,9 @@ $.onExternalCallEnd((res, meta, err) =>
 
         $.subNode("Title").setText(quest.title);
         $.subNode("Description").setText(quest.description);
-        $.subNode("Prerequisite").setText(quest.prerequisite);
+        $.subNode("Prerequisite").setText("参加条件：" + quest.prerequisite);
+        $.subNode("Reward").setText("報酬：" + quest.reward);
+        $.setStateCompat("owner", "currentQuestID", ($.state.currentQuestBoardPage - 1) * numberPerPage + $.getStateCompat("owner", "triggerQuest", "integer")) + 1;
 
         $.setStateCompat("this", "AllowJoinExp", +quest.playersCount === 0);
         $.setStateCompat("owner", "triggerQuest", -1);
@@ -44,9 +44,6 @@ $.onExternalCallEnd((res, meta, err) =>
 
 $.onReceive((messageType, arg, sender) => {
     switch (messageType) {
-        case "return_quest_board":
-            $.state.questBoard = sender;
-            break;
         case "quest_board_current_page":
             $.state.currentQuestBoardPage = arg;
             sendQuestInfoRequest();
