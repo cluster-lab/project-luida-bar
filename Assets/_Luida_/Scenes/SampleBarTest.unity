@@ -18698,6 +18698,12 @@ PrefabInstance:
       propertyPath: id.value
       value: 10246159167269953886
       objectReference: {fileID: 0}
+    - target: {fileID: 8059115896813044329, guid: 742595b3cc014499ca2fc97ad804a44c,
+        type: 3}
+      propertyPath: sourceCodeAsset
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: dc08494e5e14b44088c77e5eab5f2efc,
+        type: 3}
     - target: {fileID: 8059115897452877494, guid: 742595b3cc014499ca2fc97ad804a44c,
         type: 3}
       propertyPath: m_Name
