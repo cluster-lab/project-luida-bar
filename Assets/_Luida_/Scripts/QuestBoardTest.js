@@ -1,7 +1,3 @@
-// const itemTemplateId = new ItemTemplateId("941a190d-c7a8-42d7-b6c9-bd0b3d127e35");
-// const position = $.getPosition().clone();
-// const rotation = new Quaternion().identity();
-const data = ["Hello", "Cluster", "from", "Cyber", "Lab"];
 const numberPerPage = 30;
 
 $.onStart(() => {
