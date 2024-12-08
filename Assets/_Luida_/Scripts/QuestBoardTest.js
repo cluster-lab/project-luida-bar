@@ -17,7 +17,7 @@ $.onExternalCallEnd((res, meta, err) => {
     let parsedRes = JSON.parse(res);
     // isTest = true のクエストのみフィルタリング
     const filteredQuests = parsedRes.quests.filter(
-      (quest) => quest.isTest === false
+      (quest) => quest.isTest === true
     );
     $.state.quests = filteredQuests;
 
@@ -54,6 +54,9 @@ $.onReceive((messageType, arg, sender) => {
       break;
     case "quest_board_to_prev":
       toPrev();
+      break;
+    case "get_quest_board":
+      sender.send("return_quest_board", true);
       break;
     case "quest_board_get_current_page":
       sender.send("quest_board_current_page", $.state.currentPage);
