@@ -66,47 +66,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\n$.onStart(()
-    => {\n    $.state.customData = {};\n    const conditionManager = $.worldItemReference(\"ConditionManager\");\n   
-    if (conditionManager) {\n        conditionManager.send(\"exp_conditionDependentObject\",
-    true);\n    }\n    $.state.bsCond = {};\n    $.state.wsVarNames = [];\n    $.state.wsCondIndicesList
-    = [];\n})\n\n$.onUpdate(() => {\n    if ($.getStateCompat(\"this\", \"exp_conditionChanged\",
-    \"boolean\")) {\n        $.setStateCompat(\"this\", \"exp_conditionChanged\",
-    false);\n    }\n\n    if ($.getStateCompat(\"this\", \"exp_recordCustomData\",
-    \"boolean\")) {\n        $.setStateCompat(\"this\", \"exp_recordCustomData\",
-    false);\n        recordData();\n    }\n    if ($.getStateCompat(\"this\", \"exp_uploadCustomData\",
-    \"boolean\")) {\n        $.setStateCompat(\"this\", \"exp_uploadCustomData\",
-    false);\n        uploadData();\n    }\n})\n\n$.onReceive((messageType, arg, sender)
-    => {\n    if (messageType === \"exp_updateConditions\") {\n        if (arg[bsCond])
-    $.state.bsCond = arg[bsCond];\n        if (arg[wsVarNames]) $.state.wsVarNames
-    = arg[wsVarNames];\n        if (arg[wsCondIndicesList]) {\n            if (!$.state.wsCondIndicesList)
-    $.state.wsCondIndicesList = [];\n            $.state.wsCondIndicesList = [ ...$.state.wsCondIndicesList,
-    arg[wsCondIndicesList] ];\n        }\n        $.state.isConditionsUpdated = arg[isWsDone]
-    || false;\n        if (arg[isWsDone] && $.state.bsCond && $.state.wsVarNames
-    && $.state.wsCondIndicesList) {\n            $.setStateCompat(\"this\", \"exp_conditionChanged\",
-    true);\n        }\n        $.setStateCompat(\"this\", \"exp_conditionChanged\",
-    true);\n    }\n})\n\nfunction getCondition(varName) {\n    if ($.state.bsCond[varName])
-    return $.state.bsCond[varName];\n    const currentCondIndices = $.state.wsCondIndicesList[$.getStateCompat(\"global\",
-    \"exp_conditionID\", \"integer\")]\n    const varNameIndex = $.state.wsVarNames.indexOf(varName);\n   
-    return variables.v[varNameIndex][currentCondIndices[varNameIndex]];\n}\n\nfunction
-    recordData () {\n    $.state.customData = calculateData();\n}\n\nfunction uploadData
-    () {\n    $.log(\"Upload custom data: \" + JSON.stringify($.state.customData));\n   
-    let request = {\n        type: \"uploadCustomData\",\n        token: token ||
-    \"\",\n        dataByFileName: JSON.stringify($.state.customData),\n        eID:
-    expID || \"\",\n        pID: $.getPlayersNear($.getPosition().clone(), Infinity)[0].idfc
-    || \"\" // TODO: retrieve idfc through cluster Player Script\n    };\n    $.callExternal(JSON.stringify(request),
-    \"customDataUploaded\");\n}\n\n$.onExternalCallEnd((res, meta, err) =>\n{\n   
-    if (res == null) {\n        $.log(\"callExternal ERROR: \" + err);\n        return;\n   
-    }\n\n    if (meta === \"customDataUploaded\") {\n        $.log(\"Custom recorded
-    data uploaded\");\n    }\n});\r\nfunction calculateData () {\n    let fileName
-    = \"yourFileName\";\n    let returnData = $.state.customData;\n\n    /*\n     
-    Change the value of `fileName`\n      And implement your calculation for data
-    to record\n      Then save the calculation result into the `newRecord` variable
-    below\n      * You can use function getCondition(variable's name) to access the
-    current experimental condition\n    */\n    \n    const newRecord = {\n     
-    // yourKey: yourValue\n    };\n\n    if (fileName in returnData && Array.isArray(returnData[fileName]))
-    {\n      returnData[fileName].push(newRecord);\n    } else {\n      returnData[fileName]
-    = [newRecord];\n    }\n  \n    return returnData;\n}"
+  sourceCode: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\n\r\n$.onStart(()
+    => {\r\n    $.state.customData = {};\r\n})\r\n\r\n$.onUpdate(() => {\r\n    if
+    ($.getStateCompat(\"this\", \"exp_recordCustomData\", \"boolean\")) {\r\n       
+    $.setStateCompat(\"this\", \"exp_recordCustomData\", false);\r\n        recordData();\r\n   
+    }\r\n    if ($.getStateCompat(\"this\", \"exp_uploadCustomData\", \"boolean\"))
+    {\r\n        $.setStateCompat(\"this\", \"exp_uploadCustomData\", false);\r\n       
+    uploadData();\r\n    }\r\n})\r\n\r\nfunction recordData () {\r\n    $.state.customData
+    = calculateData();\r\n}\r\n\r\nfunction uploadData () {\r\n    $.log(\"Upload
+    custom data: \" + JSON.stringify($.state.customData));\r\n    let request = {\r\n       
+    type: \"uploadCustomData\",\r\n        token: token || \"\",\r\n        dataByFileName:
+    JSON.stringify($.state.customData),\r\n        eID: expID || \"\",\r\n       
+    pID: $.getPlayersNear($.getPosition().clone(), Infinity)[0].idfc || \"\" // TODO:
+    retrieve idfc through cluster Player Script\r\n    };\r\n    $.callExternal(JSON.stringify(request),
+    \"customDataUploaded\");\r\n}\r\n\r\n$.onExternalCallEnd((res, meta, err) =>\r\n{\r\n   
+    if (res == null) {\r\n        $.log(\"callExternal ERROR: \" + err);\r\n       
+    return;\r\n    }\r\n\r\n    if (meta === \"customDataUploaded\") {\r\n       
+    $.log(\"Custom recorded data uploaded\");\r\n    }\r\n});\r\nfunction calculateData
+    () {\r\n    let fileName = \"yourFileName\";\r\n    let returnData = $.state.customData;\r\n\r\n   
+    /*\r\n      Change the value of `fileName`\r\n      And implement your calculation
+    for data to record\r\n      Then save the calculation result into the `newRecord`
+    variable below\r\n      * You can use $.groupState.currentCondition[variable's
+    name] to access the current experimental condition\r\n    */\r\n    \r\n    const
+    newRecord = {\r\n      // yourKey: yourValue\r\n    };\r\n\r\n    if (fileName
+    in returnData && Array.isArray(returnData[fileName])) {\r\n      returnData[fileName].push(newRecord);\r\n   
+    } else {\r\n      returnData[fileName] = [newRecord];\r\n    }\r\n  \r\n    return
+    returnData;\r\n}"
 --- !u!114 &4976748577095326931
 MonoBehaviour:
   m_ObjectHideFlags: 0

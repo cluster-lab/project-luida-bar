@@ -4,8 +4,8 @@ $.onStart(() => {
 
 $.onUpdate(() => {
     if ($.state.trialID !== $.getStateCompat("global", "exp_trialID", "integer")) {
+        $.log($.state.trialID + " " + $.getStateCompat("global", "exp_trialID", "integer"));
         $.state.trialID = $.getStateCompat("global", "exp_trialID", "integer");
-        
         if ($.state.trialID >= $.state.trialCount) {
             $.sendSignalCompat("this", "exp_resetTrials");
         } else if ($.state.trialID <= -1) {
@@ -13,7 +13,9 @@ $.onUpdate(() => {
         } else {
             let condition = { ...$.state.betweenSubjectsConditions };
             for (let i = 0; i < $.state.withinSubjectsVariableNames.length; i++) {
-                condition[$.state.withinSubjectsVariableNames[i]] = $.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]
+                const varName = $.state.withinSubjectsVariableNames[i];
+                const varValue = within_subjects_variables[i].values[$.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]];
+                condition[varName] = varValue;
             }
             $.groupState.currentCondition = condition;
     
@@ -28,9 +30,6 @@ $.onUpdate(() => {
 
 $.onReceive((messageType, arg, sender) => {
     switch (messageType) {
-        // case "exp_conditionDependentObject":
-        //     $.state.conditionDependentObjects = [ ...$.state.conditionDependentObjects, sender ];
-        //     break;
         // case "exp_questionnaire_answer":
         //     $.state.betweenSubjectsConditions = GetBetweenSubjectsCondition(arg);
         //     break;
@@ -45,12 +44,12 @@ function reset() {
     $.state.withinSubjectsVariableNames = [];
     $.state.withinSubjectsConditionIndicesByTrial = [];
     $.state.trialCount = 1;
-    $.state.conditionDependentObjects = [];
     $.groupState.currentCondition = {};
     initializeBetweenSubjectsConditionsRandomly();
     try {
         initializeWithinSubjectsConditions(within_subjects_variables, trialsCountForEachUniqueCondition);
     } catch (error) {
+        $.log(error);
         $.log("Within-subjects variables are not defined.");
     }
 }
@@ -64,7 +63,7 @@ function initializeBetweenSubjectsConditionsRandomly() {
     } catch (e) {
         $.log("Between-subjects variables are not defined.");
     }
-    return betweenSubjectsCondition;
+    $.state.betweenSubjectsConditions = betweenSubjectsCondition;
 }
 
 function initializeWithinSubjectsConditions(variables, repeatsPerCond = 1) {
@@ -87,7 +86,7 @@ function initializeWithinSubjectsConditions(variables, repeatsPerCond = 1) {
     if (shufflePartitionSize > 0) {
         const result = [...condIndicesList]; // Copy the array to avoid mutating the original
         for (let i = 0; i < condIndicesList.length; i += shufflePartitionSize) {
-            const partition = result.slice(i, i + shufflePartitionSize);
+            let partition = result.slice(i, i + shufflePartitionSize);
             partition = shuffleArray(partition);
             result.splice(i, shufflePartitionSize, ...partition);
         }

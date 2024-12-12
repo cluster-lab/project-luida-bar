@@ -2,13 +2,20 @@ $.onStart(() => {
     
 })
 
-// You can use $.groupState.currentCondition[variable's name] to access the current experimental condition
+function OnStateEnter() {
+    // If you have checked `Is accessible to conditions` when generating this gameObject,
+    // You can use $.groupState.currentCondition[variable's name] to access the current experimental condition
+}
 
-function OnStateEnter() {}
+function OnStateExit () {
+    // If you have checked `Is accessible to conditions` when generating this gameObject,
+    // You can use $.groupState.currentCondition[variable's name] to access the current experimental condition
+}
 
-function OnStateExit () {}
-
-function DuringState (deltaTime) {}
+function DuringState (deltaTime) {
+    // If you have checked `Is accessible to conditions` when generating this gameObject,
+    // You can use $.groupState.currentCondition[variable's name] to access the current experimental condition
+}
 
 /*
     ***** Don't use $.onUpdate in this file! *****

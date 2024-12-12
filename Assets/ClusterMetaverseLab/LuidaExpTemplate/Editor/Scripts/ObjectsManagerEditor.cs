@@ -11,10 +11,8 @@ public class ObjectsManagerEditor : EditorWindow
     private SerializedObject serializedStateList;
     private SerializedProperty statesProperty;
     private string stateListeningObjectPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/StateListeningObject.prefab";
-    private string conditionDependentObjectPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionDependentObject.prefab";
     private string formPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/Questionnaire/Questionnaire.prefab";
     private string jsStateTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/StateManagement/StateListeningObjectTemplate.js";
-    private string jsConditionTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/ConditionManagement/ConditionDependentObjectTemplate.js";
     private string identifiersAssetPath = "Assets/_Experiment_/Settings/ExpIdentifiers.js";
     private const string RequiredObjectsWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
     private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
@@ -32,7 +30,6 @@ public class ObjectsManagerEditor : EditorWindow
 
     // Dictionaries to track foldout states for collapsible sections
     private Dictionary<string, bool> stateObjectsFoldout = new Dictionary<string, bool>();
-    private Dictionary<string, bool> conditionObjectsFoldout = new Dictionary<string, bool>();
 
     private Dictionary<string, bool> showNewObjectRow = new Dictionary<string, bool>(); // Track visibility of the new object row for each state
 
@@ -55,7 +52,7 @@ public class ObjectsManagerEditor : EditorWindow
             statesProperty = serializedStateList.FindProperty("States");
         }
 
-        // Retrieve existing state-dependent objects
+        // Retrieve existing state-listening objects
         RetrieveCreatedObjects();
     }
 
@@ -76,7 +73,7 @@ public class ObjectsManagerEditor : EditorWindow
         scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition); // Start scrollable area
 
         // Instruction text
-        EditorGUILayout.HelpBox("Manage state-dependent, condition-dependent objects, and questionnaires for each state.", MessageType.Info);
+        EditorGUILayout.HelpBox("Manage state-listening objects and questionnaires for each state.", MessageType.Info);
         EditorGUILayout.HelpBox("Click 'Add object dependent to this state' to add a new object dependent to this state.", MessageType.Info);
         EditorGUILayout.HelpBox("Click 'Add condition-dependent object in this state' to add a condition-dependent object inside this state.", MessageType.Info);
         EditorGUILayout.HelpBox("Remember to click 'Update script' button after editing the script for an object.", MessageType.Info);
@@ -102,7 +99,6 @@ public class ObjectsManagerEditor : EditorWindow
             if (!showQuestionnaireForm.ContainsKey(stateName)) showQuestionnaireForm[stateName] = false;
 
             if (!stateObjectsFoldout.ContainsKey(stateName)) stateObjectsFoldout[stateName] = true;
-            if (!conditionObjectsFoldout.ContainsKey(stateName)) conditionObjectsFoldout[stateName] = true;
 
             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
@@ -130,23 +126,12 @@ public class ObjectsManagerEditor : EditorWindow
 
             EditorGUILayout.EndHorizontal();
 
-            // Collapsible list for state-dependent objects
-            stateObjectsFoldout[stateName] = EditorGUILayout.Foldout(stateObjectsFoldout[stateName], "State-Dependent Objects", true, EditorStyles.foldout);
+            // Collapsible list for state-listening objects
+            stateObjectsFoldout[stateName] = EditorGUILayout.Foldout(stateObjectsFoldout[stateName], "State-Listening Objects", true, EditorStyles.foldout);
             if (stateObjectsFoldout[stateName])
             {
                 List<GameObject> stateListeningObjects = createdObjects.Where(o => o.transform.parent != null && PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(o) == stateListeningObjectPrefabPath && (o.transform.parent.parent.name == stateName || o.transform.parent.name == stateName)).ToList();
                 foreach (var obj in stateListeningObjects)
-                {
-                    DisplayObjectRow(obj, stateName, i);
-                }
-            }
-
-            // Collapsible list for condition-dependent objects
-            conditionObjectsFoldout[stateName] = EditorGUILayout.Foldout(conditionObjectsFoldout[stateName], "Condition-Dependent Objects", true, EditorStyles.foldout);
-            if (conditionObjectsFoldout[stateName])
-            {
-                List<GameObject> conditionDependentObjects = createdObjects.Where(o => o.transform.parent != null && PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(o) == conditionDependentObjectPrefabPath && (o.transform.parent.parent.name == stateName || o.transform.parent.name == stateName)).ToList();
-                foreach (var obj in conditionDependentObjects)
                 {
                     DisplayObjectRow(obj, stateName, i);
                 }
@@ -433,7 +418,7 @@ public class ObjectsManagerEditor : EditorWindow
         }
     }
 
-    // Adds the new state-dependent object or condition-dependent object and its corresponding JS script
+    // Adds the new state-listening object and its corresponding JS script
     private void AddObject(string stateName, int stateId, string objectName, string prefabPath, string jsTemplatePath, bool isScriptable, bool isAccessibleToConditionsState, GameObject referenceObject)
     {
         GameObject stateObject = GameObject.Find("States")?.transform.Find(stateName)?.Find("Objects")?.gameObject;
@@ -634,8 +619,7 @@ public class ObjectsManagerEditor : EditorWindow
                     foreach (Transform objTransform in objects)
                     {
                         GameObject obj = objTransform.gameObject;
-                        if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == stateListeningObjectPrefabPath ||
-                            PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == conditionDependentObjectPrefabPath)
+                        if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == stateListeningObjectPrefabPath)
                         {
                             createdObjects.Add(obj);
                         }
@@ -645,7 +629,7 @@ public class ObjectsManagerEditor : EditorWindow
         }
     }
 
-    // Displays a row for each existing state-dependent or condition-dependent object
+    // Displays a row for each existing state-listening object
     private void DisplayObjectRow(GameObject obj, string stateName, int stateId)
     {
         EditorGUILayout.BeginHorizontal();
