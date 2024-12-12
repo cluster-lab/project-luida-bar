@@ -305,12 +305,17 @@ PrefabInstance:
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: logic.statements.Array.size
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: logic.statements.Array.data[1].singleStatement.expression.type
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.targetState.key
+      value: exp_trialID
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
@@ -320,7 +325,7 @@ PrefabInstance:
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: logic.statements.Array.data[2].singleStatement.targetState.key
-      value: exp_conditionID
+      value: state_currentID
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
@@ -354,6 +359,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.targetState.parameterType
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
       propertyPath: logic.statements.Array.data[2].singleStatement.targetState.parameterType
       value: 3
       objectReference: {fileID: 0}
@@ -361,6 +376,16 @@ PrefabInstance:
         type: 3}
       propertyPath: logic.statements.Array.data[3].singleStatement.targetState.parameterType
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.expression.value.constant.type
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
@@ -374,6 +399,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.sourceState.key
+      value: exp_conditionID
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
       propertyPath: logic.statements.Array.data[3].singleStatement.expression.value.sourceState.type
       value: 6
       objectReference: {fileID: 0}
@@ -381,6 +411,11 @@ PrefabInstance:
         type: 3}
       propertyPath: logic.statements.Array.data[4].singleStatement.expression.value.sourceState.type
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.boolValue
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
@@ -405,12 +440,22 @@ PrefabInstance:
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: logic.statements.Array.data[1].singleStatement.expression.operatorExpression.operator
-      value: 15
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operator
-      value: 2
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.expression.value.constant.integerValue
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
@@ -420,12 +465,12 @@ PrefabInstance:
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: logic.statements.Array.data[1].singleStatement.expression.operatorExpression.operands.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
@@ -460,7 +505,7 @@ PrefabInstance:
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: logic.statements.Array.data[1].singleStatement.expression.operatorExpression.operands.Array.data[0].value.constant.type
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
@@ -474,7 +519,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[0].value.constant.type
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
       propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[1].value.constant.type
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[2].value.constant.type
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
@@ -495,12 +550,12 @@ PrefabInstance:
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: logic.statements.Array.data[1].singleStatement.expression.operatorExpression.operands.Array.data[0].value.sourceState.key
-      value: exp_readyToLeaveTrials
+      value: exp_trialID
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[0].value.sourceState.key
-      value: exp_conditionID
+      value: exp_readyToLeaveTrials
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
@@ -515,7 +570,7 @@ PrefabInstance:
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: logic.statements.Array.data[1].singleStatement.expression.operatorExpression.operands.Array.data[0].value.sourceState.type
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
@@ -530,11 +585,16 @@ PrefabInstance:
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[0].value.sourceState.type
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[1].value.sourceState.type
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[2].value.sourceState.type
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
@@ -594,6 +654,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[2].value.constant.boolValue
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[2].value.sourceState.target
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
       propertyPath: logic.statements.Array.data[3].singleStatement.expression.operatorExpression.operands.Array.data[0].value.constant.boolValue
       value: 0
       objectReference: {fileID: 0}
@@ -625,12 +695,12 @@ PrefabInstance:
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: logic.statements.Array.data[1].singleStatement.expression.operatorExpression.operands.Array.data[0].value.constant.integerValue
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: logic.statements.Array.data[1].singleStatement.expression.operatorExpression.operands.Array.data[1].value.constant.integerValue
-      value: 11
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
@@ -639,8 +709,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
-      propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[1].value.constant.integerValue
+      propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[0].value.constant.integerValue
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[1].value.constant.integerValue
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[2].value.constant.integerValue
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
@@ -1758,6 +1838,11 @@ PrefabInstance:
         type: 3}
       propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
       value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}

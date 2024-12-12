@@ -236,7 +236,7 @@ public class StateListEditor : EditorWindow
 
         UpdateSceneObjects();
         if (stateOrderChanged) {
-            UpdateStateDependentObjectsAfterReorder();
+            UpdateStateListeningObjectsAfterReorder();
         }
     }
 
@@ -545,7 +545,7 @@ public class StateListEditor : EditorWindow
         }
     }
 
-    private void UpdateStateDependentObjectsAfterReorder()
+    private void UpdateStateListeningObjectsAfterReorder()
     {
         GameObject statesObject = GameObject.Find("States");
         if (statesObject != null)
@@ -562,8 +562,8 @@ public class StateListEditor : EditorWindow
                     {
                         foreach (Transform objTransform in objectsTransform)
                         {
-                            GameObject stateDependentObject = objTransform.gameObject;
-                            UpdateStateIdForObject(stateDependentObject, i); // Update with the new state_id
+                            GameObject stateListeningObject = objTransform.gameObject;
+                            UpdateStateIdForObject(stateListeningObject, i); // Update with the new state_id
                         }
                     }
                 }

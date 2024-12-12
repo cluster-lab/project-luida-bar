@@ -6,7 +6,7 @@ function calculateData () {
       Change the value of `fileName`
       And implement your calculation for data to record
       Then save the calculation result into the `newRecord` variable below
-      * You can use function getCondition(variable's name) to access the current experimental condition
+      * You can use $.groupState.currentCondition[variable's name] to access the current experimental condition
     */
     
     const newRecord = {

@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 7617053289787406505}
   - component: {fileID: 833797841801743093}
   m_Layer: 0
-  m_Name: StateDependentObject
+  m_Name: StateListeningObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -10,12 +10,13 @@ GameObject:
   m_Component:
   - component: {fileID: 4731245737645068705}
   - component: {fileID: 4731245737645068706}
+  - component: {fileID: 720097705929188119}
+  - component: {fileID: 7666113413222499611}
+  - component: {fileID: 4193501645939222088}
+  - component: {fileID: 2517667058289263438}
   - component: {fileID: 4731245737645068704}
   - component: {fileID: 4731245737645068636}
   - component: {fileID: 4731245737645068707}
-  - component: {fileID: 1802886244830669606}
-  - component: {fileID: 166775567391568992}
-  - component: {fileID: 6115281390238937048}
   - component: {fileID: 4638770987403183712}
   m_Layer: 0
   m_Name: ConditionManager
@@ -55,6 +56,160 @@ MonoBehaviour:
     value: 5570182165721890090
   itemName: 
   size: {x: 0, y: 0, z: 0}
+--- !u!114 &720097705929188119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731245737645068637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6487efbf7339493cb3e1fa581f53b763, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7666113413222499611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731245737645068637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f90a8458122ef47c3b840e286a75994a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 4731245737645068706}
+  triggers:
+  - target: 4
+    specifiedTargetItem: {fileID: 0}
+    key: exp_trialID
+    type: 3
+    value:
+      boolValue: 0
+      floatValue: 0
+      integerValue: -1
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+--- !u!114 &4193501645939222088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731245737645068637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 2
+      key: exp_resetTrials
+    item: {fileID: 4731245737645068706}
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 2
+          key: exp_trialID
+          parameterType: 3
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 3
+              boolValue: 0
+              floatValue: 0
+              integerValue: -1
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &2517667058289263438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731245737645068637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 0
+      key: exp_resetTrials
+    item: {fileID: 4731245737645068706}
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 2
+          key: exp_trialID
+          parameterType: 3
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 3
+              boolValue: 0
+              floatValue: 0
+              integerValue: -1
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
 --- !u!114 &4731245737645068704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -160,7 +315,7 @@ MonoBehaviour:
     - singleStatement:
         targetState:
           target: 2
-          key: exp_conditionID
+          key: exp_trialID
           parameterType: 3
         expression:
           type: 1
@@ -192,7 +347,7 @@ MonoBehaviour:
                   vector3Value: {x: 0, y: 0, z: 0}
                 sourceState:
                   target: 2
-                  key: exp_conditionID
+                  key: exp_trialID
                   type: 3
               operatorExpression:
                 operator: 0
@@ -211,46 +366,6 @@ MonoBehaviour:
                   target: 2
                   key: 
                   type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
-    - singleStatement:
-        targetState:
-          target: 2
-          key: exp_conditionChanged
-          parameterType: 0
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 1
-              boolValue: 1
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 2
-              key: exp_conditionID
-              type: 6
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 1
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 2
-                  key: exp_conditionID
-                  type: 3
               operatorExpression:
                 operator: 0
                 operands: []
@@ -313,89 +428,6 @@ MonoBehaviour:
               operatorExpression:
                 operator: 0
                 operands: []
---- !u!114 &1802886244830669606
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4731245737645068637}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d06d8dc2ce9e442ab2712de694945b2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item: {fileID: 4731245737645068706}
-  key:
-    target: 2
-    key: exp_initCondition
-  logic:
-    statements:
-    - singleStatement:
-        targetState:
-          target: 0
-          key: exp_initCondition
-          parameterType: 1
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 1
-              boolValue: 1
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 0
-              key: 
-              type: 6
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 0
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 0
-                  key: 
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
---- !u!65 &166775567391568992
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4731245737645068637}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6115281390238937048
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4731245737645068637}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc728c1810dc48a582fb23e0a13a7466, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4638770987403183712
 MonoBehaviour:
   m_ObjectHideFlags: 0

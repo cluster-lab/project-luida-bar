@@ -2,6 +2,8 @@ $.onStart(() => {
     
 })
 
+// You can use $.groupState.currentCondition[variable's name] to access the current experimental condition
+
 function OnStateEnter() {}
 
 function OnStateExit () {}
