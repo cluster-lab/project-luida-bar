@@ -2669,32 +2669,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 814595608}
     m_Modifications:
-    - target: {fileID: 600138419, guid: bebbd8fabd7b322468f1d18e8b32081c, type: 3}
-      propertyPath: sourceCode
-      value: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\n\r\n$.onStart(()
-        => {\r\n  $.state.inRoomIdfcs = [];\r\n  $.state.newPlayers = [];\r\n})\r\n\r\n$.onUpdate(()
-        => {\r\n  if ($.getStateCompat(\"this\", \"exp_checkJoinEligibility\", \"boolean\"))
-        {\r\n    $.setStateCompat(\"this\", \"exp_checkJoinEligibility\", false);\r\n\r\n   
-        const newPlayers = $.getPlayersNear($.getPosition(), 1)\r\n      .filter(p
-        => !$.state.inRoomIdfcs.includes(p.idfc));\r\n    \r\n    if (newPlayers.length
-        > 0) {\r\n      $.state.newPlayers = newPlayers;\r\n      $.log(newPlayers[0].idfc);\r\n\r\n     
-        const request = {\r\n        type: \"checkJoinEligibility\",\r\n        token:
-        token || \"\",\r\n        eID: expID || \"\",\r\n        idfcs: newPlayers.map(p
-        => p.idfc).join(\"|\")\r\n      };\r\n      $.callExternal(JSON.stringify(request),
-        \"joinEligibilityChecked\");\r\n    }\r\n  }\r\n})\r\n\r\n$.onExternalCallEnd((res,
-        meta, err) =>\r\n{\r\n  if (res == null) {\r\n    $.log(\"callExternal ERROR:
-        \" + err);\r\n    return;\r\n  }\r\n\r\n  if (meta === \"joinEligibilityChecked\")
-        {\r\n    const parsedRes = JSON.parse(res);\r\n    $.state.newPlayers.forEach(newPlayer
-        => {\r\n      if (parsedRes.ineligibleIdfcs.includes(newPlayer.idfc)) {\r\n       
-        // TODO: Show message about that this player is not eligible to join this
-        experiment, and teleport the player back to LUIDA bar world.\r\n      } else
-        {\r\n        newPlayer.setMoveSpeedRate(1);\r\n        $.state.inRoomIdfcs
-        = [ ...$.state.inRoomIdfcs, newPlayer.idfc ];\r\n        // TODO: Instead
-        of enabling move, teleport the player from the checking area to the task
-        area.\r\n      }\r\n    });\r\n    \r\n    $.state.newPlayers = [];\r\n   
-        $.log(\"Only users who have not joined this experiment before are allowed
-        to proceed to the experiment.\");\r\n  }\r\n});"
-      objectReference: {fileID: 0}
     - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
         type: 3}
       propertyPath: m_RootOrder

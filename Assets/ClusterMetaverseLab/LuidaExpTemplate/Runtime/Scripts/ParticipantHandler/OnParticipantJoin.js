@@ -1,3 +1,6 @@
+// Deprecated
+
+/*
 $.onStart(() => {
   $.state.inRoomIdfcs = [];
   $.state.newPlayers = [];
@@ -48,3 +51,4 @@ $.onExternalCallEnd((res, meta, err) =>
     $.log("Only users who have not joined this experiment before are allowed to proceed to the experiment.");
   }
 });
+*/
