@@ -9,14 +9,7 @@ function GetBetweenSubjectsCondition(questionnaireAnswers) {
             
         });
     } catch (e) {
-        $.log("Between-subjects variables are not defined. Use dummy variables.");
-        try {
-            between_subjects_variables_dummy.forEach(v => {
-                betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random() * v.values.length)];
-            });
-        } catch (e) {
-            $.log("Dummy between-subjects variables are not found. Return empty object");
-        }
+        $.log("Between-subjects variables are not defined. Return empty object.");
     }
     return betweenSubjectsCondition;
 }

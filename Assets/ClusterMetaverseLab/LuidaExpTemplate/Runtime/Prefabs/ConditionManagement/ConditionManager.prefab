@@ -10,12 +10,13 @@ GameObject:
   m_Component:
   - component: {fileID: 4731245737645068705}
   - component: {fileID: 4731245737645068706}
+  - component: {fileID: 720097705929188119}
+  - component: {fileID: 7666113413222499611}
+  - component: {fileID: 4193501645939222088}
+  - component: {fileID: 2517667058289263438}
   - component: {fileID: 4731245737645068704}
   - component: {fileID: 4731245737645068636}
   - component: {fileID: 4731245737645068707}
-  - component: {fileID: 1802886244830669606}
-  - component: {fileID: 166775567391568992}
-  - component: {fileID: 6115281390238937048}
   - component: {fileID: 4638770987403183712}
   m_Layer: 0
   m_Name: ConditionManager
@@ -55,6 +56,160 @@ MonoBehaviour:
     value: 5570182165721890090
   itemName: 
   size: {x: 0, y: 0, z: 0}
+--- !u!114 &720097705929188119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731245737645068637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6487efbf7339493cb3e1fa581f53b763, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7666113413222499611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731245737645068637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f90a8458122ef47c3b840e286a75994a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 4731245737645068706}
+  triggers:
+  - target: 4
+    specifiedTargetItem: {fileID: 0}
+    key: exp_trialID
+    type: 3
+    value:
+      boolValue: 0
+      floatValue: 0
+      integerValue: -1
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+--- !u!114 &4193501645939222088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731245737645068637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 2
+      key: exp_resetTrials
+    item: {fileID: 4731245737645068706}
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 2
+          key: exp_trialID
+          parameterType: 3
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 3
+              boolValue: 0
+              floatValue: 0
+              integerValue: -1
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &2517667058289263438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731245737645068637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 0
+      key: exp_resetTrials
+    item: {fileID: 4731245737645068706}
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 2
+          key: exp_trialID
+          parameterType: 3
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 3
+              boolValue: 0
+              floatValue: 0
+              integerValue: -1
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
 --- !u!114 &4731245737645068704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,81 +223,59 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "const within_subjects_variables_dummy = [\n    { name: \"color\",
-    values: [\"R\", \"G\", \"B\"], isRandom: false },\n    { name: \"size\", values:
-    [5, 10, 15], isRandom: true },\n];\n\nconst between_subjects_variables_dummy
-    = [\n    { name: \"method\", values: [\"old\", \"new\"] }\n];\n\n$.onStart(()
-    => {\n    $.state.conditionDependentObjects = [];\n    // $.state.betweenSubjectsCondition
-    = {};\n});\n\n$.onUpdate(() => {\n    if ($.getStateCompat(\"this\", \"exp_initCondition\",
-    \"boolean\")) {\n        $.setStateCompat(\"this\", \"exp_initCondition\", false);\n       
-    InitConditions();\n    }\n    if ($.state.conditions && !$.state.isLast && $.getStateCompat(\"global\",
-    \"exp_conditionID\", \"integer\") >= $.state.conditions.length - 1) {\n       
-    $.state.isLast = true;\n        $.sendSignalCompat(\"this\", \"exp_readyToLeaveTrials\");\n   
-    }\n});\n\n$.onReceive((messageType, arg, sender) => {\n    switch (messageType)
-    {\n        case \"exp_conditionDependentObject\":\n            $.state.conditionDependentObjects
-    = [ ...$.state.conditionDependentObjects, sender ];\n            break;\n       
-    case \"exp_questionnaire_answer\":\n            // \u53C2\u52A0\u8005\u306B\u53C2\u52A0\u8005\u9593\u6761\u4EF6\u3092\u5272\u308A\u5F53\u3066\u308B\n           
-    InitBetweenSubjectCondition(arg);\n        default:\n            break;\n   
-    }\n});\n\nfunction InitConditions () {\n    $.state.isLast = false;\n\n    if
-    (!$.state.betweenSubjectsCondition) {\n        InitBetweenSubjectCondition(null);\n   
-    }\n    \n    try {\n        $.state.conditions = getConditions(within_subjects_variables,
-    trialsCountForEachUniqueCondition).map(cond => {\n            return { ...cond,
-    ...$.state.betweenSubjectsCondition };\n        });\n    } catch (e) {\n       
-    $.state.conditions = getConditions(within_subjects_variables_dummy).map(cond
-    => {\n            return { ...cond, ...$.state.betweenSubjectsCondition };\n       
-    });\n    }\n    \n    $.log(JSON.stringify($.state.conditions));\n    sendUpdates().catch(e
-    => $.log(e));\n}\n\nasync function sendUpdates() {\n    let sentObjectsCount
-    = 0;\n    const sendPromises = $.state.conditionDependentObjects.map(async (obj,
-    index) => {\n        if (sentObjectsCount > 10) {\n            await sleep(1000);\n           
-    sentObjectsCount = 0;\n        }\n        obj.send(\"exp_updateConditions\",
-    $.state.conditions);\n        sentObjectsCount++;\n    });\n    await Promise.all(sendPromises);\n}\n\nfunction
-    sleep(ms) {\n    return new Promise(resolve => setTimeout(resolve, ms));\n}\n\nfunction
-    InitBetweenSubjectCondition(questionnaireAnswers) {\n    try {\n        $.state.betweenSubjectsCondition
-    = GetBetweenSubjectsCondition(questionnaireAnswers);\n    }\n    catch (e) {\n       
-    $.log(\"Function GetBetweenSubjectsCondition is not defined. Randomly assign
-    between-subjects condition.\");\n        let betweenSubjectsCondition = {};\n       
-    try {\n            between_subjects_variables.forEach(v => {\n               
-    betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random() * v.values.length)];\n           
-    });\n        } catch (e) {\n            $.log(\"Between-subjects variables are
-    not defined. Use dummy variables.\");\n            between_subjects_variables_dummy.forEach(v
-    => {\n                betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random()
-    * v.values.length)];\n            });\n        }\n        $.state.betweenSubjectsCondition
-    = betweenSubjectsCondition;\n    }\n}\n\n// --------- Initialize conditions from
-    variables ----------\n\nfunction getConditions (variables, repeatPerCombination
-    = 1) {\n    const isRepetitionRandom = true;\n    \n    const allCombinations
-    = generateCombinations(variables);\n    \n    // Group by non-random variables\n   
-    const groupedCombinations = {};\n    \n    for (const combination of allCombinations)
-    {\n        const groupKey = variables\n            .filter(v => !v.isRandom)\n           
-    .map(v => combination[v.name])\n            .join('-');\n    \n        if (!groupedCombinations[groupKey])
-    {\n            groupedCombinations[groupKey] = [];\n        }\n        groupedCombinations[groupKey].push(combination);\n   
-    }\n    \n    // Shuffle each group\n    for (const key in groupedCombinations)
-    {\n        groupedCombinations[key] = shuffleArray(groupedCombinations[key]);\n   
-    }\n    \n    // Flatten the grouped combinations into a single array\n    let
-    finalCombinations = Object.values(groupedCombinations).flat();\n    \n    //
-    Repeat each combination repeatPerCombination times\n    let conditions = [];\n   
-    for (const combination of finalCombinations) {\n        for (let i = 0; i < repeatPerCombination;
-    i++) {\n            conditions.push({ ...combination });\n        }\n    }\n   
-    \n    // If repetition should be random, shuffle the repeated combinations\n   
-    if (isRepetitionRandom) {\n        // Group by non-random variables first\n       
-    const randomGroupedCombinations = {};\n        for (const combination of conditions)
-    {\n            const groupKey = variables\n                .filter(v => !v.isRandom)\n               
-    .map(v => combination[v.name])\n                .join('-');\n    \n           
-    if (!randomGroupedCombinations[groupKey]) {\n                randomGroupedCombinations[groupKey]
-    = [];\n            }\n            randomGroupedCombinations[groupKey].push(combination);\n       
-    }\n    \n        // Shuffle within each group\n        for (const key in randomGroupedCombinations)
-    {\n            randomGroupedCombinations[key] = shuffleArray(randomGroupedCombinations[key]);\n       
-    }\n    \n        // Flatten the grouped combinations into a single array\n       
-    conditions = Object.values(randomGroupedCombinations).flat();\n    }\n    \n   
-    return conditions;\n}\n\nfunction shuffleArray(array) {\n    for (let i = array.length
-    - 1; i > 0; i--) {\n        const j = Math.floor(Math.random() * (i + 1));\n       
-    [array[i], array[j]] = [array[j], array[i]];\n    }\n    return array;\n}\n\nfunction
-    generateCombinations(variables) {\n    const combinations = [];\n\n    function
-    createCombination(currentCombination, currentIndex) {\n        if (currentIndex
-    === variables.length) {\n            combinations.push({ ...currentCombination
-    });\n            return;\n        }\n\n        const variable = variables[currentIndex];\n       
-    for (const value of variable.values) {\n            currentCombination[variable.name]
-    = value;\n            createCombination(currentCombination, currentIndex + 1);\n       
-    }\n    }\n\n    createCombination({}, 0);\n\n    return combinations;\n}\n"
+  sourceCode: "$.onStart(() => {\r\n    reset();\r\n});\r\n\r\n$.onUpdate(() => {\r\n   
+    if ($.state.trialID !== $.getStateCompat(\"global\", \"exp_trialID\", \"integer\"))
+    {\r\n        $.log($.state.trialID + \" \" + $.getStateCompat(\"global\", \"exp_trialID\",
+    \"integer\"));\r\n        $.state.trialID = $.getStateCompat(\"global\", \"exp_trialID\",
+    \"integer\");\r\n        if ($.state.trialID >= $.state.trialCount) {\r\n           
+    $.sendSignalCompat(\"this\", \"exp_resetTrials\");\r\n        } else if ($.state.trialID
+    <= -1) {\r\n            reset();\r\n        } else {\r\n            let condition
+    = { ...$.state.betweenSubjectsConditions };\r\n            for (let i = 0; i
+    < $.state.withinSubjectsVariableNames.length; i++) {\r\n                const
+    varName = $.state.withinSubjectsVariableNames[i];\r\n                const varValue
+    = within_subjects_variables[i].values[$.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]];\r\n               
+    condition[varName] = varValue;\r\n            }\r\n            $.groupState.currentCondition
+    = condition;\r\n    \r\n            // Check if this is the last trial (if true,
+    stop repeating trials when next state transition is triggered)\r\n           
+    if ($.state.trialCount > 0 && !$.state.isLast && $.state.trialID >= $.state.trialCount
+    - 1) {\r\n                $.state.isLast = true;\r\n                $.sendSignalCompat(\"this\",
+    \"exp_readyToLeaveTrials\");\r\n            }\r\n        }\r\n    }\r\n});\r\n\r\n$.onReceive((messageType,
+    arg, sender) => {\r\n    switch (messageType) {\r\n        // case \"exp_questionnaire_answer\":\r\n       
+    //     $.state.betweenSubjectsConditions = GetBetweenSubjectsCondition(arg);\r\n       
+    //     break;\r\n        default:\r\n            break;\r\n    }\r\n});\r\n\r\nfunction
+    reset() {\r\n    $.state.trialID = -1;\r\n    $.state.betweenSubjectsConditions
+    = {};\r\n    $.state.withinSubjectsVariableNames = [];\r\n    $.state.withinSubjectsConditionIndicesByTrial
+    = [];\r\n    $.state.trialCount = 1;\r\n    $.groupState.currentCondition = {};\r\n   
+    initializeBetweenSubjectsConditionsRandomly();\r\n    try {\r\n        initializeWithinSubjectsConditions(within_subjects_variables,
+    trialsCountForEachUniqueCondition);\r\n    } catch (error) {\r\n        $.log(error);\r\n       
+    $.log(\"Within-subjects variables are not defined.\");\r\n    }\r\n}\r\n\r\nfunction
+    initializeBetweenSubjectsConditionsRandomly() {\r\n    let betweenSubjectsCondition
+    = {};\r\n    try {\r\n        between_subjects_variables.forEach(v => {\r\n           
+    betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random() * v.values.length)];\r\n       
+    });\r\n    } catch (e) {\r\n        $.log(\"Between-subjects variables are not
+    defined.\");\r\n    }\r\n    $.state.betweenSubjectsConditions = betweenSubjectsCondition;\r\n}\r\n\r\nfunction
+    initializeWithinSubjectsConditions(variables, repeatsPerCond = 1) {\r\n    variables
+    = [ ...variables.sort((a, b) => a.isRandom - b.isRandom) ];\r\n    const varNames
+    = variables.map(v => v.name);\r\n\r\n    let indicesPerVar = variables.map(v
+    => Array.from({ length: v.values.length }, (_, i) => i));\r\n    let condIndicesList
+    = indicesPerVar.reduce((acc, array) => {\r\n        return acc.flatMap(accItem
+    => array.map(arrayItem => [...accItem, arrayItem]));\r\n    }, [[]]).flatMap(condIndices
+    => Array.from({ length: repeatsPerCond }, () => condIndices));\r\n\r\n    let
+    shufflePartitionSize = 0;\r\n    for (let i = 0; i < variables.length; i++) {\r\n       
+    if (variables[i].isRandom) {\r\n            shufflePartitionSize = shufflePartitionSize
+    === 0 ? variables[i].values.length : shufflePartitionSize * variables[i].values.length;\r\n       
+    }\r\n    }\r\n    shufflePartitionSize *= repeatsPerCond;\r\n\r\n    if (shufflePartitionSize
+    > 0) {\r\n        const result = [...condIndicesList]; // Copy the array to avoid
+    mutating the original\r\n        for (let i = 0; i < condIndicesList.length;
+    i += shufflePartitionSize) {\r\n            let partition = result.slice(i, i
+    + shufflePartitionSize);\r\n            partition = shuffleArray(partition);\r\n           
+    result.splice(i, shufflePartitionSize, ...partition);\r\n        }\r\n       
+    condIndicesList = result;\r\n    }\r\n\r\n    $.state.withinSubjectsVariableNames
+    = varNames;\r\n    $.state.withinSubjectsConditionIndicesByTrial = condIndicesList;\r\n   
+    $.state.trialCount = condIndicesList.length;\r\n};\r\n\r\nfunction shuffleArray(array)
+    {\r\n    for (let i = array.length - 1; i > 0; i--) {\r\n        const j = Math.floor(Math.random()
+    * (i + 1));\r\n        [array[i], array[j]] = [array[j], array[i]];\r\n    }\r\n   
+    return array;\r\n}\r\n"
 --- !u!114 &4731245737645068636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,7 +298,7 @@ MonoBehaviour:
     - singleStatement:
         targetState:
           target: 2
-          key: exp_conditionID
+          key: exp_trialID
           parameterType: 3
         expression:
           type: 1
@@ -197,7 +330,7 @@ MonoBehaviour:
                   vector3Value: {x: 0, y: 0, z: 0}
                 sourceState:
                   target: 2
-                  key: exp_conditionID
+                  key: exp_trialID
                   type: 3
               operatorExpression:
                 operator: 0
@@ -216,46 +349,6 @@ MonoBehaviour:
                   target: 2
                   key: 
                   type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
-    - singleStatement:
-        targetState:
-          target: 2
-          key: exp_conditionChanged
-          parameterType: 0
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 1
-              boolValue: 1
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 2
-              key: exp_conditionID
-              type: 6
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 1
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 2
-                  key: exp_conditionID
-                  type: 3
               operatorExpression:
                 operator: 0
                 operands: []
@@ -318,89 +411,6 @@ MonoBehaviour:
               operatorExpression:
                 operator: 0
                 operands: []
---- !u!114 &1802886244830669606
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4731245737645068637}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d06d8dc2ce9e442ab2712de694945b2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item: {fileID: 4731245737645068706}
-  key:
-    target: 2
-    key: exp_initCondition
-  logic:
-    statements:
-    - singleStatement:
-        targetState:
-          target: 0
-          key: exp_initCondition
-          parameterType: 1
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 1
-              boolValue: 1
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 0
-              key: 
-              type: 6
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 0
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 0
-                  key: 
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
---- !u!65 &166775567391568992
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4731245737645068637}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6115281390238937048
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4731245737645068637}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc728c1810dc48a582fb23e0a13a7466, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4638770987403183712
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,22 +1,20 @@
-function GetBetweenSubjectsCondition(questionnaireAnswers) {
+function GetBetweenSubjectsCondition(questionnaireAnswersFromPreviousParticipants) {
     let betweenSubjectsCondition = {};
     try {
         between_subjects_variables.forEach(v => {
-            // The line below randomly assigns between-subjects condition. Comment out this line and add your implementation.
-            betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random() * v.values.length)];
-            
-            // Add your implementation here to assign between-subjects condition based on questionnaire answers.
-            
+            if (v.isRandom) {
+                betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random() * v.values.length)];
+            } else {
+                // The line below randomly assigns between-subjects condition.
+                // Comment it out and add your implementation here to assign between-subjects condition
+                // You can make use of the `questionnaireAnswersFromPreviousParticipants` variable in your implementation.
+                betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random() * v.values.length)];
+
+                /* Your implementation here */
+            }
         });
     } catch (e) {
-        $.log("Between-subjects variables are not defined. Use dummy variables.");
-        try {
-            between_subjects_variables_dummy.forEach(v => {
-                betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random() * v.values.length)];
-            });
-        } catch (e) {
-            $.log("Dummy between-subjects variables are not found. Return empty object");
-        }
+        $.log("Between-subjects variables are not defined. Return empty object.");
     }
     return betweenSubjectsCondition;
 }

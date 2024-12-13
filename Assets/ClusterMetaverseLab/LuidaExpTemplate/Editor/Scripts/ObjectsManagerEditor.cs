@@ -10,13 +10,12 @@ public class ObjectsManagerEditor : EditorWindow
     private StateList stateList;
     private SerializedObject serializedStateList;
     private SerializedProperty statesProperty;
-    private string stateDependentObjectPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/StateDependentObject.prefab";
-    private string conditionDependentObjectPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionDependentObject.prefab";
+    private string stateListeningObjectPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/StateListeningObject.prefab";
     private string formPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/Questionnaire/Questionnaire.prefab";
-    private string jsStateTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/StateManagement/StateDependentObjectTemplate.js";
-    private string jsConditionTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/ConditionManagement/ConditionDependentObjectTemplate.js";
+    private string jsStateTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/StateManagement/StateListeningObjectTemplate.js";
     private string identifiersAssetPath = "Assets/_Experiment_/Settings/ExpIdentifiers.js";
     private const string RequiredObjectsWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
+    private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
     private const string WorldItemRefListObjectName = "WorldItemRefList";
     
     // Dictionaries to store text field input for each state
@@ -25,15 +24,14 @@ public class ObjectsManagerEditor : EditorWindow
     private Dictionary<string, int> questionnaireQIDs = new Dictionary<string, int>();
     private Dictionary<string, bool> showQuestionnaireForm = new Dictionary<string, bool>();
     private Dictionary<string, bool> isScriptableState = new Dictionary<string, bool>(); // Track if the object is scriptable per state
+    private Dictionary<string, bool> isAccessibleToConditionsState = new Dictionary<string, bool>(); // Track if the object is accessible to experimental conditions
 
     private List<GameObject> createdObjects = new List<GameObject>(); // Store created objects for display
 
     // Dictionaries to track foldout states for collapsible sections
     private Dictionary<string, bool> stateObjectsFoldout = new Dictionary<string, bool>();
-    private Dictionary<string, bool> conditionObjectsFoldout = new Dictionary<string, bool>();
 
     private Dictionary<string, bool> showNewObjectRow = new Dictionary<string, bool>(); // Track visibility of the new object row for each state
-    private Dictionary<string, bool> showNewConditionObjectRow = new Dictionary<string, bool>(); // Track visibility of the new condition object row for each state
 
     private Vector2 scrollPosition; // Scroll position for the window
 
@@ -54,7 +52,7 @@ public class ObjectsManagerEditor : EditorWindow
             statesProperty = serializedStateList.FindProperty("States");
         }
 
-        // Retrieve existing state-dependent objects
+        // Retrieve existing state-listening objects
         RetrieveCreatedObjects();
     }
 
@@ -75,7 +73,7 @@ public class ObjectsManagerEditor : EditorWindow
         scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition); // Start scrollable area
 
         // Instruction text
-        EditorGUILayout.HelpBox("Manage state-dependent, condition-dependent objects, and questionnaires for each state.", MessageType.Info);
+        EditorGUILayout.HelpBox("Manage state-listening objects and questionnaires for each state.", MessageType.Info);
         EditorGUILayout.HelpBox("Click 'Add object dependent to this state' to add a new object dependent to this state.", MessageType.Info);
         EditorGUILayout.HelpBox("Click 'Add condition-dependent object in this state' to add a condition-dependent object inside this state.", MessageType.Info);
         EditorGUILayout.HelpBox("Remember to click 'Update script' button after editing the script for an object.", MessageType.Info);
@@ -98,24 +96,18 @@ public class ObjectsManagerEditor : EditorWindow
 
             // Initialize visibility dictionaries for new object and condition object rows
             if (!showNewObjectRow.ContainsKey(stateName)) showNewObjectRow[stateName] = false;
-            if (!showNewConditionObjectRow.ContainsKey(stateName)) showNewConditionObjectRow[stateName] = false;
             if (!showQuestionnaireForm.ContainsKey(stateName)) showQuestionnaireForm[stateName] = false;
 
             if (!stateObjectsFoldout.ContainsKey(stateName)) stateObjectsFoldout[stateName] = true;
-            if (!conditionObjectsFoldout.ContainsKey(stateName)) conditionObjectsFoldout[stateName] = true;
 
             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
             // Bold state name with buttons to show 'Add Object' and 'Add Condition-dependent Object' rows
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField(stateName, EditorStyles.boldLabel);
-            if (GUILayout.Button("Add object dependent to this state", GUILayout.Width(250)))
+            if (GUILayout.Button("Add object listening to this state", GUILayout.Width(250)))
             {
                 showNewObjectRow[stateName] = !showNewObjectRow[stateName]; // Toggle the new object row visibility
-            }
-            if (GUILayout.Button("Add condition-dependent object inside this state", GUILayout.Width(300)))
-            {
-                showNewConditionObjectRow[stateName] = !showNewConditionObjectRow[stateName]; // Toggle the new condition object row visibility
             }
 
             if (HasEnabledFormInstance(GameObject.Find(stateName)?.transform.Find("Objects")?.gameObject))
@@ -134,23 +126,12 @@ public class ObjectsManagerEditor : EditorWindow
 
             EditorGUILayout.EndHorizontal();
 
-            // Collapsible list for state-dependent objects
-            stateObjectsFoldout[stateName] = EditorGUILayout.Foldout(stateObjectsFoldout[stateName], "State-Dependent Objects", true, EditorStyles.foldout);
+            // Collapsible list for state-listening objects
+            stateObjectsFoldout[stateName] = EditorGUILayout.Foldout(stateObjectsFoldout[stateName], "State-Listening Objects", true, EditorStyles.foldout);
             if (stateObjectsFoldout[stateName])
             {
-                List<GameObject> stateDependentObjects = createdObjects.Where(o => o.transform.parent != null && PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(o) == stateDependentObjectPrefabPath && (o.transform.parent.parent.name == stateName || o.transform.parent.name == stateName)).ToList();
-                foreach (var obj in stateDependentObjects)
-                {
-                    DisplayObjectRow(obj, stateName, i);
-                }
-            }
-
-            // Collapsible list for condition-dependent objects
-            conditionObjectsFoldout[stateName] = EditorGUILayout.Foldout(conditionObjectsFoldout[stateName], "Condition-Dependent Objects", true, EditorStyles.foldout);
-            if (conditionObjectsFoldout[stateName])
-            {
-                List<GameObject> conditionDependentObjects = createdObjects.Where(o => o.transform.parent != null && PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(o) == conditionDependentObjectPrefabPath && (o.transform.parent.parent.name == stateName || o.transform.parent.name == stateName)).ToList();
-                foreach (var obj in conditionDependentObjects)
+                List<GameObject> stateListeningObjects = createdObjects.Where(o => o.transform.parent != null && PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(o) == stateListeningObjectPrefabPath && (o.transform.parent.parent.name == stateName || o.transform.parent.name == stateName)).ToList();
+                foreach (var obj in stateListeningObjects)
                 {
                     DisplayObjectRow(obj, stateName, i);
                 }
@@ -159,13 +140,7 @@ public class ObjectsManagerEditor : EditorWindow
             // Show the new object row only if the corresponding button has been clicked
             if (showNewObjectRow[stateName])
             {
-                DisplayNewObjectRow(stateName, i, stateDependentObjectPrefabPath, jsStateTemplatePath, "New State Object");
-            }
-
-            // Show the new condition-dependent object row only if the corresponding button has been clicked
-            if (showNewConditionObjectRow[stateName])
-            {
-                DisplayNewObjectRow(stateName, i, conditionDependentObjectPrefabPath, jsConditionTemplatePath, "New Condition-dependent Object");
+                DisplayNewObjectRow(stateName, i, stateListeningObjectPrefabPath, jsStateTemplatePath, "New State Listening Object");
             }
 
             // Show the questionnaire form if the "Add questionnaire" button was clicked
@@ -190,37 +165,50 @@ public class ObjectsManagerEditor : EditorWindow
 
     private void DisplayNewObjectRow(string stateName, int stateId, string prefabPath, string jsTemplatePath, string label)
     {
+        EditorGUILayout.BeginVertical();
+
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField(label, GUILayout.Width(200));
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
 
         EditorGUILayout.LabelField("Name", GUILayout.Width(35));
         if (!objectNames.ContainsKey(stateName)) objectNames[stateName] = string.Empty;
-        objectNames[stateName] = EditorGUILayout.TextField(objectNames[stateName], GUILayout.Width(200));
+        objectNames[stateName] = EditorGUILayout.TextField(objectNames[stateName], GUILayout.Width(150));
 
-        GUILayout.Space(30);
+        GUILayout.Space(20);
+
+        if (!isScriptableState.ContainsKey(stateName)) isScriptableState[stateName] = false;
+        EditorGUILayout.LabelField("Is Scriptable", GUILayout.Width(70));
+        isScriptableState[stateName] = EditorGUILayout.Toggle("", isScriptableState[stateName], GUILayout.Width(20));
+        
+        GUILayout.Space(20);
+
+        if (!isAccessibleToConditionsState.ContainsKey(stateName)) isAccessibleToConditionsState[stateName] = false;
+        EditorGUILayout.LabelField("Is Accessible to Conditions", GUILayout.Width(155));
+        isAccessibleToConditionsState[stateName] = EditorGUILayout.Toggle("", isAccessibleToConditionsState[stateName], GUILayout.Width(20));
+        
+        GUILayout.Space(20);
 
         // Add the GameObject reference field
-        EditorGUILayout.LabelField("Create with existing GameObject", GUILayout.Width(200));
+        EditorGUILayout.LabelField("Create with existing GameObject", GUILayout.Width(190));
         if (!objectReferences.ContainsKey(stateName)) objectReferences[stateName] = null;
-        objectReferences[stateName] = (GameObject)EditorGUILayout.ObjectField(objectReferences[stateName], typeof(GameObject), true, GUILayout.Width(200));
+        objectReferences[stateName] = (GameObject)EditorGUILayout.ObjectField(objectReferences[stateName], typeof(GameObject), true, GUILayout.Width(150));
 
-        bool isStateDependent = jsTemplatePath.Contains("StateManagement");
-        if (isStateDependent)
-        {
-            if (!isScriptableState.ContainsKey(stateName)) isScriptableState[stateName] = true; // Default to true
-            isScriptableState[stateName] = EditorGUILayout.Toggle("Is Scriptable", isScriptableState[stateName]);
-            GUILayout.Space(30);
-        }
+        GUILayout.Space(20);
 
         EditorGUI.BeginDisabledGroup(string.IsNullOrEmpty(objectNames[stateName]));
-        if (GUILayout.Button("Add Object", GUILayout.Width(150)))
+        if (GUILayout.Button("Add Object", GUILayout.Width(100)))
         {
-            AddObject(stateName, stateId, objectNames[stateName], prefabPath, jsTemplatePath, isStateDependent ? isScriptableState[stateName] : true, objectReferences[stateName]);
+            AddObject(stateName, stateId, objectNames[stateName], prefabPath, jsTemplatePath, isScriptableState[stateName], isAccessibleToConditionsState[stateName], objectReferences[stateName]);
             objectNames[stateName] = string.Empty;
             objectReferences[stateName] = null;  // Clear after adding
         }
         EditorGUI.EndDisabledGroup();
+
         EditorGUILayout.EndHorizontal();
+        EditorGUILayout.EndVertical();
     }
 
     // Displays the form to add a new questionnaire
@@ -430,8 +418,8 @@ public class ObjectsManagerEditor : EditorWindow
         }
     }
 
-    // Adds the new state-dependent object or condition-dependent object and its corresponding JS script
-    private void AddObject(string stateName, int stateId, string objectName, string prefabPath, string jsTemplatePath, bool isScriptable, GameObject referenceObject)
+    // Adds the new state-listening object and its corresponding JS script
+    private void AddObject(string stateName, int stateId, string objectName, string prefabPath, string jsTemplatePath, bool isScriptable, bool isAccessibleToConditionsState, GameObject referenceObject)
     {
         GameObject stateObject = GameObject.Find("States")?.transform.Find(stateName)?.Find("Objects")?.gameObject;
         if (stateObject == null)
@@ -488,9 +476,7 @@ public class ObjectsManagerEditor : EditorWindow
         {
             // Ensure the folder for the current scene exists
             string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-            string scriptFolderPath = jsTemplatePath.Contains("StateManagement") 
-                ? $"Assets/_Experiment_/Scripts/StateManagement/{sceneName}" 
-                : $"Assets/_Experiment_/Scripts/ConditionManagement/{sceneName}";
+            string scriptFolderPath = $"Assets/_Experiment_/Scripts/StateManagement/{sceneName}" ;
 
             if (!Directory.Exists(scriptFolderPath))
             {
@@ -526,7 +512,43 @@ public class ObjectsManagerEditor : EditorWindow
             }
         }
 
-        if (jsTemplatePath.Contains("ConditionManagement") ) CopyWorldItemReferenceListToNewObject(newObject);
+        if (isAccessibleToConditionsState)
+        {
+            // Attach ItemGroupMember component to this object
+            var itemGroupMember = newObject.AddComponent<ClusterVR.CreatorKit.Item.Implements.ItemGroupMember>();
+
+            // Find the ConditionManager GameObject in the scene
+            GameObject conditionManagerObject = FindConditionManagerPrefabInstance();
+            if (conditionManagerObject != null)
+            {
+                // Get the ItemGroupHost component from ConditionManager
+                var conditionManagerHost = conditionManagerObject.GetComponent<ClusterVR.CreatorKit.Item.Implements.ItemGroupHost>();
+                if (conditionManagerHost != null)
+                {
+                    // Use reflection or internal accessors to assign the host
+                    var serializedItemGroupMember = new UnityEditor.SerializedObject(itemGroupMember);
+                    var hostProperty = serializedItemGroupMember.FindProperty("host");
+
+                    if (hostProperty != null)
+                    {
+                        hostProperty.objectReferenceValue = conditionManagerHost;
+                        serializedItemGroupMember.ApplyModifiedProperties();
+                    }
+                    else
+                    {
+                        Debug.LogError("Unable to find 'host' property in ItemGroupMember.");
+                    }
+                }
+                else
+                {
+                    Debug.LogError("ConditionManager does not have an ItemGroupHost component.");
+                }
+            }
+            else
+            {
+                Debug.LogError("ConditionManager GameObject not found in the scene.");
+            }
+        }
 
         // Add the created object to the list for display
         createdObjects.Add(newObject);
@@ -597,8 +619,7 @@ public class ObjectsManagerEditor : EditorWindow
                     foreach (Transform objTransform in objects)
                     {
                         GameObject obj = objTransform.gameObject;
-                        if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == stateDependentObjectPrefabPath ||
-                            PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == conditionDependentObjectPrefabPath)
+                        if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == stateListeningObjectPrefabPath)
                         {
                             createdObjects.Add(obj);
                         }
@@ -608,7 +629,7 @@ public class ObjectsManagerEditor : EditorWindow
         }
     }
 
-    // Displays a row for each existing state-dependent or condition-dependent object
+    // Displays a row for each existing state-listening object
     private void DisplayObjectRow(GameObject obj, string stateName, int stateId)
     {
         EditorGUILayout.BeginHorizontal();
@@ -695,42 +716,7 @@ public class ObjectsManagerEditor : EditorWindow
         Debug.Log("GameObject removed.");
         Repaint();
     }
-    
-    private void CopyWorldItemReferenceListToNewObject(GameObject newObject)
-    {
-        GameObject expTemplateInstance = FindRequiredObjectsWrapperInstance();
-        if (expTemplateInstance != null)
-        {
-            // Find the WorldItemRefList in the scene
-            GameObject worldItemRefList = expTemplateInstance.transform.Find(WorldItemRefListObjectName).gameObject;
 
-            if (worldItemRefList != null)
-            {
-                // Get the WorldItemReferenceList component
-                var worldItemRefComponent = worldItemRefList.GetComponent<ClusterVR.CreatorKit.Item.Implements.WorldItemReferenceList>();
-
-                if (worldItemRefComponent != null)
-                {
-                    // Copy the WorldItemReferenceList component to the new object
-                    UnityEditorInternal.ComponentUtility.CopyComponent(worldItemRefComponent);
-                    UnityEditorInternal.ComponentUtility.PasteComponentAsNew(newObject);
-                }
-                else
-                {
-                    Debug.LogError("WorldItemReferenceList component not found on WorldItemRefList.");
-                }
-            }
-            else
-            {
-                Debug.LogError("WorldItemRefList object not found in the scene.");
-            }
-        }
-        else
-        {
-            Debug.LogError("ExpTemplateRequiredObjects prefab instance not found in the scene.");
-        }
-    }
-    
     private void CopyWorldItemReferenceListToFormController(GameObject formController)
     {
         if (formController == null)
@@ -784,6 +770,23 @@ public class ObjectsManagerEditor : EditorWindow
                 return obj;
             }
         }
+        return null;
+    }
+
+    private GameObject FindConditionManagerPrefabInstance()
+    {
+        GameObject requiredObjectsWrapper = FindRequiredObjectsWrapperInstance();
+        if (!requiredObjectsWrapper) return null;
+
+        for (int i = 0; i < requiredObjectsWrapper.transform.childCount; i++)
+        {
+            Transform child = requiredObjectsWrapper.transform.GetChild(i);
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == ConditionManagerPrefabPath)
+            {
+                return child.gameObject;
+            }
+        }
+
         return null;
     }
 }

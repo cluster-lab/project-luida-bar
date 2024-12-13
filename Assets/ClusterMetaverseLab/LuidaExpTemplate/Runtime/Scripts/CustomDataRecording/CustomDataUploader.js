@@ -1,17 +1,8 @@
 $.onStart(() => {
     $.state.customData = {};
-    const conditionManager = $.worldItemReference("ConditionManager");
-    if (conditionManager) {
-        conditionManager.send("exp_conditionDependentObject", true);
-    }
 })
 
 $.onUpdate(() => {
-    if ($.getStateCompat("this", "exp_conditionChanged", "boolean")) {
-        $.setStateCompat("this", "exp_conditionChanged", false);
-        $.state.currentCondition = $.state.conditions[$.getStateCompat("global", "exp_conditionID", "integer")];
-    }
-
     if ($.getStateCompat("this", "exp_recordCustomData", "boolean")) {
         $.setStateCompat("this", "exp_recordCustomData", false);
         recordData();
@@ -19,13 +10,6 @@ $.onUpdate(() => {
     if ($.getStateCompat("this", "exp_uploadCustomData", "boolean")) {
         $.setStateCompat("this", "exp_uploadCustomData", false);
         uploadData();
-    }
-})
-
-$.onReceive((messageType, arg, sender) => {
-    if (messageType === "exp_updateConditions") {
-        $.state.conditions = arg;
-        $.setStateCompat("this", "exp_conditionChanged", true);
     }
 })
 

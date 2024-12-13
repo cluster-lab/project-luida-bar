@@ -56,6 +56,7 @@ public class ExperimentVariablesEditor : EditorWindow
 
             DrawVariables(ref betweenSubjectsVariables);
 
+            /*
             if (betweenSubjectsConditionSetterAsset == null)
             {
                 if (GUILayout.Button("Retrieve/Create Between-Subject Condition Setter"))
@@ -67,6 +68,7 @@ public class ExperimentVariablesEditor : EditorWindow
             {
                 EditorGUILayout.LabelField("Between Subjects Condition Setter Asset", betweenSubjectsConditionSetterPath, EditorStyles.textField);
             }
+            */
 
             if (GUILayout.Button("Apply Updated Variables"))
             {

@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 5780940465525030907}
   - component: {fileID: 97919917519858158}
   - component: {fileID: 3260833278767185878}
+  - component: {fileID: 8946959391231572434}
   m_Layer: 0
   m_Name: EnterFirstState
   m_TagString: Untagged
@@ -97,6 +98,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 97919917519858158}
+  triggers:
+  - target: 0
+    specifiedTargetItem: {fileID: 0}
+    key: state_enterLater
+    type: 0
+    value:
+      boolValue: 0
+      floatValue: 0
+      integerValue: 0
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+--- !u!114 &8946959391231572434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3746904790461842291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5eadc47e8f964e87aae22996c282c981, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 0
+      key: state_enterLater
+    item: {fileID: 97919917519858158}
+  delayTimeSeconds: 1
   triggers:
   - target: 4
     specifiedTargetItem: {fileID: 0}

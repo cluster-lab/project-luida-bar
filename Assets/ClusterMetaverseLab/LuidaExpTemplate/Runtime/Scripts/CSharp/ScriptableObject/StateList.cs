@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "StateList", menuName = "StateDependent/StateList", order = 1)]
+[CreateAssetMenu(fileName = "StateList", menuName = "StateListening/StateList", order = 1)]
 public class StateList : ScriptableObject
 {
     [Serializable]

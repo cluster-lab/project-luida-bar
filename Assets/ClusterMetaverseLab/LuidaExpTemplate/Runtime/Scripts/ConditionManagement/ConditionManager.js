@@ -1,165 +1,102 @@
-const within_subjects_variables_dummy = [
-    { name: "color", values: ["R", "G", "B"], isRandom: false },
-    { name: "size", values: [5, 10, 15], isRandom: true },
-];
-
-const between_subjects_variables_dummy = [
-    { name: "method", values: ["old", "new"] }
-];
-
 $.onStart(() => {
-    $.state.conditionDependentObjects = [];
-    // $.state.betweenSubjectsCondition = {};
+    reset();
 });
 
 $.onUpdate(() => {
-    if ($.getStateCompat("this", "exp_initCondition", "boolean")) {
-        $.setStateCompat("this", "exp_initCondition", false);
-        InitConditions();
-    }
-    if ($.state.conditions && !$.state.isLast && $.getStateCompat("global", "exp_conditionID", "integer") >= $.state.conditions.length - 1) {
-        $.state.isLast = true;
-        $.sendSignalCompat("this", "exp_readyToLeaveTrials");
+    if ($.state.trialID !== $.getStateCompat("global", "exp_trialID", "integer")) {
+        $.log($.state.trialID + " " + $.getStateCompat("global", "exp_trialID", "integer"));
+        $.state.trialID = $.getStateCompat("global", "exp_trialID", "integer");
+        if ($.state.trialID >= $.state.trialCount) {
+            $.sendSignalCompat("this", "exp_resetTrials");
+        } else if ($.state.trialID <= -1) {
+            reset();
+        } else {
+            let condition = { ...$.state.betweenSubjectsConditions };
+            for (let i = 0; i < $.state.withinSubjectsVariableNames.length; i++) {
+                const varName = $.state.withinSubjectsVariableNames[i];
+                const varValue = within_subjects_variables[i].values[$.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]];
+                condition[varName] = varValue;
+            }
+            $.groupState.currentCondition = condition;
+    
+            // Check if this is the last trial (if true, stop repeating trials when next state transition is triggered)
+            if ($.state.trialCount > 0 && !$.state.isLast && $.state.trialID >= $.state.trialCount - 1) {
+                $.state.isLast = true;
+                $.sendSignalCompat("this", "exp_readyToLeaveTrials");
+            }
+        }
     }
 });
 
 $.onReceive((messageType, arg, sender) => {
     switch (messageType) {
-        case "exp_conditionDependentObject":
-            $.state.conditionDependentObjects = [ ...$.state.conditionDependentObjects, sender ];
-            break;
-        case "exp_questionnaire_answer":
-            // 参加者に参加者間条件を割り当てる
-            InitBetweenSubjectCondition(arg);
+        // case "exp_questionnaire_answer":
+        //     $.state.betweenSubjectsConditions = GetBetweenSubjectsCondition(arg);
+        //     break;
         default:
             break;
     }
 });
 
-function InitConditions () {
-    $.state.isLast = false;
-
-    if (!$.state.betweenSubjectsCondition) {
-        InitBetweenSubjectCondition(null);
-    }
-    
+function reset() {
+    $.state.trialID = -1;
+    $.state.betweenSubjectsConditions = {};
+    $.state.withinSubjectsVariableNames = [];
+    $.state.withinSubjectsConditionIndicesByTrial = [];
+    $.state.trialCount = 1;
+    $.groupState.currentCondition = {};
+    initializeBetweenSubjectsConditionsRandomly();
     try {
-        $.state.conditions = getConditions(within_subjects_variables, trialsCountForEachUniqueCondition).map(cond => {
-            return { ...cond, ...$.state.betweenSubjectsCondition };
+        initializeWithinSubjectsConditions(within_subjects_variables, trialsCountForEachUniqueCondition);
+    } catch (error) {
+        $.log(error);
+        $.log("Within-subjects variables are not defined.");
+    }
+}
+
+function initializeBetweenSubjectsConditionsRandomly() {
+    let betweenSubjectsCondition = {};
+    try {
+        between_subjects_variables.forEach(v => {
+            betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random() * v.values.length)];
         });
     } catch (e) {
-        $.state.conditions = getConditions(within_subjects_variables_dummy).map(cond => {
-            return { ...cond, ...$.state.betweenSubjectsCondition };
-        });
+        $.log("Between-subjects variables are not defined.");
     }
-    
-    $.log(JSON.stringify($.state.conditions));
-    sendUpdates().catch(e => $.log(e));
+    $.state.betweenSubjectsConditions = betweenSubjectsCondition;
 }
 
-async function sendUpdates() {
-    let sentObjectsCount = 0;
-    const sendPromises = $.state.conditionDependentObjects.map(async (obj, index) => {
-        if (sentObjectsCount > 10) {
-            await sleep(1000);
-            sentObjectsCount = 0;
-        }
-        obj.send("exp_updateConditions", $.state.conditions);
-        sentObjectsCount++;
-    });
-    await Promise.all(sendPromises);
-}
+function initializeWithinSubjectsConditions(variables, repeatsPerCond = 1) {
+    variables = [ ...variables.sort((a, b) => a.isRandom - b.isRandom) ];
+    const varNames = variables.map(v => v.name);
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+    let indicesPerVar = variables.map(v => Array.from({ length: v.values.length }, (_, i) => i));
+    let condIndicesList = indicesPerVar.reduce((acc, array) => {
+        return acc.flatMap(accItem => array.map(arrayItem => [...accItem, arrayItem]));
+    }, [[]]).flatMap(condIndices => Array.from({ length: repeatsPerCond }, () => condIndices));
 
-function InitBetweenSubjectCondition(questionnaireAnswers) {
-    try {
-        $.state.betweenSubjectsCondition = GetBetweenSubjectsCondition(questionnaireAnswers);
-    }
-    catch (e) {
-        $.log("Function GetBetweenSubjectsCondition is not defined. Randomly assign between-subjects condition.");
-        let betweenSubjectsCondition = {};
-        try {
-            between_subjects_variables.forEach(v => {
-                betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random() * v.values.length)];
-            });
-        } catch (e) {
-            $.log("Between-subjects variables are not defined. Use dummy variables.");
-            between_subjects_variables_dummy.forEach(v => {
-                betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random() * v.values.length)];
-            });
+    let shufflePartitionSize = 0;
+    for (let i = 0; i < variables.length; i++) {
+        if (variables[i].isRandom) {
+            shufflePartitionSize = shufflePartitionSize === 0 ? variables[i].values.length : shufflePartitionSize * variables[i].values.length;
         }
-        $.state.betweenSubjectsCondition = betweenSubjectsCondition;
     }
-}
+    shufflePartitionSize *= repeatsPerCond;
 
-// --------- Initialize conditions from variables ----------
+    if (shufflePartitionSize > 0) {
+        const result = [...condIndicesList]; // Copy the array to avoid mutating the original
+        for (let i = 0; i < condIndicesList.length; i += shufflePartitionSize) {
+            let partition = result.slice(i, i + shufflePartitionSize);
+            partition = shuffleArray(partition);
+            result.splice(i, shufflePartitionSize, ...partition);
+        }
+        condIndicesList = result;
+    }
 
-function getConditions (variables, repeatPerCombination = 1) {
-    const isRepetitionRandom = true;
-    
-    const allCombinations = generateCombinations(variables);
-    
-    // Group by non-random variables
-    const groupedCombinations = {};
-    
-    for (const combination of allCombinations) {
-        const groupKey = variables
-            .filter(v => !v.isRandom)
-            .map(v => combination[v.name])
-            .join('-');
-    
-        if (!groupedCombinations[groupKey]) {
-            groupedCombinations[groupKey] = [];
-        }
-        groupedCombinations[groupKey].push(combination);
-    }
-    
-    // Shuffle each group
-    for (const key in groupedCombinations) {
-        groupedCombinations[key] = shuffleArray(groupedCombinations[key]);
-    }
-    
-    // Flatten the grouped combinations into a single array
-    let finalCombinations = Object.values(groupedCombinations).flat();
-    
-    // Repeat each combination repeatPerCombination times
-    let conditions = [];
-    for (const combination of finalCombinations) {
-        for (let i = 0; i < repeatPerCombination; i++) {
-            conditions.push({ ...combination });
-        }
-    }
-    
-    // If repetition should be random, shuffle the repeated combinations
-    if (isRepetitionRandom) {
-        // Group by non-random variables first
-        const randomGroupedCombinations = {};
-        for (const combination of conditions) {
-            const groupKey = variables
-                .filter(v => !v.isRandom)
-                .map(v => combination[v.name])
-                .join('-');
-    
-            if (!randomGroupedCombinations[groupKey]) {
-                randomGroupedCombinations[groupKey] = [];
-            }
-            randomGroupedCombinations[groupKey].push(combination);
-        }
-    
-        // Shuffle within each group
-        for (const key in randomGroupedCombinations) {
-            randomGroupedCombinations[key] = shuffleArray(randomGroupedCombinations[key]);
-        }
-    
-        // Flatten the grouped combinations into a single array
-        conditions = Object.values(randomGroupedCombinations).flat();
-    }
-    
-    return conditions;
-}
+    $.state.withinSubjectsVariableNames = varNames;
+    $.state.withinSubjectsConditionIndicesByTrial = condIndicesList;
+    $.state.trialCount = condIndicesList.length;
+};
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -167,25 +104,4 @@ function shuffleArray(array) {
         [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
-}
-
-function generateCombinations(variables) {
-    const combinations = [];
-
-    function createCombination(currentCombination, currentIndex) {
-        if (currentIndex === variables.length) {
-            combinations.push({ ...currentCombination });
-            return;
-        }
-
-        const variable = variables[currentIndex];
-        for (const value of variable.values) {
-            currentCombination[variable.name] = value;
-            createCombination(currentCombination, currentIndex + 1);
-        }
-    }
-
-    createCombination({}, 0);
-
-    return combinations;
 }
