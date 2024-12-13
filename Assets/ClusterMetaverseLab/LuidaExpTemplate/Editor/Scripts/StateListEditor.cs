@@ -9,7 +9,8 @@ public class StateListEditor : EditorWindow
     private SerializedProperty statesProperty;
     private string prefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/State.prefab";
 
-    private readonly string[] FixedStateNames = new string[] {"Preparation", "Trial - Task", "Trial - Rest", "Trial - Questionnaire"};
+    private readonly string[] FixedStateNames = new string[] {"Preparation", "Trial - Task", "Trial - Rest", "Trial - Questionnaire", "End"};
+    private Vector2 scrollPos;
 
     public void OnEnable()
     {
@@ -18,37 +19,40 @@ public class StateListEditor : EditorWindow
 
     public void OnGUI()
     {
+        scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         string stateListPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
 
         stateList = AssetDatabase.LoadAssetAtPath<StateList>(stateListPath);
 
-		if (stateList == null)
-		{
-    		string templatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/StateList/Template.asset";
-		    StateList template = AssetDatabase.LoadAssetAtPath<StateList>(templatePath);
+        if (stateList == null)
+        {
+            string templatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/StateList/Template.asset";
+            StateList template = AssetDatabase.LoadAssetAtPath<StateList>(templatePath);
 
-    		if (template != null)
-    		{
-        		string newAssetPath = stateListPath;
-        		AssetDatabase.CopyAsset(templatePath, newAssetPath);
-        		AssetDatabase.Refresh();
-        		stateList = AssetDatabase.LoadAssetAtPath<StateList>(newAssetPath);
-        		if (stateList != null)
-        		{
-            		EditorGUILayout.HelpBox($"StateList created at {newAssetPath}.", MessageType.Info);
-        		}
-        		else
-        		{
-            		EditorGUILayout.HelpBox($"Failed to create StateList at {newAssetPath}.", MessageType.Error);
-        		}
-    		}
-    		else
-    		{
-        		EditorGUILayout.HelpBox($"StateList template not found at {templatePath}. Please ensure it exists.", MessageType.Error);
-    		}
-    		return;
-		}
+            if (template != null)
+            {
+                string newAssetPath = stateListPath;
+                AssetDatabase.CopyAsset(templatePath, newAssetPath);
+                AssetDatabase.Refresh();
+                stateList = AssetDatabase.LoadAssetAtPath<StateList>(newAssetPath);
+                if (stateList != null)
+                {
+                    EditorGUILayout.HelpBox($"StateList created at {newAssetPath}.", MessageType.Info);
+                }
+                else
+                {
+                    EditorGUILayout.HelpBox($"Failed to create StateList at {newAssetPath}.", MessageType.Error);
+                }
+            }
+            else
+            {
+                EditorGUILayout.HelpBox($"StateList template not found at {templatePath}. Please ensure it exists.", MessageType.Error);
+            }
+            EditorGUILayout.EndScrollView();
+            return;
+        }
 
         if (serializedStateList == null || serializedStateList.targetObject != stateList)
         {
@@ -60,10 +64,115 @@ public class StateListEditor : EditorWindow
 
         serializedStateList.Update();
 
-        var stateOrderChanged = false;
+        // Find special states indexes
+        int preparationIndex = Array.FindIndex(stateList.States, s => s.StateName == "Preparation");
+        int trialRestIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Rest");
+        int endIndex = Array.FindIndex(stateList.States, s => s.StateName == "End");
+
+        bool stateOrderChanged = false;
+
+        // Check if any state (except 'End') transitions to 'End' before drawing GUI
+        bool endTransitionFound = false;
+        if (endIndex >= 0)
+        {
+            for (int idx = 0; idx < stateList.States.Length; idx++)
+            {
+                if (idx != endIndex && stateList.States[idx].DestStateName == "End")
+                {
+                    endTransitionFound = true;
+                    break;
+                }
+            }
+        }
+
+        // Check if any state (except 'Preparation') transitions to 'Preparation'
+        bool preparationTransitionFound = false;
+        if (preparationIndex >= 0)
+        {
+            for (int idx = 0; idx < stateList.States.Length; idx++)
+            {
+                if (idx != preparationIndex && stateList.States[idx].DestStateName == "Preparation")
+                {
+                    preparationTransitionFound = true;
+                    break;
+                }
+            }
+        }
 
         for (int i = 0; i < statesProperty.arraySize; i++)
         {
+            // Above 'Preparation' state:
+            if (i == preparationIndex && preparationIndex >= 0)
+            {
+                GUILayout.Space(10);
+                if (!preparationTransitionFound)
+                {
+                    EditorGUILayout.HelpBox("No state (except 'Preparation' itself) is transitioning to the 'Preparation' state!", MessageType.Warning);
+                }
+
+                if (GUILayout.Button("Add State"))
+                {
+                    GUI.FocusControl(null);
+                    statesProperty.InsertArrayElementAtIndex(preparationIndex);
+
+                    int sourceIndex = preparationIndex - 1;
+                    if (sourceIndex >= 0)
+                    {
+                        CopyStateFields(sourceIndex, preparationIndex);
+                    }
+                    else
+                    {
+                        InitializeStateDefaults(preparationIndex);
+                    }
+
+                    stateOrderChanged = true;
+                    serializedStateList.ApplyModifiedProperties();
+                    break;
+                }
+                EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+                EditorGUILayout.LabelField("These states are for trials in this experiment. Their order is fixed, and the repetition is controlled based on the variables you set.");
+            }
+
+            // Under 'Trial - Rest' state means line after 'Trial - Rest':
+            if (trialRestIndex >= 0 && i == trialRestIndex + 1)
+            {
+                EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+            }
+
+            // Above 'End' state:
+            if (i == endIndex && endIndex >= 0)
+            {
+                GUILayout.Space(10);
+                if (GUILayout.Button("Add State"))
+                {
+                    GUI.FocusControl(null);
+                    statesProperty.InsertArrayElementAtIndex(endIndex);
+
+                    int sourceIndex = endIndex - 1;
+                    if (sourceIndex >= 0)
+                    {
+                        CopyStateFields(sourceIndex, endIndex);
+                    }
+                    else
+                    {
+                        InitializeStateDefaults(endIndex);
+                    }
+
+                    stateOrderChanged = true;
+                    serializedStateList.ApplyModifiedProperties();
+                    break;
+                }
+
+                // Display the warning message here if needed
+                if (!endTransitionFound)
+                {
+                    EditorGUILayout.HelpBox("No state (except 'End' itself) is transitioning to the 'End' state!", MessageType.Warning);
+                }
+
+                EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+                EditorGUILayout.LabelField("The 'End' state should always be in the end of the state transitions.");
+            }
+
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.BeginVertical();
 
@@ -76,9 +185,15 @@ public class StateListEditor : EditorWindow
             SerializedProperty state = statesProperty.GetArrayElementAtIndex(i);
             SerializedProperty stateName = state.FindPropertyRelative("StateName");
             SerializedProperty destStateName = state.FindPropertyRelative("DestStateName");
+            SerializedProperty hasExitTime = state.FindPropertyRelative("HasExitTime");
+            SerializedProperty exitTime = state.FindPropertyRelative("ExitTime");
+            SerializedProperty isRepeated = state.FindPropertyRelative("IsRepeated");
+            SerializedProperty repeatDestStateName = state.FindPropertyRelative("RepeatDestStateName");
+            SerializedProperty repeatCount = state.FindPropertyRelative("RepeatCount");
 
             EditorGUILayout.LabelField("State name:");
-            EditorGUI.BeginDisabledGroup(Array.IndexOf(FixedStateNames, stateName.stringValue) > -1);
+            bool isFixedState = Array.IndexOf(FixedStateNames, stateName.stringValue) > -1;
+            EditorGUI.BeginDisabledGroup(isFixedState);
             EditorGUILayout.PropertyField(stateName, GUIContent.none, GUILayout.Width(150));
             if (string.IsNullOrEmpty(stateName.stringValue))
             {
@@ -88,19 +203,91 @@ public class StateListEditor : EditorWindow
 
             EditorGUILayout.EndVertical();
 
+            string[] allStateNames = Array.ConvertAll(stateList.States, s => s.StateName);
+
+            bool isEndState = (endIndex >= 0 && i == endIndex);
+
+            // Determine allowed moves:
+            bool canMoveUp = true;
+            bool canMoveDown = true;
+
+            // Existing constraints
+            if (preparationIndex >= 0)
+            {
+                if (i < preparationIndex)
+                {
+                    if (i + 1 >= preparationIndex) canMoveDown = false;
+                }
+            }
+
+            if (trialRestIndex >= 0)
+            {
+                if (i > trialRestIndex)
+                {
+                    if (i - 1 <= trialRestIndex) canMoveUp = false;
+                }
+            }
+
+            // New constraint: disable states before 'End' state to move down below 'End' state
+            if (endIndex >= 0)
+            {
+                // Previously: if (i + 1 > endIndex) canMoveDown = false;
+                // Now disallow even equal to endIndex, meaning they can't place themselves at or below End.
+                if (i + 1 >= endIndex) canMoveDown = false;
+
+                if (i == endIndex)
+                {
+                    canMoveUp = false;
+                    canMoveDown = false;
+                }
+            }
+
+            // Filter destinations:
+            string[] allowedDestinations = allStateNames;
+            if (preparationIndex >= 0 && i < preparationIndex)
+            {
+                int length = Math.Min(preparationIndex + 1, stateList.States.Length);
+                allowedDestinations = new string[length];
+                Array.Copy(allStateNames, allowedDestinations, length);
+            }
+
+            if (trialRestIndex >= 0 && i > trialRestIndex)
+            {
+                if (trialRestIndex + 1 < stateList.States.Length)
+                {
+                    int length = stateList.States.Length - (trialRestIndex + 1);
+                    allowedDestinations = new string[length];
+                    Array.Copy(allStateNames, trialRestIndex + 1, allowedDestinations, 0, length);
+                }
+                else
+                {
+                    allowedDestinations = new string[0];
+                }
+            }
+
+            int destStateIndex = -1;
+            if (allowedDestinations.Length > 0)
+            {
+                destStateIndex = Array.IndexOf(allowedDestinations, destStateName.stringValue);
+            }
+
+            EditorGUI.BeginDisabledGroup(isEndState);
+
             #region Transition Destination State
             EditorGUILayout.BeginVertical();
 
             EditorGUILayout.LabelField("Transit destination state");
-            int destStateIndex = Array.FindIndex(stateList.States, s => s.StateName == destStateName.stringValue);
-            string[] stateNames = Array.ConvertAll(stateList.States, s => s.StateName);
-            EditorGUI.BeginDisabledGroup(Array.IndexOf(FixedStateNames, stateName.stringValue) > -1);
-            destStateIndex = EditorGUILayout.Popup(destStateIndex, stateNames, GUILayout.Width(150));
+            EditorGUI.BeginDisabledGroup(isFixedState);
+            destStateIndex = EditorGUILayout.Popup(destStateIndex, allowedDestinations, GUILayout.Width(150));
             EditorGUI.EndDisabledGroup();
 
-            if (destStateIndex >= 0)
+            if (destStateIndex >= 0 && allowedDestinations.Length > 0)
             {
-                destStateName.stringValue = stateList.States[destStateIndex].StateName;
+                destStateName.stringValue = allowedDestinations[destStateIndex];
+            }
+            else if (allowedDestinations.Length == 0)
+            {
+                destStateName.stringValue = "";
             }
 
             EditorGUILayout.EndVertical();
@@ -109,35 +296,38 @@ public class StateListEditor : EditorWindow
             #region Move state
             EditorGUILayout.BeginVertical();
 
-            // Label and buttons for moving state
             EditorGUILayout.LabelField("Move state to:");
 
             EditorGUILayout.BeginHorizontal();
 
-            EditorGUI.BeginDisabledGroup(Array.IndexOf(FixedStateNames, stateName.stringValue) > -1);
+            EditorGUI.BeginDisabledGroup(isFixedState || !canMoveUp);
             if (GUILayout.Button("Up", GUILayout.Width(50)))
             {
-                GUI.FocusControl(null); // Unfocus any field
+                GUI.FocusControl(null);
                 if (i > 0)
                 {
                     statesProperty.MoveArrayElement(i, i - 1);
                     stateOrderChanged = true;
                 }
             }
+            EditorGUI.EndDisabledGroup();
 
+            EditorGUI.BeginDisabledGroup(isFixedState || !canMoveDown);
             if (GUILayout.Button("Down", GUILayout.Width(50)))
             {
-                GUI.FocusControl(null); // Unfocus any field
+                GUI.FocusControl(null);
                 if (i < statesProperty.arraySize - 1)
                 {
                     statesProperty.MoveArrayElement(i, i + 1);
                     stateOrderChanged = true;
                 }
             }
+            EditorGUI.EndDisabledGroup();
 
+            EditorGUI.BeginDisabledGroup(isFixedState || isEndState);
             if (GUILayout.Button("Remove", GUILayout.Width(60)))
             {
-                GUI.FocusControl(null); // Unfocus any field
+                GUI.FocusControl(null);
                 statesProperty.DeleteArrayElementAtIndex(i);
                 stateOrderChanged = true;
             }
@@ -151,11 +341,7 @@ public class StateListEditor : EditorWindow
             #region Exit time
             EditorGUILayout.BeginVertical();
 
-            SerializedProperty hasExitTime = state.FindPropertyRelative("HasExitTime");
-            SerializedProperty exitTime = state.FindPropertyRelative("ExitTime");
-
             EditorGUILayout.LabelField("Has Exit Time", GUILayout.Width(100));
-            // EditorGUI.BeginDisabledGroup(Array.IndexOf(FixedStateNames, stateName.stringValue) > -1);
             hasExitTime.boolValue = EditorGUILayout.Toggle(hasExitTime.boolValue, GUILayout.Width(100));
 
             EditorGUILayout.EndVertical();
@@ -166,7 +352,6 @@ public class StateListEditor : EditorWindow
                 EditorGUILayout.LabelField("Exit Time", GUILayout.Width(100));
                 exitTime.floatValue = EditorGUILayout.FloatField(exitTime.floatValue, GUILayout.Width(60));
             }
-            // EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.EndVertical();
             #endregion
@@ -174,13 +359,9 @@ public class StateListEditor : EditorWindow
             #region Repeating
             EditorGUILayout.BeginVertical();
 
-            SerializedProperty isRepeated = state.FindPropertyRelative("IsRepeated");
-            SerializedProperty repeatDestStateName = state.FindPropertyRelative("RepeatDestStateName");
-            SerializedProperty repeatCount = state.FindPropertyRelative("RepeatCount");
-
             EditorGUILayout.LabelField("Is Repeated", GUILayout.Width(80));
 
-            EditorGUI.BeginDisabledGroup(Array.IndexOf(FixedStateNames, stateName.stringValue) > -1);
+            EditorGUI.BeginDisabledGroup(isFixedState || isEndState);
             isRepeated.boolValue = EditorGUILayout.Toggle(isRepeated.boolValue, GUILayout.Width(100));
 
             if (isRepeated.boolValue)
@@ -189,11 +370,12 @@ public class StateListEditor : EditorWindow
                 EditorGUILayout.BeginVertical();
 
                 EditorGUILayout.LabelField("Repeat destination state");
+                string[] repeatAllowed = allStateNames;
                 int repeatStateIndex = Array.FindIndex(stateList.States, s => s.StateName == repeatDestStateName.stringValue);
-                repeatStateIndex = EditorGUILayout.Popup(repeatStateIndex, stateNames, GUILayout.Width(150));
+                repeatStateIndex = EditorGUILayout.Popup(repeatStateIndex, repeatAllowed, GUILayout.Width(150));
                 if (repeatStateIndex >= 0)
                 {
-                    repeatDestStateName.stringValue = stateList.States[repeatStateIndex].StateName;
+                    repeatDestStateName.stringValue = repeatAllowed[repeatStateIndex];
                 }
 
                 EditorGUILayout.EndVertical();
@@ -209,27 +391,25 @@ public class StateListEditor : EditorWindow
 
             EditorGUILayout.EndHorizontal();
 
+            EditorGUI.EndDisabledGroup(); // End disabling if End state
+
             if (GUI.changed)
             {
-                if (!EditorGUIUtility.editingTextField) GUI.FocusControl(null); // Unfocus any field
+                if (!EditorGUIUtility.editingTextField) GUI.FocusControl(null);
                 GameObject transition = GameObject.Find(stateName.stringValue)?.transform.Find("Transition")?.gameObject;
                 if (transition != null)
                 {
-                    int destStateId = Array.FindIndex(stateList.States, s => s.StateName == destStateName.stringValue);
-                    UpdateTransitionDestStateId(transition, destStateId, stateName.stringValue == "Trial - Rest");
+                    int dIndex = Array.FindIndex(stateList.States, s => s.StateName == destStateName.stringValue);
+                    UpdateTransitionDestStateId(transition, dIndex, stateName.stringValue == "Trial - Rest");
 
                     UpdateTransitionExitTime(transition, hasExitTime.boolValue, exitTime.floatValue);
 
-                    int repeatDestStateId = Array.FindIndex(stateList.States, s => s.StateName == repeatDestStateName.stringValue);
-                    UpdateRepeatedTransition(transition, Math.Max(0, repeatDestStateId), isRepeated.boolValue ? repeatCount.intValue : 1);
+                    int repeatDestId = Array.FindIndex(stateList.States, s => s.StateName == repeatDestStateName.stringValue);
+                    UpdateRepeatedTransition(transition, Math.Max(0, repeatDestId), isRepeated.boolValue ? repeatCount.intValue : 1);
+
+                    UpdateTransitionCurrentStateId(transition, i);
                 }
             }
-        }
-
-        if (GUILayout.Button("Add State"))
-        {
-            GUI.FocusControl(null); // Unfocus any field
-            statesProperty.InsertArrayElementAtIndex(statesProperty.arraySize);
         }
 
         serializedStateList.ApplyModifiedProperties();
@@ -238,6 +418,35 @@ public class StateListEditor : EditorWindow
         if (stateOrderChanged) {
             UpdateStateListeningObjectsAfterReorder();
         }
+
+        EditorGUILayout.EndScrollView();
+    }
+
+    private void CopyStateFields(int sourceIndex, int targetIndex)
+    {
+        SerializedProperty source = statesProperty.GetArrayElementAtIndex(sourceIndex);
+        SerializedProperty target = statesProperty.GetArrayElementAtIndex(targetIndex);
+
+        // Copy all relevant fields
+        target.FindPropertyRelative("StateName").stringValue = source.FindPropertyRelative("StateName").stringValue;
+        target.FindPropertyRelative("DestStateName").stringValue = source.FindPropertyRelative("DestStateName").stringValue;
+        target.FindPropertyRelative("HasExitTime").boolValue = source.FindPropertyRelative("HasExitTime").boolValue;
+        target.FindPropertyRelative("ExitTime").floatValue = source.FindPropertyRelative("ExitTime").floatValue;
+        target.FindPropertyRelative("IsRepeated").boolValue = source.FindPropertyRelative("IsRepeated").boolValue;
+        target.FindPropertyRelative("RepeatDestStateName").stringValue = source.FindPropertyRelative("RepeatDestStateName").stringValue;
+        target.FindPropertyRelative("RepeatCount").intValue = source.FindPropertyRelative("RepeatCount").intValue;
+    }
+
+    private void InitializeStateDefaults(int index)
+    {
+        SerializedProperty target = statesProperty.GetArrayElementAtIndex(index);
+        target.FindPropertyRelative("StateName").stringValue = "State";
+        target.FindPropertyRelative("DestStateName").stringValue = "";
+        target.FindPropertyRelative("HasExitTime").boolValue = false;
+        target.FindPropertyRelative("ExitTime").floatValue = 0f;
+        target.FindPropertyRelative("IsRepeated").boolValue = false;
+        target.FindPropertyRelative("RepeatDestStateName").stringValue = "";
+        target.FindPropertyRelative("RepeatCount").intValue = 1;
     }
 
     private void UpdateSceneObjects()
@@ -363,10 +572,6 @@ public class StateListEditor : EditorWindow
                             Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.value.constant.integerValue");
                         }
                     }
-                    else
-                    {
-                        Debug.LogWarning("Property not found: logic.statements.singleStatement.targetState.key");
-                    }
                 }
             }
             else
@@ -413,7 +618,7 @@ public class StateListEditor : EditorWindow
                         }
                         else
                         {
-                            Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.operatorExpression.operands.Array.data[1].value.constant.integerValue or logic.statements.singleStatement.expression.value.constant.integerValue");
+                            Debug.LogWarning("Property not found for setting transition dest id");
                         }
 
                         if (isTrialRestState)
@@ -426,7 +631,7 @@ public class StateListEditor : EditorWindow
                             }
                             else
                             {
-                                Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.operatorExpression.operands.Array.data[2].value.constant.integerValue");
+                                Debug.LogWarning("Property not found for setting Trial-Task in trial rest transition");
                             }
                         }
                     }
@@ -495,10 +700,6 @@ public class StateListEditor : EditorWindow
                             Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.value.constant.integerValue");
                         }
                     }
-                    else
-                    {
-                        Debug.LogWarning("Property not found: logic.statements.singleStatement.targetState.key");
-                    }
                 }
             }
             else
@@ -532,10 +733,6 @@ public class StateListEditor : EditorWindow
                             Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.value.constant.integerValue");
                         }
                     }
-                    else
-                    {
-                        Debug.LogWarning("Property not found: logic.statements.singleStatement.targetState.key");
-                    }
                 }
             }
             else
@@ -563,7 +760,7 @@ public class StateListEditor : EditorWindow
                         foreach (Transform objTransform in objectsTransform)
                         {
                             GameObject stateListeningObject = objTransform.gameObject;
-                            UpdateStateIdForObject(stateListeningObject, i); // Update with the new state_id
+                            UpdateStateIdForObject(stateListeningObject, i);
                         }
                     }
                 }
@@ -573,7 +770,6 @@ public class StateListEditor : EditorWindow
 
     private void UpdateStateIdForObject(GameObject obj, int newStateId)
     {
-        // Retrieve the ItemLogic component and update the state_id
         Component itemLogic = obj.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
         if (itemLogic != null)
         {
@@ -590,7 +786,7 @@ public class StateListEditor : EditorWindow
                         SerializedProperty stateIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
                         if (stateIdProp != null)
                         {
-                            stateIdProp.intValue = newStateId; // Set the new state_id
+                            stateIdProp.intValue = newStateId;
                             serializedComp.ApplyModifiedProperties();
                             break;
                         }
