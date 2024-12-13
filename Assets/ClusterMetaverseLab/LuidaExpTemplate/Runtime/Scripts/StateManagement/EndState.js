@@ -7,12 +7,12 @@ $.onUpdate(() => {
 
 function OnStateEnter() {
   const request = {
-    type: "recordIdfcs",
+    type: "postDoneIdfcs",
     token: token || "",
     eID: expID || "",
     idfcs: $.getPlayersNear($.getPosition().clone(), Infinity).map(player => player.idfc),
   };
-  $.callExternal(JSON.stringify(request), "userIdfcsRecorded");
+  $.callExternal(JSON.stringify(request), "doneIdfcsPosted");
 }
 
 $.onExternalCallEnd((res, meta, err) =>
@@ -22,7 +22,7 @@ $.onExternalCallEnd((res, meta, err) =>
     return;
   }
 
-  if (meta === "userIdfcsRecorded") {
-    $.log("Users' idfc are recorded. Reward to these users will be proceeded, and these users will not be able to enter this experiment again.");
+  if (meta === "doneIdfcsPosted") {
+    $.log("idfc of users that are done with this experiment this time are recorded.");
   }
 });

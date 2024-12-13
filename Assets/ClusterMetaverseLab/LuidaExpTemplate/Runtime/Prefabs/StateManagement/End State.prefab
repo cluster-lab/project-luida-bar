@@ -15,7 +15,7 @@ PrefabInstance:
     - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_Name
-      value: End
+      value: End State
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
@@ -125,10 +125,10 @@ MonoBehaviour:
     => {\r\n  if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\r\n     
     $.setStateCompat(\"this\", \"state_enter\", false);\r\n      OnStateEnter();\r\n 
     }\r\n})\r\n\r\nfunction OnStateEnter() {\r\n  const request = {\r\n    type:
-    \"recordIdfcs\",\r\n    token: token || \"\",\r\n    eID: expID || \"\",\r\n   
+    \"postDoneIdfcs\",\r\n    token: token || \"\",\r\n    eID: expID || \"\",\r\n   
     idfcs: $.getPlayersNear($.getPosition().clone(), Infinity).map(player => player.idfc),\r\n 
-    };\r\n  $.callExternal(JSON.stringify(request), \"userIdfcsRecorded\");\r\n}\r\n\r\n$.onExternalCallEnd((res,
+    };\r\n  $.callExternal(JSON.stringify(request), \"doneIdfcsPosted\");\r\n}\r\n\r\n$.onExternalCallEnd((res,
     meta, err) =>\r\n{\r\n  if (res == null) {\r\n    $.log(\"callExternal ERROR:
-    \" + err);\r\n    return;\r\n  }\r\n\r\n  if (meta === \"userIdfcsRecorded\")
-    {\r\n    $.log(\"Users' idfc are recorded. Reward to these users will be proceeded,
-    and these users will not be able to enter this experiment again.\");\r\n  }\r\n});"
+    \" + err);\r\n    return;\r\n  }\r\n\r\n  if (meta === \"doneIdfcsPosted\") {\r\n   
+    $.log(\"idfc of users that are done with this experiment this time are recorded.\");\r\n 
+    }\r\n});"
