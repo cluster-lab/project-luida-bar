@@ -30,8 +30,8 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 5697374075333026450}
-  m_RootOrder: 3
+  m_Father: {fileID: 5697374075709122391}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6652979657310920572
 MonoBehaviour:
@@ -360,10 +360,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5697374076674148512}
   - {fileID: 5697374075709122391}
   - {fileID: 5697374075797121764}
-  - {fileID: 5158477465232829087}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -429,19 +427,14 @@ GameObject:
   - component: {fileID: 5697374075709122387}
   - component: {fileID: 1154675398573189425}
   - component: {fileID: 5697374075709122388}
-  - component: {fileID: 5697374075709122389}
   - component: {fileID: 5697374075709122390}
-  - component: {fileID: 5697374075709122382}
-  - component: {fileID: 5697374075709122383}
-  - component: {fileID: 5697374075709122384}
-  - component: {fileID: 5697374075709122379}
-  - component: {fileID: 5697374075709122380}
   - component: {fileID: 6901064461653237453}
   - component: {fileID: 6281660993852899014}
   - component: {fileID: 2283742839625838976}
-  - component: {fileID: 2637395719500140389}
-  - component: {fileID: 1626385700766481977}
   - component: {fileID: 679173099575055621}
+  - component: {fileID: 469817298469039160}
+  - component: {fileID: 1115293220282776367}
+  - component: {fileID: 4664316417126695497}
   m_Layer: 14
   m_Name: FormController
   m_TagString: Untagged
@@ -467,8 +460,9 @@ Transform:
   - {fileID: 5697374076830100654}
   - {fileID: 963159005016500133}
   - {fileID: 5135466621046460531}
+  - {fileID: 5158477465232829087}
   m_Father: {fileID: 5697374075333026450}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5697374075709122387
 MonoBehaviour:
@@ -501,13 +495,93 @@ MonoBehaviour:
   item: {fileID: 5697374075709122387}
   key:
     target: 0
-    key: setQID
+    key: form_initIds
   logic:
     statements:
     - singleStatement:
         targetState:
           target: 0
           key: qID
+          parameterType: 3
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 3
+              boolValue: 0
+              floatValue: 0
+              integerValue: -1
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 0
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 0
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+    - singleStatement:
+        targetState:
+          target: 0
+          key: pRoleID
+          parameterType: 3
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 3
+              boolValue: 0
+              floatValue: 0
+              integerValue: -1
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 0
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 0
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+    - singleStatement:
+        targetState:
+          target: 0
+          key: pIdInRole
           parameterType: 3
         expression:
           type: 0
@@ -557,18 +631,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 5, y: 3.5, z: 0.01}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5697374075709122389
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5697374075709122392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc728c1810dc48a582fb23e0a13a7466, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5697374075709122390
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -583,9 +645,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
   sourceCode: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\n\r\n$.onStart(()
-    => {\r\n    reset();\r\n});\r\n\r\n$.onUpdate((deltaTime) => {\r\n    // Ensure
-    that the question is only initialized after all currently displayed answer options
-    are destroyed\r\n    if (!$.state.isInitiated && $.getStateCompat(\"this\", \"form_set_content_active\",
+    => {\r\n    $.sendSignalCompat(\"this\", \"exp_clearAnsweredParticipantsCount\");\r\n   
+    reset();\r\n});\r\n\r\n$.onUpdate((deltaTime) => {\r\n    if (!$.state.participant
+    && $.groupState.rolePlayers.length > 0 && $.getStateCompat(\"global\", \"state_currentID\",
+    \"integer\") > 0) {\r\n        const pRoleID = $.getStateCompat(\"this\", \"pRoleID\",
+    \"integer\");\r\n        const pIdInRole = $.getStateCompat(\"this\", \"pIdInRole\",
+    \"integer\");\r\n        $.state.pRole = $.groupState.roles[pRoleID];\r\n       
+    $.state.participant = $.groupState.rolePlayers[pRoleID][pIdInRole];\r\n       
+    $.requestOwner($.state.participant);\r\n        $.setVisiblePlayers([$.state.participant]);\r\n       
+    $.worldItemReference(\"prevButton\").send(\"showButton\", $.state.participant);\r\n       
+    $.worldItemReference(\"nextButton\").send(\"showButton\", $.state.participant);\r\n   
+    }\r\n    \r\n    if (!$.state.isInitiated && $.getStateCompat(\"this\", \"form_set_content_active\",
     \"boolean\")) {\r\n        $.state.isInitiated = true;\r\n        $.state.qID
     = 0;\r\n        $.subNode(\"LoadingHint\").setEnabled(true);\r\n\r\n        //
     Reintroduced callExternal to get questions\r\n        const questionnaireID =
@@ -671,11 +741,11 @@ MonoBehaviour:
     $.log(\"Send final answers: \" + JSON.stringify($.state.answers));\r\n    let
     request = {\r\n        type: \"questionAnswers\",\r\n        token: token ||
     \"\",\r\n        eID: expID || \"\",\r\n        qID: $.getStateCompat(\"this\",
-    \"qID\", \"integer\") || 0,\r\n        pID: $.getOwner().idfc || \"\",\r\n       
-    answers: JSON.stringify($.state.answers)\r\n    };\r\n    const conditionManager
-    = $.worldItemReference(\"ConditionManager\");\r\n    if (conditionManager) {\r\n       
-    conditionManager.send(\"exp_questionnaire_answer\", $.state.answers);\r\n   
-    }\r\n    $.callExternal(JSON.stringify(request), \"postQuestionAnswers\");\r\n   
+    \"qID\", \"integer\") || 0,\r\n        pID: $.state.participant.idfc || \"\",\r\n       
+    pRole: $.state.pRole || \"\",\r\n        answers: JSON.stringify($.state.answers)\r\n   
+    };\r\n    const conditionManager = $.worldItemReference(\"ConditionManager\");\r\n   
+    if (conditionManager) {\r\n        conditionManager.send(\"exp_questionnaire_answer\",
+    $.state.answers);\r\n    }\r\n    $.callExternal(JSON.stringify(request), \"postQuestionAnswers\");\r\n   
     $.setStateCompat(\"this\", \"form_set_content_active\", false);\r\n    reset(false);\r\n}\r\n\r\nfunction
     toNext() {\r\n    destroyAnswerOptionUIs(); // Ensure previous UI elements are
     destroyed\r\n    $.state.qID = $.state.qID + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
@@ -697,113 +767,13 @@ MonoBehaviour:
     }\r\n\r\n    if (meta === \"getQuestions\") {\r\n        const parsedRes = JSON.parse(res);\r\n       
     $.state.questions = parsedRes.questions;\r\n        $.subNode(\"LoadingHint\").setEnabled(false);\r\n       
     tryInitQuestion();\r\n    }\r\n\r\n    if (meta === \"postQuestionAnswers\")
-    {\r\n        $.log(\"Answers recorded!\");\r\n        $.sendSignalCompat(\"this\",
-    \"state_triggerTransition\");\r\n        reset(false);\r\n    }\r\n});\r\n"
---- !u!114 &5697374075709122382
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5697374075709122392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a2d50bc3e074e22919ff17b806ad61e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item: {fileID: 5697374075709122387}
-  key:
-    target: 0
-    key: form_spawn_radio_button
-  itemTemplate: {fileID: 3154859385316323940, guid: e0135150919d3425d9321a1d6b839390,
-    type: 3}
-  itemTemplateId:
-    value: 18318326325945984652
-  spawnPoint: {fileID: 5697374076830100654}
---- !u!114 &5697374075709122383
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5697374075709122392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a2d50bc3e074e22919ff17b806ad61e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item: {fileID: 5697374075709122387}
-  key:
-    target: 0
-    key: form_spawn_scale_button
-  itemTemplate: {fileID: 5655618349765678224, guid: d87eaf88df6164b3691ec804ee4b20f6,
-    type: 3}
-  itemTemplateId:
-    value: 6552733022385601861
-  spawnPoint: {fileID: 5697374076830100654}
---- !u!114 &5697374075709122384
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5697374075709122392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a2d50bc3e074e22919ff17b806ad61e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item: {fileID: 5697374075709122387}
-  key:
-    target: 0
-    key: form_spawn_checkbox
-  itemTemplate: {fileID: 4079270697995583237, guid: adacc751b651243649d6bd01aed5edd7,
-    type: 3}
-  itemTemplateId:
-    value: 2082325906578372832
-  spawnPoint: {fileID: 5697374076830100654}
---- !u!114 &5697374075709122379
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5697374075709122392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a2d50bc3e074e22919ff17b806ad61e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item: {fileID: 5697374075709122387}
-  key:
-    target: 0
-    key: form_spawn_toggle
-  itemTemplate: {fileID: 8114133903284080281, guid: 615257e460f9342fe96cfb1047607cd6,
-    type: 3}
-  itemTemplateId:
-    value: 3562310097586366381
-  spawnPoint: {fileID: 5697374076830100654}
---- !u!114 &5697374075709122380
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5697374075709122392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a2d50bc3e074e22919ff17b806ad61e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item: {fileID: 5697374075709122387}
-  key:
-    target: 0
-    key: form_spawn_text_input
-  itemTemplate: {fileID: 4606635516652285656, guid: 3cef5beb514bb46b79880a139be71bbc,
-    type: 3}
-  itemTemplateId:
-    value: 11297569293038321797
-  spawnPoint: {fileID: 5697374076830100654}
+    {\r\n        $.log(\"Answers recorded!\");\r\n        const answeredParticipantsCount
+    = $.getStateCompat(\"global\", \"exp_answeredParticipantsCount\", \"integer\");\r\n       
+    if (answeredParticipantsCount < $.getPlayersNear($.getPosition(), Infinity).length
+    - 1) {\r\n            $.sendSignalCompat(\"this\", \"exp_incrementAnsweredParticipantsCount\");\r\n       
+    } else {\r\n            $.sendSignalCompat(\"this\", \"exp_clearAnsweredParticipantsCount\");\r\n           
+    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n        }\r\n       
+    reset(false);\r\n    }\r\n});\r\n"
 --- !u!114 &6901064461653237453
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -919,7 +889,7 @@ MonoBehaviour:
   triggers:
   - target: 0
     specifiedTargetItem: {fileID: 0}
-    key: setQID
+    key: form_initIds
     type: 0
     value:
       boolValue: 0
@@ -965,7 +935,42 @@ MonoBehaviour:
       type: 3}
     itemTemplateId:
       value: 11297569293038321797
---- !u!114 &2637395719500140389
+--- !u!114 &679173099575055621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5697374075709122392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466c56cb3cb32ec48b21ffb81ad21213, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clusterScripts:
+  - {fileID: 5022602860645237092, guid: 72d5cae6319a90642a19559e532b6383, type: 3}
+  - {fileID: 5022602860645237092, guid: 568803de6d26f4b98a3eaf737ce4cba4, type: 3}
+  playerScripts: []
+  clusterScriptMD5s: []
+  playerScriptMD5s: []
+--- !u!114 &469817298469039160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5697374075709122392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49554f6eafb04d538a589436719e8fa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldItemReferences:
+  - id: prevButton
+    item: {fileID: 5697374076976329125}
+  - id: nextButton
+    item: {fileID: 5697374075919056181}
+--- !u!114 &1115293220282776367
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -980,22 +985,22 @@ MonoBehaviour:
   globalGimmickKey:
     key:
       target: 0
-      key: form_destroy_answer_option
+      key: exp_incrementAnsweredParticipantsCount
     item: {fileID: 5697374075709122387}
   logic:
     statements:
     - singleStatement:
         targetState:
           target: 2
-          key: form_destroy_answer_option
-          parameterType: 1
+          key: exp_answeredParticipantsCount
+          parameterType: 3
         expression:
-          type: 0
+          type: 1
           value:
             type: 0
             constant:
               type: 1
-              boolValue: 1
+              boolValue: 0
               floatValue: 0
               integerValue: 0
               vector2Value: {x: 0, y: 0}
@@ -1005,11 +1010,11 @@ MonoBehaviour:
               key: 
               type: 6
           operatorExpression:
-            operator: 0
+            operator: 2
             operands:
             - type: 0
               value:
-                type: 0
+                type: 1
                 constant:
                   type: 1
                   boolValue: 0
@@ -1019,12 +1024,29 @@ MonoBehaviour:
                   vector3Value: {x: 0, y: 0, z: 0}
                 sourceState:
                   target: 2
+                  key: exp_answeredParticipantsCount
+                  type: 3
+              operatorExpression:
+                operator: 0
+                operands: []
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 3
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 1
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
                   key: 
                   type: 6
               operatorExpression:
                 operator: 0
                 operands: []
---- !u!114 &1626385700766481977
+--- !u!114 &4664316417126695497
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1039,21 +1061,21 @@ MonoBehaviour:
   globalGimmickKey:
     key:
       target: 0
-      key: form_stop_destroy_answer_option
+      key: exp_clearAnsweredParticipantsCount
     item: {fileID: 5697374075709122387}
   logic:
     statements:
     - singleStatement:
         targetState:
           target: 2
-          key: form_destroy_answer_option
-          parameterType: 1
+          key: exp_answeredParticipantsCount
+          parameterType: 3
         expression:
           type: 0
           value:
             type: 0
             constant:
-              type: 1
+              type: 3
               boolValue: 0
               floatValue: 0
               integerValue: 0
@@ -1083,24 +1105,6 @@ MonoBehaviour:
               operatorExpression:
                 operator: 0
                 operands: []
---- !u!114 &679173099575055621
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5697374075709122392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 466c56cb3cb32ec48b21ffb81ad21213, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  clusterScripts:
-  - {fileID: 5022602860645237092, guid: 72d5cae6319a90642a19559e532b6383, type: 3}
-  - {fileID: 5022602860645237092, guid: 568803de6d26f4b98a3eaf737ce4cba4, type: 3}
-  playerScripts: []
-  clusterScriptMD5s: []
-  playerScriptMD5s: []
 --- !u!1 &5697374075775875167
 GameObject:
   m_ObjectHideFlags: 0
@@ -1201,7 +1205,7 @@ Transform:
   - {fileID: 5697374076210030886}
   - {fileID: 5697374076606970669}
   m_Father: {fileID: 5697374075333026450}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5189283677861731823
 MonoBehaviour:
@@ -1353,133 +1357,6 @@ Transform:
   m_Father: {fileID: 5697374075797121764}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &5697374076674148513
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5697374076674148512}
-  - component: {fileID: 5697374076674148509}
-  - component: {fileID: 5697374076674148510}
-  - component: {fileID: 5697374076674148511}
-  - component: {fileID: 5697374076674148508}
-  m_Layer: 0
-  m_Name: FormInitTrigger
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &5697374076674148512
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5697374076674148513}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
-  m_LocalScale: {x: 5, y: 3.5, z: 2}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5697374075333026450}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5697374076674148509
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5697374076674148513}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id:
-    value: 0
-  itemName: 
-  size: {x: 0, y: 0, z: 0}
---- !u!114 &5697374076674148510
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5697374076674148513}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba507dbcf46b94a9895daa4d46e12805, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item: {fileID: 5697374076674148509}
-  collisionEventType: 0
-  collisionType: 2
-  triggers:
-  - target: 0
-    specifiedTargetItem: {fileID: 5697374076674148509}
-    key: form_set_trigger_active
-    type: 1
-    value:
-      boolValue: 0
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
-  - target: 0
-    specifiedTargetItem: {fileID: 5697374075709122387}
-    key: form_set_content_active
-    type: 1
-    value:
-      boolValue: 1
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
-  - target: 1
-    specifiedTargetItem: {fileID: 5697374075709122387}
-    key: form_init
-    type: 1
-    value:
-      boolValue: 1
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
---- !u!65 &5697374076674148511
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5697374076674148513}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5697374076674148508
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5697374076674148513}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce2b9f4eb5444df69e31db5c54e12447, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 0
-      key: form_set_trigger_active
-    item: {fileID: 5697374076674148509}
 --- !u!1 &5697374076740741178
 GameObject:
   m_ObjectHideFlags: 0

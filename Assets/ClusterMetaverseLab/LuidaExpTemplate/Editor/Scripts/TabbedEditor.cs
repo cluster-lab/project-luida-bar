@@ -6,12 +6,13 @@ using System.IO;
 public class TabbedEditor : EditorWindow
 {
     private int currentTab = 0;
-    private string[] tabNames = { "Experiment Identifiers", "Experiment Variables Editor", "State List Editor", "Objects Manager", "Data Recorders List" };
+    private string[] tabNames = { "Experiment Identifiers", "Experiment Variables", "Participants Number & Roles", "States", "Objects", "Data Recorders" };
 
     private ExpIdentifierEditor expIdentifierEditor;
+    private ExperimentVariablesEditor experimentVariablesEditor;
+    private ParticipantRolesEditor participantRolesEditor;
     private StateListEditor stateListEditor;
     private ObjectsManagerEditor objectsManagerEditor;
-    private ExperimentVariablesEditor experimentVariablesEditor;
     private DataRecorderListEditor dataRecorderListEditor;
 
     private string newSceneName = "";
@@ -30,12 +31,14 @@ public class TabbedEditor : EditorWindow
     {
         expIdentifierEditor = new ExpIdentifierEditor();
         experimentVariablesEditor = new ExperimentVariablesEditor();
+        participantRolesEditor = new ParticipantRolesEditor();
         stateListEditor = new StateListEditor();
         objectsManagerEditor = new ObjectsManagerEditor();
         dataRecorderListEditor = new DataRecorderListEditor();
 
         expIdentifierEditor.OnEnable();
         experimentVariablesEditor.OnEnable();
+        participantRolesEditor.OnEnable();
         stateListEditor.OnEnable();
         objectsManagerEditor.OnEnable();
         dataRecorderListEditor.OnEnable();
@@ -93,12 +96,15 @@ public class TabbedEditor : EditorWindow
                     experimentVariablesEditor.OnGUI();
                     break;
                 case 2:
-                    stateListEditor.OnGUI();
+                    participantRolesEditor.OnGUI();
                     break;
                 case 3:
-                    objectsManagerEditor.OnGUI();
+                    stateListEditor.OnGUI();
                     break;
                 case 4:
+                    objectsManagerEditor.OnGUI();
+                    break;
+                case 5:
                     dataRecorderListEditor.OnGUI();
                     break;
             }

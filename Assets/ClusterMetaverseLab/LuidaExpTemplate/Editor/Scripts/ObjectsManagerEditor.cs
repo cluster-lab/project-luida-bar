@@ -30,9 +30,11 @@ public class ObjectsManagerEditor : EditorWindow
 
     // Dictionaries to track foldout states for collapsible sections
     private Dictionary<string, bool> stateObjectsFoldout = new Dictionary<string, bool>();
+    private Dictionary<string, bool> stateQuestionnairesFoldout = new Dictionary<string, bool>();
 
     private Dictionary<string, bool> showNewObjectRow = new Dictionary<string, bool>(); // Track visibility of the new object row for each state
-
+    private Dictionary<string, int> selectedRoleIndices = new Dictionary<string, int>();
+    private List<string> roleNames = new List<string>();
     private Vector2 scrollPosition; // Scroll position for the window
 
     public static void ShowWindow()
@@ -51,13 +53,15 @@ public class ObjectsManagerEditor : EditorWindow
             serializedStateList = new SerializedObject(stateList);
             statesProperty = serializedStateList.FindProperty("States");
         }
-
-        // Retrieve existing state-listening objects
+        
+        LoadRolesFromParticipantRoles();
         RetrieveCreatedObjects();
     }
 
     public void OnGUI()
     {
+        LoadRolesFromParticipantRoles();
+        
         if (stateList == null)
         {
             string scenePath = UnityEngine.SceneManagement.SceneManager.GetActiveScene().path;
@@ -99,6 +103,7 @@ public class ObjectsManagerEditor : EditorWindow
             if (!showQuestionnaireForm.ContainsKey(stateName)) showQuestionnaireForm[stateName] = false;
 
             if (!stateObjectsFoldout.ContainsKey(stateName)) stateObjectsFoldout[stateName] = true;
+            if (!stateQuestionnairesFoldout.ContainsKey(stateName)) stateQuestionnairesFoldout[stateName] = true;
 
             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
@@ -110,18 +115,9 @@ public class ObjectsManagerEditor : EditorWindow
                 showNewObjectRow[stateName] = !showNewObjectRow[stateName]; // Toggle the new object row visibility
             }
 
-            if (HasEnabledFormInstance(GameObject.Find(stateName)?.transform.Find("Objects")?.gameObject))
+            if (GUILayout.Button("Add questionnaire", GUILayout.Width(150)))
             {
-                EditorGUI.BeginDisabledGroup(true); // Disable the button if a questionnaire already exists
-                GUILayout.Button("Add questionnaire", GUILayout.Width(150));
-                EditorGUI.EndDisabledGroup();
-            }
-            else
-            {
-                if (GUILayout.Button("Add questionnaire", GUILayout.Width(150)))
-                {
-                    showQuestionnaireForm[stateName] = !showQuestionnaireForm[stateName]; // Toggle the add questionnaire form visibility
-                }
+                showQuestionnaireForm[stateName] = !showQuestionnaireForm[stateName]; // Toggle the add questionnaire form visibility
             }
 
             EditorGUILayout.EndHorizontal();
@@ -143,21 +139,24 @@ public class ObjectsManagerEditor : EditorWindow
                 DisplayNewObjectRow(stateName, i, stateListeningObjectPrefabPath, jsStateTemplatePath, "New State Listening Object");
             }
 
+            // Display existing questionnaires
+            stateQuestionnairesFoldout[stateName] = EditorGUILayout.Foldout(stateQuestionnairesFoldout[stateName], "Questionnaires in this State", true, EditorStyles.foldout);
+            if (stateQuestionnairesFoldout[stateName])
+            {
+                DisplayExistingQuestionnaires(stateName);
+            }
+
             // Show the questionnaire form if the "Add questionnaire" button was clicked
             if (showQuestionnaireForm[stateName])
             {
                 DisplayQuestionnaireForm(stateName, i);
             }
 
-            // Display existing questionnaire if it exists
-            DisplayQuestionnaireRow(stateName);
-
             // Add space after each state section
             EditorGUILayout.Space();
         }
 
-        EditorGUILayout.EndScrollView(); // End scrollable area
-
+        EditorGUILayout.EndScrollView();
         serializedStateList.ApplyModifiedProperties();
     }
 
@@ -210,6 +209,36 @@ public class ObjectsManagerEditor : EditorWindow
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.EndVertical();
     }
+    
+    private void DisplayExistingQuestionnaires(string stateName)
+    {
+        Transform stateObjectsParent = GameObject.Find(stateName)?.transform.Find("Objects");
+        if (stateObjectsParent == null) return;
+
+        foreach (Transform roleGroup in stateObjectsParent)
+        {
+            if (!roleGroup.name.StartsWith("Questionnaires_")) continue;
+
+            string role = roleGroup.name.Replace("Questionnaires_", "");
+            int qID = GetQIDFromRoleGroup(roleGroup);
+
+            EditorGUILayout.BeginHorizontal();
+
+            EditorGUILayout.LabelField($"Role: {role}", GUILayout.Width(150));
+            EditorGUILayout.LabelField($"qID: {qID}", GUILayout.Width(100));
+            EditorGUILayout.LabelField("Wrapper Object:", GUILayout.Width(90));
+            EditorGUILayout.ObjectField(roleGroup.gameObject, typeof(GameObject), true, GUILayout.Width(200));
+
+
+            if (GUILayout.Button("Remove All", GUILayout.Width(120)))
+            {
+                RemoveRoleQuestionnaires(roleGroup);
+                Debug.Log($"Removed all questionnaires for role: {role}");
+            }
+
+            EditorGUILayout.EndHorizontal();
+        }
+    }
 
     // Displays the form to add a new questionnaire
     private void DisplayQuestionnaireForm(string stateName, int stateId)
@@ -224,79 +253,63 @@ public class ObjectsManagerEditor : EditorWindow
         questionnaireQIDs[stateName] = EditorGUILayout.IntField(questionnaireQIDs[stateName], GUILayout.Width(50));
 
         GUILayout.Space(30);
+        EditorGUILayout.LabelField("Select Role", GUILayout.Width(80));
+        if (!selectedRoleIndices.ContainsKey(stateName))
+            selectedRoleIndices[stateName] = 0;
+
+        selectedRoleIndices[stateName] = EditorGUILayout.Popup(selectedRoleIndices[stateName], roleNames.ToArray(), GUILayout.Width(150));
+
+        GUILayout.Space(30);
         if (GUILayout.Button("Add Questionnaire", GUILayout.Width(150)))
         {
-            AddOrEnableFormInstance(stateName, questionnaireQIDs[stateName]);
+            string selectedRole = roleNames[selectedRoleIndices[stateName]];
+            int roleCount = GetRoleCount(selectedRole);
+
+            CreateRoleQuestionnaires(stateName, selectedRole, roleCount, questionnaireQIDs[stateName]);
+            Debug.Log($"Created {roleCount} questionnaires for role '{selectedRole}' with qID {questionnaireQIDs[stateName]}.");
             showQuestionnaireForm[stateName] = false; // Hide the form after adding
         }
         EditorGUILayout.EndHorizontal();
     }
-
-    // Displays a row for the existing questionnaire object if present
-    private void DisplayQuestionnaireRow(string stateName)
+    
+    private void CreateRoleQuestionnaires(string stateName, string role, int count, int qID)
     {
-        GameObject stateObject = GameObject.Find(stateName)?.transform.Find("Objects")?.gameObject;
-        if (stateObject != null && HasEnabledFormInstance(stateObject))
+        Transform stateObjectsParent = GameObject.Find(stateName)?.transform.Find("Objects");
+        if (stateObjectsParent == null) return;
+
+        // Create a parent object for this role
+        GameObject roleGroup = new GameObject($"Questionnaires_{role}");
+        roleGroup.transform.SetParent(stateObjectsParent);
+
+        for (int i = 0; i < count; i++)
         {
-            GameObject formController = GetFormController(stateObject);
-            int currentQID = GetCurrentQID(formController);
+            GameObject formPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(formPrefabPath);
+            GameObject newQuestionnaire = (GameObject)PrefabUtility.InstantiatePrefab(formPrefab);
+            newQuestionnaire.transform.SetParent(roleGroup.transform);
+            newQuestionnaire.name = $"Questionnaire_{role}_{i + 1}";
 
-            EditorGUILayout.BeginHorizontal();
-            
-            // Reference field for the Questionnaire object
-            GameObject questionnaireObject = formController.transform.parent.gameObject;
-            EditorGUILayout.LabelField("Questionnaire Object", GUILayout.Width(120));
-            EditorGUILayout.ObjectField(questionnaireObject, typeof(GameObject), true, GUILayout.Width(120));
-            
-            GUILayout.Space(20); // Add space between columns
+            GameObject formController = newQuestionnaire.transform.Find("FormController")?.gameObject;
+            UpdateFormIdSettings(formController, qID, role, i);
+            AttachItemGroupMemberToFormController(formController);
 
-            // qID text field
-            EditorGUILayout.LabelField("qID", GUILayout.Width(20));
-            int newQID = EditorGUILayout.IntField(currentQID, GUILayout.Width(50));
-            if (newQID != currentQID)
-            {
-                UpdateQID(formController, newQID);
-            }
-
-            GUILayout.Space(20); // Add space between columns
-
-            // Remove button for the questionnaire
-            if (GUILayout.Button("Remove Questionnaire", GUILayout.Width(150)))
-            {
-                RemoveFormInstance(stateObject, formController);
-            }
-            
-            EditorGUILayout.EndHorizontal();
+            Debug.Log($"Created questionnaire {i + 1} for role '{role}' under state '{stateName}'.");
         }
     }
-
-    // Check if a valid and enabled Questionnaire prefab instance exists in the state's Objects
-    private bool HasEnabledFormInstance(GameObject stateObject)
+    
+    private void RemoveRoleQuestionnaires(Transform roleGroup)
     {
-        foreach (Transform child in stateObject.transform)
-        {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == formPrefabPath && child.gameObject.activeSelf)
-            {
-                return true;
-            }
-        }
-        return false;
+        if (roleGroup != null)
+            DestroyImmediate(roleGroup.gameObject);
+    }
+    
+    private int GetQIDFromRoleGroup(Transform roleGroup)
+    {
+        Transform firstChild = roleGroup.childCount > 0 ? roleGroup.GetChild(0) : null;
+        GameObject formController = firstChild?.Find("FormController")?.gameObject;
+
+        return formController != null ? GetCurrentQID(formController) : -1;
     }
 
-    // Get the FormController game object inside the Questionnaire prefab
-    private GameObject GetFormController(GameObject stateObject)
-    {
-        foreach (Transform child in stateObject.transform)
-        {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == formPrefabPath)
-            {
-                return child.Find("FormController")?.gameObject;
-            }
-        }
-        return null;
-    }
-
-    // Get the current qID value from the FormController
     private int GetCurrentQID(GameObject formController)
     {
         if (formController == null) return -1;
@@ -320,102 +333,49 @@ public class ObjectsManagerEditor : EditorWindow
                             return qIdProp.intValue;
                         }
                     }
+
                 }
             }
         }
         return -1;
     }
 
-    // Update the qID value in the FormController
-    private void UpdateQID(GameObject formController, int qID)
+    private void UpdateFormIdSettings(GameObject formController, int qID, string roleName, int orderInRole)
     {
-        Component itemLogic = formController.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
-        if (itemLogic != null)
-        {
-            SerializedObject serializedComp = new SerializedObject(itemLogic);
-            SerializedProperty specificProperty = serializedComp.FindProperty("logic.statements");
+        var itemLogic = formController.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
+        if (itemLogic == null) return;
 
-            if (specificProperty != null && specificProperty.isArray)
+        SerializedObject serializedComp = new SerializedObject(itemLogic);
+        SerializedProperty statements = serializedComp.FindProperty("logic.statements");
+
+        if (statements == null || !statements.isArray) return;
+
+        int roleIndex = roleNames.IndexOf(roleName);
+
+        for (int i = 0; i < statements.arraySize; i++)
+        {
+            SerializedProperty statement = statements.GetArrayElementAtIndex(i);
+            SerializedProperty targetKey = statement.FindPropertyRelative("singleStatement.targetState.key");
+
+            if (targetKey == null) continue;
+
+            SerializedProperty valueProp = statement.FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
+
+            switch (targetKey.stringValue)
             {
-                for (int i = 0; i < specificProperty.arraySize; i++)
-                {
-                    SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
-                    if (targetKey != null && targetKey.stringValue == "qID")
-                    {
-                        SerializedProperty qIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
-                        if (qIdProp != null)
-                        {
-                            qIdProp.intValue = qID;
-                            serializedComp.ApplyModifiedProperties();
-                            break;
-                        }
-                    }
-                }
+                case "qID":
+                    if (valueProp != null) valueProp.intValue = qID;
+                    break;
+                case "pRoleID":
+                    if (valueProp != null) valueProp.intValue = roleIndex;
+                    break;
+                case "pIdInRole":
+                    if (valueProp != null) valueProp.intValue = orderInRole;
+                    break;
             }
         }
-    }
 
-    // Remove the Questionnaire instance from the scene by disabling it and setting qID to -1
-    private void RemoveFormInstance(GameObject stateObject, GameObject formController)
-    {
-        if (formController != null)
-        {
-            GameObject formInstance = formController.transform.parent.gameObject;
-            DestroyImmediate(formInstance);
-            Debug.Log($"Questionnaire instance in {stateObject.name} removed.");
-        }
-    }
-
-    // Add or re-enable a Questionnaire instance to the selected state and set its qID
-    private void AddOrEnableFormInstance(string stateName, int qID)
-    {
-        GameObject stateObject = GameObject.Find(stateName)?.transform.Find("Objects")?.gameObject;
-
-        if (stateObject != null)
-        {
-            GameObject existingInstance = stateObject.transform.Cast<Transform>()
-                .FirstOrDefault(child => PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == formPrefabPath)?.gameObject;
-
-            if (existingInstance != null && !existingInstance.activeSelf)
-            {
-                existingInstance.SetActive(true); // Re-enable the existing instance
-                GameObject formController = existingInstance.transform.Find("FormController")?.gameObject;
-                UpdateQID(formController, qID);
-
-                // Paste WorldItemReferenceList component to FormController
-                CopyWorldItemReferenceListToFormController(formController);
-
-                Debug.Log($"Questionnaire instance in {stateName} re-enabled with qID {qID}");
-            }
-            else
-            {
-                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(formPrefabPath);
-                if (prefab != null)
-                {
-                    GameObject newFormInstance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
-                    newFormInstance.transform.SetParent(stateObject.transform);
-                    newFormInstance.name = prefab.name;
-
-                    GameObject formController = newFormInstance.transform.Find("FormController")?.gameObject;
-                    if (formController != null)
-                    {
-                        var identifiersAsset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(identifiersAssetPath);
-                        ScriptableClusterScriptCombiner combiner = formController.GetComponent<ScriptableClusterScriptCombiner>();
-                        combiner.ReplaceScript(identifiersAsset, 0, null, 0, true);
-                        EditorUtility.SetDirty(combiner);
-                        EditorUtility.SetDirty(identifiersAsset);
-                        AssetDatabase.SaveAssets();
-
-                        UpdateQID(formController, qID);
-
-                        // Paste WorldItemReferenceList component to FormController
-                        CopyWorldItemReferenceListToFormController(formController);
-
-                        Debug.Log($"Questionnaire instance added to {stateName} with qID {qID}");
-                    }
-                }
-            }
-        }
+        serializedComp.ApplyModifiedProperties();
     }
 
     // Adds the new state-listening object and its corresponding JS script
@@ -717,6 +677,7 @@ public class ObjectsManagerEditor : EditorWindow
         Repaint();
     }
 
+    /*
     private void CopyWorldItemReferenceListToFormController(GameObject formController)
     {
         if (formController == null)
@@ -757,6 +718,45 @@ public class ObjectsManagerEditor : EditorWindow
             Debug.LogError("ExpTemplateRequiredObjects prefab instance not found in the scene.");
         }
     }
+    */
+
+    private void AttachItemGroupMemberToFormController(GameObject formController)
+    {
+        // Attach ItemGroupMember component to this object
+        var itemGroupMember = formController.AddComponent<ClusterVR.CreatorKit.Item.Implements.ItemGroupMember>();
+
+        // Find the ParticipantRoles GameObject in the scene
+        GameObject participantRolesObject = FindParticipantRolesGameObject();
+        if (participantRolesObject != null)
+        {
+            // Get the ItemGroupHost component from ParticipantRoles
+            var participantRolesHost = participantRolesObject.GetComponent<ClusterVR.CreatorKit.Item.Implements.ItemGroupHost>();
+            if (participantRolesHost != null)
+            {
+                // Use reflection or internal accessors to assign the host
+                var serializedItemGroupMember = new UnityEditor.SerializedObject(itemGroupMember);
+                var hostProperty = serializedItemGroupMember.FindProperty("host");
+
+                if (hostProperty != null)
+                {
+                    hostProperty.objectReferenceValue = participantRolesHost;
+                    serializedItemGroupMember.ApplyModifiedProperties();
+                }
+                else
+                {
+                    Debug.LogError("Unable to find 'host' property in ItemGroupMember.");
+                }
+            }
+            else
+            {
+                Debug.LogError("ParticipantRoles does not have an ItemGroupHost component.");
+            }
+        }
+        else
+        {
+            Debug.LogError("ParticipantRoles GameObject not found in the scene.");
+        }
+    }
 
     private GameObject FindRequiredObjectsWrapperInstance()
     {
@@ -788,5 +788,68 @@ public class ObjectsManagerEditor : EditorWindow
         }
 
         return null;
+    }
+
+    private GameObject FindParticipantRolesGameObject()
+    {
+        GameObject requiredObjectsWrapper = FindRequiredObjectsWrapperInstance();
+        if (!requiredObjectsWrapper) return null;
+
+        for (int i = 0; i < requiredObjectsWrapper.transform.childCount; i++)
+        {
+            Transform child = requiredObjectsWrapper.transform.GetChild(i);
+            if (child.gameObject.name == "ParticipantRoles")
+            {
+                return child.gameObject;
+            }
+        }
+
+        return null;
+    }
+
+    private void LoadRolesFromParticipantRoles()
+    {
+        roleNames.Clear();
+        string sceneName = SceneManager.GetActiveScene().name;
+        string rolesScriptPath = $"Assets/_Experiment_/Settings/ParticipantRoles/{sceneName}.js";
+
+        if (File.Exists(rolesScriptPath))
+        {
+            string scriptContent = File.ReadAllText(rolesScriptPath);
+
+            var matches = System.Text.RegularExpressions.Regex.Matches(scriptContent, @"role:\s*""(.*?)""");
+            foreach (System.Text.RegularExpressions.Match match in matches)
+            {
+                if (match.Groups.Count > 1)
+                {
+                    roleNames.Add(match.Groups[1].Value);
+                }
+            }
+        }
+        else
+        {
+            Debug.LogError($"ParticipantRoles script not found at {rolesScriptPath}");
+        }
+    }
+    
+    private int GetRoleCount(string roleName)
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+        string rolesScriptPath = $"Assets/_Experiment_/Settings/ParticipantRoles/{sceneName}.js";
+
+        if (File.Exists(rolesScriptPath))
+        {
+            string scriptContent = File.ReadAllText(rolesScriptPath);
+
+            // Regex to extract role count for the specified role
+            var match = System.Text.RegularExpressions.Regex.Match(scriptContent, $@"role:\s*""{roleName}"",\s*number:\s*(\d+)");
+            if (match.Success && match.Groups.Count > 1)
+            {
+                return int.Parse(match.Groups[1].Value);
+            }
+        }
+
+        Debug.LogWarning($"Role {roleName} not found or invalid count. Defaulting to 1.");
+        return 1; // Default if role not found
     }
 }

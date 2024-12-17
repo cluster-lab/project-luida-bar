@@ -1,9 +1,20 @@
 $.onStart(() => {
+    $.sendSignalCompat("this", "exp_clearAnsweredParticipantsCount");
     reset();
 });
 
 $.onUpdate((deltaTime) => {
-    // Ensure that the question is only initialized after all currently displayed answer options are destroyed
+    if (!$.state.participant && $.groupState.rolePlayers.length > 0 && $.getStateCompat("global", "state_currentID", "integer") > 0) {
+        const pRoleID = $.getStateCompat("this", "pRoleID", "integer");
+        const pIdInRole = $.getStateCompat("this", "pIdInRole", "integer");
+        $.state.pRole = $.groupState.roles[pRoleID];
+        $.state.participant = $.groupState.rolePlayers[pRoleID][pIdInRole];
+        $.requestOwner($.state.participant);
+        $.setVisiblePlayers([$.state.participant]);
+        $.worldItemReference("prevButton").send("showButton", $.state.participant);
+        $.worldItemReference("nextButton").send("showButton", $.state.participant);
+    }
+    
     if (!$.state.isInitiated && $.getStateCompat("this", "form_set_content_active", "boolean")) {
         $.state.isInitiated = true;
         $.state.qID = 0;
@@ -182,7 +193,8 @@ function submitAnswers() {
         token: token || "",
         eID: expID || "",
         qID: $.getStateCompat("this", "qID", "integer") || 0,
-        pID: $.getOwner().idfc || "",
+        pID: $.state.participant.idfc || "",
+        pRole: $.state.pRole || "",
         answers: JSON.stringify($.state.answers)
     };
     const conditionManager = $.worldItemReference("ConditionManager");
@@ -245,7 +257,13 @@ $.onExternalCallEnd((res, meta, err) => {
 
     if (meta === "postQuestionAnswers") {
         $.log("Answers recorded!");
-        $.sendSignalCompat("this", "state_triggerTransition");
+        const answeredParticipantsCount = $.getStateCompat("global", "exp_answeredParticipantsCount", "integer");
+        if (answeredParticipantsCount < $.getPlayersNear($.getPosition(), Infinity).length - 1) {
+            $.sendSignalCompat("this", "exp_incrementAnsweredParticipantsCount");
+        } else {
+            $.sendSignalCompat("this", "exp_clearAnsweredParticipantsCount");
+            $.sendSignalCompat("this", "state_triggerTransition");
+        }
         reset(false);
     }
 });
