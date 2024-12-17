@@ -13,22 +13,18 @@ $.onUpdate(() => {
         answer();
     }
     if ($.state.destroyable && $.getStateCompat("owner", "form_destroy_answer_option", "boolean")) {
-        $.sendSignalCompat("this", "form_destroy_answer_option");
+        $.destroy();
     }
 })
 
 $.onReceive((messageType, arg, sender) => {
     switch (messageType) {
         case "form_init_answer_option":
-            $.setStateCompat("owner", "form_destroy_answer_option", false);
             $.state.formController = sender;
             if (arg["value"]) $.state.answerValue = arg["value"]
             if (arg["label"] && $.subNode("Text")) $.subNode("Text").setText(arg["label"]);
             $.state.destroyable = true;
             break;
-        // case "form_destroy_answer_option":
-        //     $.setStateCompat("this", "form_destroy_answer_option", true);
-        //     break;
         default:
             break;
     }

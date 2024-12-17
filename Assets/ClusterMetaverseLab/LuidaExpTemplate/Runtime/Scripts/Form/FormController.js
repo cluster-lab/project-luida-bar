@@ -55,7 +55,7 @@ function tryInitQuestion() {
 
 function initQuestion() {
     // Prepare to stop destruction of answer options and initialize a new question
-    $.sendSignalCompat("this", "form_stop_destroy_answer_option");
+    $.setStateCompat("owner", "form_destroy_answer_option", false);
     $.state.tryInitQuestion = false;
     $.state.answerOptionUIs = [];
     $.state.answerOptionLocalPositions = [];
@@ -143,8 +143,7 @@ function spawnNextAnswerOption() {
 }
 
 function destroyAnswerOptionUIs() {
-    // Send a signal to destroy the current answer option UI elements
-    $.sendSignalCompat("this", "form_destroy_answer_option");
+    $.setStateCompat("owner", "form_destroy_answer_option", true);
 }
 
 function handleFormAnswer(arg) {
@@ -183,7 +182,7 @@ function submitAnswers() {
         token: token || "",
         eID: expID || "",
         qID: $.getStateCompat("this", "qID", "integer") || 0,
-        pID: $.getPlayersNear($.getPosition().clone(), 100)[0].idfc || "", // TODO: retrieve idfc through cluster Player Script
+        pID: $.getOwner().idfc || "",
         answers: JSON.stringify($.state.answers)
     };
     const conditionManager = $.worldItemReference("ConditionManager");

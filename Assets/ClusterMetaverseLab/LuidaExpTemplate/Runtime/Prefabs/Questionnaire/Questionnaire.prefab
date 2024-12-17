@@ -606,8 +606,8 @@ MonoBehaviour:
     break;\r\n        case \"form_to_prev\":\r\n            toPrev();\r\n           
     break;\r\n    }\r\n});\r\n\r\nfunction tryInitQuestion() {\r\n    $.state.tryInitQuestion
     = true;\r\n}\r\n\r\nfunction initQuestion() {\r\n    // Prepare to stop destruction
-    of answer options and initialize a new question\r\n    $.sendSignalCompat(\"this\",
-    \"form_stop_destroy_answer_option\");\r\n    $.state.tryInitQuestion = false;\r\n   
+    of answer options and initialize a new question\r\n    $.setStateCompat(\"owner\",
+    \"form_destroy_answer_option\", false);\r\n    $.state.tryInitQuestion = false;\r\n   
     $.state.answerOptionUIs = [];\r\n    $.state.answerOptionLocalPositions = [];\r\n   
     const q = $.state.questions[$.state.qID];\r\n    $.subNode(\"Title\").setText(q.title);\r\n   
     $.subNode(\"Description\").setText(q.description);\r\n    $.state.questionTypeID
@@ -652,8 +652,7 @@ MonoBehaviour:
     new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);\r\n               
     break;\r\n\r\n            default:\r\n                break;\r\n        }\r\n\r\n       
     $.state.answerOptionIndex += 1;\r\n    }\r\n}\r\n\r\nfunction destroyAnswerOptionUIs()
-    {\r\n    // Send a signal to destroy the current answer option UI elements\r\n   
-    $.sendSignalCompat(\"this\", \"form_destroy_answer_option\");\r\n}\r\n\r\nfunction
+    {\r\n    $.setStateCompat(\"owner\", \"form_destroy_answer_option\", true);\r\n}\r\n\r\nfunction
     handleFormAnswer(arg) {\r\n    let posOffset = $.getPosition().clone();\r\n   
     switch ($.state.questionTypeID) {\r\n        case 0: // Radio Buttons\r\n       
     case 1: // Linear Scale\r\n            $.subNode(\"RadioButtonIndicator\").setEnabled(true);\r\n           
@@ -672,8 +671,7 @@ MonoBehaviour:
     $.log(\"Send final answers: \" + JSON.stringify($.state.answers));\r\n    let
     request = {\r\n        type: \"questionAnswers\",\r\n        token: token ||
     \"\",\r\n        eID: expID || \"\",\r\n        qID: $.getStateCompat(\"this\",
-    \"qID\", \"integer\") || 0,\r\n        pID: $.getPlayersNear($.getPosition().clone(),
-    100)[0].idfc || \"\", // TODO: retrieve idfc through cluster Player Script\r\n       
+    \"qID\", \"integer\") || 0,\r\n        pID: $.getOwner().idfc || \"\",\r\n       
     answers: JSON.stringify($.state.answers)\r\n    };\r\n    const conditionManager
     = $.worldItemReference(\"ConditionManager\");\r\n    if (conditionManager) {\r\n       
     conditionManager.send(\"exp_questionnaire_answer\", $.state.answers);\r\n   
