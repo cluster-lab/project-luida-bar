@@ -121,14 +121,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\n\r\n$.onUpdate(()
-    => {\r\n  if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\r\n     
-    $.setStateCompat(\"this\", \"state_enter\", false);\r\n      OnStateEnter();\r\n 
-    }\r\n})\r\n\r\nfunction OnStateEnter() {\r\n  const request = {\r\n    type:
-    \"postDoneIdfcs\",\r\n    token: token || \"\",\r\n    eID: expID || \"\",\r\n   
-    idfcs: $.getPlayersNear($.getPosition().clone(), Infinity).map(player => player.idfc),\r\n 
-    };\r\n  $.callExternal(JSON.stringify(request), \"doneIdfcsPosted\");\r\n}\r\n\r\n$.onExternalCallEnd((res,
-    meta, err) =>\r\n{\r\n  if (res == null) {\r\n    $.log(\"callExternal ERROR:
-    \" + err);\r\n    return;\r\n  }\r\n\r\n  if (meta === \"doneIdfcsPosted\") {\r\n   
-    $.log(\"idfc of users that are done with this experiment this time are recorded.\");\r\n 
-    }\r\n});"
+  sourceCode: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\n$.onUpdate(()
+    => {\n  if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\n     
+    $.setStateCompat(\"this\", \"state_enter\", false);\n      OnStateEnter();\n 
+    }\n})\n\nfunction OnStateEnter() {\n  const request = {\n    type: \"postDoneIdfcs\",\n   
+    token: token || \"\",\n    eID: expID || \"\",\n    idfcs: $.getPlayersNear($.getPosition().clone(),
+    Infinity).map(player => player.idfc),\n  };\n  $.callExternal(JSON.stringify(request),
+    \"doneIdfcsPosted\");\n}\n\n$.onExternalCallEnd((res, meta, err) =>\n{\n  if
+    (res == null) {\n    $.log(\"callExternal ERROR: \" + err);\n    return;\n  }\n\n 
+    if (meta === \"doneIdfcsPosted\") {\n    $.log(\"idfc of users that are done
+    with this experiment this time are recorded.\");\n  }\n});"

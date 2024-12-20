@@ -20,6 +20,7 @@ $.onReceive((messageType, arg, sender) => {
             $.state.formController.send("form_answer", $.getStateCompat("this", "form_toggle_on", "boolean"));
             // if (arg["value"]) $.state.answerValue = arg["value"]
             // if (arg["label"] && $.subNode("Text")) $.subNode("Text").setText(arg["label"]);
+            if (arg["player"]) $.setVisiblePlayers([arg["player"]]);
             break;
         default:
             break;

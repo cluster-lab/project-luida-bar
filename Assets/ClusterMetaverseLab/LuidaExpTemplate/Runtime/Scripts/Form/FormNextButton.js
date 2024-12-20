@@ -1,4 +1,5 @@
 $.onInteract(() => {
+    $.log("Next button pressed by " + $.getOwner().idfc);
     $.worldItemReference("FormController").send("form_to_next", true);
 })
 

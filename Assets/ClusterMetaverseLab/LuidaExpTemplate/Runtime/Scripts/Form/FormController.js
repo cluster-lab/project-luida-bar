@@ -19,6 +19,7 @@ $.onUpdate((deltaTime) => {
         $.state.isInitiated = true;
         $.state.qID = 0;
         $.subNode("LoadingHint").setEnabled(true);
+        $.subNode("StartButton").setEnabled(false);
 
         // Reintroduced callExternal to get questions
         const questionnaireID = $.getStateCompat("this", "qID", "integer");
@@ -43,10 +44,15 @@ $.onUpdate((deltaTime) => {
 $.onInteract(() => {
     $.setStateCompat("this", "form_set_content_active", true);
     $.setStateCompat("this", "form_set_start_hint_active", false);
+    $.log($.getOwner().idfc + " clicked the form");
+    $.log("All players: " + JSON.stringify($.groupState.playersByRole));
 });
 
 $.onReceive((messageType, arg) => {
-    if (!$.state.isInitiated) return;
+    if (!$.state.isInitiated) {
+        $.log("This form is not initiated!");
+        return;
+    }
     switch (messageType) {
         case "form_answer":
             handleFormAnswer(arg);
@@ -87,7 +93,7 @@ function addAnswerOption (id, localPos, rot, ansId) {
     const itemHandle = $.createItem(id, $.getPosition().clone().add(localPos.clone().applyQuaternion(rot)), rot);
     $.state.answerOptionUIs = [...$.state.answerOptionUIs, itemHandle];
     $.state.answerOptionLocalPositions = [...$.state.answerOptionLocalPositions, localPos];
-    itemHandle.send("form_init_answer_option", { value: ansId + 1, label: $.state.answerOptions[ansId] });
+    itemHandle.send("form_init_answer_option", { value: ansId + 1, label: $.state.answerOptions[ansId], player: $.getOwner() });
 }
 
 function spawnNextAnswerOption() {
@@ -180,6 +186,12 @@ function handleFormAnswer(arg) {
 }
 
 function saveAnswer() {
+    $.log("===== " + $.getOwner().idfc + " =====");
+    $.log("saveAnswer");
+    $.log("questions: " + JSON.stringify($.state.questions));
+    $.log("qID: " + $.state.qID);
+    $.log("tmpAnswer: " + $.state.tmpAnswer);
+    $.log("==========");
     if (!$.state.questions[$.state.qID]) return;
     if ($.state.questions[$.state.qID].isRequired && (!$.state.tmpAnswer && $.state.tmpAnswer !== false)) return;
     $.state.answers = { ...$.state.answers, [$.state.qID]: $.state.tmpAnswer };
@@ -207,6 +219,7 @@ function submitAnswers() {
 }
 
 function toNext() {
+    $.log("toNext");
     destroyAnswerOptionUIs(); // Ensure previous UI elements are destroyed
     $.state.qID = $.state.qID + 1;
     $.subNode("RadioButtonIndicator").setEnabled(false);
@@ -258,6 +271,7 @@ $.onExternalCallEnd((res, meta, err) => {
     if (meta === "postQuestionAnswers") {
         $.log("Answers recorded!");
         const answeredParticipantsCount = $.getStateCompat("global", "exp_answeredParticipantsCount", "integer");
+        $.log("answeredParticipantsCount: " + answeredParticipantsCount);
         if (answeredParticipantsCount < $.getPlayersNear($.getPosition(), Infinity).length - 1) {
             $.sendSignalCompat("this", "exp_incrementAnsweredParticipantsCount");
         } else {

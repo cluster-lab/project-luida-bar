@@ -16,7 +16,6 @@ public class ObjectsManagerEditor : EditorWindow
     private string identifiersAssetPath = "Assets/_Experiment_/Settings/ExpIdentifiers.js";
     private const string RequiredObjectsWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
     private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
-    private const string WorldItemRefListObjectName = "WorldItemRefList";
     
     // Dictionaries to store text field input for each state
     private Dictionary<string, string> objectNames = new Dictionary<string, string>();
@@ -676,49 +675,6 @@ public class ObjectsManagerEditor : EditorWindow
         Debug.Log("GameObject removed.");
         Repaint();
     }
-
-    /*
-    private void CopyWorldItemReferenceListToFormController(GameObject formController)
-    {
-        if (formController == null)
-        {
-            Debug.LogError("FormController not found in the new questionnaire object.");
-            return;
-        }
-
-        GameObject expTemplateInstance = FindRequiredObjectsWrapperInstance();
-        if (expTemplateInstance != null)
-        {
-            // Find the WorldItemRefList in the scene
-            GameObject worldItemRefList = expTemplateInstance.transform.Find(WorldItemRefListObjectName).gameObject;
-
-            if (worldItemRefList != null)
-            {
-                // Get the WorldItemReferenceList component
-                var worldItemRefComponent = worldItemRefList.GetComponent<ClusterVR.CreatorKit.Item.Implements.WorldItemReferenceList>();
-
-                if (worldItemRefComponent != null)
-                {
-                    // Copy the WorldItemReferenceList component to the new object
-                    UnityEditorInternal.ComponentUtility.CopyComponent(worldItemRefComponent);
-                    UnityEditorInternal.ComponentUtility.PasteComponentAsNew(formController);
-                }
-                else
-                {
-                    Debug.LogError("WorldItemReferenceList component not found on WorldItemRefList.");
-                }
-            }
-            else
-            {
-                Debug.LogError("WorldItemRefList object not found in the scene.");
-            }
-        }
-        else
-        {
-            Debug.LogError("ExpTemplateRequiredObjects prefab instance not found in the scene.");
-        }
-    }
-    */
 
     private void AttachItemGroupMemberToFormController(GameObject formController)
     {

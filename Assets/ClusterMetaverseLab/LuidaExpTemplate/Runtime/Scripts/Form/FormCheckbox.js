@@ -20,6 +20,7 @@ $.onReceive((messageType, arg, sender) => {
             $.state.formController = sender;
             if (arg["value"]) $.state.answerValue = arg["value"]
             if (arg["label"] && $.subNode("Text")) $.subNode("Text").setText(arg["label"]);
+            if (arg["player"]) $.setVisiblePlayers([arg["player"]]);
             $.state.destroyable = true;
             break;
         default:

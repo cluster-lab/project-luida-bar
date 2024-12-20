@@ -1,5 +1,5 @@
 const roleSettings = [
-  { role: "default", number: 1 }
+  { role: "role1", number: 2 },
 ];
 
 $.onStart(() => {
