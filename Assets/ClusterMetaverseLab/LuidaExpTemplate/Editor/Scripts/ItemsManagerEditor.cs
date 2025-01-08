@@ -16,15 +16,13 @@ public class ItemsManagerEditor : EditorWindow
     };
 
     private string newItemName = "";
-    private bool showCreateItemForm = false;
-    private bool showCreateListenerForm = false;
 
     private const string prefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/StateListeningItem.prefab";
     private const string scriptFolderPathFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
     private const string stateListeningItemScriptTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/StateManagement/StateListeningItemTemplate.js";
     private const string RequiredObjectsWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
     private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
-    
+
     private List<GameObject> stateListeningItems = new List<GameObject>();
     private GameObject selectedStateListeningItem;
     private SerializedObject selectedStateListeningItemSerialized;
@@ -37,7 +35,7 @@ public class ItemsManagerEditor : EditorWindow
 
     private int selectedStateIndex = 0;
 
-    // Changed: Dictionary to store StateListener lists per GameObject (StateListeningItem)
+    // Dictionary to store StateListener lists per GameObject (StateListeningItem)
     private Dictionary<GameObject, List<StateListener>> stateListenersByItem = new Dictionary<GameObject, List<StateListener>>();
     private Dictionary<int, bool> stateListenerFoldout = new Dictionary<int, bool>();
 
@@ -58,13 +56,13 @@ public class ItemsManagerEditor : EditorWindow
         EditorGUILayout.BeginHorizontal();
 
         // Left Column
-        EditorGUILayout.BeginVertical("box", GUILayout.Width(position.width / 2));
+        EditorGUILayout.BeginVertical("box", GUILayout.Width(position.width / 4));
         DrawLeftColumn();
         EditorGUILayout.EndVertical();
 
-        // Right Column
+        // Middle Column
         EditorGUILayout.BeginVertical("box", GUILayout.Width(position.width / 2));
-        DrawRightColumn();
+        DrawMiddleColumn();
         EditorGUILayout.EndVertical();
 
         EditorGUILayout.EndHorizontal();
@@ -110,35 +108,36 @@ public class ItemsManagerEditor : EditorWindow
         foreach (GameObject item in stateListeningItems)
         {
             EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button(item.name, EditorStyles.linkLabel))
+            EditorGUILayout.LabelField(item.name, EditorStyles.boldLabel);
+            EditorGUILayout.ObjectField(item, typeof(GameObject), true, GUILayout.Width(100));
+            EditorGUILayout.ObjectField(GetClusterScriptFromItem(item, out int scriptIndex), typeof(JavaScriptAsset), true, GUILayout.Width(100));
+            if (GUILayout.Button("Destroy"))
+            {
+                DestroyStateListeningItem(item);
+            }
+            if (GUILayout.Button("Confirm/Edit Actions"))
             {
                 selectedStateListeningItem = item;
                 selectedStateListeningItemSerialized = new SerializedObject(selectedStateListeningItem);
                 selectedStateListeningItemScript = GetClusterScriptFromItem(selectedStateListeningItem, out selectedStateListeningItemScriptIndex);
             }
-            EditorGUILayout.ObjectField(item, typeof(GameObject), true);
-            EditorGUILayout.ObjectField(GetClusterScriptFromItem(item, out int scriptIndex), typeof(JavaScriptAsset), true);
             EditorGUILayout.EndHorizontal();
         }
 
         EditorGUILayout.Space();
 
-        if (GUILayout.Button(showCreateItemForm ? "Hide Create Item Form" : "Create Item"))
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+        EditorGUILayout.LabelField("Create State-Listening Item", EditorStyles.boldLabel);
+        EditorGUILayout.BeginHorizontal();
+        newItemName = EditorGUILayout.TextField("Item Name", newItemName);
+        if (GUILayout.Button("Create"))
         {
-            showCreateItemForm = !showCreateItemForm;
+            CreateStateListeningItem();
         }
-
-        if (showCreateItemForm)
-        {
-            newItemName = EditorGUILayout.TextField("Item Name", newItemName);
-            if (GUILayout.Button("Create State Listening Item"))
-            {
-                CreateStateListeningItem();
-            }
-        }
+        EditorGUILayout.EndHorizontal();
     }
 
-    private void DrawRightColumn()
+    private void DrawMiddleColumn()
     {
         if (selectedStateListeningItem != null)
         {
@@ -148,7 +147,8 @@ public class ItemsManagerEditor : EditorWindow
             string listenersFolderPath = string.Format(scriptFolderPathFormat, sceneName) + "/StateListeners";
             string listenersAssetPath = listenersFolderPath + "/" + selectedStateListeningItem.name + ".asset";
             StateListenersList selectedStateListenersList = AssetDatabase.LoadAssetAtPath<StateListenersList>(listenersAssetPath);
-            if (selectedStateListenersList != null) {
+            if (selectedStateListenersList != null)
+            {
                 stateListenersByItem[selectedStateListeningItem] = selectedStateListenersList.listeners.ToList();
             }
 
@@ -156,8 +156,10 @@ public class ItemsManagerEditor : EditorWindow
             if (stateListenersByItem.ContainsKey(selectedStateListeningItem) && stateListenersByItem[selectedStateListeningItem].Count > 0)
             {
                 // Draw each state listener
-                foreach (var listenerData in stateListenersByItem[selectedStateListeningItem])
+                List<int> listenerIndicesToRemove = new List<int>();
+                for (var i = 0; i < stateListenersByItem[selectedStateListeningItem].Count; i++)
                 {
+                    var listenerData = stateListenersByItem[selectedStateListeningItem][i];
                     int stateId = listenerData.stateID;
 
                     // Get the state name using stateId
@@ -173,13 +175,25 @@ public class ItemsManagerEditor : EditorWindow
                         stateListenerFoldout[stateId] = false;
                     }
 
-                    EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+                    EditorGUILayout.Space();
+                    EditorGUILayout.BeginHorizontal();
                     stateListenerFoldout[stateId] = EditorGUILayout.Foldout(stateListenerFoldout[stateId], stateName);
+                    if (GUILayout.Button("Remove Listener", GUILayout.Width(150)))
+                    {
+                        listenerIndicesToRemove.Add(i);
+                    }
+                    EditorGUILayout.EndHorizontal();
 
                     if (stateListenerFoldout[stateId])
                     {
                         DrawStateListener(listenerData);
                     }
+                }
+
+                // Remove listeners marked for removal
+                foreach (int index in listenerIndicesToRemove.OrderByDescending(i => i))
+                {
+                    stateListenersByItem[selectedStateListeningItem].RemoveAt(index);
                 }
             }
             else
@@ -187,6 +201,7 @@ public class ItemsManagerEditor : EditorWindow
                 EditorGUILayout.LabelField("No state listeners added yet.", EditorStyles.helpBox);
             }
 
+            EditorGUILayout.Space();
             if (GUILayout.Button("Apply Changes"))
             {
                 ApplyChangesToScript();
@@ -194,30 +209,26 @@ public class ItemsManagerEditor : EditorWindow
 
             EditorGUILayout.Space();
 
-            if (GUILayout.Button(showCreateListenerForm ? "Hide Create Listener Form" : "Add Listener"))
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+            EditorGUILayout.LabelField("Add State Listener", EditorStyles.boldLabel);
+            EditorGUILayout.BeginHorizontal();
+            if (stateList != null && statesProperty != null)
             {
-                showCreateListenerForm = !showCreateListenerForm;
-            }
-
-            if (showCreateListenerForm)
-            {
-                if (stateList != null && statesProperty != null)
+                List<string> stateNames = new List<string>();
+                for (int i = 0; i < statesProperty.arraySize; i++)
                 {
-                    List<string> stateNames = new List<string>();
-                    for (int i = 0; i < statesProperty.arraySize; i++)
-                    {
-                        SerializedProperty state = statesProperty.GetArrayElementAtIndex(i);
-                        stateNames.Add(state.FindPropertyRelative("StateName").stringValue);
-                    }
+                    SerializedProperty state = statesProperty.GetArrayElementAtIndex(i);
+                    stateNames.Add(state.FindPropertyRelative("StateName").stringValue);
+                }
 
-                    selectedStateIndex = EditorGUILayout.Popup("Select State", selectedStateIndex, stateNames.ToArray());
+                selectedStateIndex = EditorGUILayout.Popup("Select State", selectedStateIndex, stateNames.ToArray());
 
-                    if (GUILayout.Button("Add State Listener"))
-                    {
-                        AddStateListener(selectedStateIndex);
-                    }
+                if (GUILayout.Button("Add"))
+                {
+                    AddStateListener(selectedStateIndex);
                 }
             }
+            EditorGUILayout.EndHorizontal();
         }
         else
         {
@@ -225,7 +236,6 @@ public class ItemsManagerEditor : EditorWindow
         }
     }
 
-    // Changed: Accepts StateListener instead of stateIndex
     private void DrawStateListener(StateListener listenerData)
     {
         EditorGUILayout.BeginVertical("box");
@@ -234,60 +244,85 @@ public class ItemsManagerEditor : EditorWindow
         listenerData.onStateStartedFoldout = EditorGUILayout.Foldout(listenerData.onStateStartedFoldout, "On State Started");
         if (listenerData.onStateStartedFoldout)
         {
-            DrawActionsList(listenerData.onStateStartedActions);
-            listenerData.onStateStartedCustomAction = EditorGUILayout.TextArea(listenerData.onStateStartedCustomAction, GUILayout.Height(50));
+            DrawActionsList(listenerData.onStateStartedActions, ref listenerData.onStateStartedFoldout);
         }
 
         // During State
         listenerData.duringStateFoldout = EditorGUILayout.Foldout(listenerData.duringStateFoldout, "During State");
         if (listenerData.duringStateFoldout)
         {
-            DrawActionsList(listenerData.duringStateActions);
-            listenerData.duringStateCustomAction = EditorGUILayout.TextArea(listenerData.duringStateCustomAction, GUILayout.Height(50));
+            DrawActionsList(listenerData.duringStateActions, ref listenerData.duringStateFoldout);
         }
 
         // On State Exited
         listenerData.onStateExitedFoldout = EditorGUILayout.Foldout(listenerData.onStateExitedFoldout, "On State Exited");
         if (listenerData.onStateExitedFoldout)
         {
-            DrawActionsList(listenerData.onStateExitedActions);
-            listenerData.onStateExitedCustomAction = EditorGUILayout.TextArea(listenerData.onStateExitedCustomAction, GUILayout.Height(50));
+            DrawActionsList(listenerData.onStateExitedActions, ref listenerData.onStateExitedFoldout);
         }
 
         EditorGUILayout.EndVertical();
     }
 
-    private void DrawActionsList(List<StateListeningAction> actions)
+    private void DrawActionsList(List<StateListenerAction> actions, ref bool isFoldoutOpen)
     {
+        List<int> actionsIndicesToRemove = new List<int>();
         for (int i = 0; i < actions.Count; i++)
         {
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(actions[i].actionType);
+
+            // Display action label as text
+            EditorGUILayout.LabelField(actions[i].GetActionLabel());
+            
+            // Edit Custom Action (if applicable)
+            if (actions[i].customAction != null && actions[i].customAction.Length > 0)
+            {
+                actions[i].showCustomActionFoldout = EditorGUILayout.Foldout(actions[i].showCustomActionFoldout, "Edit Custom Action");
+            }
+
             if (GUILayout.Button("Up") && i > 0)
             {
-                StateListeningAction temp = actions[i];
+                StateListenerAction temp = actions[i];
                 actions[i] = actions[i - 1];
                 actions[i - 1] = temp;
             }
             if (GUILayout.Button("Down") && i < actions.Count - 1)
             {
-                StateListeningAction temp = actions[i];
+                StateListenerAction temp = actions[i];
                 actions[i] = actions[i + 1];
                 actions[i + 1] = temp;
             }
             if (GUILayout.Button("Remove"))
             {
-                actions.RemoveAt(i);
-                i--;
+                actionsIndicesToRemove.Add(i);
             }
             EditorGUILayout.EndHorizontal();
+
+            // Custom Action Text Area (if applicable)
+            if (actions[i].customAction != null && actions[i].showCustomActionFoldout)
+            {
+                actions[i].customAction = EditorGUILayout.TextArea(actions[i].customAction, GUILayout.Height(100));
+            }
         }
 
-        selectedActionIndex = EditorGUILayout.Popup("Choose action", selectedActionIndex, AvailableStateListeningActions.Select(actions => actions.actionType).ToArray());
-        if (GUILayout.Button("Add"))
+        // Remove actions marked for removal
+        foreach (int index in actionsIndicesToRemove.OrderByDescending(i => i))
         {
-            actions.Add(AvailableStateListeningActions[selectedActionIndex]);
+            actions.RemoveAt(index);
         }
+
+        // Add new actions
+        EditorGUILayout.BeginHorizontal();
+        selectedActionIndex = EditorGUILayout.Popup("Choose action", selectedActionIndex, AvailableStateListeningActions.Select(action => action.actionType).ToArray());
+        if (GUILayout.Button("Add Predefined Action", GUILayout.Width(150)))
+        {
+            actions.Add(new StateListenerAction(AvailableStateListeningActions[selectedActionIndex]));
+        }
+        if (GUILayout.Button("Add Custom Action", GUILayout.Width(150)))
+        {
+            actions.Add(new StateListenerAction { customAction = "" });
+        }
+        EditorGUILayout.EndHorizontal();
     }
 
     private void CreateStateListeningItem()
@@ -333,7 +368,6 @@ public class ItemsManagerEditor : EditorWindow
         selectedStateListeningItemScriptIndex = 1;
 
         newItemName = "";
-        showCreateItemForm = false;
     }
 
     private JavaScriptAsset GetClusterScriptFromItem(GameObject item, out int scriptIndex)
@@ -360,6 +394,13 @@ public class ItemsManagerEditor : EditorWindow
             stateListenersByItem[selectedStateListeningItem] = new List<StateListener>();
         }
 
+        // Check if a listener for this state already exists
+        if (stateListenersByItem[selectedStateListeningItem].Any(listener => listener.stateID == stateIndex))
+        {
+            EditorUtility.DisplayDialog("Error", $"A listener for state {stateIndex} already exists in this item.", "OK");
+            return;
+        }
+
         // Create and add the new listener data
         StateListener newListener = new StateListener { stateID = stateIndex };
         stateListenersByItem[selectedStateListeningItem].Add(newListener);
@@ -369,6 +410,55 @@ public class ItemsManagerEditor : EditorWindow
 
         // Log
         Debug.Log($"Added state listener for state {stateIndex} to item {selectedStateListeningItem.name}");
+    }
+
+    private void DestroyStateListeningItem(GameObject item)
+    {
+        if (item == null) return;
+
+        if (EditorUtility.DisplayDialog("Destroy State Listening Item",
+                $"Are you sure you want to destroy {item.name}?\n\n" +
+                "This will also delete its associated ClusterScript and State Listeners.",
+                "Destroy", "Keep it"))
+        {
+            // Remove from the list of items
+            stateListeningItems.Remove(item);
+
+            // Delete the associated ClusterScript
+            JavaScriptAsset script = GetClusterScriptFromItem(item, out int scriptIndex);
+            if (script != null)
+            {
+                string scriptPath = AssetDatabase.GetAssetPath(script);
+                AssetDatabase.DeleteAsset(scriptPath);
+            }
+
+            // Delete the associated StateListenersList asset
+            string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            string listenersFolderPath = string.Format(scriptFolderPathFormat, sceneName) + "/StateListeners";
+            string listenersAssetPath = listenersFolderPath + "/" + item.name + ".asset";
+            if (File.Exists(listenersAssetPath))
+            {
+                AssetDatabase.DeleteAsset(listenersAssetPath);
+            }
+
+            // Destroy the item in the scene
+            Undo.DestroyObjectImmediate(item);
+
+            // Deselect the item
+            if (selectedStateListeningItem == item)
+            {
+                selectedStateListeningItem = null;
+                selectedStateListeningItemSerialized = null;
+                selectedStateListeningItemScript = null;
+                selectedStateListeningItemScriptIndex = -1;
+            }
+
+            // Refresh the list of items
+            RefreshStateListeningItems();
+
+            // Refresh the AssetDatabase
+            AssetDatabase.Refresh();
+        }
     }
 
     private void ApplyChangesToScript()
@@ -381,26 +471,18 @@ public class ItemsManagerEditor : EditorWindow
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         string scriptPath = string.Format(scriptFolderPathFormat, sceneName) + "/" + selectedStateListeningItemScript.name + ".js";
         string scriptContent = File.ReadAllText(scriptPath);
-
-        // Replace OnStateEnter content
-        string onStateEnterPattern = @"function OnStateEnter\(\) \{([\s\S]*?)\}";
-        string newOnStateEnterContent = GenerateOnStateEnterContent();
-        scriptContent = System.Text.RegularExpressions.Regex.Replace(scriptContent, onStateEnterPattern, $"function OnStateEnter() {{\n    {newOnStateEnterContent}\n");
-
-        // Replace DuringState content
-        string duringStatePattern = @"function DuringState\(deltaTime\) \{([\s\S]*?)\}";
-        string newDuringStateContent = GenerateDuringStateContent();
-        scriptContent = System.Text.RegularExpressions.Regex.Replace(scriptContent, duringStatePattern, $"function DuringState(deltaTime) {{\n    {newDuringStateContent}\n");
-
-        // Replace OnStateExit content
-        string onStateExitPattern = @"function OnStateExit\(\) \{([\s\S]*?)\}";
-        string newOnStateExitContent = GenerateOnStateExitContent();
-        scriptContent = System.Text.RegularExpressions.Regex.Replace(scriptContent, onStateExitPattern, $"function OnStateExit() {{\n    {newOnStateExitContent}\n");
+        
+        string newScriptContent = "";
+        newScriptContent += GenerateOnStateEnterFunction();
+        newScriptContent += "\n";
+        newScriptContent += GenerateDuringStateFunction();
+        newScriptContent += "\n";
+        newScriptContent += GenerateOnStateExitFunction();
 
         var variablesAssetPath = string.Format(scriptFolderPathFormat, sceneName) + "/" + selectedStateListeningItemScript.name + ".js";
 
         // Write the changes to the actual file
-        File.WriteAllText(variablesAssetPath, scriptContent);
+        File.WriteAllText(variablesAssetPath, newScriptContent);
 
         // Update the ScriptableObject
         SerializedObject serializedObject = new SerializedObject(selectedStateListeningItemScript);
@@ -408,7 +490,8 @@ public class ItemsManagerEditor : EditorWindow
         textProperty.stringValue = scriptContent;
         serializedObject.ApplyModifiedProperties();
 
-        if (stateListenersByItem.ContainsKey(selectedStateListeningItem)) {
+        if (stateListenersByItem.ContainsKey(selectedStateListeningItem))
+        {
             StateListenersList asset = ScriptableObject.CreateInstance<StateListenersList>();
             asset.listeners = stateListenersByItem[selectedStateListeningItem].ToArray();
             string listenersFolderPath = string.Format(scriptFolderPathFormat, sceneName) + "/StateListeners";
@@ -417,8 +500,6 @@ public class ItemsManagerEditor : EditorWindow
                 Directory.CreateDirectory(listenersFolderPath);
             }
             string listenersAssetPath = listenersFolderPath + "/" + selectedStateListeningItem.name + ".asset";
-            Debug.Log(asset);
-            Debug.Log(listenersAssetPath);
             AssetDatabase.CreateAsset(asset, listenersAssetPath);
             EditorUtility.SetDirty(combiner);
         }
@@ -431,10 +512,11 @@ public class ItemsManagerEditor : EditorWindow
         AssetDatabase.ImportAsset(variablesAssetPath);
     }
 
-    private string GenerateOnStateEnterContent()
+    private string GenerateOnStateEnterFunction()
     {
-        string content = "const STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n";
-        content += "    const CONDITION = $.groupState.currentCondition;\n";
+        string content = "function OnStateEnter() {\n";
+        content += "  const STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n";
+        content += "  const CONDITION = $.groupState.currentCondition;\n";
 
         // Check if the selected item has any listeners
         if (stateListenersByItem.ContainsKey(selectedStateListeningItem))
@@ -443,25 +525,27 @@ public class ItemsManagerEditor : EditorWindow
             foreach (StateListener listenerData in stateListenersByItem[selectedStateListeningItem])
             {
                 int stateId = listenerData.stateID;
-                if (listenerData.onStateStartedActions.Count > 0 || !string.IsNullOrEmpty(listenerData.onStateStartedCustomAction))
+                if (listenerData.onStateStartedActions.Count > 0)
                 {
-                    content += $"    if (STATE_ID === {stateId}) {{\n";
-                    foreach (StateListeningAction action in listenerData.onStateStartedActions)
+                    content += $"  if (STATE_ID === {stateId}) {{\n";
+                    foreach (StateListenerAction action in listenerData.onStateStartedActions)
                     {
-                        content += $"      {action.codeSnippet}\n";
+                        content += $"    {action.GetActionContent()}\n";
                     }
-                    content += $"      {listenerData.onStateStartedCustomAction}\n";
-                    content += "    }\n";
+                    content += "  }\n";
                 }
             }
         }
+
+        content += "\n}\n";
         return content;
     }
 
-    private string GenerateDuringStateContent()
+    private string GenerateDuringStateFunction()
     {
-        string content = "const STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n";
-        content += "    const CONDITION = $.groupState.currentCondition;\n";
+        string content = "function DuringState(deltaTime) {\n";
+        content += "  const STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n";
+        content += "  const CONDITION = $.groupState.currentCondition;\n";
 
         // Check if the selected item has any listeners
         if (stateListenersByItem.ContainsKey(selectedStateListeningItem))
@@ -470,25 +554,27 @@ public class ItemsManagerEditor : EditorWindow
             foreach (StateListener listenerData in stateListenersByItem[selectedStateListeningItem])
             {
                 int stateId = listenerData.stateID;
-                if (listenerData.duringStateActions.Count > 0 || !string.IsNullOrEmpty(listenerData.duringStateCustomAction))
+                if (listenerData.duringStateActions.Count > 0)
                 {
-                    content += $"    if (STATE_ID === {stateId}) {{\n";
-                    foreach (StateListeningAction action in listenerData.duringStateActions)
+                    content += $"  if (STATE_ID === {stateId}) {{\n";
+                    foreach (StateListenerAction action in listenerData.duringStateActions)
                     {
-                        content += $"      {action.codeSnippet}\n";
+                        content += $"    {action.GetActionContent()}\n";
                     }
-                    content += $"      {listenerData.duringStateCustomAction}\n";
-                    content += "    }\n";
+                    content += "  }\n";
                 }
             }
         }
+
+        content += "\n}\n";
         return content;
     }
 
-    private string GenerateOnStateExitContent()
+    private string GenerateOnStateExitFunction()
     {
-        string content = "const STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n";
-        content += "    const CONDITION = $.groupState.currentCondition;\n";
+        string content = "function OnStateExit() {\n";
+        content += "  const STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n";
+        content += "  const CONDITION = $.groupState.currentCondition;\n";
 
         // Check if the selected item has any listeners
         if (stateListenersByItem.ContainsKey(selectedStateListeningItem))
@@ -497,18 +583,19 @@ public class ItemsManagerEditor : EditorWindow
             foreach (StateListener listenerData in stateListenersByItem[selectedStateListeningItem])
             {
                 int stateId = listenerData.stateID;
-                if (listenerData.onStateExitedActions.Count > 0 || !string.IsNullOrEmpty(listenerData.onStateExitedCustomAction))
+                if (listenerData.onStateExitedActions.Count > 0)
                 {
-                    content += $"    if (STATE_ID === {stateId}) {{\n";
-                    foreach (StateListeningAction action in listenerData.onStateExitedActions)
+                    content += $"  if (STATE_ID === {stateId}) {{\n";
+                    foreach (StateListenerAction action in listenerData.onStateExitedActions)
                     {
-                        content += $"      {action.codeSnippet}\n";
+                        content += $"    {action.GetActionContent()}\n";
                     }
-                    content += $"      {listenerData.onStateExitedCustomAction}\n";
-                    content += "    }\n";
+                    content += "  }\n";
                 }
             }
         }
+
+        content += "\n}\n";
         return content;
     }
 
@@ -533,7 +620,8 @@ public class ItemsManagerEditor : EditorWindow
         return null;
     }
 
-    private void EnableAccessToConditions(GameObject item) {
+    private void EnableAccessToConditions(GameObject item)
+    {
         // Attach ItemGroupMember component to this object
         var itemGroupMember = item.AddComponent<ClusterVR.CreatorKit.Item.Implements.ItemGroupMember>();
 
