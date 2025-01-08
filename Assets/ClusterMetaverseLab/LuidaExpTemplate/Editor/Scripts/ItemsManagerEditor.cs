@@ -22,7 +22,9 @@ public class ItemsManagerEditor : EditorWindow
     private const string prefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/StateListeningItem.prefab";
     private const string scriptFolderPathFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
     private const string stateListeningItemScriptTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/StateManagement/StateListeningItemTemplate.js";
-
+    private const string RequiredObjectsWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
+    private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
+    
     private List<GameObject> stateListeningItems = new List<GameObject>();
     private GameObject selectedStateListeningItem;
     private SerializedObject selectedStateListeningItemSerialized;
@@ -298,6 +300,7 @@ public class ItemsManagerEditor : EditorWindow
 
         GameObject newObject = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath));
         newObject.name = newItemName;
+        EnableAccessToConditions(newObject);
         Undo.RegisterCreatedObjectUndo(newObject, "Create State Listening Item");
 
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
@@ -507,5 +510,63 @@ public class ItemsManagerEditor : EditorWindow
             }
         }
         return content;
+    }
+
+    private GameObject FindConditionManagerPrefabInstance()
+    {
+        GameObject[] rootObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+
+        foreach (GameObject obj in rootObjects)
+        {
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == RequiredObjectsWrapperPrefabPath)
+            {
+                for (int i = 0; i < obj.transform.childCount; i++)
+                {
+                    Transform child = obj.transform.GetChild(i);
+                    if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == ConditionManagerPrefabPath)
+                    {
+                        return child.gameObject;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private void EnableAccessToConditions(GameObject item) {
+        // Attach ItemGroupMember component to this object
+        var itemGroupMember = item.AddComponent<ClusterVR.CreatorKit.Item.Implements.ItemGroupMember>();
+
+        // Find the ConditionManager GameObject in the scene
+        GameObject conditionManagerObject = FindConditionManagerPrefabInstance();
+        if (conditionManagerObject != null)
+        {
+            // Get the ItemGroupHost component from ConditionManager
+            var conditionManagerHost = conditionManagerObject.GetComponent<ClusterVR.CreatorKit.Item.Implements.ItemGroupHost>();
+            if (conditionManagerHost != null)
+            {
+                // Use reflection or internal accessors to assign the host
+                var serializedItemGroupMember = new UnityEditor.SerializedObject(itemGroupMember);
+                var hostProperty = serializedItemGroupMember.FindProperty("host");
+
+                if (hostProperty != null)
+                {
+                    hostProperty.objectReferenceValue = conditionManagerHost;
+                    serializedItemGroupMember.ApplyModifiedProperties();
+                }
+                else
+                {
+                    Debug.LogError("Unable to find 'host' property in ItemGroupMember.");
+                }
+            }
+            else
+            {
+                Debug.LogError("ConditionManager does not have an ItemGroupHost component.");
+            }
+        }
+        else
+        {
+            Debug.LogError("ConditionManager GameObject not found in the scene.");
+        }
     }
 }
