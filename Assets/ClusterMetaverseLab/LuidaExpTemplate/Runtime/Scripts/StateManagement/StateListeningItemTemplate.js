@@ -8,16 +8,16 @@ function OnStateEnter() {
     // if (stateID === i) {}
 }
 
-function OnStateExit () {
+function OnStateExit() {
     const STATE_ID = $.getStateCompat("global", "state_currentID", "integer");
     const CONDITION = $.groupState.currentCondition;
     // if (stateID === i) {}
 }
 
-function DuringState (deltaTime) {
+function DuringState(deltaTime) {
     const STATE_ID = $.getStateCompat("global", "state_currentID", "integer");
     const CONDITION = $.groupState.currentCondition;
     // if (stateID === i) {}
 }
 
-function Update (deltaTime) {}
+function Update(deltaTime) {}

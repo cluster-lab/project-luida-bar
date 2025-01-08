@@ -30,35 +30,11 @@ public class ItemsManagerEditor : EditorWindow
 
     private int selectedStateIndex = 0;
 
-    private Dictionary<int, StateListenerData> stateListeners = new Dictionary<int, StateListenerData>();
+    // Changed: Dictionary to store StateListener lists per GameObject (StateListeningItem)
+    private Dictionary<GameObject, List<StateListener>> stateListenersByItem = new Dictionary<GameObject, List<StateListener>>();
     private Dictionary<int, bool> stateListenerFoldout = new Dictionary<int, bool>();
 
     private Vector2 scrollPosition;
-
-    private class StateListenerData
-    {
-        public List<ActionData> onWorldInitializedActions = new List<ActionData>();
-        public string onWorldInitializedCustomAction = "";
-        public bool onWorldInitializedFoldout = false;
-
-        public List<ActionData> onStateStartedActions = new List<ActionData>();
-        public string onStateStartedCustomAction = "";
-        public bool onStateStartedFoldout = false;
-
-        public List<ActionData> duringStateActions = new List<ActionData>();
-        public string duringStateCustomAction = "";
-        public bool duringStateFoldout = false;
-
-        public List<ActionData> onStateExitedActions = new List<ActionData>();
-        public string onStateExitedCustomAction = "";
-        public bool onStateExitedFoldout = false;
-    }
-
-    private class ActionData
-    {
-        public string actionType;
-        public string codeSnippet;
-    }
 
     private string[] availableActions = new string[]
     {
@@ -71,11 +47,13 @@ public class ItemsManagerEditor : EditorWindow
 
     public void OnEnable()
     {
+        RefreshStateListeningItems();
     }
 
     public void OnGUI()
     {
         RefreshStateListeningItems();
+
         scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
         EditorGUILayout.BeginHorizontal();
 
@@ -167,25 +145,47 @@ public class ItemsManagerEditor : EditorWindow
         {
             EditorGUILayout.LabelField($"State Listeners for {selectedStateListeningItem.name}", EditorStyles.boldLabel);
 
-            if (stateList != null && statesProperty != null)
-            {
-                for (int i = 0; i < statesProperty.arraySize; i++)
-                {
-                    SerializedProperty state = statesProperty.GetArrayElementAtIndex(i);
-                    string stateName = state.FindPropertyRelative("StateName").stringValue;
+            string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            string listenersFolderPath = string.Format(scriptFolderPathFormat, sceneName) + "/StateListeners";
+            string listenersAssetPath = listenersFolderPath + "/" + selectedStateListeningItem.name + ".asset";
+            StateListenersList selectedStateListenersList = AssetDatabase.LoadAssetAtPath<StateListenersList>(listenersAssetPath);
+            if (selectedStateListenersList != null) {
+                stateListenersByItem[selectedStateListeningItem] = selectedStateListenersList.listeners.ToList();
+            }
 
-                    if (!stateListenerFoldout.ContainsKey(i))
+            // Check if the selected item has any listeners
+            if (stateListenersByItem.ContainsKey(selectedStateListeningItem) && stateListenersByItem[selectedStateListeningItem].Count > 0)
+            {
+                // Draw each state listener
+                foreach (var listenerData in stateListenersByItem[selectedStateListeningItem])
+                {
+                    int stateId = listenerData.stateID;
+
+                    // Get the state name using stateId
+                    string stateName = "";
+                    if (stateList != null && stateId >= 0 && stateId < stateList.States.Length)
                     {
-                        stateListenerFoldout[i] = false;
+                        stateName = stateList.States[stateId].StateName;
                     }
 
-                    stateListenerFoldout[i] = EditorGUILayout.Foldout(stateListenerFoldout[i], stateName);
-
-                    if (stateListenerFoldout[i])
+                    // Use stateId for foldout dictionary
+                    if (!stateListenerFoldout.ContainsKey(stateId))
                     {
-                        DrawStateListener(i);
+                        stateListenerFoldout[stateId] = false;
+                    }
+
+                    EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+                    stateListenerFoldout[stateId] = EditorGUILayout.Foldout(stateListenerFoldout[stateId], stateName);
+
+                    if (stateListenerFoldout[stateId])
+                    {
+                        DrawStateListener(listenerData);
                     }
                 }
+            }
+            else
+            {
+                EditorGUILayout.LabelField("No state listeners added yet.", EditorStyles.helpBox);
             }
 
             if (GUILayout.Button("Apply Changes"))
@@ -226,22 +226,10 @@ public class ItemsManagerEditor : EditorWindow
         }
     }
 
-    private void DrawStateListener(int stateIndex)
+    // Changed: Accepts StateListener instead of stateIndex
+    private void DrawStateListener(StateListener listenerData)
     {
-        if (!stateListeners.ContainsKey(stateIndex))
-        {
-            return;
-        }
-
-        StateListenerData listenerData = stateListeners[stateIndex];
-
-        // On World Initialized
-        listenerData.onWorldInitializedFoldout = EditorGUILayout.Foldout(listenerData.onWorldInitializedFoldout, "On World Initialized");
-        if (listenerData.onWorldInitializedFoldout)
-        {
-            DrawActionsList(listenerData.onWorldInitializedActions);
-            listenerData.onWorldInitializedCustomAction = EditorGUILayout.TextArea(listenerData.onWorldInitializedCustomAction, GUILayout.Height(50));
-        }
+        EditorGUILayout.BeginVertical("box");
 
         // On State Started
         listenerData.onStateStartedFoldout = EditorGUILayout.Foldout(listenerData.onStateStartedFoldout, "On State Started");
@@ -266,9 +254,11 @@ public class ItemsManagerEditor : EditorWindow
             DrawActionsList(listenerData.onStateExitedActions);
             listenerData.onStateExitedCustomAction = EditorGUILayout.TextArea(listenerData.onStateExitedCustomAction, GUILayout.Height(50));
         }
+
+        EditorGUILayout.EndVertical();
     }
 
-    private void DrawActionsList(List<ActionData> actions)
+    private void DrawActionsList(List<StateListeningAction> actions)
     {
         for (int i = 0; i < actions.Count; i++)
         {
@@ -276,13 +266,13 @@ public class ItemsManagerEditor : EditorWindow
             EditorGUILayout.LabelField(actions[i].actionType);
             if (GUILayout.Button("Up") && i > 0)
             {
-                ActionData temp = actions[i];
+                StateListeningAction temp = actions[i];
                 actions[i] = actions[i - 1];
                 actions[i - 1] = temp;
             }
             if (GUILayout.Button("Down") && i < actions.Count - 1)
             {
-                ActionData temp = actions[i];
+                StateListeningAction temp = actions[i];
                 actions[i] = actions[i + 1];
                 actions[i + 1] = temp;
             }
@@ -297,7 +287,7 @@ public class ItemsManagerEditor : EditorWindow
         selectedActionIndex = EditorGUILayout.Popup("Choose action", selectedActionIndex, availableActions);
         if (GUILayout.Button("Add"))
         {
-            actions.Add(new ActionData { actionType = availableActions[selectedActionIndex], codeSnippet = $"// {availableActions[selectedActionIndex]} code snippet" });
+            actions.Add(new StateListeningAction { actionType = availableActions[selectedActionIndex], codeSnippet = $"// {availableActions[selectedActionIndex]} code snippet" });
         }
     }
 
@@ -360,86 +350,106 @@ public class ItemsManagerEditor : EditorWindow
         return null;
     }
 
+    // Changed: Adds a new StateListener to the selected StateListeningItem
     private void AddStateListener(int stateIndex)
     {
-        if (!stateListeners.ContainsKey(stateIndex))
+        if (selectedStateListeningItem == null) return;
+
+        // Ensure there's a list for the selected item
+        if (!stateListenersByItem.ContainsKey(selectedStateListeningItem))
         {
-            stateListeners[stateIndex] = new StateListenerData();
-            stateListenerFoldout[stateIndex] = true;
+            stateListenersByItem[selectedStateListeningItem] = new List<StateListener>();
         }
+
+        // Create and add the new listener data
+        StateListener newListener = new StateListener { stateID = stateIndex };
+        stateListenersByItem[selectedStateListeningItem].Add(newListener);
+
+        // Initialize foldout state for this listener
+        stateListenerFoldout[stateIndex] = true;
+
+        // Log
+        Debug.Log($"Added state listener for state {stateIndex} to item {selectedStateListeningItem.name}");
     }
 
+    // Changed: Loads StateListener for the selected StateListeningItem
     private void LoadStateListeners()
     {
-        stateListeners.Clear();
+        if (selectedStateListeningItem == null) return;
+
+        // Ensure there's a list for the selected item, even if it's empty
+        if (!stateListenersByItem.ContainsKey(selectedStateListeningItem))
+        {
+            stateListenersByItem[selectedStateListeningItem] = new List<StateListener>();
+        }
+
+        // Clear the foldout states because we're reloading
         stateListenerFoldout.Clear();
 
-        if (selectedStateListeningItemScript == null) return;
-
-        string scriptContent = GetScriptContent(selectedStateListeningItemScript);
-
-        if (stateList != null)
+        if (selectedStateListeningItemScript == null)
         {
-            for (int i = 0; i < stateList.States.Length; i++)
+            Debug.LogWarning("Selected State Listening Item does not have a ClusterScript assigned.");
+            return;
+        }
+        
+        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        string scriptPath = string.Format(scriptFolderPathFormat, sceneName) + "/" + selectedStateListeningItemScript.name + ".js";
+        string scriptContent = File.ReadAllText(scriptPath);
+
+        // Iterate through each StateListener associated with the selected item
+        foreach (StateListener listenerData in stateListenersByItem[selectedStateListeningItem])
+        {
+            int stateId = listenerData.stateID;
+            
+            // Load On State Started actions and custom action
+            string onStateEnterPattern = $@"function OnStateEnter\(\) \{{[\s\S]*?if \(STATE_ID === {stateId}\) \{{([\s\S]*?)\}}[\s\S]*?\}}";
+            var onStateEnterMatch = System.Text.RegularExpressions.Regex.Match(scriptContent, onStateEnterPattern);
+            if (onStateEnterMatch.Success)
             {
-                string stateName = stateList.States[i].StateName;
-                StateListenerData listenerData = new StateListenerData();
-
-                // Load On World Initialized actions and custom action
-                string onStartPattern = @"\$\.onStart\(\(\) => \{([\s\S]*?)\}\)";
-                var onStartMatch = System.Text.RegularExpressions.Regex.Match(scriptContent, onStartPattern);
-                if (onStartMatch.Success)
-                {
-                    string onStartContent = onStartMatch.Groups[1].Value;
-                    listenerData.onWorldInitializedActions = ExtractActionsFromCode(onStartContent);
-                    listenerData.onWorldInitializedCustomAction = ExtractCustomActionFromCode(onStartContent);
-                }
-
-                // Load On State Started actions and custom action
-                string onStateEnterPattern = $@"function OnStateEnter\(\) \{{[\s\S]*?if \(STATE_ID === {i}\) \{{([\s\S]*?)\}}[\s\S]*?\}}";
-                var onStateEnterMatch = System.Text.RegularExpressions.Regex.Match(scriptContent, onStateEnterPattern);
-                if (onStateEnterMatch.Success)
-                {
-                    string onStateEnterContent = onStateEnterMatch.Groups[1].Value;
-                    listenerData.onStateStartedActions = ExtractActionsFromCode(onStateEnterContent);
-                    listenerData.onStateStartedCustomAction = ExtractCustomActionFromCode(onStateEnterContent);
-                }
-
-                // Load During State actions and custom action
-                string duringStatePattern = $@"function DuringState\(deltaTime\) \{{[\s\S]*?if \(STATE_ID === {i}\) \{{([\s\S]*?)\}}[\s\S]*?\}}";
-                var duringStateMatch = System.Text.RegularExpressions.Regex.Match(scriptContent, duringStatePattern);
-                if (duringStateMatch.Success)
-                {
-                    string duringStateContent = duringStateMatch.Groups[1].Value;
-                    listenerData.duringStateActions = ExtractActionsFromCode(duringStateContent);
-                    listenerData.duringStateCustomAction = ExtractCustomActionFromCode(duringStateContent);
-                }
-
-                // Load On State Exited actions and custom action
-                string onStateExitPattern = $@"function OnStateExit\(\) \{{[\s\S]*?if \(STATE_ID === {i}\) \{{([\s\S]*?)\}}[\s\S]*?\}}";
-                var onStateExitMatch = System.Text.RegularExpressions.Regex.Match(scriptContent, onStateExitPattern);
-                if (onStateExitMatch.Success)
-                {
-                    string onStateExitContent = onStateExitMatch.Groups[1].Value;
-                    listenerData.onStateExitedActions = ExtractActionsFromCode(onStateExitContent);
-                    listenerData.onStateExitedCustomAction = ExtractCustomActionFromCode(onStateExitContent);
-                }
-
-                stateListeners[i] = listenerData;
-                stateListenerFoldout[i] = false;
+                string onStateEnterContent = onStateEnterMatch.Groups[1].Value;
+                listenerData.onStateStartedActions = ExtractActionsFromCode(onStateEnterContent);
+                listenerData.onStateStartedCustomAction = ExtractCustomActionFromCode(onStateEnterContent);
             }
+
+            // Load During State actions and custom action
+            string duringStatePattern = $@"function DuringState\(deltaTime\) \{{[\s\S]*?if \(STATE_ID === {stateId}\) \{{([\s\S]*?)\}}[\s\S]*?\}}";
+            var duringStateMatch = System.Text.RegularExpressions.Regex.Match(scriptContent, duringStatePattern);
+            if (duringStateMatch.Success)
+            {
+                string duringStateContent = duringStateMatch.Groups[1].Value;
+                listenerData.duringStateActions = ExtractActionsFromCode(duringStateContent);
+                listenerData.duringStateCustomAction = ExtractCustomActionFromCode(duringStateContent);
+            }
+
+            // Load On State Exited actions and custom action
+            string onStateExitPattern = $@"function OnStateExit\(\) \{{[\s\S]*?if \(STATE_ID === {stateId}\) \{{([\s\S]*?)\}}[\s\S]*?\}}";
+            var onStateExitMatch = System.Text.RegularExpressions.Regex.Match(scriptContent, onStateExitPattern);
+            if (onStateExitMatch.Success)
+            {
+                string onStateExitContent = onStateExitMatch.Groups[1].Value;
+                listenerData.onStateExitedActions = ExtractActionsFromCode(onStateExitContent);
+                listenerData.onStateExitedCustomAction = ExtractCustomActionFromCode(onStateExitContent);
+            }
+
+            // Initialize foldout states for each section
+            listenerData.onStateStartedFoldout = false;
+            listenerData.duringStateFoldout = false;
+            listenerData.onStateExitedFoldout = false;
+
+            // Log
+            Debug.Log($"Loaded state listener data for state {stateId} from item {selectedStateListeningItem.name}");
         }
     }
 
-    private List<ActionData> ExtractActionsFromCode(string code)
+    private List<StateListeningAction> ExtractActionsFromCode(string code)
     {
-        List<ActionData> actions = new List<ActionData>();
+        List<StateListeningAction> actions = new List<StateListeningAction>();
         foreach (string actionType in availableActions)
         {
             string pattern = $@"// {actionType} code snippet";
             if (code.Contains(pattern))
             {
-                actions.Add(new ActionData { actionType = actionType, codeSnippet = pattern });
+                actions.Add(new StateListeningAction { actionType = actionType, codeSnippet = pattern });
             }
         }
         return actions;
@@ -465,37 +475,25 @@ public class ItemsManagerEditor : EditorWindow
         ScriptableClusterScriptCombiner combiner = selectedStateListeningItem.GetComponent<ScriptableClusterScriptCombiner>();
         if (combiner == null) return;
 
-        string scriptContent = GetScriptContent(selectedStateListeningItemScript);
-
-        // Replace OnStart content
-        string onStartPattern = @"\$\.onStart\(\(\) => \{([\s\S]*?)\}\)";
-        string newOnStartContent = GenerateOnStartContent();
-        scriptContent = System.Text.RegularExpressions.Regex.Replace(scriptContent, onStartPattern, $"$.onStart(() => {{\n      {newOnStartContent}\n}})");
+        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        string scriptPath = string.Format(scriptFolderPathFormat, sceneName) + "/" + selectedStateListeningItemScript.name + ".js";
+        string scriptContent = File.ReadAllText(scriptPath);
 
         // Replace OnStateEnter content
         string onStateEnterPattern = @"function OnStateEnter\(\) \{([\s\S]*?)\}";
         string newOnStateEnterContent = GenerateOnStateEnterContent();
-        scriptContent = System.Text.RegularExpressions.Regex.Replace(scriptContent, onStateEnterPattern, $"function OnStateEnter() {{\n    {newOnStateEnterContent}\n}}");
+        scriptContent = System.Text.RegularExpressions.Regex.Replace(scriptContent, onStateEnterPattern, $"function OnStateEnter() {{\n    {newOnStateEnterContent}\n");
 
         // Replace DuringState content
         string duringStatePattern = @"function DuringState\(deltaTime\) \{([\s\S]*?)\}";
         string newDuringStateContent = GenerateDuringStateContent();
-        scriptContent = System.Text.RegularExpressions.Regex.Replace(scriptContent, duringStatePattern, $"function DuringState(deltaTime) {{\n    {newDuringStateContent}\n}}");
+        scriptContent = System.Text.RegularExpressions.Regex.Replace(scriptContent, duringStatePattern, $"function DuringState(deltaTime) {{\n    {newDuringStateContent}\n");
 
         // Replace OnStateExit content
         string onStateExitPattern = @"function OnStateExit\(\) \{([\s\S]*?)\}";
         string newOnStateExitContent = GenerateOnStateExitContent();
-        scriptContent = System.Text.RegularExpressions.Regex.Replace(scriptContent, onStateExitPattern, $"function OnStateExit() {{\n    {newOnStateExitContent}\n}}");
+        scriptContent = System.Text.RegularExpressions.Regex.Replace(scriptContent, onStateExitPattern, $"function OnStateExit() {{\n    {newOnStateExitContent}\n");
 
-        // Update the script content using ReplaceScript
-        // combiner.ReplaceScript(selectedStateListeningItemScript, selectedStateListeningItemScriptIndex, scriptContent, 0, false);
-        // combiner.CombineScripts();
-        // EditorUtility.SetDirty(selectedStateListeningItemScript);
-        // EditorUtility.SetDirty(combiner);
-        // AssetDatabase.SaveAssets();
-        // AssetDatabase.Refresh();
-
-        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         var variablesAssetPath = string.Format(scriptFolderPathFormat, sceneName) + "/" + selectedStateListeningItemScript.name + ".js";
 
         // Write the changes to the actual file
@@ -507,52 +505,51 @@ public class ItemsManagerEditor : EditorWindow
         textProperty.stringValue = scriptContent;
         serializedObject.ApplyModifiedProperties();
 
+        if (stateListenersByItem.ContainsKey(selectedStateListeningItem)) {
+            StateListenersList asset = ScriptableObject.CreateInstance<StateListenersList>();
+            asset.listeners = stateListenersByItem[selectedStateListeningItem].ToArray();
+            string listenersFolderPath = string.Format(scriptFolderPathFormat, sceneName) + "/StateListeners";
+            if (!Directory.Exists(listenersFolderPath))
+            {
+                Directory.CreateDirectory(listenersFolderPath);
+            }
+            string listenersAssetPath = listenersFolderPath + "/" + selectedStateListeningItem.name + ".asset";
+            Debug.Log(asset);
+            Debug.Log(listenersAssetPath);
+            AssetDatabase.CreateAsset(asset, listenersAssetPath);
+            EditorUtility.SetDirty(combiner);
+        }
+
         // Mark the asset as dirty and save
         EditorUtility.SetDirty(selectedStateListeningItemScript);
+        EditorUtility.SetDirty(combiner);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
         AssetDatabase.ImportAsset(variablesAssetPath);
-    }
-
-    private string GetScriptContent(JavaScriptAsset scriptAsset)
-    {
-        // Assuming the script content is stored in a field named 'source'
-        var serializedScript = new SerializedObject(scriptAsset);
-        var sourceProperty = serializedScript.FindProperty("source");
-        return sourceProperty != null ? sourceProperty.stringValue : string.Empty;
-    }
-
-    private string GenerateOnStartContent()
-    {
-        string content = "";
-        if (stateListeners.ContainsKey(0) && stateListeners[0].onWorldInitializedActions.Count > 0)
-        {
-            foreach (ActionData action in stateListeners[0].onWorldInitializedActions)
-            {
-                content += $"      {action.codeSnippet}\n";
-            }
-            content += $"      {stateListeners[0].onWorldInitializedCustomAction}\n";
-        }
-        return content;
     }
 
     private string GenerateOnStateEnterContent()
     {
         string content = "const STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n";
         content += "    const CONDITION = $.groupState.currentCondition;\n";
-        foreach (var listener in stateListeners)
+
+        // Check if the selected item has any listeners
+        if (stateListenersByItem.ContainsKey(selectedStateListeningItem))
         {
-            int stateId = listener.Key;
-            StateListenerData listenerData = listener.Value;
-            if (listenerData.onStateStartedActions.Count > 0 || !string.IsNullOrEmpty(listenerData.onStateStartedCustomAction))
+            // Aggregate On State Enter content from all listeners of the selected item
+            foreach (StateListener listenerData in stateListenersByItem[selectedStateListeningItem])
             {
-                content += $"    if (STATE_ID === {stateId}) {{\n";
-                foreach (ActionData action in listenerData.onStateStartedActions)
+                int stateId = listenerData.stateID;
+                if (listenerData.onStateStartedActions.Count > 0 || !string.IsNullOrEmpty(listenerData.onStateStartedCustomAction))
                 {
-                    content += $"      {action.codeSnippet}\n";
+                    content += $"    if (STATE_ID === {stateId}) {{\n";
+                    foreach (StateListeningAction action in listenerData.onStateStartedActions)
+                    {
+                        content += $"      {action.codeSnippet}\n";
+                    }
+                    content += $"      {listenerData.onStateStartedCustomAction}\n";
+                    content += "    }\n";
                 }
-                content += $"      {listenerData.onStateStartedCustomAction}\n";
-                content += "    }\n";
             }
         }
         return content;
@@ -562,19 +559,24 @@ public class ItemsManagerEditor : EditorWindow
     {
         string content = "const STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n";
         content += "    const CONDITION = $.groupState.currentCondition;\n";
-        foreach (var listener in stateListeners)
+
+        // Check if the selected item has any listeners
+        if (stateListenersByItem.ContainsKey(selectedStateListeningItem))
         {
-            int stateId = listener.Key;
-            StateListenerData listenerData = listener.Value;
-            if (listenerData.duringStateActions.Count > 0 || !string.IsNullOrEmpty(listenerData.duringStateCustomAction))
+            // Aggregate During State content from all listeners of the selected item
+            foreach (StateListener listenerData in stateListenersByItem[selectedStateListeningItem])
             {
-                content += $"    if (STATE_ID === {stateId}) {{\n";
-                foreach (ActionData action in listenerData.duringStateActions)
+                int stateId = listenerData.stateID;
+                if (listenerData.duringStateActions.Count > 0 || !string.IsNullOrEmpty(listenerData.duringStateCustomAction))
                 {
-                    content += $"      {action.codeSnippet}\n";
+                    content += $"    if (STATE_ID === {stateId}) {{\n";
+                    foreach (StateListeningAction action in listenerData.duringStateActions)
+                    {
+                        content += $"      {action.codeSnippet}\n";
+                    }
+                    content += $"      {listenerData.duringStateCustomAction}\n";
+                    content += "    }\n";
                 }
-                content += $"      {listenerData.duringStateCustomAction}\n";
-                content += "    }\n";
             }
         }
         return content;
@@ -584,19 +586,24 @@ public class ItemsManagerEditor : EditorWindow
     {
         string content = "const STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n";
         content += "    const CONDITION = $.groupState.currentCondition;\n";
-        foreach (var listener in stateListeners)
+
+        // Check if the selected item has any listeners
+        if (stateListenersByItem.ContainsKey(selectedStateListeningItem))
         {
-            int stateId = listener.Key;
-            StateListenerData listenerData = listener.Value;
-            if (listenerData.onStateExitedActions.Count > 0 || !string.IsNullOrEmpty(listenerData.onStateExitedCustomAction))
+            // Aggregate On State Exit content from all listeners of the selected item
+            foreach (StateListener listenerData in stateListenersByItem[selectedStateListeningItem])
             {
-                content += $"    if (STATE_ID === {stateId}) {{\n";
-                foreach (ActionData action in listenerData.onStateExitedActions)
+                int stateId = listenerData.stateID;
+                if (listenerData.onStateExitedActions.Count > 0 || !string.IsNullOrEmpty(listenerData.onStateExitedCustomAction))
                 {
-                    content += $"      {action.codeSnippet}\n";
+                    content += $"    if (STATE_ID === {stateId}) {{\n";
+                    foreach (StateListeningAction action in listenerData.onStateExitedActions)
+                    {
+                        content += $"      {action.codeSnippet}\n";
+                    }
+                    content += $"      {listenerData.onStateExitedCustomAction}\n";
+                    content += "    }\n";
                 }
-                content += $"      {listenerData.onStateExitedCustomAction}\n";
-                content += "    }\n";
             }
         }
         return content;
