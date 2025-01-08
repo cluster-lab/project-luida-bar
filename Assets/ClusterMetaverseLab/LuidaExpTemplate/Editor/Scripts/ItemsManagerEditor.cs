@@ -10,6 +10,11 @@ using System.Text.RegularExpressions;
 
 public class ItemsManagerEditor : EditorWindow
 {
+    private static StateListeningAction[] AvailableStateListeningActions = {
+        new StateListeningAction("Show item", "$.setStateCompat('this', 'show', true);"),
+        new StateListeningAction("Hide item", "$.setStateCompat('this', 'show', false);"),
+    };
+
     private string newItemName = "";
     private bool showCreateItemForm = false;
     private bool showCreateListenerForm = false;
@@ -35,13 +40,6 @@ public class ItemsManagerEditor : EditorWindow
     private Dictionary<int, bool> stateListenerFoldout = new Dictionary<int, bool>();
 
     private Vector2 scrollPosition;
-
-    private string[] availableActions = new string[]
-    {
-        "Action 1",
-        "Action 2",
-        "Action 3"
-    };
 
     private int selectedActionIndex = 0;
 
@@ -115,7 +113,6 @@ public class ItemsManagerEditor : EditorWindow
                 selectedStateListeningItem = item;
                 selectedStateListeningItemSerialized = new SerializedObject(selectedStateListeningItem);
                 selectedStateListeningItemScript = GetClusterScriptFromItem(selectedStateListeningItem, out selectedStateListeningItemScriptIndex);
-                LoadStateListeners();
             }
             EditorGUILayout.ObjectField(item, typeof(GameObject), true);
             EditorGUILayout.ObjectField(GetClusterScriptFromItem(item, out int scriptIndex), typeof(JavaScriptAsset), true);
@@ -284,10 +281,10 @@ public class ItemsManagerEditor : EditorWindow
             EditorGUILayout.EndHorizontal();
         }
 
-        selectedActionIndex = EditorGUILayout.Popup("Choose action", selectedActionIndex, availableActions);
+        selectedActionIndex = EditorGUILayout.Popup("Choose action", selectedActionIndex, AvailableStateListeningActions.Select(actions => actions.actionType).ToArray());
         if (GUILayout.Button("Add"))
         {
-            actions.Add(new StateListeningAction { actionType = availableActions[selectedActionIndex], codeSnippet = $"// {availableActions[selectedActionIndex]} code snippet" });
+            actions.Add(AvailableStateListeningActions[selectedActionIndex]);
         }
     }
 
@@ -331,7 +328,6 @@ public class ItemsManagerEditor : EditorWindow
         selectedStateListeningItemSerialized = new SerializedObject(selectedStateListeningItem);
         selectedStateListeningItemScript = newScriptAsset;
         selectedStateListeningItemScriptIndex = 1;
-        LoadStateListeners();
 
         newItemName = "";
         showCreateItemForm = false;
@@ -370,102 +366,6 @@ public class ItemsManagerEditor : EditorWindow
 
         // Log
         Debug.Log($"Added state listener for state {stateIndex} to item {selectedStateListeningItem.name}");
-    }
-
-    // Changed: Loads StateListener for the selected StateListeningItem
-    private void LoadStateListeners()
-    {
-        if (selectedStateListeningItem == null) return;
-
-        // Ensure there's a list for the selected item, even if it's empty
-        if (!stateListenersByItem.ContainsKey(selectedStateListeningItem))
-        {
-            stateListenersByItem[selectedStateListeningItem] = new List<StateListener>();
-        }
-
-        // Clear the foldout states because we're reloading
-        stateListenerFoldout.Clear();
-
-        if (selectedStateListeningItemScript == null)
-        {
-            Debug.LogWarning("Selected State Listening Item does not have a ClusterScript assigned.");
-            return;
-        }
-        
-        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        string scriptPath = string.Format(scriptFolderPathFormat, sceneName) + "/" + selectedStateListeningItemScript.name + ".js";
-        string scriptContent = File.ReadAllText(scriptPath);
-
-        // Iterate through each StateListener associated with the selected item
-        foreach (StateListener listenerData in stateListenersByItem[selectedStateListeningItem])
-        {
-            int stateId = listenerData.stateID;
-            
-            // Load On State Started actions and custom action
-            string onStateEnterPattern = $@"function OnStateEnter\(\) \{{[\s\S]*?if \(STATE_ID === {stateId}\) \{{([\s\S]*?)\}}[\s\S]*?\}}";
-            var onStateEnterMatch = System.Text.RegularExpressions.Regex.Match(scriptContent, onStateEnterPattern);
-            if (onStateEnterMatch.Success)
-            {
-                string onStateEnterContent = onStateEnterMatch.Groups[1].Value;
-                listenerData.onStateStartedActions = ExtractActionsFromCode(onStateEnterContent);
-                listenerData.onStateStartedCustomAction = ExtractCustomActionFromCode(onStateEnterContent);
-            }
-
-            // Load During State actions and custom action
-            string duringStatePattern = $@"function DuringState\(deltaTime\) \{{[\s\S]*?if \(STATE_ID === {stateId}\) \{{([\s\S]*?)\}}[\s\S]*?\}}";
-            var duringStateMatch = System.Text.RegularExpressions.Regex.Match(scriptContent, duringStatePattern);
-            if (duringStateMatch.Success)
-            {
-                string duringStateContent = duringStateMatch.Groups[1].Value;
-                listenerData.duringStateActions = ExtractActionsFromCode(duringStateContent);
-                listenerData.duringStateCustomAction = ExtractCustomActionFromCode(duringStateContent);
-            }
-
-            // Load On State Exited actions and custom action
-            string onStateExitPattern = $@"function OnStateExit\(\) \{{[\s\S]*?if \(STATE_ID === {stateId}\) \{{([\s\S]*?)\}}[\s\S]*?\}}";
-            var onStateExitMatch = System.Text.RegularExpressions.Regex.Match(scriptContent, onStateExitPattern);
-            if (onStateExitMatch.Success)
-            {
-                string onStateExitContent = onStateExitMatch.Groups[1].Value;
-                listenerData.onStateExitedActions = ExtractActionsFromCode(onStateExitContent);
-                listenerData.onStateExitedCustomAction = ExtractCustomActionFromCode(onStateExitContent);
-            }
-
-            // Initialize foldout states for each section
-            listenerData.onStateStartedFoldout = false;
-            listenerData.duringStateFoldout = false;
-            listenerData.onStateExitedFoldout = false;
-
-            // Log
-            Debug.Log($"Loaded state listener data for state {stateId} from item {selectedStateListeningItem.name}");
-        }
-    }
-
-    private List<StateListeningAction> ExtractActionsFromCode(string code)
-    {
-        List<StateListeningAction> actions = new List<StateListeningAction>();
-        foreach (string actionType in availableActions)
-        {
-            string pattern = $@"// {actionType} code snippet";
-            if (code.Contains(pattern))
-            {
-                actions.Add(new StateListeningAction { actionType = actionType, codeSnippet = pattern });
-            }
-        }
-        return actions;
-    }
-
-    private string ExtractCustomActionFromCode(string code)
-    {
-        string customAction = "";
-        foreach (string actionType in availableActions)
-        {
-            string pattern = $@"// {actionType} code snippet";
-            code = code.Replace(pattern, "");
-        }
-        customAction = code.Trim();
-
-        return customAction;
     }
 
     private void ApplyChangesToScript()

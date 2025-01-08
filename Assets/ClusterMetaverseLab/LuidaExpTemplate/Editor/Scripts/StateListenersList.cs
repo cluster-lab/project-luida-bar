@@ -5,10 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 
 [Serializable]
-public class StateListeningAction
+public struct StateListeningAction
 {
     public string actionType;
     public string codeSnippet;
+    public StateListeningAction(string _actionType, string _codeSnippet) {
+        actionType = _actionType;
+        codeSnippet = _codeSnippet;
+    }
 }
 
 [Serializable]
