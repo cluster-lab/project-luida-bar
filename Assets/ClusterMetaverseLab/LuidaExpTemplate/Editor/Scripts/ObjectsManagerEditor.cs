@@ -5,6 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 
+/// <summary>
+/// Deprecated
+/// </summary>
 public class ObjectsManagerEditor : EditorWindow
 {
     private StateList stateList;

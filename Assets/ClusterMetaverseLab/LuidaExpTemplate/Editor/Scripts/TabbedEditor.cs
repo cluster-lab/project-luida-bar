@@ -6,11 +6,10 @@ using System.IO;
 public class TabbedEditor : EditorWindow
 {
     private int currentTab = 0;
-    private string[] tabNames = { "Experiment Identifiers", "Experiment Variables Editor", "State List Editor", "Objects Manager", "ItemsManagerEditor", "Data Recorders List" };
+    private string[] tabNames = { "Experiment Identifiers", "Experiment Variables", "States List", "State-listening Items", "Data Recorders" };
 
     private ExpIdentifierEditor expIdentifierEditor;
     private StateListEditor stateListEditor;
-    private ObjectsManagerEditor objectsManagerEditor;
     private ItemsManagerEditor itemsManagerEditor;
     private ExperimentVariablesEditor experimentVariablesEditor;
     private DataRecorderListEditor dataRecorderListEditor;
@@ -32,14 +31,12 @@ public class TabbedEditor : EditorWindow
         expIdentifierEditor = new ExpIdentifierEditor();
         experimentVariablesEditor = new ExperimentVariablesEditor();
         stateListEditor = new StateListEditor();
-        objectsManagerEditor = new ObjectsManagerEditor();
         itemsManagerEditor = new ItemsManagerEditor();
         dataRecorderListEditor = new DataRecorderListEditor();
 
         expIdentifierEditor.OnEnable();
         experimentVariablesEditor.OnEnable();
         stateListEditor.OnEnable();
-        objectsManagerEditor.OnEnable();
         itemsManagerEditor.OnEnable();
         dataRecorderListEditor.OnEnable();
 
@@ -99,12 +96,9 @@ public class TabbedEditor : EditorWindow
                     stateListEditor.OnGUI();
                     break;
                 case 3:
-                    objectsManagerEditor.OnGUI();
-                    break;
-                case 4:
                     itemsManagerEditor.OnGUI();
                     break;
-                case 5:
+                case 4:
                     dataRecorderListEditor.OnGUI();
                     break;
             }
