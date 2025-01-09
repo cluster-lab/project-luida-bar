@@ -14,6 +14,7 @@ public class StateListEditor : EditorWindow
     private SerializedObject serializedStateList;
     private SerializedProperty statesProperty;
     private string prefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/State.prefab";
+    private const string RequiredObjectsWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
     private const string stateManagementScriptFolderPathFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
     private const string stateListeningItemPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/StateListeningItem.prefab";
 
@@ -440,7 +441,6 @@ public class StateListEditor : EditorWindow
 
         UpdateSceneObjects();
         if (stateOrderChanged) {
-            UpdateStateListeningObjectsAfterReorder();
             UpdateStateListeningItemsAfterReorder();
         }
 
@@ -476,10 +476,31 @@ public class StateListEditor : EditorWindow
 
     private void UpdateSceneObjects()
     {
-        GameObject statesObject = GameObject.Find("States");
-        if (statesObject == null)
+        GameObject[] rootObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+        GameObject statesObject = null;
+        GameObject requiredObjectsWrapper = null;
+
+        foreach (GameObject obj in rootObjects)
+        {
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == RequiredObjectsWrapperPrefabPath)
+            {
+                requiredObjectsWrapper = obj;
+                for (int i = 0; i < obj.transform.childCount; i++)
+                {
+                    Transform child = obj.transform.GetChild(i);
+                    if (child.gameObject.name == "States")
+                    {
+                        statesObject = child.gameObject;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        if (statesObject == null && requiredObjectsWrapper != null)
         {
             statesObject = new GameObject("States");
+            statesObject.transform.SetParent(requiredObjectsWrapper.transform, false);
         }
 
         for (int i = 0; i < stateList.States.Length; i++)
@@ -766,60 +787,6 @@ public class StateListEditor : EditorWindow
         }
     }
 
-    private void UpdateStateListeningObjectsAfterReorder()
-    {
-        GameObject statesObject = GameObject.Find("States");
-        if (statesObject != null)
-        {
-            for (int i = 0; i < stateList.States.Length; i++)
-            {
-                string stateName = stateList.States[i].StateName;
-                Transform stateTransform = statesObject.transform.Find(stateName);
-
-                if (stateTransform != null)
-                {
-                    Transform objectsTransform = stateTransform.Find("Objects");
-                    if (objectsTransform != null)
-                    {
-                        foreach (Transform objTransform in objectsTransform)
-                        {
-                            GameObject stateListeningObject = objTransform.gameObject;
-                            UpdateStateIdForObject(stateListeningObject, i);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private void UpdateStateIdForObject(GameObject obj, int newStateId)
-    {
-        Component itemLogic = obj.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
-        if (itemLogic != null)
-        {
-            SerializedObject serializedComp = new SerializedObject(itemLogic);
-            SerializedProperty specificProperty = serializedComp.FindProperty("logic.statements");
-
-            if (specificProperty != null && specificProperty.isArray)
-            {
-                for (int i = 0; i < specificProperty.arraySize; i++)
-                {
-                    SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
-                    if (targetKey != null && targetKey.stringValue == "state_id")
-                    {
-                        SerializedProperty stateIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
-                        if (stateIdProp != null)
-                        {
-                            stateIdProp.intValue = newStateId;
-                            serializedComp.ApplyModifiedProperties();
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     private void UpdateStateListeningItemsAfterReorder()
     {
         if (stateList == null || previousStates == null) return;
@@ -836,48 +803,51 @@ public class StateListEditor : EditorWindow
         // Update state IDs in StateListenersLists and ClusterScripts
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         string listenersFolderPath = string.Format(stateManagementScriptFolderPathFormat, sceneName) + "/StateListeners";
-        string[] assetFiles = Directory.GetFiles(listenersFolderPath, "*.asset");
-
-        foreach (string assetFile in assetFiles)
+        if (Directory.Exists(listenersFolderPath))
         {
-            StateListenersList stateListenersList = AssetDatabase.LoadAssetAtPath<StateListenersList>(assetFile);
-            if (stateListenersList != null)
+            string[] assetFiles = Directory.GetFiles(listenersFolderPath, "*.asset");
+
+            foreach (string assetFile in assetFiles)
             {
-                bool updated = false;
+                StateListenersList stateListenersList = AssetDatabase.LoadAssetAtPath<StateListenersList>(assetFile);
+                if (stateListenersList != null)
+                {
+                    bool updated = false;
+                    
+                    var updatedListeners = new List<StateListener>();
+                    foreach (StateListener listener in stateListenersList.listeners)
+                    {
+                        if (stateIdMap.ContainsKey(listener.stateID))
+                        {
+                            listener.stateID = stateIdMap[listener.stateID];
+                            updated = true;
+                            if (listener.stateID >= 0) updatedListeners.Add(listener);
+                        }
+                        else
+                        {
+                            updatedListeners.Add(listener);
+                        }
+                    }
+                    stateListenersList.listeners = updatedListeners.ToArray();
+
+                    if (updated)
+                    {
+                        EditorUtility.SetDirty(stateListenersList);
+                    }
+                }
                 
-                var updatedListeners = new List<StateListener>();
-                foreach (StateListener listener in stateListenersList.listeners)
-                {
-                    if (stateIdMap.ContainsKey(listener.stateID))
-                    {
-                        listener.stateID = stateIdMap[listener.stateID];
-                        updated = true;
-                        if (listener.stateID >= 0) updatedListeners.Add(listener);
-                    }
-                    else
-                    {
-                        updatedListeners.Add(listener);
-                    }
-                }
-                stateListenersList.listeners = updatedListeners.ToArray();
-
-                if (updated)
-                {
-                    EditorUtility.SetDirty(stateListenersList);
-                }
-            }
+                var itemName = assetFile.Replace(listenersFolderPath, "").Replace("\\", "").Replace(".asset", "");
+                string scriptPath = string.Format("Assets/_Experiment_/Scripts/StateManagement/{0}/{1}.js", sceneName, itemName);
             
-            var itemName = assetFile.Replace(listenersFolderPath, "").Replace("\\", "").Replace(".asset", "");
-            string scriptPath = string.Format("Assets/_Experiment_/Scripts/StateManagement/{0}/{1}.js", sceneName, itemName);
-        
-            string newScriptContent = "";
-            newScriptContent += GenerateOnStateEnterFunction(stateListenersList.listeners);
-            newScriptContent += "\n";
-            newScriptContent += GenerateDuringStateFunction(stateListenersList.listeners);
-            newScriptContent += "\n";
-            newScriptContent += GenerateOnStateExitFunction(stateListenersList.listeners);
+                string newScriptContent = "";
+                newScriptContent += GenerateOnStateEnterFunction(stateListenersList.listeners);
+                newScriptContent += "\n";
+                newScriptContent += GenerateDuringStateFunction(stateListenersList.listeners);
+                newScriptContent += "\n";
+                newScriptContent += GenerateOnStateExitFunction(stateListenersList.listeners);
 
-            File.WriteAllText(scriptPath, newScriptContent);
+                File.WriteAllText(scriptPath, newScriptContent);
+            }
         }
 
         // Save changes and refresh the AssetDatabase
