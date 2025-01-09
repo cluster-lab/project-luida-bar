@@ -1,30 +1,53 @@
 using UnityEngine;
 using UnityEditor;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using ClusterVR.CreatorKit.Item;
+using ClusterVR.CreatorKit.Item.Implements;
 
 public class StateListEditor : EditorWindow
 {
     private StateList stateList;
+    private StateList.State[] previousStates;
     private SerializedObject serializedStateList;
     private SerializedProperty statesProperty;
     private string prefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/State.prefab";
+    private const string stateManagementScriptFolderPathFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
+    private const string stateListeningItemPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/StateListeningItem.prefab";
 
     private readonly string[] FixedStateNames = new string[] {"Preparation", "Trial - Task", "Trial - Rest", "Trial - Questionnaire", "End"};
     private Vector2 scrollPos;
 
     public void OnEnable()
     {
-        // Initialization code if needed
+        LoadStateList();
+        previousStates = new StateList.State[stateList.States.Length];
+        Array.Copy(stateList.States, previousStates, stateList.States.Length);
+    }
+
+    private void LoadStateList()
+    {
+        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        string stateListPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
+
+        stateList = AssetDatabase.LoadAssetAtPath<StateList>(stateListPath);
+        if (stateList != null)
+        {
+            serializedStateList = new SerializedObject(stateList);
+            statesProperty = serializedStateList.FindProperty("States");
+        }
     }
 
     public void OnGUI()
     {
         scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
-        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        string stateListPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
-
-        stateList = AssetDatabase.LoadAssetAtPath<StateList>(stateListPath);
+        if (stateList == null)
+        {
+            LoadStateList();
+        }
 
         if (stateList == null)
         {
@@ -33,7 +56,8 @@ public class StateListEditor : EditorWindow
 
             if (template != null)
             {
-                string newAssetPath = stateListPath;
+                string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+                string newAssetPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
                 AssetDatabase.CopyAsset(templatePath, newAssetPath);
                 AssetDatabase.Refresh();
                 stateList = AssetDatabase.LoadAssetAtPath<StateList>(newAssetPath);
@@ -417,6 +441,7 @@ public class StateListEditor : EditorWindow
         UpdateSceneObjects();
         if (stateOrderChanged) {
             UpdateStateListeningObjectsAfterReorder();
+            UpdateStateListeningItemsAfterReorder();
         }
 
         EditorGUILayout.EndScrollView();
@@ -509,7 +534,6 @@ public class StateListEditor : EditorWindow
             DestroyImmediate(statesObject.transform.GetChild(i).gameObject);
         }
     }
-
 
     private Transform FindChildByStateID(Transform parent, int stateID)
     {
@@ -794,5 +818,142 @@ public class StateListEditor : EditorWindow
                 }
             }
         }
+    }
+
+    private void UpdateStateListeningItemsAfterReorder()
+    {
+        if (stateList == null || previousStates == null) return;
+
+        // Create a dictionary to map old state IDs to new state IDs
+        Dictionary<int, int> stateIdMap = new Dictionary<int, int>();
+        for (int i = 0; i < previousStates.Length; i++)
+        {
+            string stateName = previousStates[i].StateName;
+            int newStateIndex = Array.FindIndex(stateList.States, s => s.StateName == stateName);
+            stateIdMap.Add(i, newStateIndex);
+        }
+
+        // Update state IDs in StateListenersLists and ClusterScripts
+        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        string listenersFolderPath = string.Format(stateManagementScriptFolderPathFormat, sceneName) + "/StateListeners";
+        string[] assetFiles = Directory.GetFiles(listenersFolderPath, "*.asset");
+
+        foreach (string assetFile in assetFiles)
+        {
+            StateListenersList stateListenersList = AssetDatabase.LoadAssetAtPath<StateListenersList>(assetFile);
+            if (stateListenersList != null)
+            {
+                bool updated = false;
+                
+                var updatedListeners = new List<StateListener>();
+                foreach (StateListener listener in stateListenersList.listeners)
+                {
+                    if (stateIdMap.ContainsKey(listener.stateID))
+                    {
+                        listener.stateID = stateIdMap[listener.stateID];
+                        updated = true;
+                        if (listener.stateID >= 0) updatedListeners.Add(listener);
+                    }
+                    else
+                    {
+                        updatedListeners.Add(listener);
+                    }
+                }
+                stateListenersList.listeners = updatedListeners.ToArray();
+
+                if (updated)
+                {
+                    EditorUtility.SetDirty(stateListenersList);
+                }
+            }
+            
+            var itemName = assetFile.Replace(listenersFolderPath, "").Replace("\\", "").Replace(".asset", "");
+            string scriptPath = string.Format("Assets/_Experiment_/Scripts/StateManagement/{0}/{1}.js", sceneName, itemName);
+        
+            string newScriptContent = "";
+            newScriptContent += GenerateOnStateEnterFunction(stateListenersList.listeners);
+            newScriptContent += "\n";
+            newScriptContent += GenerateDuringStateFunction(stateListenersList.listeners);
+            newScriptContent += "\n";
+            newScriptContent += GenerateOnStateExitFunction(stateListenersList.listeners);
+
+            File.WriteAllText(scriptPath, newScriptContent);
+        }
+
+        // Save changes and refresh the AssetDatabase
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        Array.Copy(stateList.States, previousStates, stateList.States.Length);
+    }
+    
+    private List<GameObject> RetrieveStateListeningItems()
+    {
+        List<GameObject> stateListeningItems = new List<GameObject>();
+        GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
+        foreach (GameObject obj in allObjects)
+        {
+            if (PrefabUtility.GetCorrespondingObjectFromSource(obj) != null)
+            {
+                string sourcePrefabPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(obj));
+                if (sourcePrefabPath == stateListeningItemPrefabPath)
+                {
+                    stateListeningItems.Add(obj);
+                }
+            }
+        }
+        return stateListeningItems;
+    }
+    
+    private string GenerateStateFunction(StateListener[] listeners, string functionName, Func<StateListener, List<StateListenerAction>> actionSelector, string extraParameters = "")
+    {
+        var content = $"function {functionName}({extraParameters}) {{\n";
+        content += "  const STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n";
+        content += "  const CONDITION = $.groupState.currentCondition;\n\n";
+
+        foreach (var listenerData in listeners)
+        {
+            var actions = actionSelector(listenerData);
+            if (actions.Count > 0)
+            {
+                content += $"  if (STATE_ID === {listenerData.stateID}) {{\n";
+                foreach (var action in actions)
+                {
+                    content += $"    {action.GetActionContent()}\n";
+                }
+                content += "  }\n";
+            }
+        }
+
+        content += "}\n\n";
+        return content;
+    }
+
+    private string GenerateOnStateEnterFunction(StateListener[] listeners)
+    {
+        return GenerateStateFunction(
+            listeners,
+            "OnStateEnter",
+            listener => listener.onStateStartedActions
+        );
+    }
+
+    private string GenerateDuringStateFunction(StateListener[] listeners)
+    {
+        return GenerateStateFunction(
+            listeners,
+            "DuringState",
+            listener => listener.duringStateActions,
+            "deltaTime"
+        );
+    }
+
+    private string GenerateOnStateExitFunction(StateListener[] listeners)
+    {
+        return GenerateStateFunction(
+            listeners,
+            "OnStateExit",
+            listener => listener.onStateExitedActions
+        );
     }
 }

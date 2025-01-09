@@ -548,16 +548,8 @@ public class ItemsManagerEditor : EditorWindow
         newScriptContent += "\n";
         newScriptContent += GenerateOnStateExitFunction();
 
-        var variablesAssetPath = string.Format(scriptFolderPathFormat, sceneName) + "/" + selectedStateListeningItemScript.name + ".js";
-
         // Write the changes to the actual file
-        File.WriteAllText(variablesAssetPath, newScriptContent);
-
-        // Update the ScriptableObject
-        SerializedObject serializedObject = new SerializedObject(selectedStateListeningItemScript);
-        SerializedProperty textProperty = serializedObject.FindProperty("text");
-        textProperty.stringValue = scriptContent;
-        serializedObject.ApplyModifiedProperties();
+        File.WriteAllText(scriptPath, newScriptContent);
 
         if (stateListenersByItem.ContainsKey(selectedStateListeningItem))
         {
@@ -569,6 +561,7 @@ public class ItemsManagerEditor : EditorWindow
                 Directory.CreateDirectory(listenersFolderPath);
             }
             string listenersAssetPath = listenersFolderPath + "/" + selectedStateListeningItem.name + ".asset";
+            Debug.Log(listenersAssetPath);
             AssetDatabase.CreateAsset(asset, listenersAssetPath);
             EditorUtility.SetDirty(combiner);
         }
@@ -578,96 +571,67 @@ public class ItemsManagerEditor : EditorWindow
         EditorUtility.SetDirty(combiner);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
-        AssetDatabase.ImportAsset(variablesAssetPath);
+        AssetDatabase.ImportAsset(scriptPath);
+    }
+    
+    private string GenerateStateFunction(
+        string functionName,
+        Func<StateListener, List<StateListenerAction>> actionSelector,
+        string extraParameters = "")
+    {
+        // Build the function signature, optionally adding extra parameters.
+        var content = $"function {functionName}({extraParameters}) {{\n";
+        content += "  const STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n";
+        content += "  const CONDITION = $.groupState.currentCondition;\n\n";
+
+        // Check if the selected item has any listeners
+        if (stateListenersByItem.ContainsKey(selectedStateListeningItem))
+        {
+            // Aggregate action content from all listeners of the selected item
+            foreach (var listenerData in stateListenersByItem[selectedStateListeningItem])
+            {
+                var actions = actionSelector(listenerData);
+                if (actions.Count > 0)
+                {
+                    content += $"  if (STATE_ID === {listenerData.stateID}) {{\n";
+                    foreach (var action in actions)
+                    {
+                        content += $"    {action.GetActionContent()}\n";
+                    }
+                    content += "  }\n";
+                }
+            }
+        }
+
+        content += "}\n\n";
+        return content;
     }
 
     private string GenerateOnStateEnterFunction()
     {
-        string content = "function OnStateEnter() {\n";
-        content += "  const STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n";
-        content += "  const CONDITION = $.groupState.currentCondition;\n";
-
-        // Check if the selected item has any listeners
-        if (stateListenersByItem.ContainsKey(selectedStateListeningItem))
-        {
-            // Aggregate On State Enter content from all listeners of the selected item
-            foreach (StateListener listenerData in stateListenersByItem[selectedStateListeningItem])
-            {
-                int stateId = listenerData.stateID;
-                if (listenerData.onStateStartedActions.Count > 0)
-                {
-                    content += $"  if (STATE_ID === {stateId}) {{\n";
-                    foreach (StateListenerAction action in listenerData.onStateStartedActions)
-                    {
-                        content += $"    {action.GetActionContent()}\n";
-                    }
-                    content += "  }\n";
-                }
-            }
-        }
-
-        content += "\n}\n";
-        return content;
+        return GenerateStateFunction(
+            "OnStateEnter",
+            listener => listener.onStateStartedActions
+        );
     }
 
     private string GenerateDuringStateFunction()
     {
-        string content = "function DuringState(deltaTime) {\n";
-        content += "  const STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n";
-        content += "  const CONDITION = $.groupState.currentCondition;\n";
-
-        // Check if the selected item has any listeners
-        if (stateListenersByItem.ContainsKey(selectedStateListeningItem))
-        {
-            // Aggregate During State content from all listeners of the selected item
-            foreach (StateListener listenerData in stateListenersByItem[selectedStateListeningItem])
-            {
-                int stateId = listenerData.stateID;
-                if (listenerData.duringStateActions.Count > 0)
-                {
-                    content += $"  if (STATE_ID === {stateId}) {{\n";
-                    foreach (StateListenerAction action in listenerData.duringStateActions)
-                    {
-                        content += $"    {action.GetActionContent()}\n";
-                    }
-                    content += "  }\n";
-                }
-            }
-        }
-
-        content += "\n}\n";
-        return content;
+        return GenerateStateFunction(
+            "DuringState",
+            listener => listener.duringStateActions,
+            "deltaTime"
+        );
     }
 
     private string GenerateOnStateExitFunction()
     {
-        string content = "function OnStateExit() {\n";
-        content += "  const STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n";
-        content += "  const CONDITION = $.groupState.currentCondition;\n";
-
-        // Check if the selected item has any listeners
-        if (stateListenersByItem.ContainsKey(selectedStateListeningItem))
-        {
-            // Aggregate On State Exit content from all listeners of the selected item
-            foreach (StateListener listenerData in stateListenersByItem[selectedStateListeningItem])
-            {
-                int stateId = listenerData.stateID;
-                if (listenerData.onStateExitedActions.Count > 0)
-                {
-                    content += $"  if (STATE_ID === {stateId}) {{\n";
-                    foreach (StateListenerAction action in listenerData.onStateExitedActions)
-                    {
-                        content += $"    {action.GetActionContent()}\n";
-                    }
-                    content += "  }\n";
-                }
-            }
-        }
-
-        content += "\n}\n";
-        return content;
+        return GenerateStateFunction(
+            "OnStateExit",
+            listener => listener.onStateExitedActions
+        );
     }
-
+    
     private GameObject FindConditionManagerPrefabInstance()
     {
         GameObject[] rootObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
