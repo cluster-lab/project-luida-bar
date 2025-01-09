@@ -16,6 +16,7 @@ public class ItemsManagerEditor : EditorWindow
     };
 
     private string newItemName = "";
+    private GameObject referenceObject = null;
 
     private const string prefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/StateListeningItem.prefab";
     private const string scriptFolderPathFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
@@ -129,10 +130,19 @@ public class ItemsManagerEditor : EditorWindow
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         EditorGUILayout.LabelField("Create State-Listening Item", EditorStyles.boldLabel);
         EditorGUILayout.BeginHorizontal();
-        newItemName = EditorGUILayout.TextField("Item Name", newItemName);
+        EditorGUILayout.LabelField("Item Name", GUILayout.Width(70));
+        newItemName = EditorGUILayout.TextField(newItemName, GUILayout.Width(80));
+        
+        EditorGUILayout.Space();
+        
+        EditorGUILayout.LabelField("Create with existing object", GUILayout.Width(150));
+        referenceObject = (GameObject)EditorGUILayout.ObjectField(referenceObject, typeof(GameObject), true, GUILayout.Width(150));
+
+        EditorGUILayout.Space();
+        
         if (GUILayout.Button("Create"))
         {
-            CreateStateListeningItem();
+            CreateStateListeningItem(referenceObject);
         }
         EditorGUILayout.EndHorizontal();
     }
@@ -325,7 +335,7 @@ public class ItemsManagerEditor : EditorWindow
         EditorGUILayout.EndHorizontal();
     }
 
-    private void CreateStateListeningItem()
+    private void CreateStateListeningItem(GameObject referenceObject = null)
     {
         if (string.IsNullOrEmpty(newItemName))
         {
@@ -359,6 +369,8 @@ public class ItemsManagerEditor : EditorWindow
         EditorUtility.SetDirty(newScriptAsset);
         AssetDatabase.SaveAssets();
 
+        CopyFromReferenceObject(newObject, referenceObject);
+
         RefreshStateListeningItems();
 
         // Automatically select the newly created item
@@ -368,6 +380,7 @@ public class ItemsManagerEditor : EditorWindow
         selectedStateListeningItemScriptIndex = 1;
 
         newItemName = "";
+        referenceObject = null;
     }
 
     private JavaScriptAsset GetClusterScriptFromItem(GameObject item, out int scriptIndex)
@@ -656,5 +669,56 @@ public class ItemsManagerEditor : EditorWindow
         {
             Debug.LogError("ConditionManager GameObject not found in the scene.");
         }
+    }
+
+    private void CopyFromReferenceObject(GameObject newObject, GameObject referenceObject)
+    {
+        if (!referenceObject) return;
+        
+        // Copy values from the reference object's Item component to the new object's Item component (without removing it)
+        var referenceItem = referenceObject.GetComponent<ClusterVR.CreatorKit.Item.Implements.Item>();
+        var newItem = newObject.GetComponent<ClusterVR.CreatorKit.Item.Implements.Item>();
+
+        if (referenceItem != null && newItem != null)
+        {
+            CopyItemComponentValues(referenceItem, newItem);
+        }
+
+        // Copy the Transform component values from the reference object to the new object
+        newObject.transform.position = referenceObject.transform.position;
+        newObject.transform.rotation = referenceObject.transform.rotation;
+        newObject.transform.localScale = referenceObject.transform.localScale;
+
+        // Copy all other components (excluding ScriptableItem and ScriptableClusterScriptCombiner)
+        var components = referenceObject.GetComponents<Component>().Where(c => !(c is ClusterVR.CreatorKit.Item.Implements.ScriptableItem) && !(c is ScriptableClusterScriptCombiner) && !(c is Transform));
+        foreach (var component in components)
+        {
+            if (component is ClusterVR.CreatorKit.Item.Implements.Item) continue;
+            UnityEditorInternal.ComponentUtility.CopyComponent(component);
+            UnityEditorInternal.ComponentUtility.PasteComponentAsNew(newObject);
+        }
+
+        // Copy all child GameObjects
+        foreach (Transform child in referenceObject.transform)
+        {
+            GameObject newChild = GameObject.Instantiate(child.gameObject, newObject.transform);
+            newChild.name = child.name;
+        }
+    }
+    
+    private void CopyItemComponentValues(ClusterVR.CreatorKit.Item.Implements.Item sourceItem, ClusterVR.CreatorKit.Item.Implements.Item targetItem)
+    {
+        // Use SerializedObject to copy field values between components
+        SerializedObject sourceSerializedItem = new SerializedObject(sourceItem);
+        SerializedObject targetSerializedItem = new SerializedObject(targetItem);
+
+        // Iterate over all properties of the Item component and copy values from source to target
+        SerializedProperty property = sourceSerializedItem.GetIterator();
+        while (property.NextVisible(true))
+        {
+            targetSerializedItem.CopyFromSerializedProperty(property);
+        }
+
+        targetSerializedItem.ApplyModifiedProperties(); // Apply changes to the target Item component
     }
 }
