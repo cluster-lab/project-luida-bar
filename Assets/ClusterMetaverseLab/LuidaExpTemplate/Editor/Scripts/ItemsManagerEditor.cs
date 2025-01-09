@@ -29,6 +29,7 @@ public class ItemsManagerEditor : EditorWindow
     private SerializedObject selectedStateListeningItemSerialized;
     private JavaScriptAsset selectedStateListeningItemScript;
     private int selectedStateListeningItemScriptIndex;
+    private bool isListenersListLoaded;
 
     private StateList stateList;
     private SerializedObject serializedStateList;
@@ -62,7 +63,7 @@ public class ItemsManagerEditor : EditorWindow
         EditorGUILayout.EndVertical();
 
         // Middle Column
-        EditorGUILayout.BeginVertical("box", GUILayout.Width(position.width / 2));
+        EditorGUILayout.BeginVertical("box", GUILayout.Width(position.width));
         DrawMiddleColumn();
         EditorGUILayout.EndVertical();
 
@@ -104,12 +105,12 @@ public class ItemsManagerEditor : EditorWindow
 
     private void DrawLeftColumn()
     {
-        EditorGUILayout.LabelField("State Listening Items", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("State Listening Items", EditorStyles.largeLabel);
 
         foreach (GameObject item in stateListeningItems)
         {
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(item.name, EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(item.name, EditorStyles.boldLabel, GUILayout.Width(100));
             EditorGUILayout.ObjectField(item, typeof(GameObject), true, GUILayout.Width(100));
             EditorGUILayout.ObjectField(GetClusterScriptFromItem(item, out int scriptIndex), typeof(JavaScriptAsset), true, GUILayout.Width(100));
             if (GUILayout.Button("Destroy"))
@@ -121,6 +122,7 @@ public class ItemsManagerEditor : EditorWindow
                 selectedStateListeningItem = item;
                 selectedStateListeningItemSerialized = new SerializedObject(selectedStateListeningItem);
                 selectedStateListeningItemScript = GetClusterScriptFromItem(selectedStateListeningItem, out selectedStateListeningItemScriptIndex);
+                isListenersListLoaded = false;
             }
             EditorGUILayout.EndHorizontal();
         }
@@ -129,37 +131,45 @@ public class ItemsManagerEditor : EditorWindow
 
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         EditorGUILayout.LabelField("Create State-Listening Item", EditorStyles.boldLabel);
-        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.BeginVertical();
         EditorGUILayout.LabelField("Item Name", GUILayout.Width(70));
         newItemName = EditorGUILayout.TextField(newItemName, GUILayout.Width(80));
         
-        EditorGUILayout.Space();
-        
-        EditorGUILayout.LabelField("Create with existing object", GUILayout.Width(150));
+        EditorGUILayout.LabelField("(Optional) Create with existing object", GUILayout.Width(210));
         referenceObject = (GameObject)EditorGUILayout.ObjectField(referenceObject, typeof(GameObject), true, GUILayout.Width(150));
 
-        EditorGUILayout.Space();
-        
-        if (GUILayout.Button("Create"))
+        if (GUILayout.Button("Create", GUILayout.Width(100)))
         {
             CreateStateListeningItem(referenceObject);
         }
-        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.EndVertical();
     }
 
     private void DrawMiddleColumn()
     {
         if (selectedStateListeningItem != null)
         {
-            EditorGUILayout.LabelField($"State Listeners for {selectedStateListeningItem.name}", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField($"State Listeners for {selectedStateListeningItem.name}", EditorStyles.largeLabel);
 
-            string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-            string listenersFolderPath = string.Format(scriptFolderPathFormat, sceneName) + "/StateListeners";
-            string listenersAssetPath = listenersFolderPath + "/" + selectedStateListeningItem.name + ".asset";
-            StateListenersList selectedStateListenersList = AssetDatabase.LoadAssetAtPath<StateListenersList>(listenersAssetPath);
-            if (selectedStateListenersList != null)
+            if (!isListenersListLoaded)
             {
-                stateListenersByItem[selectedStateListeningItem] = selectedStateListenersList.listeners.ToList();
+                string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+                string listenersFolderPath = string.Format(scriptFolderPathFormat, sceneName) + "/StateListeners";
+                string listenersAssetPath = listenersFolderPath + "/" + selectedStateListeningItem.name + ".asset";
+                StateListenersList selectedStateListenersList = AssetDatabase.LoadAssetAtPath<StateListenersList>(listenersAssetPath);
+                if (selectedStateListenersList != null)
+                {
+                    if (stateListenersByItem.ContainsKey(selectedStateListeningItem))
+                    {
+                        stateListenersByItem[selectedStateListeningItem] = selectedStateListenersList.listeners.ToList();
+                    }
+                    else
+                    {
+                        stateListenersByItem.Add(selectedStateListeningItem, selectedStateListenersList.listeners.ToList());
+                    }
+                }
+
+                isListenersListLoaded = true;
             }
 
             // Check if the selected item has any listeners
@@ -187,8 +197,9 @@ public class ItemsManagerEditor : EditorWindow
 
                     EditorGUILayout.Space();
                     EditorGUILayout.BeginHorizontal();
-                    stateListenerFoldout[stateId] = EditorGUILayout.Foldout(stateListenerFoldout[stateId], stateName);
-                    if (GUILayout.Button("Remove Listener", GUILayout.Width(150)))
+                    EditorGUILayout.LabelField("Listen to State:", GUILayout.Width(90));
+                    stateListenerFoldout[stateId] = EditorGUILayout.Foldout(stateListenerFoldout[stateId], stateName, EditorStyles.foldoutHeader);
+                    if (GUILayout.Button("Remove", GUILayout.Width(60)))
                     {
                         listenerIndicesToRemove.Add(i);
                     }
@@ -196,8 +207,12 @@ public class ItemsManagerEditor : EditorWindow
 
                     if (stateListenerFoldout[stateId])
                     {
+                        EditorGUILayout.BeginHorizontal();
+                        EditorGUILayout.Space(20);
                         DrawStateListener(listenerData);
+                        EditorGUILayout.EndHorizontal();
                     }
+                    EditorGUILayout.Space();
                 }
 
                 // Remove listeners marked for removal
@@ -251,21 +266,25 @@ public class ItemsManagerEditor : EditorWindow
         EditorGUILayout.BeginVertical("box");
 
         // On State Started
-        listenerData.onStateStartedFoldout = EditorGUILayout.Foldout(listenerData.onStateStartedFoldout, "On State Started");
+        listenerData.onStateStartedFoldout = EditorGUILayout.Foldout(listenerData.onStateStartedFoldout, "On State Started", EditorStyles.foldoutHeader);
         if (listenerData.onStateStartedFoldout)
         {
             DrawActionsList(listenerData.onStateStartedActions, ref listenerData.onStateStartedFoldout);
         }
+        
+        EditorGUILayout.Space();
 
         // During State
-        listenerData.duringStateFoldout = EditorGUILayout.Foldout(listenerData.duringStateFoldout, "During State");
+        listenerData.duringStateFoldout = EditorGUILayout.Foldout(listenerData.duringStateFoldout, "During State", EditorStyles.foldoutHeader);
         if (listenerData.duringStateFoldout)
         {
             DrawActionsList(listenerData.duringStateActions, ref listenerData.duringStateFoldout);
         }
+        
+        EditorGUILayout.Space();
 
         // On State Exited
-        listenerData.onStateExitedFoldout = EditorGUILayout.Foldout(listenerData.onStateExitedFoldout, "On State Exited");
+        listenerData.onStateExitedFoldout = EditorGUILayout.Foldout(listenerData.onStateExitedFoldout, "On State Exited", EditorStyles.foldoutHeader);
         if (listenerData.onStateExitedFoldout)
         {
             DrawActionsList(listenerData.onStateExitedActions, ref listenerData.onStateExitedFoldout);
@@ -277,42 +296,58 @@ public class ItemsManagerEditor : EditorWindow
     private void DrawActionsList(List<StateListenerAction> actions, ref bool isFoldoutOpen)
     {
         List<int> actionsIndicesToRemove = new List<int>();
-        for (int i = 0; i < actions.Count; i++)
+        if (actions.Count == 0)
         {
-            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("No actions added yet.", EditorStyles.helpBox);
+        }
+        else
+        {
+            EditorGUILayout.BeginVertical("box");
+            for (int i = 0; i < actions.Count; i++)
+            {
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.Space(20);
 
-            // Display action label as text
-            EditorGUILayout.LabelField(actions[i].GetActionLabel());
-            
-            // Edit Custom Action (if applicable)
-            if (actions[i].customAction != null && actions[i].customAction.Length > 0)
-            {
-                actions[i].showCustomActionFoldout = EditorGUILayout.Foldout(actions[i].showCustomActionFoldout, "Edit Custom Action");
-            }
+                // Display action label as text
+                EditorGUILayout.LabelField("Action " + (i + 1) + ":", GUILayout.Width(70));
+                EditorGUILayout.LabelField(actions[i].GetActionLabel(), EditorStyles.boldLabel);
+                GUILayout.FlexibleSpace();
+                
+                // Edit Custom Action (if applicable)
+                if (actions[i].predefinedAction.actionType == null || actions[i].predefinedAction.actionType.Length == 0)
+                {
+                    // actions[i].showCustomActionFoldout = EditorGUILayout.Foldout(actions[i].showCustomActionFoldout, "Edit Script");
+                    if (GUILayout.Button(actions[i].showCustomActionFoldout ? "Hide Code Block" : "Edit Script", GUILayout.Width(120)))
+                    {
+                        actions[i].showCustomActionFoldout = !actions[i].showCustomActionFoldout;
+                    }
+                }
 
-            if (GUILayout.Button("Up") && i > 0)
-            {
-                StateListenerAction temp = actions[i];
-                actions[i] = actions[i - 1];
-                actions[i - 1] = temp;
-            }
-            if (GUILayout.Button("Down") && i < actions.Count - 1)
-            {
-                StateListenerAction temp = actions[i];
-                actions[i] = actions[i + 1];
-                actions[i + 1] = temp;
-            }
-            if (GUILayout.Button("Remove"))
-            {
-                actionsIndicesToRemove.Add(i);
-            }
-            EditorGUILayout.EndHorizontal();
+                if (GUILayout.Button("▲", GUILayout.Width(30)) && i > 0)
+                {
+                    StateListenerAction temp = actions[i];
+                    actions[i] = actions[i - 1];
+                    actions[i - 1] = temp;
+                }
+                if (GUILayout.Button("▼", GUILayout.Width(30)) && i < actions.Count - 1)
+                {
+                    StateListenerAction temp = actions[i];
+                    actions[i] = actions[i + 1];
+                    actions[i + 1] = temp;
+                }
+                if (GUILayout.Button("×", GUILayout.Width(20)))
+                {
+                    actionsIndicesToRemove.Add(i);
+                }
+                EditorGUILayout.EndHorizontal();
 
-            // Custom Action Text Area (if applicable)
-            if (actions[i].customAction != null && actions[i].showCustomActionFoldout)
-            {
-                actions[i].customAction = EditorGUILayout.TextArea(actions[i].customAction, GUILayout.Height(100));
+                // Custom Action Text Area (if applicable)
+                if (actions[i].customAction != null && actions[i].showCustomActionFoldout)
+                {
+                    actions[i].customAction = EditorGUILayout.TextArea(actions[i].customAction, GUILayout.Height(100));
+                }
             }
+            EditorGUILayout.EndVertical();
         }
 
         // Remove actions marked for removal
@@ -322,16 +357,37 @@ public class ItemsManagerEditor : EditorWindow
         }
 
         // Add new actions
+        EditorGUILayout.BeginHorizontal("box", GUILayout.MaxWidth(200));
+        
+        EditorGUILayout.Space(20);
+        EditorGUILayout.BeginVertical("box");
+        EditorGUILayout.LabelField("Add Predefined action");
         EditorGUILayout.BeginHorizontal();
-        selectedActionIndex = EditorGUILayout.Popup("Choose action", selectedActionIndex, AvailableStateListeningActions.Select(action => action.actionType).ToArray());
-        if (GUILayout.Button("Add Predefined Action", GUILayout.Width(150)))
+        selectedActionIndex = EditorGUILayout.Popup(selectedActionIndex, AvailableStateListeningActions.Select(action => action.actionType).ToArray());
+        if (GUILayout.Button("Add", GUILayout.Width(50)))
         {
             actions.Add(new StateListenerAction(AvailableStateListeningActions[selectedActionIndex]));
         }
-        if (GUILayout.Button("Add Custom Action", GUILayout.Width(150)))
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.EndVertical();
+
+        EditorGUILayout.BeginVertical("box", GUILayout.Width(10));
+        EditorGUILayout.LabelField("", GUI.skin.verticalSlider, GUILayout.Width(10));
+        EditorGUILayout.LabelField("", GUI.skin.verticalSlider, GUILayout.Width(10));
+        EditorGUILayout.EndVertical();
+        
+        EditorGUILayout.BeginVertical("box");
+        EditorGUILayout.LabelField("Add Custom action");
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Add", GUILayout.Width(50)))
         {
             actions.Add(new StateListenerAction { customAction = "" });
         }
+        EditorGUILayout.LabelField("* You can edit its script later", EditorStyles.miniLabel);
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.EndVertical();
+        EditorGUILayout.Space();
+        
         EditorGUILayout.EndHorizontal();
     }
 

@@ -37,7 +37,7 @@ public class StateListenerAction
 
     public string GetActionLabel()
     {
-        if (customAction != null && customAction.Length > 0)
+        if (predefinedAction.actionType == null || predefinedAction.actionType.Length == 0)
         {
             return "Custom Action";
         }
@@ -49,7 +49,7 @@ public class StateListenerAction
 
     public string GetActionContent()
     {
-        if (customAction != null && customAction.Length > 0)
+        if (predefinedAction.actionType == null || predefinedAction.actionType.Length == 0)
         {
             return customAction;
         }
