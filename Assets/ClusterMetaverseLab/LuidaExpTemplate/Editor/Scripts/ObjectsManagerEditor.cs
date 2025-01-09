@@ -13,7 +13,7 @@ public class ObjectsManagerEditor : EditorWindow
     private StateList stateList;
     private SerializedObject serializedStateList;
     private SerializedProperty statesProperty;
-    private string stateListeningObjectPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/StateListeningObject.prefab";
+    private string stateListeningObjectPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/StateListeningObject_Deprecated.prefab";
     private string formPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/Questionnaire/Questionnaire.prefab";
     private string jsStateTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/StateManagement/StateListeningObjectTemplate.js";
     private string identifiersAssetPath = "Assets/_Experiment_/Settings/ExpIdentifiers.js";
