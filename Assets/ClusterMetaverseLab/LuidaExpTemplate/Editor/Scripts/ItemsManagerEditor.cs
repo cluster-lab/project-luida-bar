@@ -32,8 +32,7 @@ public class ItemsManagerEditor : EditorWindow
     private SerializedObject selectedStateListeningItemSerialized;
     private JavaScriptAsset selectedStateListeningItemScript;
     private int selectedStateListeningItemScriptIndex;
-    private bool isListenersListLoaded;
-    private bool showAvailableFunctionsForCustomActions;
+    private bool isStateListeningItemAssetLoaded;
 
     private StateList stateList;
     private SerializedObject serializedStateList;
@@ -43,6 +42,7 @@ public class ItemsManagerEditor : EditorWindow
 
     // Dictionary to store StateListener lists per GameObject (StateListeningItem)
     private Dictionary<GameObject, List<StateListener>> stateListenersByItem = new Dictionary<GameObject, List<StateListener>>();
+    private Dictionary<GameObject, string> otherImplementationByItem = new Dictionary<GameObject, string>();
     private Dictionary<int, bool> stateListenerFoldout = new Dictionary<int, bool>();
 
     private Vector2 scrollPosition;
@@ -52,6 +52,11 @@ public class ItemsManagerEditor : EditorWindow
     public void OnEnable()
     {
         RefreshStateListeningItems();
+    }
+
+    public void OnDisable()
+    {
+        ApplyChangesToScript();
     }
 
     public void OnGUI()
@@ -121,10 +126,16 @@ public class ItemsManagerEditor : EditorWindow
         {
             if (item)
             {
+                EditorGUILayout.Space();
+                EditorGUILayout.BeginVertical();
+                
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField(item.name, EditorStyles.boldLabel, GUILayout.Width(100));
                 EditorGUILayout.ObjectField(item, typeof(GameObject), true, GUILayout.Width(100));
                 EditorGUILayout.ObjectField(GetClusterScriptFromItem(item, out int scriptIndex), typeof(JavaScriptAsset), true, GUILayout.Width(100));
+                EditorGUILayout.EndHorizontal();
+                
+                EditorGUILayout.BeginHorizontal();
                 if (GUILayout.Button("Destroy"))
                 {
                     DestroyStateListeningItem(item);
@@ -134,9 +145,12 @@ public class ItemsManagerEditor : EditorWindow
                     selectedStateListeningItem = item;
                     selectedStateListeningItemSerialized = new SerializedObject(selectedStateListeningItem);
                     selectedStateListeningItemScript = GetClusterScriptFromItem(selectedStateListeningItem, out selectedStateListeningItemScriptIndex);
-                    isListenersListLoaded = false;
+                    isStateListeningItemAssetLoaded = false;
                 }
                 EditorGUILayout.EndHorizontal();
+                
+                EditorGUILayout.EndVertical();
+                EditorGUILayout.Space();
             }
         }
 
@@ -162,9 +176,20 @@ public class ItemsManagerEditor : EditorWindow
     {
         if (selectedStateListeningItem != null)
         {
-            EditorGUILayout.LabelField($"State Listeners for {selectedStateListeningItem.name}", EditorStyles.largeLabel);
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField($"Edit Item {selectedStateListeningItem.name}", EditorStyles.largeLabel);
+            if (GUILayout.Button("CLICK TO APPLY CHANGES"))
+            {
+                ApplyChangesToScript();
+            }
+            EditorGUILayout.EndHorizontal();
+            
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
-            if (!isListenersListLoaded)
+            EditorGUILayout.LabelField($"Actions listening to states", EditorStyles.boldLabel);
+            // Load item asset and import its content
+            if (!isStateListeningItemAssetLoaded)
             {
                 string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
                 string listenersFolderPath = string.Format(scriptFolderPathFormat, sceneName) + "/StateListeners";
@@ -180,9 +205,18 @@ public class ItemsManagerEditor : EditorWindow
                     {
                         stateListenersByItem.Add(selectedStateListeningItem, selectedStateListeningItemData.stateListeners.ToList());
                     }
+
+                    if (otherImplementationByItem.ContainsKey(selectedStateListeningItem))
+                    {
+                        otherImplementationByItem[selectedStateListeningItem] = selectedStateListeningItemData.otherImplementation;
+                    }
+                    else
+                    {
+                        otherImplementationByItem.Add(selectedStateListeningItem, selectedStateListeningItemData.otherImplementation);
+                    }
                 }
 
-                isListenersListLoaded = true;
+                isStateListeningItemAssetLoaded = true;
             }
 
             // Check if the selected item has any listeners
@@ -238,16 +272,10 @@ public class ItemsManagerEditor : EditorWindow
             {
                 EditorGUILayout.LabelField("No state listeners added yet.", EditorStyles.helpBox);
             }
-
-            EditorGUILayout.Space();
-            if (GUILayout.Button("Apply Changes"))
-            {
-                ApplyChangesToScript();
-            }
-
+            
             EditorGUILayout.Space();
 
-            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+            EditorGUILayout.BeginVertical("box");
             EditorGUILayout.LabelField("Add State Listener", EditorStyles.boldLabel);
             EditorGUILayout.BeginHorizontal();
             if (stateList != null && statesProperty != null)
@@ -267,6 +295,26 @@ public class ItemsManagerEditor : EditorWindow
                 }
             }
             EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndVertical();
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+            EditorGUILayout.LabelField("Other implementation not listening to any state", EditorStyles.boldLabel);
+            EditorGUILayout.HelpBox("Implement other Cluster Script callbacks (e.g., $.onInteract, $.onGrab, ...) or your custom functions here.", MessageType.Info);
+            EditorGUILayout.HelpBox("Don't use $.onUpdate here!\nImplement `function Update(deltaTime) {...}` instead.", MessageType.Warning);
+
+            if (!otherImplementationByItem.ContainsKey(selectedStateListeningItem) || otherImplementationByItem[selectedStateListeningItem] == null)
+            {
+                otherImplementationByItem.Add(selectedStateListeningItem, "");
+            }
+            otherImplementationByItem[selectedStateListeningItem] = EditorGUILayout.TextArea(otherImplementationByItem[selectedStateListeningItem], GUILayout.Height(100));
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+            if (GUILayout.Button("CLICK TO APPLY CHANGES"))
+            {
+                ApplyChangesToScript();
+            }
         }
         else
         {
@@ -276,11 +324,9 @@ public class ItemsManagerEditor : EditorWindow
 
     private void DrawRightColumn()
     {
-        if (!showAvailableFunctionsForCustomActions) return;
-        
         EditorGUILayout.BeginVertical("box", GUILayout.Width(350));
-        EditorGUILayout.LabelField("Available variables and functions for custom actions", EditorStyles.largeLabel);
-        EditorGUILayout.LabelField("You can use them inside the code block.", EditorStyles.miniLabel);
+        EditorGUILayout.LabelField("Available variables and functions inside code blocks", EditorStyles.largeLabel);
+        EditorGUILayout.HelpBox("Check this column when you are implementing inside any code block on this panel.", MessageType.Info);
         
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("--------------- Variables ---------------", EditorStyles.boldLabel);
@@ -361,7 +407,6 @@ public class ItemsManagerEditor : EditorWindow
                     if (GUILayout.Button(actions[i].showCustomActionFoldout ? "Hide Code Block" : "Edit Script", GUILayout.Width(120)))
                     {
                         actions[i].showCustomActionFoldout = !actions[i].showCustomActionFoldout;
-                        showAvailableFunctionsForCustomActions = actions[i].showCustomActionFoldout;
                     }
                 }
 
@@ -390,7 +435,6 @@ public class ItemsManagerEditor : EditorWindow
                     {
                         actions[i].customAction = EditorGUILayout.TextArea(actions[i].customAction, GUILayout.Height(100));
                     }
-                    showAvailableFunctionsForCustomActions = true;
                 }
             }
             EditorGUILayout.EndVertical();
@@ -593,14 +637,22 @@ public class ItemsManagerEditor : EditorWindow
         newScriptContent += GenerateDuringStateFunction();
         newScriptContent += "\n";
         newScriptContent += GenerateOnStateExitFunction();
+        if (otherImplementationByItem.ContainsKey(selectedStateListeningItem))
+        {
+            newScriptContent += "\n";
+            newScriptContent += otherImplementationByItem[selectedStateListeningItem];
+        }
+        newScriptContent += "\n";
+        
 
         // Write the changes to the actual file
         File.WriteAllText(scriptPath, newScriptContent);
 
-        if (stateListenersByItem.ContainsKey(selectedStateListeningItem))
+        if (stateListenersByItem.ContainsKey(selectedStateListeningItem) && otherImplementationByItem.ContainsKey(selectedStateListeningItem))
         {
             StateListeningItemData asset = ScriptableObject.CreateInstance<StateListeningItemData>();
             asset.stateListeners = stateListenersByItem[selectedStateListeningItem].ToArray();
+            asset.otherImplementation = otherImplementationByItem[selectedStateListeningItem];
             string listenersFolderPath = string.Format(scriptFolderPathFormat, sceneName) + "/StateListeners";
             if (!Directory.Exists(listenersFolderPath))
             {

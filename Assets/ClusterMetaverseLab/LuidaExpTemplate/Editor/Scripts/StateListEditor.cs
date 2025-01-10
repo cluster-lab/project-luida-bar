@@ -845,6 +845,9 @@ public class StateListEditor : EditorWindow
                 newScriptContent += GenerateDuringStateFunction(stateListeningItemData.stateListeners);
                 newScriptContent += "\n";
                 newScriptContent += GenerateOnStateExitFunction(stateListeningItemData.stateListeners);
+                newScriptContent += "\n";
+                newScriptContent += stateListeningItemData.otherImplementation;
+                newScriptContent += "\n";
 
                 File.WriteAllText(scriptPath, newScriptContent);
             }
