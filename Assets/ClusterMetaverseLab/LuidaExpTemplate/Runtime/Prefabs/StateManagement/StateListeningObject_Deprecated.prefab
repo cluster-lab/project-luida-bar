@@ -132,6 +132,11 @@ MonoBehaviour:
     \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
     OnStateEnter();\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_isActive\",
     \"boolean\")) {\r\n        DuringState(deltaTime);\r\n    }\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
+    ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
+    HideItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\r\n}\r\n\r\nfunction
+    ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
+    RecordCustomData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
+    UploadRecordedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
     OnStateEnter() {}\r\n\r\nfunction OnStateExit () {}\r\n\r\nfunction DuringState
     (deltaTime) {}\r\n\r\nfunction Update (deltaTime) {}\r\n$.onStart(() => {\r\n   
     \r\n})\r\n\r\nfunction OnStateEnter() {\r\n    // If you have checked `Is accessible

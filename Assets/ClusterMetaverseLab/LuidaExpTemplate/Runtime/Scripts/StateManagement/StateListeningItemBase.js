@@ -13,6 +13,26 @@ $.onUpdate((deltaTime) => {
     Update(deltaTime);
 })
 
+function ShowItem() {
+    $.setStateCompat("this", "exp_showItem", true);
+}
+
+function HideItem() {
+    $.setStateCompat("this", "exp_showItem", false);
+}
+
+function ToNextState() {
+    $.sendSignalCompat("this", "state_triggerTransition");
+}
+
+function RecordCustomData() {
+    $.sendSignalCompat("this", "exp_recordCustomData");
+}
+
+function UploadRecordedData() {
+    $.sendSignalCompat("this", "exp_uploadCustomData");
+}
+
 function OnStateEnter() {}
 
 function OnStateExit () {}

@@ -14,6 +14,9 @@ GameObject:
   - component: {fileID: 5660514857068071926}
   - component: {fileID: 5660514857068071924}
   - component: {fileID: 5660514857068071927}
+  - component: {fileID: 7471271114452398843}
+  - component: {fileID: -4623775508281712384}
+  - component: {fileID: 3877502027718645906}
   - component: {fileID: 7617053289787406505}
   - component: {fileID: 5512835993851480873}
   - component: {fileID: 833797841801743093}
@@ -127,23 +130,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 5022602860645237092, guid: e228c7ca8dec0428ba2fb1c353edbb9e,
     type: 3}
-  sourceCode: "$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\", \"state_exit\",
-    \"boolean\")) {\n        OnStateExit();\n        $.setStateCompat(\"this\", \"state_exit\",
-    false);\n    }\n    if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\"))
-    {\n        $.setStateCompat(\"this\", \"state_enter\", false);\n        OnStateEnter();\n   
-    }\n    if ($.getStateCompat(\"this\", \"state_isActive\", \"boolean\")) {\n       
-    DuringState(deltaTime);\n    }\n    Update(deltaTime);\n})\n\nfunction OnStateEnter()
-    {}\n\nfunction OnStateExit () {}\n\nfunction DuringState (deltaTime) {}\n\nfunction
-    Update (deltaTime) {}\r\n$.onStart(() => {\n    \n})\n\nfunction OnStateEnter()
-    {\n    const STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n   
-    const CONDITION = $.groupState.currentCondition; // You can use CONDITION[variable's
-    name] to access the current experimental condition\n    // if (stateID === i)
-    {}\n}\n\nfunction OnStateExit () {\n    const STATE_ID = $.getStateCompat(\"global\",
-    \"state_currentID\", \"integer\");\n    const CONDITION = $.groupState.currentCondition;\n   
-    // if (stateID === i) {}\n}\n\nfunction DuringState (deltaTime) {\n    const
-    STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n   
-    const CONDITION = $.groupState.currentCondition;\n    // if (stateID === i) {}\n}\n\nfunction
-    Update (deltaTime) {}\n"
+  sourceCode: "$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\",
+    \"state_exit\", \"boolean\")) {\r\n        OnStateExit();\r\n        $.setStateCompat(\"this\",
+    \"state_exit\", false);\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
+    \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
+    OnStateEnter();\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_isActive\",
+    \"boolean\")) {\r\n        DuringState(deltaTime);\r\n    }\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
+    ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
+    HideItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\r\n}\r\n\r\nfunction
+    ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
+    RecordCustomData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
+    UploadRecordedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
+    OnStateEnter() {}\r\n\r\nfunction OnStateExit () {}\r\n\r\nfunction DuringState
+    (deltaTime) {}\r\n\r\nfunction Update (deltaTime) {}\r\n$.onStart(() => {\r\n   
+    \r\n})\r\n\r\nfunction OnStateEnter() {\r\n    const STATE_ID = $.getStateCompat(\"global\",
+    \"state_currentID\", \"integer\");\r\n    const CONDITION = $.groupState.currentCondition;
+    // You can use CONDITION[variable's name] to access the current experimental
+    condition\r\n    // if (stateID === i) {}\r\n}\r\n\r\nfunction OnStateExit()
+    {\r\n    const STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n   
+    const CONDITION = $.groupState.currentCondition;\r\n    // if (stateID === i)
+    {}\r\n}\r\n\r\nfunction DuringState(deltaTime) {\r\n    const STATE_ID = $.getStateCompat(\"global\",
+    \"state_currentID\", \"integer\");\r\n    const CONDITION = $.groupState.currentCondition;\r\n   
+    // if (stateID === i) {}\r\n}\r\n\r\nfunction Update(deltaTime) {}\r\n"
 --- !u!114 &5660514857068071924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -408,6 +416,183 @@ MonoBehaviour:
               operatorExpression:
                 operator: 0
                 operands: []
+--- !u!114 &7471271114452398843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5660514857068071925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 0
+      key: state_triggerTransition
+    item: {fileID: 5660514857068071928}
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 2
+          key: state_triggerTransition
+          parameterType: 0
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 1
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &-4623775508281712384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5660514857068071925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 0
+      key: exp_recordCustomData
+    item: {fileID: 5660514857068071928}
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 2
+          key: exp_recordCustomData
+          parameterType: 0
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 1
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &3877502027718645906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5660514857068071925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 0
+      key: exp_uploadCustomData
+    item: {fileID: 5660514857068071928}
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 2
+          key: exp_uploadCustomData
+          parameterType: 0
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 1
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
 --- !u!114 &7617053289787406505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -447,7 +632,7 @@ MonoBehaviour:
   globalGimmickKey:
     key:
       target: 0
-      key: show
+      key: exp_showItem
     item: {fileID: 5660514857068071928}
 --- !u!114 &833797841801743093
 MonoBehaviour:

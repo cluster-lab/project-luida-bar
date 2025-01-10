@@ -11,8 +11,11 @@ using System.Text.RegularExpressions;
 public class ItemsManagerEditor : EditorWindow
 {
     private static StateListeningAction[] AvailableStateListeningActions = {
-        new StateListeningAction("Show item", "$.setStateCompat('this', 'show', true);"),
-        new StateListeningAction("Hide item", "$.setStateCompat('this', 'show', false);"),
+        new StateListeningAction("Show item", "$.setStateCompat('this', 'exp_showItem', true);"),
+        new StateListeningAction("Hide item", "$.setStateCompat('this', 'exp_showItem', false);"),
+        new StateListeningAction("To next state", "$.sendSignalCompat('this', 'state_triggerTransition');"),
+        new StateListeningAction("Record custom data", "$.sendSignalCompat('this', 'exp_recordCustomData');"),
+        new StateListeningAction("Upload recorded data", "$.sendSignalCompat('this', 'exp_uploadCustomData');"),
     };
 
     private string newItemName = "";
@@ -30,6 +33,7 @@ public class ItemsManagerEditor : EditorWindow
     private JavaScriptAsset selectedStateListeningItemScript;
     private int selectedStateListeningItemScriptIndex;
     private bool isListenersListLoaded;
+    private bool showAvailableFunctionsForCustomActions;
 
     private StateList stateList;
     private SerializedObject serializedStateList;
@@ -65,6 +69,11 @@ public class ItemsManagerEditor : EditorWindow
         // Middle Column
         EditorGUILayout.BeginVertical("box", GUILayout.Width(position.width));
         DrawMiddleColumn();
+        EditorGUILayout.EndVertical();
+
+        // Right Column
+        EditorGUILayout.BeginVertical("box", GUILayout.Width(position.width / 4));
+        DrawRightColumn();
         EditorGUILayout.EndVertical();
 
         EditorGUILayout.EndHorizontal();
@@ -107,24 +116,28 @@ public class ItemsManagerEditor : EditorWindow
     {
         EditorGUILayout.LabelField("State Listening Items", EditorStyles.largeLabel);
 
-        foreach (GameObject item in stateListeningItems)
+        var items = stateListeningItems.ToArray();
+        foreach (GameObject item in items)
         {
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(item.name, EditorStyles.boldLabel, GUILayout.Width(100));
-            EditorGUILayout.ObjectField(item, typeof(GameObject), true, GUILayout.Width(100));
-            EditorGUILayout.ObjectField(GetClusterScriptFromItem(item, out int scriptIndex), typeof(JavaScriptAsset), true, GUILayout.Width(100));
-            if (GUILayout.Button("Destroy"))
+            if (item)
             {
-                DestroyStateListeningItem(item);
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField(item.name, EditorStyles.boldLabel, GUILayout.Width(100));
+                EditorGUILayout.ObjectField(item, typeof(GameObject), true, GUILayout.Width(100));
+                EditorGUILayout.ObjectField(GetClusterScriptFromItem(item, out int scriptIndex), typeof(JavaScriptAsset), true, GUILayout.Width(100));
+                if (GUILayout.Button("Destroy"))
+                {
+                    DestroyStateListeningItem(item);
+                }
+                if (GUILayout.Button("Confirm/Edit Actions"))
+                {
+                    selectedStateListeningItem = item;
+                    selectedStateListeningItemSerialized = new SerializedObject(selectedStateListeningItem);
+                    selectedStateListeningItemScript = GetClusterScriptFromItem(selectedStateListeningItem, out selectedStateListeningItemScriptIndex);
+                    isListenersListLoaded = false;
+                }
+                EditorGUILayout.EndHorizontal();
             }
-            if (GUILayout.Button("Confirm/Edit Actions"))
-            {
-                selectedStateListeningItem = item;
-                selectedStateListeningItemSerialized = new SerializedObject(selectedStateListeningItem);
-                selectedStateListeningItemScript = GetClusterScriptFromItem(selectedStateListeningItem, out selectedStateListeningItemScriptIndex);
-                isListenersListLoaded = false;
-            }
-            EditorGUILayout.EndHorizontal();
         }
 
         EditorGUILayout.Space();
@@ -261,6 +274,35 @@ public class ItemsManagerEditor : EditorWindow
         }
     }
 
+    private void DrawRightColumn()
+    {
+        if (!showAvailableFunctionsForCustomActions) return;
+        
+        EditorGUILayout.BeginVertical("box", GUILayout.Width(350));
+        EditorGUILayout.LabelField("Available variables and functions for custom actions", EditorStyles.largeLabel);
+        EditorGUILayout.LabelField("You can use them inside the code block.", EditorStyles.miniLabel);
+        
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("--------------- Variables ---------------", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("CONDITION", EditorStyles.boldLabel);
+        EditorGUILayout.HelpBox("⋅ Accessible within 'Trial' states.\n⋅ Values are determined by your configured experimental variables and vary across trials.\n⋅ Use CONDITION[\"condition_name\"] to reference a specific condition within the current trial.", MessageType.Info);
+        
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("--------------- Functions ---------------", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("ShowItem()", EditorStyles.boldLabel);
+        EditorGUILayout.HelpBox("Make the item visible for users", MessageType.Info);
+        EditorGUILayout.LabelField("HideItem()", EditorStyles.boldLabel);
+        EditorGUILayout.HelpBox("Make the item invisible for users", MessageType.Info);
+        EditorGUILayout.LabelField("ToNextState()", EditorStyles.boldLabel);
+        EditorGUILayout.HelpBox("Transit to the next state", MessageType.Info);
+        EditorGUILayout.LabelField("RecordCustomData()", EditorStyles.boldLabel);
+        EditorGUILayout.HelpBox("Record custom data as how you defined in the DataRecorder object", MessageType.Info);
+        EditorGUILayout.LabelField("UploadRecordedData()", EditorStyles.boldLabel);
+        EditorGUILayout.HelpBox("Upload the recorded custom data", MessageType.Info);
+        
+        EditorGUILayout.EndVertical();
+    }
+    
     private void DrawStateListener(StateListener listenerData)
     {
         EditorGUILayout.BeginVertical("box");
@@ -316,10 +358,10 @@ public class ItemsManagerEditor : EditorWindow
                 // Edit Custom Action (if applicable)
                 if (actions[i].predefinedAction.actionType == null || actions[i].predefinedAction.actionType.Length == 0)
                 {
-                    // actions[i].showCustomActionFoldout = EditorGUILayout.Foldout(actions[i].showCustomActionFoldout, "Edit Script");
                     if (GUILayout.Button(actions[i].showCustomActionFoldout ? "Hide Code Block" : "Edit Script", GUILayout.Width(120)))
                     {
                         actions[i].showCustomActionFoldout = !actions[i].showCustomActionFoldout;
+                        showAvailableFunctionsForCustomActions = actions[i].showCustomActionFoldout;
                     }
                 }
 
@@ -342,9 +384,13 @@ public class ItemsManagerEditor : EditorWindow
                 EditorGUILayout.EndHorizontal();
 
                 // Custom Action Text Area (if applicable)
-                if (actions[i].customAction != null && actions[i].showCustomActionFoldout)
+                if (actions[i].showCustomActionFoldout)
                 {
-                    actions[i].customAction = EditorGUILayout.TextArea(actions[i].customAction, GUILayout.Height(100));
+                    if (actions[i].customAction != null)
+                    {
+                        actions[i].customAction = EditorGUILayout.TextArea(actions[i].customAction, GUILayout.Height(100));
+                    }
+                    showAvailableFunctionsForCustomActions = true;
                 }
             }
             EditorGUILayout.EndVertical();
@@ -561,7 +607,6 @@ public class ItemsManagerEditor : EditorWindow
                 Directory.CreateDirectory(listenersFolderPath);
             }
             string listenersAssetPath = listenersFolderPath + "/" + selectedStateListeningItem.name + ".asset";
-            Debug.Log(listenersAssetPath);
             AssetDatabase.CreateAsset(asset, listenersAssetPath);
             EditorUtility.SetDirty(combiner);
         }
