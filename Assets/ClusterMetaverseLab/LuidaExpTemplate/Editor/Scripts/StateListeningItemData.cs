@@ -76,7 +76,8 @@ public class StateListener
 }
 
 [Serializable]
-public class StateListenersList : ScriptableObject
+public class StateListeningItemData : ScriptableObject
 {
-    public StateListener[] listeners;
+    public StateListener[] stateListeners;
+    public string otherImplementation;
 }

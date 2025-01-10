@@ -169,16 +169,16 @@ public class ItemsManagerEditor : EditorWindow
                 string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
                 string listenersFolderPath = string.Format(scriptFolderPathFormat, sceneName) + "/StateListeners";
                 string listenersAssetPath = listenersFolderPath + "/" + selectedStateListeningItem.name + ".asset";
-                StateListenersList selectedStateListenersList = AssetDatabase.LoadAssetAtPath<StateListenersList>(listenersAssetPath);
-                if (selectedStateListenersList != null)
+                StateListeningItemData selectedStateListeningItemData = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(listenersAssetPath);
+                if (selectedStateListeningItemData != null)
                 {
                     if (stateListenersByItem.ContainsKey(selectedStateListeningItem))
                     {
-                        stateListenersByItem[selectedStateListeningItem] = selectedStateListenersList.listeners.ToList();
+                        stateListenersByItem[selectedStateListeningItem] = selectedStateListeningItemData.stateListeners.ToList();
                     }
                     else
                     {
-                        stateListenersByItem.Add(selectedStateListeningItem, selectedStateListenersList.listeners.ToList());
+                        stateListenersByItem.Add(selectedStateListeningItem, selectedStateListeningItemData.stateListeners.ToList());
                     }
                 }
 
@@ -547,7 +547,7 @@ public class ItemsManagerEditor : EditorWindow
                 AssetDatabase.DeleteAsset(scriptPath);
             }
 
-            // Delete the associated StateListenersList asset
+            // Delete the associated StateListeningItemData asset
             string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
             string listenersFolderPath = string.Format(scriptFolderPathFormat, sceneName) + "/StateListeners";
             string listenersAssetPath = listenersFolderPath + "/" + item.name + ".asset";
@@ -599,8 +599,8 @@ public class ItemsManagerEditor : EditorWindow
 
         if (stateListenersByItem.ContainsKey(selectedStateListeningItem))
         {
-            StateListenersList asset = ScriptableObject.CreateInstance<StateListenersList>();
-            asset.listeners = stateListenersByItem[selectedStateListeningItem].ToArray();
+            StateListeningItemData asset = ScriptableObject.CreateInstance<StateListeningItemData>();
+            asset.stateListeners = stateListenersByItem[selectedStateListeningItem].ToArray();
             string listenersFolderPath = string.Format(scriptFolderPathFormat, sceneName) + "/StateListeners";
             if (!Directory.Exists(listenersFolderPath))
             {

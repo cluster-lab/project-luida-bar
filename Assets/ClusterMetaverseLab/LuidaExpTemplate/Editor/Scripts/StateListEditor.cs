@@ -800,7 +800,7 @@ public class StateListEditor : EditorWindow
             stateIdMap.Add(i, newStateIndex);
         }
 
-        // Update state IDs in StateListenersLists and ClusterScripts
+        // Update state IDs in StateListeningItemData assets and corresponding ClusterScripts
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         string listenersFolderPath = string.Format(stateManagementScriptFolderPathFormat, sceneName) + "/StateListeners";
         if (Directory.Exists(listenersFolderPath))
@@ -809,13 +809,13 @@ public class StateListEditor : EditorWindow
 
             foreach (string assetFile in assetFiles)
             {
-                StateListenersList stateListenersList = AssetDatabase.LoadAssetAtPath<StateListenersList>(assetFile);
-                if (stateListenersList != null)
+                StateListeningItemData stateListeningItemData = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(assetFile);
+                if (stateListeningItemData != null)
                 {
                     bool updated = false;
                     
                     var updatedListeners = new List<StateListener>();
-                    foreach (StateListener listener in stateListenersList.listeners)
+                    foreach (StateListener listener in stateListeningItemData.stateListeners)
                     {
                         if (stateIdMap.ContainsKey(listener.stateID))
                         {
@@ -828,11 +828,11 @@ public class StateListEditor : EditorWindow
                             updatedListeners.Add(listener);
                         }
                     }
-                    stateListenersList.listeners = updatedListeners.ToArray();
+                    stateListeningItemData.stateListeners = updatedListeners.ToArray();
 
                     if (updated)
                     {
-                        EditorUtility.SetDirty(stateListenersList);
+                        EditorUtility.SetDirty(stateListeningItemData);
                     }
                 }
                 
@@ -840,11 +840,11 @@ public class StateListEditor : EditorWindow
                 string scriptPath = string.Format("Assets/_Experiment_/Scripts/StateManagement/{0}/{1}.js", sceneName, itemName);
             
                 string newScriptContent = "";
-                newScriptContent += GenerateOnStateEnterFunction(stateListenersList.listeners);
+                newScriptContent += GenerateOnStateEnterFunction(stateListeningItemData.stateListeners);
                 newScriptContent += "\n";
-                newScriptContent += GenerateDuringStateFunction(stateListenersList.listeners);
+                newScriptContent += GenerateDuringStateFunction(stateListeningItemData.stateListeners);
                 newScriptContent += "\n";
-                newScriptContent += GenerateOnStateExitFunction(stateListenersList.listeners);
+                newScriptContent += GenerateOnStateExitFunction(stateListeningItemData.stateListeners);
 
                 File.WriteAllText(scriptPath, newScriptContent);
             }
