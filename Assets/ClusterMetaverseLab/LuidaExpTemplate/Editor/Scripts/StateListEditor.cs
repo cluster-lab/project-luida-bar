@@ -15,14 +15,17 @@ public class StateListEditor : EditorWindow
     private SerializedProperty statesProperty;
     private string prefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/State.prefab";
     private const string RequiredObjectsWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
+    private const string stateListTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/StateList/Template.asset";
     private const string stateManagementScriptFolderPathFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
     private const string stateListeningItemPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/StateListeningItem.prefab";
 
     private readonly string[] FixedStateNames = new string[] {"Preparation", "Trial - Task", "Trial - Rest", "Trial - Questionnaire", "End"};
     private Vector2 scrollPos;
+    private string sceneName;
 
     public void OnEnable()
     {
+        sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         LoadStateList();
         previousStates = new StateList.State[stateList.States.Length];
         Array.Copy(stateList.States, previousStates, stateList.States.Length);
@@ -30,11 +33,18 @@ public class StateListEditor : EditorWindow
 
     private void LoadStateList()
     {
-        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         string stateListPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
 
         stateList = AssetDatabase.LoadAssetAtPath<StateList>(stateListPath);
-        if (stateList != null)
+        if (stateList == null)
+        {
+            string newAssetPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
+            AssetDatabase.CopyAsset(stateListTemplatePath, newAssetPath);
+            AssetDatabase.Refresh();
+            stateList = AssetDatabase.LoadAssetAtPath<StateList>(newAssetPath);
+        }
+        else
         {
             serializedStateList = new SerializedObject(stateList);
             statesProperty = serializedStateList.FindProperty("States");
@@ -45,21 +55,19 @@ public class StateListEditor : EditorWindow
     {
         scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
-        if (stateList == null)
+        if (stateList == null || sceneName != UnityEngine.SceneManagement.SceneManager.GetActiveScene().name)
         {
             LoadStateList();
         }
 
         if (stateList == null)
         {
-            string templatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/StateList/Template.asset";
-            StateList template = AssetDatabase.LoadAssetAtPath<StateList>(templatePath);
+            StateList template = AssetDatabase.LoadAssetAtPath<StateList>(stateListTemplatePath);
 
             if (template != null)
             {
-                string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
                 string newAssetPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
-                AssetDatabase.CopyAsset(templatePath, newAssetPath);
+                AssetDatabase.CopyAsset(stateListTemplatePath, newAssetPath);
                 AssetDatabase.Refresh();
                 stateList = AssetDatabase.LoadAssetAtPath<StateList>(newAssetPath);
                 if (stateList != null)
@@ -73,7 +81,7 @@ public class StateListEditor : EditorWindow
             }
             else
             {
-                EditorGUILayout.HelpBox($"StateList template not found at {templatePath}. Please ensure it exists.", MessageType.Error);
+                EditorGUILayout.HelpBox($"StateList template not found at {stateListTemplatePath}. Please ensure it exists.", MessageType.Error);
             }
             EditorGUILayout.EndScrollView();
             return;
@@ -801,7 +809,7 @@ public class StateListEditor : EditorWindow
         }
 
         // Update state IDs in StateListeningItemData assets and corresponding ClusterScripts
-        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         string listenersFolderPath = string.Format(stateManagementScriptFolderPathFormat, sceneName) + "/StateListeners";
         if (Directory.Exists(listenersFolderPath))
         {

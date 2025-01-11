@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17412737, g: 0.21774727, b: 0.29994345, a: 1}
+  m_IndirectSpecularColor: {r: 0.17412685, g: 0.21774654, b: 0.2999423, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1851,7 +1851,7 @@ Transform:
   - {fileID: 1232226265}
   - {fileID: 1107838076}
   m_Father: {fileID: 7533049804749356260}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1434940726
 PrefabInstance:
@@ -2884,6 +2884,45 @@ PrefabInstance:
         = Math.floor(Math.random() * (i + 1));\r\n        [array[i], array[j]] =
         [array[j], array[i]];\r\n    }\r\n    return array;\r\n}\r\n"
       objectReference: {fileID: 0}
+    - target: {fileID: 2966719835339860264, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2966719835339860266, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: sourceCode
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\n$.onStart(()
+        => {\n    $.state.customData = {};\n})\n\n$.onUpdate(() => {\n    if ($.getStateCompat(\"this\",
+        \"exp_recordCustomData\", \"boolean\")) {\n        $.setStateCompat(\"this\",
+        \"exp_recordCustomData\", false);\n        recordData();\n    }\n    if ($.getStateCompat(\"this\",
+        \"exp_uploadCustomData\", \"boolean\")) {\n        $.setStateCompat(\"this\",
+        \"exp_uploadCustomData\", false);\n        uploadData();\n    }\n})\n\nfunction
+        recordData () {\n    $.state.customData = calculateData();\n}\n\nfunction
+        uploadData () {\n    $.log(\"Upload custom data: \" + JSON.stringify($.state.customData));\n   
+        let request = {\n        type: \"uploadCustomData\",\n        token: token
+        || \"\",\n        dataByFileName: JSON.stringify($.state.customData),\n       
+        eID: expID || \"\",\n        pID: $.getPlayersNear($.getPosition().clone(),
+        Infinity)[0].idfc || \"\" // TODO: retrieve idfc through cluster Player Script\n   
+        };\n    $.callExternal(JSON.stringify(request), \"customDataUploaded\");\n}\n\n$.onExternalCallEnd((res,
+        meta, err) =>\n{\n    if (res == null) {\n        $.log(\"callExternal ERROR:
+        \" + err);\n        return;\n    }\n\n    if (meta === \"customDataUploaded\")
+        {\n        $.log(\"Custom recorded data uploaded\");\n    }\n});\r\nfunction
+        calculateData () {\n    let returnData = $.state.customData;\n    const CONDITION
+        = $.groupState.currentCondition;\n    return returnData;\n}"
+      objectReference: {fileID: 0}
+    - target: {fileID: 6888872806784858143, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[0]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: c22e594b3eff3364c8217424a55e9588,
+        type: 3}
+    - target: {fileID: 6888872806784858143, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[2]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 4a3adeef6c92443c48501eef67e8424b,
+        type: 3}
     - target: {fileID: 8428161057630051971, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: m_RootOrder

@@ -6,13 +6,13 @@ using System.IO;
 public class TabbedEditor : EditorWindow
 {
     private int currentTab = 0;
-    private string[] tabNames = { "Experiment Identifiers", "Experiment Variables", "States List", "State-listening Items", "Data Recorders" };
+    private string[] tabNames = { "Experiment Identifiers", "Experiment Variables", "States List", "State-listening Items", "Data Recorder" };
 
     private ExpIdentifierEditor expIdentifierEditor;
     private StateListEditor stateListEditor;
     private ItemsManagerEditor itemsManagerEditor;
     private ExperimentVariablesEditor experimentVariablesEditor;
-    private DataRecorderListEditor dataRecorderListEditor;
+    private DataRecorderEditor dataRecorderEditor;
 
     private string newSceneName = "";
     private const string scenePath = "Assets/_Experiment_/Scenes/";
@@ -32,13 +32,13 @@ public class TabbedEditor : EditorWindow
         experimentVariablesEditor = new ExperimentVariablesEditor();
         stateListEditor = new StateListEditor();
         itemsManagerEditor = new ItemsManagerEditor();
-        dataRecorderListEditor = new DataRecorderListEditor();
+        dataRecorderEditor = new DataRecorderEditor();
 
         expIdentifierEditor.OnEnable();
         experimentVariablesEditor.OnEnable();
         stateListEditor.OnEnable();
         itemsManagerEditor.OnEnable();
-        dataRecorderListEditor.OnEnable();
+        dataRecorderEditor.OnEnable();
 
         CheckAndCreateExpIdentifiers();
     }
@@ -99,7 +99,7 @@ public class TabbedEditor : EditorWindow
                     itemsManagerEditor.OnGUI();
                     break;
                 case 4:
-                    dataRecorderListEditor.OnGUI();
+                    dataRecorderEditor.OnGUI();
                     break;
             }
         }
