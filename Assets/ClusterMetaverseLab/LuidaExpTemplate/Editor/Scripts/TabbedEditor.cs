@@ -6,7 +6,7 @@ using System.IO;
 public class TabbedEditor : EditorWindow
 {
     private int currentTab = 0;
-    private string[] tabNames = { "Experiment Identifiers", "Experiment Variables", "States List", "State-listening Items", "Data Recorder" };
+    private string[] tabNames = { "Experiment Identifiers", "Experiment Variables", "States List (& Questionnaires)", "State-listening Items", "Data Recorder" };
 
     private ExpIdentifierEditor expIdentifierEditor;
     private StateListEditor stateListEditor;

@@ -18,6 +18,9 @@ public class StateListEditor : EditorWindow
     private const string stateListTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/StateList/Template.asset";
     private const string stateManagementScriptFolderPathFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
     private const string stateListeningItemPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/StateListeningItem.prefab";
+    private const string formPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/Questionnaire/Questionnaire.prefab";
+    private const string identifiersAssetPath = "Assets/_Experiment_/Settings/ExpIdentifiers.js";
+    private const string WorldItemRefListObjectName = "WorldItemRefList";
 
     private readonly string[] FixedStateNames = new string[] {"Preparation", "Trial - Task", "Trial - Rest", "Trial - Questionnaire", "End"};
     private Vector2 scrollPos;
@@ -422,7 +425,32 @@ public class StateListEditor : EditorWindow
             EditorGUILayout.EndVertical();
             #endregion
 
+            #region Questionnaire Form
+            EditorGUILayout.BeginVertical();
+
+            string stateNameStringValue = stateName.stringValue;
+
+            // Check if a questionnaire already exists for this state
+            if (HasEnabledFormInstance(GameObject.Find(stateNameStringValue)))
+            {
+                // Display existing questionnaire row
+                DisplayQuestionnaireRow(stateNameStringValue, i);
+            }
+            else
+            {
+                // Display "Add Questionnaire" button
+                EditorGUILayout.LabelField("Questionnaire", GUILayout.Width(100));
+                if (GUILayout.Button("Add Questionnaire", GUILayout.Width(150)))
+                {
+                    AddOrEnableQuestionnaireForm(i, stateNameStringValue);
+                }
+            }
+
+            EditorGUILayout.EndVertical();
+            #endregion
+
             EditorGUILayout.EndHorizontal();
+            GUILayout.Space(10);
 
             EditorGUI.EndDisabledGroup(); // End disabling if End state
 
@@ -518,14 +546,14 @@ public class StateListEditor : EditorWindow
             {
                 stateName = "State";
             }
-            Transform child = statesObject.transform.Find(stateName);
+            Transform stateTransform = statesObject.transform.Find(stateName);
 
-            if (child == null)
+            if (stateTransform == null)
             {
-                child = FindChildByStateID(statesObject.transform, i);
-                if (child != null)
+                stateTransform = FindChildByStateID(statesObject.transform, i);
+                if (stateTransform != null)
                 {
-                    child.name = stateName;
+                    stateTransform.name = stateName;
                 }
                 else
                 {
@@ -535,21 +563,21 @@ public class StateListEditor : EditorWindow
                         GameObject newChild = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
                         newChild.name = stateName;
                         newChild.transform.SetParent(statesObject.transform);
-                        child = newChild.transform;
+                        stateTransform = newChild.transform;
                     }
                 }
             }
-            else if (child.name != stateName)
+            else if (stateTransform.name != stateName)
             {
-                child.name = stateName;
+                stateTransform.name = stateName;
             }
 
-            if (child.GetSiblingIndex() != i)
+            if (stateTransform.GetSiblingIndex() != i)
             {
-                child.SetSiblingIndex(i);
+                stateTransform.SetSiblingIndex(i);
             }
 
-            GameObject transition = child.Find("Transition")?.gameObject;
+            GameObject transition = stateTransform.Find("Transition")?.gameObject;
             if (transition != null)
             {
                 UpdateTransitionCurrentStateId(transition, i);
@@ -860,6 +888,9 @@ public class StateListEditor : EditorWindow
                 File.WriteAllText(scriptPath, newScriptContent);
             }
         }
+        
+        // Update Questionnaire Form qID
+        UpdateQuestionnaireFormsAfterReorder(stateIdMap);
 
         // Save changes and refresh the AssetDatabase
         AssetDatabase.SaveAssets();
@@ -936,5 +967,295 @@ public class StateListEditor : EditorWindow
             "OnStateExit",
             listener => listener.onStateExitedActions
         );
+    }
+    
+    // Adds or enables a Questionnaire instance to the selected state and sets its qID
+    private void AddOrEnableQuestionnaireForm(int stateId, string stateName)
+    {
+        GameObject stateObject = GameObject.Find(stateName)?.gameObject;
+
+        if (stateObject != null)
+        {
+            GameObject objects = stateObject.transform.Find("Objects")?.gameObject;
+            if (!objects)
+            {
+                objects = new GameObject("Objects");
+                objects.transform.SetParent(stateObject.transform, false);
+            }
+            GameObject existingInstance = objects.transform.Cast<Transform>()
+                .FirstOrDefault(child => PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == formPrefabPath)?.gameObject;
+
+            if (existingInstance != null && !existingInstance.activeSelf)
+            {
+                existingInstance.SetActive(true); // Re-enable the existing instance
+                GameObject formController = existingInstance.transform.Find("FormController")?.gameObject;
+                UpdateQID(formController, -1);
+
+                // Paste WorldItemReferenceList component to FormController
+                CopyWorldItemReferenceListToFormController(formController);
+
+                Debug.Log($"Questionnaire instance in {stateName} re-enabled with qID {stateId}");
+            }
+            else if (!existingInstance)
+            {
+                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(formPrefabPath);
+                if (prefab != null)
+                {
+                    GameObject newFormInstance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+                    newFormInstance.transform.SetParent(objects.transform);
+                    newFormInstance.name = prefab.name;
+
+                    GameObject formController = newFormInstance.transform.Find("FormController")?.gameObject;
+                    if (formController != null)
+                    {
+                        var identifiersAsset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(identifiersAssetPath);
+                        ScriptableClusterScriptCombiner combiner = formController.GetComponent<ScriptableClusterScriptCombiner>();
+                        combiner.ReplaceScript(identifiersAsset, 0, null, 0, true);
+                        EditorUtility.SetDirty(combiner);
+                        EditorUtility.SetDirty(identifiersAsset);
+                        AssetDatabase.SaveAssets();
+
+                        UpdateQID(formController, -1);
+
+                        // Paste WorldItemReferenceList component to FormController
+                        CopyWorldItemReferenceListToFormController(formController);
+
+                        Debug.Log($"Questionnaire instance added to {stateName} with qID {stateId}");
+                    }
+                }
+            }
+        }
+    }
+    
+    // Get the FormController game object inside the Questionnaire prefab
+    private GameObject GetFormController(GameObject stateObject)
+    {
+        foreach (Transform child in stateObject.transform)
+        {
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == formPrefabPath)
+            {
+                return child.Find("FormController")?.gameObject;
+            }
+        }
+        return null;
+    }
+
+    // Get the current qID value from the FormController
+    private int GetCurrentQID(GameObject formController)
+    {
+        if (formController == null) return -1;
+
+        Component itemLogic = formController.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
+        if (itemLogic != null)
+        {
+            SerializedObject serializedComp = new SerializedObject(itemLogic);
+            SerializedProperty specificProperty = serializedComp.FindProperty("logic.statements");
+
+            if (specificProperty != null && specificProperty.isArray)
+            {
+                for (int i = 0; i < specificProperty.arraySize; i++)
+                {
+                    SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
+                    if (targetKey != null && targetKey.stringValue == "qID")
+                    {
+                        SerializedProperty qIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
+                        if (qIdProp != null)
+                        {
+                            return qIdProp.intValue;
+                        }
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    // Update the qID value in the FormController
+    private void UpdateQID(GameObject formController, int qID)
+    {
+        Component itemLogic = formController.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
+        if (itemLogic != null)
+        {
+            SerializedObject serializedComp = new SerializedObject(itemLogic);
+            SerializedProperty specificProperty = serializedComp.FindProperty("logic.statements");
+
+            if (specificProperty != null && specificProperty.isArray)
+            {
+                for (int i = 0; i < specificProperty.arraySize; i++)
+                {
+                    SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
+                    if (targetKey != null && targetKey.stringValue == "qID")
+                    {
+                        SerializedProperty qIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
+                        if (qIdProp != null)
+                        {
+                            qIdProp.intValue = qID;
+                            serializedComp.ApplyModifiedProperties();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Displays a row for the existing questionnaire object if present
+    private void DisplayQuestionnaireRow(string stateName, int stateId)
+    {
+        GameObject stateObject = GameObject.Find(stateName);
+        if (stateObject != null && HasEnabledFormInstance(stateObject))
+        {
+            GameObject formController = GetFormController(stateObject.transform.Find("Objects").gameObject);
+            int currentQID = GetCurrentQID(formController);
+
+            EditorGUILayout.BeginVertical("box");
+            EditorGUILayout.LabelField("Questionnaire", GUILayout.Width(100));
+            EditorGUILayout.BeginHorizontal();
+            
+            // Reference field for the Questionnaire object
+            GameObject questionnaireObject = formController.transform.parent.gameObject;
+            EditorGUILayout.ObjectField(questionnaireObject, typeof(GameObject), true, GUILayout.Width(60));
+            
+            GUILayout.Space(10); // Add space between columns
+
+            // qID text field
+            EditorGUILayout.LabelField("qID", GUILayout.Width(20));
+            int newQID = EditorGUILayout.IntField(currentQID, GUILayout.Width(30));
+            if (newQID != currentQID)
+            {
+                UpdateQID(formController, newQID);
+            }
+
+            GUILayout.Space(10); // Add space between columns
+
+            // Remove button for the questionnaire
+            if (GUILayout.Button("x", GUILayout.Width(20)))
+            {
+                RemoveFormInstance(stateObject, formController);
+            }
+            
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndVertical();
+        }
+    }
+    
+    // Check if a valid and enabled Questionnaire prefab instance exists in the state's Objects
+    private bool HasEnabledFormInstance(GameObject stateObject)
+    {
+        if (!stateObject) return false;
+        
+        Transform objects = stateObject.transform.Find("Objects");
+        if (!objects) return false;
+        
+        foreach (Transform child in objects)
+        {
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == formPrefabPath && child.gameObject.activeSelf)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    // Remove the Questionnaire instance from the scene by disabling it and setting qID to -1
+    private void RemoveFormInstance(GameObject stateObject, GameObject formController)
+    {
+        if (formController != null)
+        {
+            GameObject formInstance = formController.transform.parent.gameObject;
+            DestroyImmediate(formInstance);
+            Debug.Log($"Questionnaire instance in {stateObject.name} removed.");
+        }
+    }
+    
+    private void CopyWorldItemReferenceListToFormController(GameObject formController)
+    {
+        if (formController == null)
+        {
+            Debug.LogError("FormController not found in the new questionnaire object.");
+            return;
+        }
+
+        GameObject expTemplateInstance = FindRequiredObjectsWrapperInstance();
+        if (expTemplateInstance != null)
+        {
+            // Find the WorldItemRefList in the scene
+            GameObject worldItemRefList = expTemplateInstance.transform.Find(WorldItemRefListObjectName).gameObject;
+
+            if (worldItemRefList != null)
+            {
+                // Get the WorldItemReferenceList component
+                var worldItemRefComponent = worldItemRefList.GetComponent<ClusterVR.CreatorKit.Item.Implements.WorldItemReferenceList>();
+
+                if (worldItemRefComponent != null)
+                {
+                    // Copy the WorldItemReferenceList component to the new object
+                    UnityEditorInternal.ComponentUtility.CopyComponent(worldItemRefComponent);
+                    UnityEditorInternal.ComponentUtility.PasteComponentAsNew(formController);
+                }
+                else
+                {
+                    Debug.LogError("WorldItemReferenceList component not found on WorldItemRefList.");
+                }
+            }
+            else
+            {
+                Debug.LogError("WorldItemRefList object not found in the scene.");
+            }
+        }
+        else
+        {
+            Debug.LogError("ExpTemplateRequiredObjects prefab instance not found in the scene.");
+        }
+    }
+
+    private GameObject FindRequiredObjectsWrapperInstance()
+    {
+        GameObject[] rootObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+
+        foreach (GameObject obj in rootObjects)
+        {
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == RequiredObjectsWrapperPrefabPath)
+            {
+                return obj;
+            }
+        }
+        return null;
+    }
+    
+    private void UpdateQuestionnaireFormsAfterReorder(Dictionary<int, int> stateIdMap)
+    {
+        GameObject statesObject = GameObject.Find("States");
+        if (statesObject != null)
+        {
+            foreach (Transform stateTransform in statesObject.transform)
+            {
+                GameObject stateObject = stateTransform.gameObject;
+                
+                if (HasEnabledFormInstance(stateObject))
+                {
+                    GameObject formController = GetFormController(stateObject.transform.Find("Objects").gameObject);
+                    int currentQID = GetCurrentQID(formController);
+
+                    // Find the new state ID using the stateIdMap
+                    int newStateId = -1;
+                    foreach (var kvp in stateIdMap)
+                    {
+                        if (stateList.States[kvp.Value].StateName == stateObject.name)
+                        {
+                            newStateId = kvp.Value;
+                            break;
+                        }
+                    }
+
+                    // Update the qID if it has changed
+                    if (newStateId != -1 && newStateId != currentQID)
+                    {
+                        UpdateQID(formController, newStateId);
+                        Debug.Log($"Updated qID of Questionnaire in {stateObject.name} to {newStateId}");
+                    }
+                }
+            }
+        }
     }
 }

@@ -34,7 +34,7 @@ public class DataRecorderEditor : EditorWindow
     public void OnGUI()
     {
         GUILayout.Label("Custom Data Recorder Editor", EditorStyles.largeLabel);
-
+        
         if (customDataRecorder == null)
         {
             FindOrCreateCustomDataRecorder();
@@ -54,23 +54,39 @@ public class DataRecorderEditor : EditorWindow
             for (int i = 0; i < customDataListNames.Count; i++)
             {
                 EditorGUILayout.BeginHorizontal();
+
+                EditorGUILayout.BeginVertical();
+                EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("List Name to save custom data", GUILayout.Width(180));
                 customDataListNames[i] = EditorGUILayout.TextField(customDataListNames[i], GUILayout.Width(100));
-                EditorGUILayout.EndHorizontal();
-                EditorGUILayout.LabelField("Script to define what and how to save custom data:");
-                customDataCalculationScripts[i] = EditorGUILayout.TextArea(customDataCalculationScripts[i], GUILayout.Height(100));
-                if (GUILayout.Button("Remove", GUILayout.Width(60)))
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("Remove this recorder", GUILayout.Width(150)))
                 {
                     // Show warning before removing
                     if (EditorUtility.DisplayDialog("Remove Custom Data Entry",
-                        "Are you sure you want to remove this custom data entry?",
-                        "Remove", "Cancel"))
+                            "Are you sure you want to remove this custom data entry?",
+                            "Remove", "Cancel"))
                     {
                         customDataListNames.RemoveAt(i);
                         customDataCalculationScripts.RemoveAt(i);
                         break; // Exit the loop after removing
                     }
                 }
+                EditorGUILayout.EndHorizontal();
+                
+                EditorGUILayout.LabelField("Script to define what and how to save custom data:");
+                customDataCalculationScripts[i] = EditorGUILayout.TextArea(customDataCalculationScripts[i], GUILayout.Height(150));
+                EditorGUILayout.EndVertical();
+
+                EditorGUILayout.BeginVertical(GUILayout.Width(250));
+                EditorGUILayout.LabelField("Available variables in code blocks: ", GUILayout.Width(200));
+                EditorGUILayout.LabelField("CONDITION", EditorStyles.boldLabel, GUILayout.Width(100));
+                EditorGUILayout.HelpBox("⋅ Values are determined by your configured experimental variables and vary across trials.\n⋅ Use CONDITION[\"condition_name\"] to reference a specific condition within the current trial.", MessageType.Info);
+                EditorGUILayout.Space(30);
+                EditorGUILayout.HelpBox("Ensure returning something in the end of the code block.\ne.g., `return { score: 100 };", MessageType.Warning);
+                EditorGUILayout.EndVertical();
+
+                EditorGUILayout.EndHorizontal();
                 EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
             }
 
