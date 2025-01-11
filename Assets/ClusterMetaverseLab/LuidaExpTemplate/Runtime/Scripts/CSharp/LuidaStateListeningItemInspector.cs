@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 using System;
@@ -8,7 +9,8 @@ using ClusterVR.CreatorKit.Item;
 using ClusterVR.CreatorKit.Item.Implements;
 using System.Text.RegularExpressions;
 
-public class ItemsManagerEditor : EditorWindow
+[CustomEditor(typeof(LuidaStateListeningItem))]
+public class LuidaStateListeningItemInspector : Editor
 {
     private static StateListeningAction[] AvailableStateListeningActions = {
         new StateListeningAction("Show item", "$.setStateCompat('this', 'exp_showItem', true);"),
@@ -19,6 +21,7 @@ public class ItemsManagerEditor : EditorWindow
     };
 
     private string newItemName = "";
+    private GameObject gameObject;
     private GameObject referenceObject = null;
 
     private const string prefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/StateListeningItem.prefab";
@@ -27,11 +30,7 @@ public class ItemsManagerEditor : EditorWindow
     private const string RequiredObjectsWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
     private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
 
-    private List<GameObject> stateListeningItems = new List<GameObject>();
-    private GameObject selectedStateListeningItem;
-    private SerializedObject selectedStateListeningItemSerialized;
-    private JavaScriptAsset selectedStateListeningItemScript;
-    private int selectedStateListeningItemScriptIndex;
+    private JavaScriptAsset stateListeningItemScript;
     private bool isStateListeningItemAssetLoaded;
 
     private StateList stateList;
@@ -40,9 +39,8 @@ public class ItemsManagerEditor : EditorWindow
 
     private int selectedStateIndex = 0;
 
-    // Dictionary to store StateListener lists per GameObject (StateListeningItem)
-    private Dictionary<GameObject, List<StateListener>> stateListenersByItem = new Dictionary<GameObject, List<StateListener>>();
-    private Dictionary<GameObject, string> otherImplementationByItem = new Dictionary<GameObject, string>();
+    private List<StateListener> stateListeners = new List<StateListener>();
+    private string otherImplementation = "";
     private Dictionary<int, bool> stateListenerFoldout = new Dictionary<int, bool>();
 
     private Vector2 scrollPosition;
@@ -51,7 +49,7 @@ public class ItemsManagerEditor : EditorWindow
 
     public void OnEnable()
     {
-        RefreshStateListeningItems();
+        RefreshStatesList();
     }
 
     public void OnDisable()
@@ -59,25 +57,27 @@ public class ItemsManagerEditor : EditorWindow
         ApplyChangesToScript();
     }
 
-    public void OnGUI()
+    public override void OnInspectorGUI()
     {
-        RefreshStateListeningItems();
+        LuidaStateListeningItem component = (LuidaStateListeningItem)target;
+        gameObject = component.gameObject;
+        
+        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        string scriptFolderPath = string.Format(scriptFolderPathFormat, sceneName);
+        string newScriptPath = $"{scriptFolderPath}/{gameObject.name}.js";
+        var newScriptAsset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(newScriptPath);
+        stateListeningItemScript = newScriptAsset;
+        
+        RefreshStatesList();
 
         scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
         EditorGUILayout.BeginHorizontal();
 
-        // Left Column
-        EditorGUILayout.BeginVertical("box", GUILayout.Width(position.width / 4));
-        DrawLeftColumn();
-        EditorGUILayout.EndVertical();
-
-        // Middle Column
-        EditorGUILayout.BeginVertical("box", GUILayout.Width(position.width));
+        EditorGUILayout.BeginVertical("box", GUILayout.MaxWidth(350));
         DrawMiddleColumn();
         EditorGUILayout.EndVertical();
 
-        // Right Column
-        EditorGUILayout.BeginVertical("box", GUILayout.Width(position.width / 4));
+        EditorGUILayout.BeginVertical("box", GUILayout.MaxWidth(350));
         DrawRightColumn();
         EditorGUILayout.EndVertical();
 
@@ -85,22 +85,8 @@ public class ItemsManagerEditor : EditorWindow
         EditorGUILayout.EndScrollView();
     }
 
-    private void RefreshStateListeningItems()
+    private void RefreshStatesList()
     {
-        stateListeningItems.Clear();
-        GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
-        foreach (GameObject obj in allObjects)
-        {
-            if (PrefabUtility.GetCorrespondingObjectFromSource(obj) != null)
-            {
-                string sourcePrefabPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(obj));
-                if (sourcePrefabPath == prefabPath)
-                {
-                    stateListeningItems.Add(obj);
-                }
-            }
-        }
-
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         string stateListPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
         stateList = AssetDatabase.LoadAssetAtPath<StateList>(stateListPath);
@@ -117,67 +103,12 @@ public class ItemsManagerEditor : EditorWindow
         }
     }
 
-    private void DrawLeftColumn()
-    {
-        EditorGUILayout.LabelField("State Listening Items", EditorStyles.largeLabel);
-
-        var items = stateListeningItems.ToArray();
-        foreach (GameObject item in items)
-        {
-            if (item)
-            {
-                EditorGUILayout.Space();
-                EditorGUILayout.BeginVertical();
-                
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField(item.name, EditorStyles.boldLabel, GUILayout.Width(100));
-                EditorGUILayout.ObjectField(item, typeof(GameObject), true, GUILayout.Width(100));
-                EditorGUILayout.ObjectField(GetClusterScriptFromItem(item, out int scriptIndex), typeof(JavaScriptAsset), true, GUILayout.Width(100));
-                EditorGUILayout.EndHorizontal();
-                
-                EditorGUILayout.BeginHorizontal();
-                if (GUILayout.Button("Destroy"))
-                {
-                    DestroyStateListeningItem(item);
-                }
-                if (GUILayout.Button("Confirm/Edit Actions"))
-                {
-                    selectedStateListeningItem = item;
-                    selectedStateListeningItemSerialized = new SerializedObject(selectedStateListeningItem);
-                    selectedStateListeningItemScript = GetClusterScriptFromItem(selectedStateListeningItem, out selectedStateListeningItemScriptIndex);
-                    isStateListeningItemAssetLoaded = false;
-                }
-                EditorGUILayout.EndHorizontal();
-                
-                EditorGUILayout.EndVertical();
-                EditorGUILayout.Space();
-            }
-        }
-
-        EditorGUILayout.Space();
-
-        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-        EditorGUILayout.LabelField("Create State-Listening Item", EditorStyles.boldLabel);
-        EditorGUILayout.BeginVertical();
-        EditorGUILayout.LabelField("Item Name", GUILayout.Width(70));
-        newItemName = EditorGUILayout.TextField(newItemName, GUILayout.Width(80));
-        
-        EditorGUILayout.LabelField("(Optional) Create with existing object", GUILayout.Width(210));
-        referenceObject = (GameObject)EditorGUILayout.ObjectField(referenceObject, typeof(GameObject), true, GUILayout.Width(150));
-
-        if (GUILayout.Button("Create", GUILayout.Width(100)))
-        {
-            CreateStateListeningItem(referenceObject);
-        }
-        EditorGUILayout.EndVertical();
-    }
-
     private void DrawMiddleColumn()
     {
-        if (selectedStateListeningItem != null)
+        if (gameObject != null)
         {
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField($"Edit Item {selectedStateListeningItem.name}", EditorStyles.largeLabel);
+            EditorGUILayout.LabelField($"Edit Item {gameObject.name}", EditorStyles.largeLabel);
             if (GUILayout.Button("CLICK TO APPLY CHANGES"))
             {
                 ApplyChangesToScript();
@@ -193,40 +124,25 @@ public class ItemsManagerEditor : EditorWindow
             {
                 string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
                 string listenersFolderPath = string.Format(scriptFolderPathFormat, sceneName) + "/StateListeners";
-                string listenersAssetPath = listenersFolderPath + "/" + selectedStateListeningItem.name + ".asset";
-                StateListeningItemData selectedStateListeningItemData = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(listenersAssetPath);
-                if (selectedStateListeningItemData != null)
+                string listenersAssetPath = listenersFolderPath + "/" + gameObject.name + ".asset";
+                StateListeningItemData stateListeningItemData = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(listenersAssetPath);
+                if (stateListeningItemData != null)
                 {
-                    if (stateListenersByItem.ContainsKey(selectedStateListeningItem))
-                    {
-                        stateListenersByItem[selectedStateListeningItem] = selectedStateListeningItemData.stateListeners.ToList();
-                    }
-                    else
-                    {
-                        stateListenersByItem.Add(selectedStateListeningItem, selectedStateListeningItemData.stateListeners.ToList());
-                    }
-
-                    if (otherImplementationByItem.ContainsKey(selectedStateListeningItem))
-                    {
-                        otherImplementationByItem[selectedStateListeningItem] = selectedStateListeningItemData.otherImplementation;
-                    }
-                    else
-                    {
-                        otherImplementationByItem.Add(selectedStateListeningItem, selectedStateListeningItemData.otherImplementation);
-                    }
+                    stateListeners = stateListeningItemData.stateListeners.ToList();
+                    otherImplementation = stateListeningItemData.otherImplementation;
                 }
 
                 isStateListeningItemAssetLoaded = true;
             }
 
-            // Check if the selected item has any listeners
-            if (stateListenersByItem.ContainsKey(selectedStateListeningItem) && stateListenersByItem[selectedStateListeningItem].Count > 0)
+            // Check if the item has any listeners
+            if (stateListeners.Count > 0)
             {
                 // Draw each state listener
                 List<int> listenerIndicesToRemove = new List<int>();
-                for (var i = 0; i < stateListenersByItem[selectedStateListeningItem].Count; i++)
+                for (var i = 0; i < stateListeners.Count; i++)
                 {
-                    var listenerData = stateListenersByItem[selectedStateListeningItem][i];
+                    var listenerData = stateListeners[i];
                     int stateId = listenerData.stateID;
 
                     // Get the state name using stateId
@@ -265,7 +181,7 @@ public class ItemsManagerEditor : EditorWindow
                 // Remove listeners marked for removal
                 foreach (int index in listenerIndicesToRemove.OrderByDescending(i => i))
                 {
-                    stateListenersByItem[selectedStateListeningItem].RemoveAt(index);
+                    stateListeners.RemoveAt(index);
                 }
             }
             else
@@ -303,12 +219,8 @@ public class ItemsManagerEditor : EditorWindow
             EditorGUILayout.HelpBox("Implement other Cluster Script callbacks (e.g., $.onInteract, $.onGrab, ...) or your custom functions here.", MessageType.Info);
             EditorGUILayout.HelpBox("Don't use $.onUpdate here!\nImplement `function Update(deltaTime) {...}` instead.", MessageType.Warning);
 
-            if (!otherImplementationByItem.ContainsKey(selectedStateListeningItem) || otherImplementationByItem[selectedStateListeningItem] == null)
-            {
-                otherImplementationByItem.Add(selectedStateListeningItem, "");
-            }
-            otherImplementationByItem[selectedStateListeningItem] = EditorGUILayout.TextArea(otherImplementationByItem[selectedStateListeningItem], GUILayout.Height(100));
-
+            otherImplementation = EditorGUILayout.TextArea(otherImplementation, GUILayout.Height(100));
+            
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
             if (GUILayout.Button("CLICK TO APPLY CHANGES"))
@@ -481,54 +393,6 @@ public class ItemsManagerEditor : EditorWindow
         EditorGUILayout.EndHorizontal();
     }
 
-    private void CreateStateListeningItem(GameObject referenceObject = null)
-    {
-        if (string.IsNullOrEmpty(newItemName))
-        {
-            EditorUtility.DisplayDialog("Error", "Please enter a name for the new item.", "OK");
-            return;
-        }
-
-        GameObject newObject = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath));
-        newObject.name = newItemName;
-        EnableAccessToConditions(newObject);
-        Undo.RegisterCreatedObjectUndo(newObject, "Create State Listening Item");
-
-        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        string scriptFolderPath = string.Format(scriptFolderPathFormat, sceneName);
-
-        if (!AssetDatabase.IsValidFolder(scriptFolderPath))
-        {
-            Directory.CreateDirectory(scriptFolderPath);
-            AssetDatabase.Refresh();
-        }
-
-        string newScriptPath = $"{scriptFolderPath}/{newItemName}.js";
-        AssetDatabase.CopyAsset(stateListeningItemScriptTemplatePath, newScriptPath);
-        AssetDatabase.Refresh();
-
-        GameObject scriptCombinerObject = newObject.GetComponent<ScriptableClusterScriptCombiner>().gameObject;
-        ScriptableClusterScriptCombiner combiner = scriptCombinerObject.GetComponent<ScriptableClusterScriptCombiner>();
-        var newScriptAsset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(newScriptPath);
-        combiner.ReplaceScript(newScriptAsset, 1, null, 0, true);
-        EditorUtility.SetDirty(combiner);
-        EditorUtility.SetDirty(newScriptAsset);
-        AssetDatabase.SaveAssets();
-
-        CopyFromReferenceObject(newObject, referenceObject);
-
-        RefreshStateListeningItems();
-
-        // Automatically select the newly created item
-        selectedStateListeningItem = newObject;
-        selectedStateListeningItemSerialized = new SerializedObject(selectedStateListeningItem);
-        selectedStateListeningItemScript = newScriptAsset;
-        selectedStateListeningItemScriptIndex = 1;
-
-        newItemName = "";
-        referenceObject = null;
-    }
-
     private JavaScriptAsset GetClusterScriptFromItem(GameObject item, out int scriptIndex)
     {
         scriptIndex = -1;
@@ -545,16 +409,10 @@ public class ItemsManagerEditor : EditorWindow
     // Changed: Adds a new StateListener to the selected StateListeningItem
     private void AddStateListener(int stateIndex)
     {
-        if (selectedStateListeningItem == null) return;
-
-        // Ensure there's a list for the selected item
-        if (!stateListenersByItem.ContainsKey(selectedStateListeningItem))
-        {
-            stateListenersByItem[selectedStateListeningItem] = new List<StateListener>();
-        }
+        if (gameObject == null) return;
 
         // Check if a listener for this state already exists
-        if (stateListenersByItem[selectedStateListeningItem].Any(listener => listener.stateID == stateIndex))
+        if (stateListeners.Any(listener => listener.stateID == stateIndex))
         {
             EditorUtility.DisplayDialog("Error", $"A listener for state {stateIndex} already exists in this item.", "OK");
             return;
@@ -562,13 +420,13 @@ public class ItemsManagerEditor : EditorWindow
 
         // Create and add the new listener data
         StateListener newListener = new StateListener { stateID = stateIndex };
-        stateListenersByItem[selectedStateListeningItem].Add(newListener);
+        stateListeners.Add(newListener);
 
         // Initialize foldout state for this listener
         stateListenerFoldout[stateIndex] = true;
 
         // Log
-        Debug.Log($"Added state listener for state {stateIndex} to item {selectedStateListeningItem.name}");
+        Debug.Log($"Added state listener for state {stateIndex} to item {gameObject.name}");
     }
 
     private void DestroyStateListeningItem(GameObject item)
@@ -580,9 +438,6 @@ public class ItemsManagerEditor : EditorWindow
                 "This will also delete its associated ClusterScript and State Listeners.",
                 "Destroy", "Keep it"))
         {
-            // Remove from the list of items
-            stateListeningItems.Remove(item);
-
             // Delete the associated ClusterScript
             JavaScriptAsset script = GetClusterScriptFromItem(item, out int scriptIndex);
             if (script != null)
@@ -604,16 +459,14 @@ public class ItemsManagerEditor : EditorWindow
             Undo.DestroyObjectImmediate(item);
 
             // Deselect the item
-            if (selectedStateListeningItem == item)
+            if (gameObject == item)
             {
-                selectedStateListeningItem = null;
-                selectedStateListeningItemSerialized = null;
-                selectedStateListeningItemScript = null;
-                selectedStateListeningItemScriptIndex = -1;
+                gameObject = null;
+                stateListeningItemScript = null;
             }
 
-            // Refresh the list of items
-            RefreshStateListeningItems();
+            // Refresh states list
+            RefreshStatesList();
 
             // Refresh the AssetDatabase
             AssetDatabase.Refresh();
@@ -622,13 +475,13 @@ public class ItemsManagerEditor : EditorWindow
 
     private void ApplyChangesToScript()
     {
-        if (selectedStateListeningItem == null || selectedStateListeningItemScript == null) return;
+        if (gameObject == null || stateListeningItemScript == null) return;
 
-        ScriptableClusterScriptCombiner combiner = selectedStateListeningItem.GetComponent<ScriptableClusterScriptCombiner>();
+        ScriptableClusterScriptCombiner combiner = gameObject.GetComponent<ScriptableClusterScriptCombiner>();
         if (combiner == null) return;
 
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        string scriptPath = string.Format(scriptFolderPathFormat, sceneName) + "/" + selectedStateListeningItemScript.name + ".js";
+        string scriptPath = string.Format(scriptFolderPathFormat, sceneName) + "/" + stateListeningItemScript.name + ".js";
         string scriptContent = File.ReadAllText(scriptPath);
         
         string newScriptContent = "";
@@ -637,10 +490,10 @@ public class ItemsManagerEditor : EditorWindow
         newScriptContent += GenerateDuringStateFunction();
         newScriptContent += "\n";
         newScriptContent += GenerateOnStateExitFunction();
-        if (otherImplementationByItem.ContainsKey(selectedStateListeningItem))
+        if (otherImplementation.Length > 0)
         {
             newScriptContent += "\n";
-            newScriptContent += otherImplementationByItem[selectedStateListeningItem];
+            newScriptContent += otherImplementation;
         }
         newScriptContent += "\n";
         
@@ -648,23 +501,20 @@ public class ItemsManagerEditor : EditorWindow
         // Write the changes to the actual file
         File.WriteAllText(scriptPath, newScriptContent);
 
-        if (stateListenersByItem.ContainsKey(selectedStateListeningItem) && otherImplementationByItem.ContainsKey(selectedStateListeningItem))
+        StateListeningItemData asset = ScriptableObject.CreateInstance<StateListeningItemData>();
+        asset.stateListeners = stateListeners.ToArray();
+        asset.otherImplementation = otherImplementation;
+        string listenersFolderPath = string.Format(scriptFolderPathFormat, sceneName) + "/StateListeners";
+        if (!Directory.Exists(listenersFolderPath))
         {
-            StateListeningItemData asset = ScriptableObject.CreateInstance<StateListeningItemData>();
-            asset.stateListeners = stateListenersByItem[selectedStateListeningItem].ToArray();
-            asset.otherImplementation = otherImplementationByItem[selectedStateListeningItem];
-            string listenersFolderPath = string.Format(scriptFolderPathFormat, sceneName) + "/StateListeners";
-            if (!Directory.Exists(listenersFolderPath))
-            {
-                Directory.CreateDirectory(listenersFolderPath);
-            }
-            string listenersAssetPath = listenersFolderPath + "/" + selectedStateListeningItem.name + ".asset";
-            AssetDatabase.CreateAsset(asset, listenersAssetPath);
-            EditorUtility.SetDirty(combiner);
+            Directory.CreateDirectory(listenersFolderPath);
         }
+        string listenersAssetPath = listenersFolderPath + "/" + gameObject.name + ".asset";
+        AssetDatabase.CreateAsset(asset, listenersAssetPath);
+        EditorUtility.SetDirty(combiner);
 
         // Mark the asset as dirty and save
-        EditorUtility.SetDirty(selectedStateListeningItemScript);
+        EditorUtility.SetDirty(stateListeningItemScript);
         EditorUtility.SetDirty(combiner);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -681,22 +531,18 @@ public class ItemsManagerEditor : EditorWindow
         content += "  const STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n";
         content += "  const CONDITION = $.groupState.currentCondition;\n\n";
 
-        // Check if the selected item has any listeners
-        if (stateListenersByItem.ContainsKey(selectedStateListeningItem))
+        // Aggregate action content from all listeners of the item
+        foreach (var listenerData in stateListeners)
         {
-            // Aggregate action content from all listeners of the selected item
-            foreach (var listenerData in stateListenersByItem[selectedStateListeningItem])
+            var actions = actionSelector(listenerData);
+            if (actions.Count > 0)
             {
-                var actions = actionSelector(listenerData);
-                if (actions.Count > 0)
+                content += $"  if (STATE_ID === {listenerData.stateID}) {{\n";
+                foreach (var action in actions)
                 {
-                    content += $"  if (STATE_ID === {listenerData.stateID}) {{\n";
-                    foreach (var action in actions)
-                    {
-                        content += $"    {action.GetActionContent()}\n";
-                    }
-                    content += "  }\n";
+                    content += $"    {action.GetActionContent()}\n";
                 }
+                content += "  }\n";
             }
         }
 
@@ -839,3 +685,4 @@ public class ItemsManagerEditor : EditorWindow
         targetSerializedItem.ApplyModifiedProperties(); // Apply changes to the target Item component
     }
 }
+#endif
