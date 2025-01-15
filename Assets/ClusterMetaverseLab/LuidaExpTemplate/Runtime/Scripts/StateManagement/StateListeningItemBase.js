@@ -5,6 +5,7 @@ $.onUpdate((deltaTime) => {
     }
     if ($.getStateCompat("this", "state_enter", "boolean")) {
         $.setStateCompat("this", "state_enter", false);
+        $.state.state_id = $.getStateCompat("global", "state_currentID", "integer");
         OnStateEnter();
     }
     if ($.getStateCompat("this", "state_isActive", "boolean")) {
@@ -35,8 +36,8 @@ function UploadRecordedData() {
 
 function OnStateEnter() {}
 
-function OnStateExit () {}
+function OnStateExit() {}
 
-function DuringState (deltaTime) {}
+function DuringState(deltaTime) {}
 
-function Update (deltaTime) {}
+function Update(deltaTime) {}

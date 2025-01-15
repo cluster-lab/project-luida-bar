@@ -920,7 +920,7 @@ public class StateListEditor : EditorWindow
     private string GenerateStateFunction(StateListener[] listeners, string functionName, Func<StateListener, List<StateListenerAction>> actionSelector, string extraParameters = "")
     {
         var content = $"function {functionName}({extraParameters}) {{\n";
-        content += "  const STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n";
+        content += "  const STATE_ID = $.state.state_id;\n";
         content += "  const CONDITION = $.groupState.currentCondition;\n\n";
 
         foreach (var listenerData in listeners)
