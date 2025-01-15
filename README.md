@@ -27,28 +27,29 @@ We also provided a template script to implement decision of the experimental con
 ![image](https://github.com/user-attachments/assets/3c2994f4-5bc3-40a7-9812-29f4999d59d6)
 
 #### State management
-This implement template follows a State design pattern. We have prepared default states and their transitions for you to use without additional edition, while you can still make your customization (e.g. skip a state, enable auto transition in xx seconds, etc.) with an editor window.
+This implement template follows a State design pattern. We have prepared default states and their transitions for you to use without additional edition.
+You can still make your customization, including adding/removing/skipping/repeating a state or enable auto transition in xx seconds.
 
 本実装テンプレートは、ステートデザインパターンに従っています。デフォルトのステートとその遷移が用意されており、追加編集なしで使用可能です。
-ただし、提供されたエディタウィンドウを使って、ステートを追加・削除・スキップ・繰り返したり、XX秒後に自動遷移を有効にしたりといったカスタマイズも可能です。
+ご自身でステートの追加・削除・スキップ・繰り返し・XX秒後に自動遷移などの設定もカスタマイズ可能です。
 
-![image](https://github.com/user-attachments/assets/d59d3e5c-e30e-429d-b83a-2ebca1550eb7)
+![image](https://github.com/user-attachments/assets/d1538e21-4207-440f-a31c-37a976bddf08)
 
-#### Manage gameobjects by states or experimental conditions
-This implement template enables gameobjects to follow state transitions or experiment conditions. You can add such gameobjects from the provided editor window, and then access the attached scripts to edit them. The scripts are also provided with templates to help you implement smoother.
 
-本実装テンプレートでは、ステートの遷移や実験条件に従うゲームオブジェクトを作成できます。
-提供された設定画面からこれらのゲームオブジェクトを作成し、付属のスクリプトにアクセスして編集できます。
-そのスクリプトをスムーズに実装するためのテンプレートも用意されています。
+#### Manage game objects that listen to state transitions and access experiment conditions
+This implementation template allows you to create game objects that can perform actions based on state transitions or access experimental conditions.
+Using the provided settings screen, you can edit their behaviors through the GUI, and spaces for writing scripts are also available.
 
-![image](https://github.com/user-attachments/assets/b4a2c257-3979-438c-af12-2140ad33d5c0)
-![image](https://github.com/user-attachments/assets/93e9ee07-be0c-4b18-b165-27972d1eacc1)
+本実装テンプレートでは、ステートの遷移に応じた動作や、実験条件へのアクセスが可能なゲームオブジェクトを作成できます。
+提供された設定画面を使用して、GUI上で動作を簡単に編集することができ、またスクリプトを記述するための枠も用意されています。
+
+![image](https://github.com/user-attachments/assets/d1aca89f-eaff-44d4-8741-69280762fa8b)
 
 #### Questionnaire generation
-You don't need to create game objects for each question or answer. Just register your questionnaire on LUIDA's web console, and paste its ID the designated field on the provided editor window. Gameobjects for each question and answer will be automatically generated on cluster during the exact experiment session.
+You don't need to create game objects for each question or answer. Just register your questionnaire on LUIDA's web console, and paste its ID the designated field on the provided editor window in this implement template. Gameobjects for each question and answer will be automatically generated on cluster during the exact experiment session.
 
 質問紙の質問や回答ごとにゲームオブジェクトを作成する必要はありません。
-LUIDA専用のウェブコンソールに質問紙内容を登録し、提供された設定画面の指定フィールドにIDを貼り付けるだけで、cluster上の実験実施中に自動的にゲームオブジェクトが生成されます。
+LUIDA専用のウェブコンソールに質問紙内容を登録し、そのIDを本実装テンプレートに提供された設定画面の指定フィールドに貼り付けるだけで、cluster上の実験実施中に自動的にゲームオブジェクトが生成されます。
 
 #### Data recording
 During the exact experiment session, Cluster continuously records players' positions, poses, actions, to name a few. These data will be formatted and display on the web console.
@@ -61,7 +62,9 @@ The collected data will be listed on LUIDA's web console for you to confirm and 
 同時に、カスタマイズなデータ記録を事前に本実装テンプレート内で設定することも可能です。
 収集されたデータはLUIDA専用のウェブコンソールから確認・ダウンロードできます。
 
-![image](https://github.com/user-attachments/assets/8e227057-d100-4e89-8b41-42f7d394557a)
+![image](https://github.com/user-attachments/assets/089340d0-dec0-487b-9be1-51b4cfceca2f)
+![image](https://github.com/user-attachments/assets/0d997e6c-9c1b-456d-babc-cb8400a1ef86)
+
 
 -----
 
@@ -72,13 +75,21 @@ The collected data will be listed on LUIDA's web console for you to confirm and 
 2. Open the downloaded Unity project, **ignore the error at the first time, and import the following packages published by KaomoLab**.
   - [**CSCombiner: Combine multiple ClusterScripts of one item inside Unity Editor**](https://vkao.booth.pm/items/5924956) (ver1.01)
   - [**CSEmulator: Run ClusterScripts inside Unity Editor**](https://vkao.booth.pm/items/5111235) (newest version)
+3. Issue an access token and register it for this Unity project (Follow the steps as shown in the picture below).
+![cluster-access-token-registration](https://github.com/user-attachments/assets/aeec56a4-ed78-41b2-bb21-d519c659c0d5)
+4. Register URL  `https://luida-web-next.vercel.app/api/cluster` for Cluster's `callExternal` feature, and register the generated verify token for this implement template (Follow the steps as shown in the picture below).
+![register-call-external-url](https://github.com/user-attachments/assets/f64e75df-93f2-4b1a-9b3a-36216405feb7)
+
 
 ### 日本語
 1. [最新リリース](https://github.com/cluster-lab/project-luida-bar/releases)からダウンロードします。
 2. ダウンロードしたUnityプロジェクトを立ち上げ、**最初はエラーを無視し、立ち上げたら以下のパッケージをインポートします**。
   - [**CSCombiner: Cluster Scriptを Unity Editor 上で結合するツール**](https://vkao.booth.pm/items/5924956) (ver1.01)
   - [**CSEmulator: Cluster Scriptを Unity Editor 上で再生できるようにするツール**](https://vkao.booth.pm/items/5111235) (最新バージョン)
-
+3. アクセストークンを発行し、Unityプロジェクトに登録します（下の画像に示された通りに行ってください）。
+![cluster-access-token-registration-jp](https://github.com/user-attachments/assets/c06f43c6-3412-4462-92a9-ac3576252e99)
+4. clusterの外部通信機能用のURLを登録し、生成されたトークンを本実装テンプレートに登録します（下の画像に示された通りに行ってください）。
+![register-call-external-url](https://github.com/user-attachments/assets/f64e75df-93f2-4b1a-9b3a-36216405feb7)
 -----
 
 # Documentation (under construction...)
