@@ -82,10 +82,12 @@ public abstract class LuidaFakeGimmick : MonoBehaviour
 
     private void OnDestroy()
     {
+/*
         if (!Application.isPlaying)
         {
             RemoveCopiedComponent();
         }
+*/
     }
 
     private void RemoveCopiedComponent()

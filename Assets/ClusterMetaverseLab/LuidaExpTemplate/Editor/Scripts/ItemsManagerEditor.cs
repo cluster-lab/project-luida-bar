@@ -678,7 +678,7 @@ public class ItemsManagerEditor : EditorWindow
     {
         // Build the function signature, optionally adding extra parameters.
         var content = $"function {functionName}({extraParameters}) {{\n";
-        content += "  const STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n";
+        content += "  const STATE_ID = $.state.state_id;\n";
         content += "  const CONDITION = $.groupState.currentCondition;\n\n";
 
         // Check if the selected item has any listeners
