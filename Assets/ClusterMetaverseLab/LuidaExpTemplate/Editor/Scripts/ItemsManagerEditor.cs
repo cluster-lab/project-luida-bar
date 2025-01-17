@@ -687,6 +687,8 @@ public class ItemsManagerEditor : EditorWindow
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
         AssetDatabase.ImportAsset(scriptPath);
+
+        Assets.KaomoLab.CSCombiner.CSCombiner.CombineAll();
     }
     
     private string GenerateStateFunction(
