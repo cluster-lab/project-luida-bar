@@ -146,6 +146,6 @@ MonoBehaviour:
   textMesh: {fileID: 0}
   text: "\u30E1\u30C3\u30BB\u30FC\u30B8"
   size: 0.1
-  textAnchor: 1
+  textAnchor: 4
   textAlignment: 1
   color: {r: 0, g: 0, b: 0, a: 1}
