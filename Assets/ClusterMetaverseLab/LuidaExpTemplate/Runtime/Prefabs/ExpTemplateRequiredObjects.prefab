@@ -377,6 +377,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7022389377809828575 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 720097705929188119, guid: 582d9461e4f86459080aac4eee555440,
+    type: 3}
+  m_PrefabInstance: {fileID: 7533049804082866632}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6487efbf7339493cb3e1fa581f53b763, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8929822412585993244
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -452,23 +464,29 @@ PrefabInstance:
     - target: {fileID: 5964733846762761526, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\n$.onStart(()
-        => {\n    $.state.customData = {};\n})\n\n$.onUpdate(() => {\n    if ($.getStateCompat(\"this\",
-        \"exp_recordCustomData\", \"boolean\")) {\n        $.setStateCompat(\"this\",
-        \"exp_recordCustomData\", false);\n        recordData();\n    }\n    if ($.getStateCompat(\"this\",
-        \"exp_uploadCustomData\", \"boolean\")) {\n        $.setStateCompat(\"this\",
-        \"exp_uploadCustomData\", false);\n        uploadData();\n    }\n})\n\nfunction
-        recordData () {\n    $.state.customData = calculateData();\n}\n\nfunction
-        uploadData () {\n    $.log(\"Upload custom data: \" + JSON.stringify($.state.customData));\n   
-        let request = {\n        type: \"uploadCustomData\",\n        token: token
-        || \"\",\n        dataByFileName: JSON.stringify($.state.customData),\n       
-        eID: expID || \"\",\n        pID: $.getPlayersNear($.getPosition().clone(),
-        Infinity)[0].idfc || \"\" // TODO: retrieve idfc through cluster Player Script\n   
-        };\n    $.callExternal(JSON.stringify(request), \"customDataUploaded\");\n}\n\n$.onExternalCallEnd((res,
-        meta, err) =>\n{\n    if (res == null) {\n        $.log(\"callExternal ERROR:
-        \" + err);\n        return;\n    }\n\n    if (meta === \"customDataUploaded\")
-        {\n        $.log(\"Custom recorded data uploaded\");\n    }\n});\r\n"
+      value: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\n\r\n$.onStart(()
+        => {\r\n    $.state.customData = {};\r\n})\r\n\r\n$.onUpdate(() => {\r\n   
+        if ($.getStateCompat(\"this\", \"exp_recordCustomData\", \"boolean\")) {\r\n       
+        $.setStateCompat(\"this\", \"exp_recordCustomData\", false);\r\n        recordData();\r\n   
+        }\r\n    if ($.getStateCompat(\"this\", \"exp_uploadCustomData\", \"boolean\"))
+        {\r\n        $.setStateCompat(\"this\", \"exp_uploadCustomData\", false);\r\n       
+        uploadData();\r\n    }\r\n})\r\n\r\nfunction recordData () {\r\n    $.state.customData
+        = calculateData();\r\n}\r\n\r\nfunction uploadData () {\r\n    $.log(\"Upload
+        custom data: \" + JSON.stringify($.state.customData));\r\n    let request
+        = {\r\n        type: \"uploadCustomData\",\r\n        token: token || \"\",\r\n       
+        dataByFileName: JSON.stringify($.state.customData),\r\n        eID: expID
+        || \"\",\r\n        pID: $.getPlayersNear($.getPosition().clone(), Infinity)[0].idfc
+        || \"\" // TODO: retrieve idfc through cluster Player Script\r\n    };\r\n   
+        $.callExternal(JSON.stringify(request), \"customDataUploaded\");\r\n}\r\n\r\n$.onExternalCallEnd((res,
+        meta, err) =>\r\n{\r\n    if (res == null) {\r\n        $.log(\"callExternal
+        ERROR: \" + err);\r\n        return;\r\n    }\r\n\r\n    if (meta === \"customDataUploaded\")
+        {\r\n        $.log(\"Custom recorded data uploaded\");\r\n    }\r\n});\r\n"
       objectReference: {fileID: 0}
+    - target: {fileID: 8273925800708392170, guid: 964d6187f971a8f43b4ee67279f1ef90,
+        type: 3}
+      propertyPath: host
+      value: 
+      objectReference: {fileID: 7022389377809828575}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 964d6187f971a8f43b4ee67279f1ef90, type: 3}
 --- !u!4 &2966719835339860264 stripped
