@@ -225,8 +225,7 @@ MonoBehaviour:
   sourceCodeAsset: {fileID: 0}
   sourceCode: "$.onStart(() => {\r\n    reset();\r\n});\r\n\r\n$.onUpdate(() => {\r\n   
     if ($.state.trialID !== $.getStateCompat(\"global\", \"exp_trialID\", \"integer\"))
-    {\r\n        $.log($.state.trialID + \" \" + $.getStateCompat(\"global\", \"exp_trialID\",
-    \"integer\"));\r\n        $.state.trialID = $.getStateCompat(\"global\", \"exp_trialID\",
+    {\r\n        $.state.trialID = $.getStateCompat(\"global\", \"exp_trialID\",
     \"integer\");\r\n        if ($.state.trialID >= $.state.trialCount) {\r\n           
     $.sendSignalCompat(\"this\", \"exp_resetTrials\");\r\n        } else if ($.state.trialID
     <= -1) {\r\n            reset();\r\n        } else {\r\n            let condition
