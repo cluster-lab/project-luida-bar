@@ -12,6 +12,13 @@ using System.Text.RegularExpressions;
 [CustomEditor(typeof(LuidaStateListeningItem))]
 public class LuidaStateListeningItemInspector : Editor
 {
+    public override void OnInspectorGUI()
+    {
+        EditorGUILayout.BeginVertical("box");
+        EditorGUILayout.HelpBox("Open 'Window > Luida Editor > State-listening Items' to edit state listeners of this item.", MessageType.Info);
+        EditorGUILayout.EndVertical();
+    }
+/*
     private static StateListeningAction[] AvailableStateListeningActions = {
         new StateListeningAction("Show item", "$.setStateCompat('this', 'exp_showItem', true);"),
         new StateListeningAction("Hide item", "$.setStateCompat('this', 'exp_showItem', false);"),
@@ -684,5 +691,6 @@ public class LuidaStateListeningItemInspector : Editor
 
         targetSerializedItem.ApplyModifiedProperties(); // Apply changes to the target Item component
     }
+*/
 }
 #endif
