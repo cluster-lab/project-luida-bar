@@ -10,14 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 5660514857068071931}
   - component: {fileID: 5660514857068071928}
-  - component: {fileID: 5660514857068071929}
   - component: {fileID: 5660514857068071926}
   - component: {fileID: 5660514857068071924}
   - component: {fileID: 5660514857068071927}
   - component: {fileID: 7471271114452398843}
   - component: {fileID: -4623775508281712384}
   - component: {fileID: 3877502027718645906}
-  - component: {fileID: 7617053289787406505}
   - component: {fileID: 5512835993851480873}
   - component: {fileID: 6758608954925073686}
   - component: {fileID: 833797841801743093}
@@ -60,64 +58,6 @@ MonoBehaviour:
     value: 0
   itemName: 
   size: {x: 0, y: 0, z: 0}
---- !u!114 &5660514857068071929
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5660514857068071925}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d06d8dc2ce9e442ab2712de694945b2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item: {fileID: 5660514857068071928}
-  key:
-    target: 0
-    key: state_setID
-  logic:
-    statements:
-    - singleStatement:
-        targetState:
-          target: 0
-          key: state_id
-          parameterType: 3
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 3
-              boolValue: 0
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 0
-              key: 
-              type: 6
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 0
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 0
-                  key: 
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
 --- !u!114 &5660514857068071926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,6 +76,7 @@ MonoBehaviour:
     \"state_exit\", \"boolean\")) {\r\n        OnStateExit();\r\n        $.setStateCompat(\"this\",
     \"state_exit\", false);\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
     \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
+    $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
     OnStateEnter();\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_isActive\",
     \"boolean\")) {\r\n        DuringState(deltaTime);\r\n    }\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
     ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
@@ -143,17 +84,16 @@ MonoBehaviour:
     ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
     RecordCustomData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
     UploadRecordedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
-    OnStateEnter() {}\r\n\r\nfunction OnStateExit () {}\r\n\r\nfunction DuringState
-    (deltaTime) {}\r\n\r\nfunction Update (deltaTime) {}\r\n$.onStart(() => {\r\n   
-    \r\n})\r\n\r\nfunction OnStateEnter() {\r\n    const STATE_ID = $.getStateCompat(\"global\",
-    \"state_currentID\", \"integer\");\r\n    const CONDITION = $.groupState.currentCondition;
-    // You can use CONDITION[variable's name] to access the current experimental
-    condition\r\n    // if (stateID === i) {}\r\n}\r\n\r\nfunction OnStateExit()
-    {\r\n    const STATE_ID = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n   
-    const CONDITION = $.groupState.currentCondition;\r\n    // if (stateID === i)
-    {}\r\n}\r\n\r\nfunction DuringState(deltaTime) {\r\n    const STATE_ID = $.getStateCompat(\"global\",
-    \"state_currentID\", \"integer\");\r\n    const CONDITION = $.groupState.currentCondition;\r\n   
-    // if (stateID === i) {}\r\n}\r\n\r\nfunction Update(deltaTime) {}\r\n"
+    OnStateEnter() {}\r\n\r\nfunction OnStateExit() {}\r\n\r\nfunction DuringState(deltaTime)
+    {}\r\n\r\nfunction Update(deltaTime) {}\r\n\r\n$.onStart(() => {\r\n    \r\n})\r\n\r\nfunction
+    OnStateEnter() {\r\n    const STATE_ID = $.state.state_id;\r\n    const CONDITION
+    = $.groupState.currentCondition; // You can use CONDITION[variable's name] to
+    access the current experimental condition\r\n    // if (stateID === i) {}\r\n}\r\n\r\nfunction
+    OnStateExit() {\r\n    const STATE_ID = $.state.state_id;\r\n    const CONDITION
+    = $.groupState.currentCondition;\r\n    // if (stateID === i) {}\r\n}\r\n\r\nfunction
+    DuringState(deltaTime) {\r\n    const STATE_ID = $.state.state_id;\r\n    const
+    CONDITION = $.groupState.currentCondition;\r\n    // if (stateID === i) {}\r\n}\r\n\r\nfunction
+    Update(deltaTime) {}\r\n"
 --- !u!114 &5660514857068071924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,10 +120,10 @@ MonoBehaviour:
         expression:
           type: 0
           value:
-            type: 1
+            type: 0
             constant:
               type: 1
-              boolValue: 0
+              boolValue: 1
               floatValue: 0
               integerValue: 0
               vector2Value: {x: 0, y: 0}
@@ -212,80 +152,6 @@ MonoBehaviour:
               operatorExpression:
                 operator: 0
                 operands: []
-    - singleStatement:
-        targetState:
-          target: 0
-          key: state_isActive
-          parameterType: 1
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 1
-              boolValue: 0
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 0
-              key: state_isActive
-              type: 1
-          operatorExpression:
-            operator: 15
-            operands:
-            - type: 0
-              value:
-                type: 1
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 0
-                  key: state_isActive
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
-            - type: 0
-              value:
-                type: 0
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 0
-                  key: state_isActive
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
-            - type: 0
-              value:
-                type: 1
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 0
-                  key: state_isActive
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
 --- !u!114 &5660514857068071927
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -307,79 +173,22 @@ MonoBehaviour:
     - singleStatement:
         targetState:
           target: 0
-          key: state_isActive
-          parameterType: 1
-        expression:
-          type: 1
-          value:
-            type: 1
-            constant:
-              type: 1
-              boolValue: 0
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 2
-              key: exp_state_id
-              type: 6
-          operatorExpression:
-            operator: 7
-            operands:
-            - type: 0
-              value:
-                type: 1
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 2
-                  key: state_currentID
-                  type: 3
-              operatorExpression:
-                operator: 0
-                operands: []
-            - type: 0
-              value:
-                type: 1
-                constant:
-                  type: 3
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 0
-                  key: state_id
-                  type: 3
-              operatorExpression:
-                operator: 0
-                operands: []
-    - singleStatement:
-        targetState:
-          target: 0
           key: state_enter
           parameterType: 1
         expression:
-          type: 1
+          type: 0
           value:
-            type: 1
+            type: 0
             constant:
               type: 1
-              boolValue: 0
+              boolValue: 1
               floatValue: 0
               integerValue: 0
               vector2Value: {x: 0, y: 0}
               vector3Value: {x: 0, y: 0, z: 0}
             sourceState:
               target: 2
-              key: exp_state_id
+              key: state_currentID
               type: 6
           operatorExpression:
             operator: 7
@@ -595,30 +404,6 @@ MonoBehaviour:
               operatorExpression:
                 operator: 0
                 operands: []
---- !u!114 &7617053289787406505
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5660514857068071925}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f90a8458122ef47c3b840e286a75994a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item: {fileID: 5660514857068071928}
-  triggers:
-  - target: 0
-    specifiedTargetItem: {fileID: 0}
-    key: state_setID
-    type: 0
-    value:
-      boolValue: 0
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
 --- !u!114 &5512835993851480873
 MonoBehaviour:
   m_ObjectHideFlags: 0

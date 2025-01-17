@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System;
 using UnityEngine;
+using UnityEditor;
 using System.Reflection;
 using ClusterVR.CreatorKit.Operation.Implements;
 using ClusterVR.CreatorKit.Gimmick;
@@ -16,7 +17,7 @@ public abstract class LuidaFakeGimmick : MonoBehaviour
     private GlobalLogic copiedComponent;
 
     [SerializeField]
-    private GimmickTarget target;
+    private CustomGimmickTarget target;
 
     [SerializeField]
     private string key;
@@ -53,13 +54,24 @@ public abstract class LuidaFakeGimmick : MonoBehaviour
             copiedComponent = CopyComponent(targetComponent, gameObject);
         }
 
+        if (target == CustomGimmickTarget.This)
+        {
+            item = gameObject.GetComponent<Item>();
+            if (item == null)
+            {
+                Debug.LogError($"The current GameObject does not have an Item component.");
+                return;
+            }
+        }
+
         var gimmickKey = Activator.CreateInstance(typeof(GlobalGimmickKey));
         var keyField = typeof(GlobalGimmickKey).GetField("key", BindingFlags.NonPublic | BindingFlags.Instance);
         var itemField = typeof(GlobalGimmickKey).GetField("item", BindingFlags.NonPublic | BindingFlags.Instance);
 
         if (keyField != null)
         {
-            keyField.SetValue(gimmickKey, new GimmickKey(target, key));
+            GimmickTarget parsedTarget = target == CustomGimmickTarget.This ? GimmickTarget.Item : (GimmickTarget)target;
+            keyField.SetValue(gimmickKey, new GimmickKey(parsedTarget, key));
         }
         if (itemField != null)
         {
@@ -82,12 +94,12 @@ public abstract class LuidaFakeGimmick : MonoBehaviour
 
     private void OnDestroy()
     {
-/*
+        /*
         if (!Application.isPlaying)
         {
             RemoveCopiedComponent();
         }
-*/
+        */
     }
 
     private void RemoveCopiedComponent()
@@ -99,5 +111,13 @@ public abstract class LuidaFakeGimmick : MonoBehaviour
             Debug.Log("Copied GlobalLogic component removed.");
         }
     }
+}
+
+public enum CustomGimmickTarget
+{
+    Item,
+    Player,
+	Global,
+    This
 }
 #endif
