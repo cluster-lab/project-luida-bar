@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5964733846762761520}
   - component: {fileID: 5964733846762761525}
   - component: {fileID: 2627616726396763139}
+  - component: {fileID: 8273925800708392170}
   m_Layer: 0
   m_Name: CustomDataRecorder
   m_TagString: Untagged
@@ -83,15 +84,8 @@ MonoBehaviour:
     if (res == null) {\r\n        $.log(\"callExternal ERROR: \" + err);\r\n       
     return;\r\n    }\r\n\r\n    if (meta === \"customDataUploaded\") {\r\n       
     $.log(\"Custom recorded data uploaded\");\r\n    }\r\n});\r\nfunction calculateData
-    () {\r\n    let fileName = \"yourFileName\";\r\n    let returnData = $.state.customData;\r\n\r\n   
-    /*\r\n      Change the value of `fileName`\r\n      And implement your calculation
-    for data to record\r\n      Then save the calculation result into the `newRecord`
-    variable below\r\n      * You can use $.groupState.currentCondition[variable's
-    name] to access the current experimental condition\r\n    */\r\n    \r\n    const
-    newRecord = {\r\n      // yourKey: yourValue\r\n    };\r\n\r\n    if (fileName
-    in returnData && Array.isArray(returnData[fileName])) {\r\n      returnData[fileName].push(newRecord);\r\n   
-    } else {\r\n      returnData[fileName] = [newRecord];\r\n    }\r\n  \r\n    return
-    returnData;\r\n}"
+    () {\r\n    let returnData = $.state.customData;\r\n    const CONDITION = $.groupState.currentCondition;\r\n   
+    return returnData;\r\n}"
 --- !u!114 &4976748577095326931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -285,3 +279,16 @@ MonoBehaviour:
   playerScripts: []
   clusterScriptMD5s: []
   playerScriptMD5s: []
+--- !u!114 &8273925800708392170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5964733846762761523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b331e57100a4127901fa699e619e234, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  host: {fileID: 0}
