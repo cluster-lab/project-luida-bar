@@ -48,15 +48,11 @@ public class ItemsManagerEditor : EditorWindow
     private Vector2 scrollPosition;
 
     private int selectedActionIndex = 0;
+    private Dictionary<List<StateListenerAction>, bool> isAddingActionState = new Dictionary<List<StateListenerAction>, bool>();
 
     public void OnEnable()
     {
         RefreshStateListeningItems();
-    }
-
-    public void OnDisable()
-    {
-        ApplyChangesToScript();
     }
 
     public void OnGUI()
@@ -446,41 +442,63 @@ public class ItemsManagerEditor : EditorWindow
             actions.RemoveAt(index);
         }
 
-        // Add new actions
-        EditorGUILayout.BeginHorizontal("box", GUILayout.MaxWidth(200));
-        
-        EditorGUILayout.Space(20);
-        EditorGUILayout.BeginVertical("box");
-        EditorGUILayout.LabelField("Add Predefined action");
-        EditorGUILayout.BeginHorizontal();
-        selectedActionIndex = EditorGUILayout.Popup(selectedActionIndex, AvailableStateListeningActions.Select(action => action.actionType).ToArray());
-        if (GUILayout.Button("Add", GUILayout.Width(50)))
+        // Ensure the dictionary has an entry for this actions list
+        if (!isAddingActionState.ContainsKey(actions))
         {
-            actions.Add(new StateListenerAction(AvailableStateListeningActions[selectedActionIndex]));
+            isAddingActionState[actions] = false;
         }
-        EditorGUILayout.EndHorizontal();
-        EditorGUILayout.EndVertical();
 
-        EditorGUILayout.BeginVertical("box", GUILayout.Width(10));
-        EditorGUILayout.LabelField("", GUI.skin.verticalSlider, GUILayout.Width(10));
-        EditorGUILayout.LabelField("", GUI.skin.verticalSlider, GUILayout.Width(10));
-        EditorGUILayout.EndVertical();
-        
-        EditorGUILayout.BeginVertical("box");
-        EditorGUILayout.LabelField("Add Custom action");
-        EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("Add", GUILayout.Width(50)))
+        // Add new actions UI
+        if (!isAddingActionState[actions])
         {
-            actions.Add(new StateListenerAction { customAction = "" });
+            if (GUILayout.Button("+", GUILayout.Width(100))) // The '+' button
+            {
+                isAddingActionState[actions] = true;
+            }
         }
-        EditorGUILayout.LabelField("* You can edit its script later", EditorStyles.miniLabel);
-        EditorGUILayout.EndHorizontal();
-        EditorGUILayout.EndVertical();
-        EditorGUILayout.Space();
+        else
+        {
+            EditorGUILayout.BeginHorizontal("box", GUILayout.MaxWidth(200));
+            if (GUILayout.Button("Hide", GUILayout.Width(40))) // Hide button
+            {
+                isAddingActionState[actions] = false;
+            }
+
+            EditorGUILayout.Space(20);
+            EditorGUILayout.BeginVertical("box");
+            EditorGUILayout.LabelField("Add Predefined action");
+            EditorGUILayout.BeginHorizontal();
+            selectedActionIndex = EditorGUILayout.Popup(selectedActionIndex, AvailableStateListeningActions.Select(action => action.actionType).ToArray());
+            if (GUILayout.Button("Add", GUILayout.Width(50)))
+            {
+                actions.Add(new StateListenerAction(AvailableStateListeningActions[selectedActionIndex]));
+                isAddingActionState[actions] = false; // Hide the UI after adding
+            }
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndVertical();
+
+            EditorGUILayout.BeginVertical("box", GUILayout.Width(10));
+            EditorGUILayout.LabelField("", GUI.skin.verticalSlider, GUILayout.Width(10));
+            EditorGUILayout.LabelField("", GUI.skin.verticalSlider, GUILayout.Width(10));
+            EditorGUILayout.EndVertical();
         
-        EditorGUILayout.EndHorizontal();
+            EditorGUILayout.BeginVertical("box");
+            EditorGUILayout.LabelField("Add Custom action");
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("Add", GUILayout.Width(50)))
+            {
+                actions.Add(new StateListenerAction { customAction = "" });
+                isAddingActionState[actions] = false; // Hide the UI after adding
+            }
+            EditorGUILayout.LabelField("* You can edit its script later", EditorStyles.miniLabel);
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.Space();
+            
+            EditorGUILayout.EndHorizontal();
+        }
     }
-
+    
     private void CreateStateListeningItem(GameObject referenceObject = null)
     {
         if (string.IsNullOrEmpty(newItemName))
