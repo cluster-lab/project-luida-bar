@@ -123,6 +123,103 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &6474180
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6474181}
+  - component: {fileID: 6474184}
+  - component: {fileID: 6474183}
+  - component: {fileID: 6474182}
+  m_Layer: 0
+  m_Name: Sphere
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6474181
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6474180}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 758041904}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &6474182
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6474180}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &6474183
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6474180}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 47abdc187efdfce4982dece068f2a74e, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &6474184
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6474180}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &31239172
 GameObject:
   m_ObjectHideFlags: 0
@@ -429,7 +526,7 @@ PrefabInstance:
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -1309,6 +1406,138 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 668033778}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &758041903
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[1]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 35ba87e52af58f24b824e1b3b8aacfc1,
+        type: 3}
+    - target: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_Name
+      value: TaskManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: sourceCode
+      value: "$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\", \"state_exit\",
+        \"boolean\")) {\r\n        OnStateExit();\r\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
+        OnStateEnter();\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_isActive\",
+        \"boolean\")) {\r\n        DuringState(deltaTime);\r\n    }\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
+        ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
+        HideItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\r\n}\r\n\r\nfunction
+        ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
+        RecordCustomData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
+        UploadRecordedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
+        OnStateEnter() {}\r\n\r\nfunction OnStateExit() {}\r\n\r\nfunction DuringState(deltaTime)
+        {}\r\n\r\nfunction Update(deltaTime) {}\r\n\r\nfunction OnStateEnter() {\n 
+        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+        if (STATE_ID === 6) {\n    $.state.player = $.getPlayersNear($.getPosition(),
+        Infinity)[0];\r\n$.state.handOffset = new Quaternion()\r\n  .setFromEulerAngles(new
+        Vector3(0, 90, 0)); // \u5B9F\u8EAB\u4F53\u306E\u624B\uFF08\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\uFF09\u3068\u30D0\u30FC\u30C1\u30E3\u30EB\u624B\u306E\u56DE\u8EE2\u306E\u5DEE\u3092\u88DC\u6B63\u3059\u308B\u30AA\u30D5\u30BB\u30C3\u30C8\r\n\r\n$.subNode(\"StartingPoint\").setEnabled(true);
+        // \u539F\u70B9\u3092\u8868\u793A\u3059\u308B\r\n$.subNode(\"TargetPoint\").setEnabled(false);
+        // \u30BF\u30FC\u30B2\u30C3\u30C8\u3092\u975E\u8868\u793A\u306B\u3059\u308B\r\n\r\n//
+        \u539F\u70B9\u3092\u624B\u524D30cm\u306E\u4F4D\u7F6E\u306B\u7F6E\u304F\r\n$.subNode(\"StartingPoint\").setPosition(\r\n 
+        $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new
+        Vector3(0, -0.3, 0.3)));\r\n\r\n// \u30BF\u30FC\u30B2\u30C3\u30C8\u3092\u624B\u524D60cm\u306E\u4F4D\u7F6E\u306B\u7F6E\u304F\r\n$.subNode(\"TargetPoint\").setPosition(\r\n 
+        $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new
+        Vector3(0, -0.3, 0.6)));\n  }\n}\n\n\nfunction DuringState(deltaTime) {\n 
+        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+        if (STATE_ID === 6) {\n    if (!$.state.player || !$.state.handOriginalPos)
+        return;\r\n\r\n// \u30D0\u30FC\u30C1\u30E3\u30EB\u624B\u306E\u4F4D\u7F6E\u3092\u8A08\u7B97\u3059\u308B\uFF1A\u5B9F\u8EAB\u4F53\u306E\u624B\uFF08\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\uFF09\u306E\u79FB\u52D5\u91CF\xD7\u30B2\u30A4\u30F3\r\n$.subNode(\"RightHandAnchor\").setPosition(\r\n 
+        $.state.handOriginalPos.clone()\r\n    .add($.state.player.getHumanoidBonePosition(HumanoidBone.RightHand).clone()\r\n     
+        .sub($.state.handOriginalPos)\r\n      .multiplyScalar($.state.isReaching
+        ? $.state.gain : 1)));\r\n  \r\n// \u30D0\u30FC\u30C1\u30E3\u30EB\u624B\u306E\u56DE\u8EE2\u3092\u5B9F\u8EAB\u4F53\u306E\u624B\u3068\u540C\u671F\u3055\u305B\u308B\r\n$.subNode(\"RightHandAnchor\")\r\n 
+        .setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand)\r\n   
+        .clone().multiply($.state.handOffset));\n  }\n}\n\n\nfunction OnStateExit()
+        {\n  const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n}\n\n\n$.onCollide(collision
+        => {\r\n  if ($.state.isReaching) {\r\n    $.state.isReaching = false; //
+        \u30EA\u30FC\u30C1\u30F3\u30B0\uFF08\u76EE\u6A19\u5730\u70B9\u307E\u3067\u624B\u3092\u4F38\u3070\u3059\uFF09\u30D5\u30E9\u30B0\u3092false\u306B\u3059\u308B\r\n   
+        ToNextState(); // \u6B21\u306E\u30B9\u30C6\u30FC\u30C8\uFF08\u8CEA\u554F\u306B\u56DE\u7B54\u3059\u308B\u30D5\u30A7\u30FC\u30BA\uFF09\u306B\u9077\u79FB\u3055\u305B\u308B\r\n 
+        } else {\r\n    $.subNode(\"StartingPoint\").setEnabled(false);\r\n    $.subNode(\"TargetPoint\").setEnabled(true);\r\n   
+        $.state.gain = parseFloat(CONDITION[\"gain\"]); // \u3053\u306E\u8A66\u884C\u306B\u304A\u3051\u308B\u30B2\u30A4\u30F3\u306E\u5024\u3092\u8A2D\u5B9A\u3059\u308B\r\n   
+        $.state.handOriginalPos = $.subNode(\"RightHandAnchor\").getPosition().clone();\r\n   
+        $.state.isReaching = true; // \u30EA\u30FC\u30C1\u30F3\u30B0\uFF08\u76EE\u6A19\u5730\u70B9\u307E\u3067\u624B\u3092\u4F38\u3070\u3059\uFF09\u30D5\u30E9\u30B0\u3092true\u306B\u3059\u308B\r\n 
+        }\r\n});\n"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758608954925073686, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: host
+      value: 
+      objectReference: {fileID: 7533049804749356259}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: de40e14777f5f4d3190981c4f4b1cddf, type: 3}
+--- !u!4 &758041904 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+    type: 3}
+  m_PrefabInstance: {fileID: 758041903}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &787405256
 GameObject:
   m_ObjectHideFlags: 0
@@ -1503,7 +1732,7 @@ PrefabInstance:
     - target: {fileID: 3259146514098921454, guid: 8070bb182ff594c0fb4679f714f3416e,
         type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3259146514098921454, guid: 8070bb182ff594c0fb4679f714f3416e,
         type: 3}
@@ -2072,7 +2301,7 @@ PrefabInstance:
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -2556,7 +2785,7 @@ PrefabInstance:
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -2621,6 +2850,136 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1623559906}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1628302865
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[1]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 73ce26fa46a513d4aa7a319022ef9d47,
+        type: 3}
+    - target: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_Name
+      value: PracticeManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: sourceCode
+      value: "$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\", \"state_exit\",
+        \"boolean\")) {\r\n        OnStateExit();\r\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
+        OnStateEnter();\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_isActive\",
+        \"boolean\")) {\r\n        DuringState(deltaTime);\r\n    }\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
+        ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
+        HideItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\r\n}\r\n\r\nfunction
+        ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
+        RecordCustomData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
+        UploadRecordedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
+        OnStateEnter() {}\r\n\r\nfunction OnStateExit() {}\r\n\r\nfunction DuringState(deltaTime)
+        {}\r\n\r\nfunction Update(deltaTime) {}\r\n\r\nfunction OnStateEnter() {\n 
+        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+        if (STATE_ID === 2) {\n    $.state.player = $.getPlayersNear($.getPosition(),
+        Infinity)[0];\r\n$.state.handOffset = new Quaternion()\r\n  .setFromEulerAngles(new
+        Vector3(0, 90, 0)); // \u5B9F\u8EAB\u4F53\u306E\u624B\uFF08\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\uFF09\u3068\u30D0\u30FC\u30C1\u30E3\u30EB\u624B\u306E\u56DE\u8EE2\u306E\u5DEE\u3092\u88DC\u6B63\u3059\u308B\u30AA\u30D5\u30BB\u30C3\u30C8\r\n\r\n$.subNode(\"StartingPoint\").setEnabled(true);
+        // \u539F\u70B9\u3092\u8868\u793A\u3059\u308B\r\n$.subNode(\"TargetPoint\").setEnabled(false);
+        // \u30BF\u30FC\u30B2\u30C3\u30C8\u3092\u975E\u8868\u793A\u306B\u3059\u308B\r\n\r\n//
+        \u539F\u70B9\u3092\u624B\u524D30cm\u306E\u4F4D\u7F6E\u306B\u7F6E\u304F\r\n$.subNode(\"StartingPoint\").setPosition(\r\n 
+        $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new
+        Vector3(0, -0.3, 0.3)));\r\n\r\n// \u30BF\u30FC\u30B2\u30C3\u30C8\u3092\u624B\u524D60cm\u306E\u4F4D\u7F6E\u306B\u7F6E\u304F\r\n$.subNode(\"TargetPoint\").setPosition(\r\n 
+        $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new
+        Vector3(0, -0.3, 0.6)));\n  }\n}\n\n\nfunction DuringState(deltaTime) {\n 
+        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+        if (STATE_ID === 2) {\n    if (!$.state.player || !$.state.handOriginalPos)
+        return;\r\n\r\n$.subNode(\"RightHandAnchor\").setPosition(\r\n  $.state.handOriginalPos.clone()\r\n   
+        .add($.state.player.getHumanoidBonePosition(HumanoidBone.RightHand).clone()\r\n     
+        .sub($.state.handOriginalPos)\r\n      .multiplyScalar($.state.isReaching
+        ? $.state.gains[$.state.gainID] : 1)));\r\n\n$.subNode(\"RightHandAnchor\")\r\n 
+        .setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand)\r\n   
+        .clone().multiply($.state.handOffset));\n  }\n}\n\n\nfunction OnStateExit()
+        {\n  const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n}\n\n\n$.onStart(()
+        => {\r\n  $.state.gains = [1, 0.75, 1.25];\r\n  $.state.gainID = 0;\r\n});\r\n\r\n$.onCollide(collision
+        => {\r\n  if ($.state.isReaching) {\r\n    $.state.isReaching = false;\r\n   
+        $.state.gainID = $.state.gainID + 1;\r\n    ToNextState();\r\n  } else {\r\n   
+        $.subNode(\"StartingPoint\").setEnabled(false);\r\n    $.subNode(\"TargetPoint\").setEnabled(true);\r\n   
+        $.state.handOriginalPos = $.subNode(\"RightHandAnchor\").getPosition().clone();\r\n   
+        $.state.isReaching = true;\r\n  }\r\n});\n"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758608954925073686, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: host
+      value: 
+      objectReference: {fileID: 7533049804749356259}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: de40e14777f5f4d3190981c4f4b1cddf, type: 3}
+--- !u!4 &1628302866 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+    type: 3}
+  m_PrefabInstance: {fileID: 1628302865}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1660421756
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2683,7 +3042,7 @@ PrefabInstance:
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -3003,6 +3362,103 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1660421757}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1664663657
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1664663658}
+  - component: {fileID: 1664663661}
+  - component: {fileID: 1664663660}
+  - component: {fileID: 1664663659}
+  m_Layer: 0
+  m_Name: Sphere
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1664663658
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1664663657}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1628302866}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &1664663659
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1664663657}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &1664663660
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1664663657}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 47abdc187efdfce4982dece068f2a74e, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1664663661
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1664663657}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &1752504904
 GameObject:
   m_ObjectHideFlags: 0
@@ -3034,7 +3490,7 @@ Transform:
   - {fileID: 1434940727}
   - {fileID: 814595608}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1802546508
 PrefabInstance:
@@ -3181,7 +3637,7 @@ PrefabInstance:
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -3543,7 +3999,7 @@ Transform:
   - {fileID: 787405257}
   - {fileID: 1604143552}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2042168209
 PrefabInstance:
