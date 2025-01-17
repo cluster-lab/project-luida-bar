@@ -4,7 +4,6 @@ $.onStart(() => {
 
 $.onUpdate(() => {
     if ($.state.trialID !== $.getStateCompat("global", "exp_trialID", "integer")) {
-        $.log($.state.trialID + " " + $.getStateCompat("global", "exp_trialID", "integer"));
         $.state.trialID = $.getStateCompat("global", "exp_trialID", "integer");
         if ($.state.trialID >= $.state.trialCount) {
             $.sendSignalCompat("this", "exp_resetTrials");
