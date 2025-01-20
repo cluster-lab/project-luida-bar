@@ -73,28 +73,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 5022602860645237092, guid: e228c7ca8dec0428ba2fb1c353edbb9e,
     type: 3}
-  sourceCode: "$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\",
-    \"state_exit\", \"boolean\")) {\r\n        OnStateExit();\r\n        $.setStateCompat(\"this\",
-    \"state_exit\", false);\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
-    \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
-    $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
-    OnStateEnter();\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_isActive\",
-    \"boolean\")) {\r\n        DuringState(deltaTime);\r\n    }\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
-    ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
-    HideItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\r\n}\r\n\r\nfunction
-    ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
-    RecordCustomData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
-    UploadRecordedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
-    OnStateEnter() {}\r\n\r\nfunction OnStateExit() {}\r\n\r\nfunction DuringState(deltaTime)
-    {}\r\n\r\nfunction Update(deltaTime) {}\r\n\r\n$.onStart(() => {\r\n    \r\n})\r\n\r\nfunction
-    OnStateEnter() {\r\n    const STATE_ID = $.state.state_id;\r\n    const CONDITION
+  sourceCode: "$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\", \"state_exit\",
+    \"boolean\")) {\n        OnStateExit();\n        $.setStateCompat(\"this\", \"state_exit\",
+    false);\n    }\n    if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\"))
+    {\n        $.setStateCompat(\"this\", \"state_enter\", false);\n        $.state.state_id
+    = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n        OnStateEnter();\n   
+    }\n    DuringState(deltaTime);\n    Update(deltaTime);\n})\n\nfunction ShowItem()
+    {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction HideItem()
+    {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction ToNextState()
+    {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
+    RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
+    UploadRecordedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
+    OnStateEnter() {}\n\nfunction OnStateExit() {}\n\nfunction DuringState(deltaTime)
+    {}\n\nfunction Update(deltaTime) {}\n\r\n$.onStart(() => {\n    \n})\n\nfunction
+    OnStateEnter() {\n    const STATE_ID = $.state.state_id;\n    const CONDITION
     = $.groupState.currentCondition; // You can use CONDITION[variable's name] to
-    access the current experimental condition\r\n    // if (stateID === i) {}\r\n}\r\n\r\nfunction
-    OnStateExit() {\r\n    const STATE_ID = $.state.state_id;\r\n    const CONDITION
-    = $.groupState.currentCondition;\r\n    // if (stateID === i) {}\r\n}\r\n\r\nfunction
-    DuringState(deltaTime) {\r\n    const STATE_ID = $.state.state_id;\r\n    const
-    CONDITION = $.groupState.currentCondition;\r\n    // if (stateID === i) {}\r\n}\r\n\r\nfunction
-    Update(deltaTime) {}\r\n"
+    access the current experimental condition\n    // if (stateID === i) {}\n}\n\nfunction
+    OnStateExit() {\n    const STATE_ID = $.state.state_id;\n    const CONDITION
+    = $.groupState.currentCondition;\n    // if (stateID === i) {}\n}\n\nfunction
+    DuringState(deltaTime) {\n    const STATE_ID = $.state.state_id;\n    const CONDITION
+    = $.groupState.currentCondition;\n    // if (stateID === i) {}\n}\n\nfunction
+    Update(deltaTime) {}\n"
 --- !u!114 &5660514857068071924
 MonoBehaviour:
   m_ObjectHideFlags: 0
