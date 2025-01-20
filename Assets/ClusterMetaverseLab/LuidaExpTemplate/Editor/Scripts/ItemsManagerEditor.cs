@@ -303,7 +303,7 @@ public class ItemsManagerEditor : EditorWindow
             {
                 otherImplementationByItem.Add(selectedStateListeningItem, "");
             }
-            otherImplementationByItem[selectedStateListeningItem] = EditorGUILayout.TextArea(otherImplementationByItem[selectedStateListeningItem], GUILayout.Height(100));
+            otherImplementationByItem[selectedStateListeningItem] = EditorGUILayout.TextArea(otherImplementationByItem[selectedStateListeningItem], GUILayout.ExpandHeight(true));
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
@@ -429,7 +429,7 @@ public class ItemsManagerEditor : EditorWindow
                 {
                     if (actions[i].customAction != null)
                     {
-                        actions[i].customAction = EditorGUILayout.TextArea(actions[i].customAction, GUILayout.Height(100));
+                        actions[i].customAction = EditorGUILayout.TextArea(actions[i].customAction, GUILayout.ExpandHeight(true));
                     }
                 }
             }
