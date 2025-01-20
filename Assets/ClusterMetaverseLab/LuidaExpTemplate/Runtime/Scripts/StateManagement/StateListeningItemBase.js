@@ -8,9 +8,7 @@ $.onUpdate((deltaTime) => {
         $.state.state_id = $.getStateCompat("global", "state_currentID", "integer");
         OnStateEnter();
     }
-    if ($.getStateCompat("this", "state_isActive", "boolean")) {
-        DuringState(deltaTime);
-    }
+    DuringState(deltaTime);
     Update(deltaTime);
 })
 
