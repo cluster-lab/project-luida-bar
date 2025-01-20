@@ -425,6 +425,11 @@ PrefabInstance:
         }\n  if (STATE_ID === 7) {\n    $.sendSignalCompat('this', 'exp_recordCustomData');\n   
         $.setStateCompat('this', 'exp_showItem', false);\n  }\n}\n\n\n\n"
       objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: id.value
+      value: 1796557315215572530
+      objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: m_RootOrder
@@ -1845,6 +1850,31 @@ PrefabInstance:
       propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2283742839625838976, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: worldItemTemplates.Array.data[0].itemTemplateId.value
+      value: 16372347920221920323
+      objectReference: {fileID: 0}
+    - target: {fileID: 2283742839625838976, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: worldItemTemplates.Array.data[1].itemTemplateId.value
+      value: 653939095723753486
+      objectReference: {fileID: 0}
+    - target: {fileID: 2283742839625838976, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: worldItemTemplates.Array.data[2].itemTemplateId.value
+      value: 8057460474561801597
+      objectReference: {fileID: 0}
+    - target: {fileID: 2283742839625838976, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: worldItemTemplates.Array.data[3].itemTemplateId.value
+      value: 1049686230736764237
+      objectReference: {fileID: 0}
+    - target: {fileID: 2283742839625838976, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: worldItemTemplates.Array.data[4].itemTemplateId.value
+      value: 17722357788832572141
+      objectReference: {fileID: 0}
     - target: {fileID: 5697374075333026450, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
       propertyPath: m_RootOrder
@@ -1904,6 +1934,36 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Questionnaire
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075709122379, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: itemTemplateId.value
+      value: 1049686230736764237
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075709122380, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: itemTemplateId.value
+      value: 17722357788832572141
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075709122382, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: itemTemplateId.value
+      value: 16372347920221920323
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075709122383, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: itemTemplateId.value
+      value: 653939095723753486
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075709122384, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: itemTemplateId.value
+      value: 8057460474561801597
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374076674148509, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: id.value
+      value: 13611088375054328070
       objectReference: {fileID: 0}
     - target: {fileID: 6652979657310920572, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
@@ -2673,6 +2733,11 @@ PrefabInstance:
         'exp_showItem', false);\n  }\n  if (STATE_ID === 6) {\n    $.setStateCompat('this',
         'exp_showItem', false);\n  }\n}\n\n\n\n"
       objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: id.value
+      value: 14420550079034589234
+      objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: m_RootOrder
@@ -3081,6 +3146,11 @@ PrefabInstance:
         }\n}\n\n\nfunction DuringState(deltaTime) {\n  const STATE_ID = $.state.state_id;\n 
         const CONDITION = $.groupState.currentCondition;\n\n}\n\n\nfunction OnStateExit()
         {\n  const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n}\n\n\n\n"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: id.value
+      value: 12058414644545992506
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -3705,6 +3775,11 @@ PrefabInstance:
         }\n  if (STATE_ID === 7) {\n    $.sendSignalCompat('this', 'exp_recordCustomData');\n   
         $.setStateCompat('this', 'exp_showItem', false);\n  }\n}\n\n\n\n"
       objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: id.value
+      value: 7785162592870528360
+      objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: m_RootOrder
@@ -4149,6 +4224,11 @@ PrefabInstance:
         // \u73FE\u5728\u306E\u53F3\u624B\u30A2\u30F3\u30AB\u30FC\u306E\u4F4D\u7F6E\u3092\u8A18\u9332\n   
         $.state.handOriginalPos = $.subNode(\"RightHandAnchor\").getPosition().clone();\n   
         $.state.isReaching = true;\n  }\n});\n"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: id.value
+      value: 5993859592948436471
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
