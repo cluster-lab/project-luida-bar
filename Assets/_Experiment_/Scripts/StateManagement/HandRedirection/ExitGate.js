@@ -5,6 +5,9 @@ function OnStateEnter() {
   if (STATE_ID === 11) {
     $.setStateCompat('this', 'exp_showItem', true);
   }
+  if (STATE_ID === 0) {
+    $.setStateCompat('this', 'exp_showItem', false);
+  }
 }
 
 

@@ -3143,9 +3143,11 @@ PrefabInstance:
         {}\n\nfunction Update(deltaTime) {}\n\r\nfunction OnStateEnter() {\n  const
         STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
         if (STATE_ID === 11) {\n    $.setStateCompat('this', 'exp_showItem', true);\n 
-        }\n}\n\n\nfunction DuringState(deltaTime) {\n  const STATE_ID = $.state.state_id;\n 
-        const CONDITION = $.groupState.currentCondition;\n\n}\n\n\nfunction OnStateExit()
-        {\n  const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n}\n\n\n\n"
+        }\n  if (STATE_ID === 0) {\n    $.setStateCompat('this', 'exp_showItem',
+        false);\n  }\n}\n\n\nfunction DuringState(deltaTime) {\n  const STATE_ID
+        = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n}\n\n\nfunction
+        OnStateExit() {\n  const STATE_ID = $.state.state_id;\n  const CONDITION
+        = $.groupState.currentCondition;\n\n}\n\n\n\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}

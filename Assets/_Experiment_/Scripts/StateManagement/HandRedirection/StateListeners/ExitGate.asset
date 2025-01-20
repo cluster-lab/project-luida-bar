@@ -25,4 +25,16 @@ MonoBehaviour:
     duringStateFoldout: 0
     onStateExitedActions: []
     onStateExitedFoldout: 0
+  - stateID: 0
+    onStateStartedActions:
+    - predefinedAction:
+        actionType: Hide item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
+      customAction: 
+      showCustomActionFoldout: 0
+    onStateStartedFoldout: 1
+    duringStateActions: []
+    duringStateFoldout: 0
+    onStateExitedActions: []
+    onStateExitedFoldout: 0
   otherImplementation: 
