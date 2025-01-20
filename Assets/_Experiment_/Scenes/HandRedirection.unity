@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17412737, g: 0.21774727, b: 0.29994345, a: 1}
+  m_IndirectSpecularColor: {r: 0.17412685, g: 0.21774654, b: 0.2999423, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -123,103 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &6474180
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6474181}
-  - component: {fileID: 6474184}
-  - component: {fileID: 6474183}
-  - component: {fileID: 6474182}
-  m_Layer: 0
-  m_Name: Sphere
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6474181
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6474180}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 1
-  m_Children: []
-  m_Father: {fileID: 758041904}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &6474182
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6474180}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!23 &6474183
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6474180}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 0
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 47abdc187efdfce4982dece068f2a74e, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &6474184
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6474180}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &31239172
 GameObject:
   m_ObjectHideFlags: 0
@@ -497,21 +400,20 @@ PrefabInstance:
     - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: sourceCode
-      value: "$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\", \"state_exit\",
-        \"boolean\")) {\r\n        OnStateExit();\r\n        $.setStateCompat(\"this\",
-        \"state_exit\", false);\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
-        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
-        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
-        OnStateEnter();\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_isActive\",
-        \"boolean\")) {\r\n        DuringState(deltaTime);\r\n    }\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
-        ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
-        HideItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\r\n}\r\n\r\nfunction
-        ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
-        RecordCustomData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
-        UploadRecordedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
-        OnStateEnter() {}\r\n\r\nfunction OnStateExit() {}\r\n\r\nfunction DuringState(deltaTime)
-        {}\r\n\r\nfunction Update(deltaTime) {}\r\n\r\nfunction OnStateEnter() {\n 
-        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+      value: "$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\", \"state_exit\",
+        \"boolean\")) {\n        OnStateExit();\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\n    }\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\n        $.setStateCompat(\"this\", \"state_enter\", false);\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
+        OnStateEnter();\n    }\n    DuringState(deltaTime);\n    Update(deltaTime);\n})\n\nfunction
+        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
+        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
+        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
+        RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
+        UploadRecordedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
+        OnStateEnter() {}\n\nfunction OnStateExit() {}\n\nfunction DuringState(deltaTime)
+        {}\n\nfunction Update(deltaTime) {}\n\r\nfunction OnStateEnter() {\n  const
+        STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
         if (STATE_ID === 0) {\n    $.setStateCompat('this', 'exp_showItem', false);\n 
         }\n  if (STATE_ID === 3) {\n    $.setStateCompat('this', 'exp_showItem',
         true);\n  }\n  if (STATE_ID === 7) {\n    $.setStateCompat('this', 'exp_showItem',
@@ -951,6 +853,103 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 203213006}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &375044259
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 375044260}
+  - component: {fileID: 375044263}
+  - component: {fileID: 375044262}
+  - component: {fileID: 375044261}
+  m_Layer: 0
+  m_Name: StartingPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &375044260
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 375044259}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 2028246688}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &375044261
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 375044259}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &375044262
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 375044259}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 47abdc187efdfce4982dece068f2a74e, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &375044263
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 375044259}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &414002375
 GameObject:
   m_ObjectHideFlags: 0
@@ -1001,6 +1000,103 @@ MonoBehaviour:
   textAnchor: 4
   textAlignment: 1
   color: {r: 1, g: 1, b: 1, a: 1}
+--- !u!1 &425796291
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 425796292}
+  - component: {fileID: 425796295}
+  - component: {fileID: 425796294}
+  - component: {fileID: 425796293}
+  m_Layer: 0
+  m_Name: TargetPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &425796292
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425796291}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 2028246688}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &425796293
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425796291}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &425796294
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425796291}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 47abdc187efdfce4982dece068f2a74e, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &425796295
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425796291}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1001 &479520849
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1406,138 +1502,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 668033778}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &758041903
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: clusterScripts.Array.data[1]
-      value: 
-      objectReference: {fileID: 5022602860645237092, guid: 35ba87e52af58f24b824e1b3b8aacfc1,
-        type: 3}
-    - target: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_Name
-      value: TaskManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: sourceCode
-      value: "$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\", \"state_exit\",
-        \"boolean\")) {\r\n        OnStateExit();\r\n        $.setStateCompat(\"this\",
-        \"state_exit\", false);\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
-        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
-        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
-        OnStateEnter();\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_isActive\",
-        \"boolean\")) {\r\n        DuringState(deltaTime);\r\n    }\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
-        ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
-        HideItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\r\n}\r\n\r\nfunction
-        ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
-        RecordCustomData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
-        UploadRecordedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
-        OnStateEnter() {}\r\n\r\nfunction OnStateExit() {}\r\n\r\nfunction DuringState(deltaTime)
-        {}\r\n\r\nfunction Update(deltaTime) {}\r\n\r\nfunction OnStateEnter() {\n 
-        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
-        if (STATE_ID === 6) {\n    $.state.player = $.getPlayersNear($.getPosition(),
-        Infinity)[0];\r\n$.state.handOffset = new Quaternion()\r\n  .setFromEulerAngles(new
-        Vector3(0, 90, 0)); // \u5B9F\u8EAB\u4F53\u306E\u624B\uFF08\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\uFF09\u3068\u30D0\u30FC\u30C1\u30E3\u30EB\u624B\u306E\u56DE\u8EE2\u306E\u5DEE\u3092\u88DC\u6B63\u3059\u308B\u30AA\u30D5\u30BB\u30C3\u30C8\r\n\r\n$.subNode(\"StartingPoint\").setEnabled(true);
-        // \u539F\u70B9\u3092\u8868\u793A\u3059\u308B\r\n$.subNode(\"TargetPoint\").setEnabled(false);
-        // \u30BF\u30FC\u30B2\u30C3\u30C8\u3092\u975E\u8868\u793A\u306B\u3059\u308B\r\n\r\n//
-        \u539F\u70B9\u3092\u624B\u524D30cm\u306E\u4F4D\u7F6E\u306B\u7F6E\u304F\r\n$.subNode(\"StartingPoint\").setPosition(\r\n 
-        $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new
-        Vector3(0, -0.3, 0.3)));\r\n\r\n// \u30BF\u30FC\u30B2\u30C3\u30C8\u3092\u624B\u524D60cm\u306E\u4F4D\u7F6E\u306B\u7F6E\u304F\r\n$.subNode(\"TargetPoint\").setPosition(\r\n 
-        $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new
-        Vector3(0, -0.3, 0.6)));\n  }\n}\n\n\nfunction DuringState(deltaTime) {\n 
-        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
-        if (STATE_ID === 6) {\n    if (!$.state.player || !$.state.handOriginalPos)
-        return;\r\n\r\n// \u30D0\u30FC\u30C1\u30E3\u30EB\u624B\u306E\u4F4D\u7F6E\u3092\u8A08\u7B97\u3059\u308B\uFF1A\u5B9F\u8EAB\u4F53\u306E\u624B\uFF08\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\uFF09\u306E\u79FB\u52D5\u91CF\xD7\u30B2\u30A4\u30F3\r\n$.subNode(\"RightHandAnchor\").setPosition(\r\n 
-        $.state.handOriginalPos.clone()\r\n    .add($.state.player.getHumanoidBonePosition(HumanoidBone.RightHand).clone()\r\n     
-        .sub($.state.handOriginalPos)\r\n      .multiplyScalar($.state.isReaching
-        ? $.state.gain : 1)));\r\n  \r\n// \u30D0\u30FC\u30C1\u30E3\u30EB\u624B\u306E\u56DE\u8EE2\u3092\u5B9F\u8EAB\u4F53\u306E\u624B\u3068\u540C\u671F\u3055\u305B\u308B\r\n$.subNode(\"RightHandAnchor\")\r\n 
-        .setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand)\r\n   
-        .clone().multiply($.state.handOffset));\n  }\n}\n\n\nfunction OnStateExit()
-        {\n  const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n}\n\n\n$.onCollide(collision
-        => {\r\n  if ($.state.isReaching) {\r\n    $.state.isReaching = false; //
-        \u30EA\u30FC\u30C1\u30F3\u30B0\uFF08\u76EE\u6A19\u5730\u70B9\u307E\u3067\u624B\u3092\u4F38\u3070\u3059\uFF09\u30D5\u30E9\u30B0\u3092false\u306B\u3059\u308B\r\n   
-        ToNextState(); // \u6B21\u306E\u30B9\u30C6\u30FC\u30C8\uFF08\u8CEA\u554F\u306B\u56DE\u7B54\u3059\u308B\u30D5\u30A7\u30FC\u30BA\uFF09\u306B\u9077\u79FB\u3055\u305B\u308B\r\n 
-        } else {\r\n    $.subNode(\"StartingPoint\").setEnabled(false);\r\n    $.subNode(\"TargetPoint\").setEnabled(true);\r\n   
-        $.state.gain = parseFloat(CONDITION[\"gain\"]); // \u3053\u306E\u8A66\u884C\u306B\u304A\u3051\u308B\u30B2\u30A4\u30F3\u306E\u5024\u3092\u8A2D\u5B9A\u3059\u308B\r\n   
-        $.state.handOriginalPos = $.subNode(\"RightHandAnchor\").getPosition().clone();\r\n   
-        $.state.isReaching = true; // \u30EA\u30FC\u30C1\u30F3\u30B0\uFF08\u76EE\u6A19\u5730\u70B9\u307E\u3067\u624B\u3092\u4F38\u3070\u3059\uFF09\u30D5\u30E9\u30B0\u3092true\u306B\u3059\u308B\r\n 
-        }\r\n});\n"
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6758608954925073686, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: host
-      value: 
-      objectReference: {fileID: 7533049804749356259}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: de40e14777f5f4d3190981c4f4b1cddf, type: 3}
---- !u!4 &758041904 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-    type: 3}
-  m_PrefabInstance: {fileID: 758041903}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &787405256
 GameObject:
   m_ObjectHideFlags: 0
@@ -1863,6 +1827,107 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 10, y: 0.1, z: 10}
   m_Center: {x: 0, y: -0.05, z: 0}
+--- !u!1001 &1074626727
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1318099203}
+    m_Modifications:
+    - target: {fileID: 3779452288998176212, guid: f035112a3cec348d395a3c9db5ebf834,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3779452288998176212, guid: f035112a3cec348d395a3c9db5ebf834,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3779452288998176212, guid: f035112a3cec348d395a3c9db5ebf834,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3779452288998176212, guid: f035112a3cec348d395a3c9db5ebf834,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3779452288998176212, guid: f035112a3cec348d395a3c9db5ebf834,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3779452288998176212, guid: f035112a3cec348d395a3c9db5ebf834,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3779452288998176212, guid: f035112a3cec348d395a3c9db5ebf834,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3779452288998176212, guid: f035112a3cec348d395a3c9db5ebf834,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3779452288998176212, guid: f035112a3cec348d395a3c9db5ebf834,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3779452288998176212, guid: f035112a3cec348d395a3c9db5ebf834,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3779452288998176212, guid: f035112a3cec348d395a3c9db5ebf834,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4555566367305477998, guid: f035112a3cec348d395a3c9db5ebf834,
+        type: 3}
+      propertyPath: m_Name
+      value: RightHand
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f035112a3cec348d395a3c9db5ebf834, type: 3}
+--- !u!1 &1074626728 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4555566367305477998, guid: f035112a3cec348d395a3c9db5ebf834,
+    type: 3}
+  m_PrefabInstance: {fileID: 1074626727}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1773428102 &1074626729
+ParentConstraint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1074626728}
+  m_Enabled: 1
+  m_Weight: 1
+  m_TranslationAtRest: {x: 0, y: 0, z: 0}
+  m_RotationAtRest: {x: 0, y: 0, z: 0}
+  m_TranslationOffsets:
+  - {x: 0, y: 0, z: 0}
+  m_RotationOffsets:
+  - {x: 0, y: 0, z: 0}
+  m_AffectTranslationX: 1
+  m_AffectTranslationY: 1
+  m_AffectTranslationZ: 1
+  m_AffectRotationX: 1
+  m_AffectRotationY: 1
+  m_AffectRotationZ: 1
+  m_IsContraintActive: 1
+  m_IsLocked: 1
+  m_Sources:
+  - sourceTransform: {fileID: 1928910882}
+    weight: 1
 --- !u!4 &1107838076 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5878395029816850200, guid: 7a3b3cea72501334595167f4bb75fffe,
@@ -2259,34 +2324,33 @@ PrefabInstance:
     - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: sourceCode
-      value: "$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\", \"state_exit\",
-        \"boolean\")) {\r\n        OnStateExit();\r\n        $.setStateCompat(\"this\",
-        \"state_exit\", false);\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
-        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
-        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
-        OnStateEnter();\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_isActive\",
-        \"boolean\")) {\r\n        DuringState(deltaTime);\r\n    }\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
-        ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
-        HideItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\r\n}\r\n\r\nfunction
-        ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
-        RecordCustomData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
-        UploadRecordedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
-        OnStateEnter() {}\r\n\r\nfunction OnStateExit() {}\r\n\r\nfunction DuringState(deltaTime)
-        {}\r\n\r\nfunction Update(deltaTime) {}\r\n\r\nfunction OnStateEnter() {\n 
-        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+      value: "$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\", \"state_exit\",
+        \"boolean\")) {\n        OnStateExit();\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\n    }\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\n        $.setStateCompat(\"this\", \"state_enter\", false);\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
+        OnStateEnter();\n    }\n    DuringState(deltaTime);\n    Update(deltaTime);\n})\n\nfunction
+        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
+        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
+        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
+        RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
+        UploadRecordedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
+        OnStateEnter() {}\n\nfunction OnStateExit() {}\n\nfunction DuringState(deltaTime)
+        {}\n\nfunction Update(deltaTime) {}\n\r\nfunction OnStateEnter() {\n  const
+        STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
         if (STATE_ID === 0) {\n    $.setStateCompat('this', 'exp_showItem', false);\n 
         }\n  if (STATE_ID === 1) {\n    $.setStateCompat('this', 'exp_showItem',
-        true);\n    let sentences = [\"\u3053\u308C\u304B\u3089\u306F\u3001\u53F3\u624B\u306E\u4EBA\u5DEE\u3057\u6307\u3067\u7DD1\u306E\u7389\u3092\u89E6\u3063\u3066\u3001\",\r\n\"\u8CEA\u554F\u306B\u7B54\u3048\u308B\u3001\u3068\u3044\u3046\u30BF\u30B9\u30AF\u3092\u884C\u3063\u3066\u3044\u305F\u3060\u304D\u307E\u3059\u3002\",\r\n\"\u307E\u305A\u306F3\u56DE\u7DF4\u7FD2\u3057\u307E\u3057\u3087\u3046\u3002\",\r\n\"\u6E96\u5099\u304C\u3067\u304D\u305F\u3089\u3001\u8A2D\u5B9A\u753B\u9762\u3067\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u3092\u975E\u8868\u793A\u306B\u3057\u3001\",\r\n\"\u524D\u3092\u898B\u3066\u300C\u958B\u59CB\u300D\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\u3002\"];\r\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
-        }\n  if (STATE_ID === 2) {\n    let sentences = [\"\u53F3\u624B\u306E\u4EBA\u5DEE\u3057\u6307\u3067\u3001\",\r\n\"\u76EE\u306E\u524D\u306B\u73FE\u308C\u305F\u7DD1\u306E\u7389\u306B\u89E6\u308C\u3066\u304F\u3060\u3055\u3044\u3002\",\r\n\"\u7389\u306F\u89E6\u308C\u3089\u308C\u305F\u308930cm\u5148\u307E\u3067\u79FB\u52D5\u3057\u307E\u3059\u3002\",\r\n\"\u79FB\u52D5\u5F8C\u306E\u7389\u306B\u3082\u3046\u4E00\u5EA6\u89E6\u308C\u3066\u304F\u3060\u3055\u3044\u3002\"];\r\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
-        }\n  if (STATE_ID === 3) {\n    let sentences = [\"Q: \u30D0\u30FC\u30C1\u30E3\u30EB\u7A7A\u9593\u306E\u4E2D\u306E\u624B\u306F\u5B9F\u8EAB\u4F53\u306E\u624B\u3088\u308A\",\r\n\"\u901F\u304F\u52D5\u3044\u305F\u304B\uFF1F\u9045\u304F\u52D5\u3044\u305F\u304B\uFF1F\",\r\n\"\u5206\u304B\u3089\u306A\u3044\u5834\u5408\u306F\u3069\u3061\u3089\u304B\u306E\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\"];\r\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
+        true);\n    let sentences = [\"\u3053\u308C\u304B\u3089\u306F\u3001\u53F3\u624B\u306E\u4EBA\u5DEE\u3057\u6307\u3067\u7DD1\u306E\u7389\u3092\u89E6\u3063\u3066\u3001\",\n\"\u8CEA\u554F\u306B\u7B54\u3048\u308B\u3001\u3068\u3044\u3046\u30BF\u30B9\u30AF\u3092\u884C\u3063\u3066\u3044\u305F\u3060\u304D\u307E\u3059\u3002\",\n\"\u307E\u305A\u306F3\u56DE\u7DF4\u7FD2\u3057\u307E\u3057\u3087\u3046\u3002\",\n\"\u6E96\u5099\u304C\u3067\u304D\u305F\u3089\u3001\u8A2D\u5B9A\u753B\u9762\u3067\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u3092\u975E\u8868\u793A\u306B\u3057\u3001\",\n\"\u524D\u3092\u898B\u3066\u300C\u958B\u59CB\u300D\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\u3002\"];\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
+        }\n  if (STATE_ID === 2) {\n    let sentences = [\"\u53F3\u624B\u306E\u4EBA\u5DEE\u3057\u6307\u3067\u3001\",\n\"\u76EE\u306E\u524D\u306B\u73FE\u308C\u305F\u7DD1\u306E\u7389\u306B\u89E6\u308C\u3066\u304F\u3060\u3055\u3044\u3002\",\n\"\u7389\u306F\u89E6\u308C\u3089\u308C\u305F\u308930cm\u5148\u307E\u3067\u79FB\u52D5\u3057\u307E\u3059\u3002\",\n\"\u79FB\u52D5\u5F8C\u306E\u7389\u306B\u3082\u3046\u4E00\u5EA6\u89E6\u308C\u3066\u304F\u3060\u3055\u3044\u3002\"];\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
+        }\n  if (STATE_ID === 3) {\n    let sentences = [\"Q: \u30D0\u30FC\u30C1\u30E3\u30EB\u7A7A\u9593\u306E\u4E2D\u306E\u624B\u306F\u5B9F\u8EAB\u4F53\u306E\u624B\u3088\u308A\",\n\"\u901F\u304F\u52D5\u3044\u305F\u304B\uFF1F\u9045\u304F\u52D5\u3044\u305F\u304B\uFF1F\",\n\"\u5206\u304B\u3089\u306A\u3044\u5834\u5408\u306F\u3069\u3061\u3089\u304B\u306E\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\"];\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
         }\n  if (STATE_ID === 4) {\n    $.subNode(\"Text\").setText(\"\u624B\u3092\u304A\u308D\u3057\u3066\u304F\u3060\u3055\u3044\");\n 
-        }\n  if (STATE_ID === 5) {\n    let sentences = [\"\u7DF4\u7FD2\u306F\u4EE5\u4E0A\u306B\u306A\u308A\u307E\u3059\u3002\",\r\n\"\u3053\u3053\u304B\u3089\u306F\u672C\u756A\u3067\u3059\u3002\",\r\n\"\u540C\u3058\u624B\u9806\u3067\u30BF\u30B9\u30AF\u309222\u56DE\u884C\u3063\u3066\u304F\u3060\u3055\u3044\u3002\",\r\n\"\u6E96\u5099\u304C\u3067\u304D\u305F\u3089\u3001\u524D\u3092\u898B\u3066\u958B\u59CB\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\"];\r\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
-        }\n  if (STATE_ID === 6) {\n    let sentences = [\"\u53F3\u624B\u306E\u4EBA\u5DEE\u3057\u6307\u3067\u3001\",\r\n\"\u76EE\u306E\u524D\u306B\u73FE\u308C\u305F\u7DD1\u306E\u7389\u306B\u89E6\u308C\u3066\u304F\u3060\u3055\u3044\u3002\",\r\n\"\u7389\u306F\u89E6\u308C\u3089\u308C\u305F\u308930cm\u5148\u307E\u3067\u79FB\u52D5\u3057\u307E\u3059\u3002\",\r\n\"\u79FB\u52D5\u5F8C\u306E\u7389\u306B\u3082\u3046\u4E00\u5EA6\u89E6\u308C\u3066\u304F\u3060\u3055\u3044\u3002\"];\r\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n$.log(CONDITION[\"gain\"]);\n 
-        }\n  if (STATE_ID === 7) {\n    let sentences = [\"Q: \u30D0\u30FC\u30C1\u30E3\u30EB\u7A7A\u9593\u306E\u4E2D\u306E\u624B\u306F\u5B9F\u8EAB\u4F53\u306E\u624B\u3088\u308A\",\r\n\"\u901F\u304F\u52D5\u3044\u305F\u304B\uFF1F\u9045\u304F\u52D5\u3044\u305F\u304B\uFF1F\",\r\n\"\u5206\u304B\u3089\u306A\u3044\u5834\u5408\u306F\u3069\u3061\u3089\u304B\u306E\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\"];\r\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
+        }\n  if (STATE_ID === 5) {\n    let sentences = [\"\u7DF4\u7FD2\u306F\u4EE5\u4E0A\u306B\u306A\u308A\u307E\u3059\u3002\",\n\"\u3053\u3053\u304B\u3089\u306F\u672C\u756A\u3067\u3059\u3002\",\n\"\u540C\u3058\u624B\u9806\u3067\u30BF\u30B9\u30AF\u309222\u56DE\u884C\u3063\u3066\u304F\u3060\u3055\u3044\u3002\",\n\"\u6E96\u5099\u304C\u3067\u304D\u305F\u3089\u3001\u524D\u3092\u898B\u3066\u958B\u59CB\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\"];\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
+        }\n  if (STATE_ID === 6) {\n    let sentences = [\"\u53F3\u624B\u306E\u4EBA\u5DEE\u3057\u6307\u3067\u3001\",\n\"\u76EE\u306E\u524D\u306B\u73FE\u308C\u305F\u7DD1\u306E\u7389\u306B\u89E6\u308C\u3066\u304F\u3060\u3055\u3044\u3002\",\n\"\u7389\u306F\u89E6\u308C\u3089\u308C\u305F\u308930cm\u5148\u307E\u3067\u79FB\u52D5\u3057\u307E\u3059\u3002\",\n\"\u79FB\u52D5\u5F8C\u306E\u7389\u306B\u3082\u3046\u4E00\u5EA6\u89E6\u308C\u3066\u304F\u3060\u3055\u3044\u3002\"];\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n$.log(CONDITION[\"gain\"]);\n 
+        }\n  if (STATE_ID === 7) {\n    let sentences = [\"Q: \u30D0\u30FC\u30C1\u30E3\u30EB\u7A7A\u9593\u306E\u4E2D\u306E\u624B\u306F\u5B9F\u8EAB\u4F53\u306E\u624B\u3088\u308A\",\n\"\u901F\u304F\u52D5\u3044\u305F\u304B\uFF1F\u9045\u304F\u52D5\u3044\u305F\u304B\uFF1F\",\n\"\u5206\u304B\u3089\u306A\u3044\u5834\u5408\u306F\u3069\u3061\u3089\u304B\u306E\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\"];\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
         }\n  if (STATE_ID === 8) {\n    $.subNode(\"Text\").setText(\"\u624B\u3092\u304A\u308D\u3057\u3066\u304F\u3060\u3055\u3044\");\n 
-        }\n  if (STATE_ID === 9) {\n    let sentences = [\"\u30BF\u30B9\u30AF\u306F\u4EE5\u4E0A\u306B\u306A\u308A\u307E\u3059\u3002\",\r\n\"\u304A\u75B2\u308C\u69D8\u3067\u3059\u3002\",\r\n\"\u6700\u5F8C\u306B\u8CEA\u554F\u7D19\u306B\u3054\u8A18\u5165\u3092\u304A\u9858\u3044\u3057\u307E\u3059\u3002\",\r\n\"\u300C\u6B21\u3078\u300D\u30DC\u30BF\u30F3\u3092\u30AF\u30EA\u30C3\u30AF\u3057\u3066\u9032\u3093\u3067\u304F\u3060\u3055\u3044\u3002\"];\r\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
+        }\n  if (STATE_ID === 9) {\n    let sentences = [\"\u30BF\u30B9\u30AF\u306F\u4EE5\u4E0A\u306B\u306A\u308A\u307E\u3059\u3002\",\n\"\u304A\u75B2\u308C\u69D8\u3067\u3059\u3002\",\n\"\u6700\u5F8C\u306B\u8CEA\u554F\u7D19\u306B\u3054\u8A18\u5165\u3092\u304A\u9858\u3044\u3057\u307E\u3059\u3002\",\n\"\u300C\u6B21\u3078\u300D\u30DC\u30BF\u30F3\u3092\u30AF\u30EA\u30C3\u30AF\u3057\u3066\u9032\u3093\u3067\u304F\u3060\u3055\u3044\u3002\"];\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
         }\n  if (STATE_ID === 11) {\n    $.setStateCompat('this', 'exp_showItem',
-        true);\n    let sentences = [\"\u5B9F\u9A13\u306F\u4EE5\u4E0A\u306B\u306A\u308A\u307E\u3059\u3002\",\r\n\"\u3054\u53C2\u52A0\u3044\u305F\u3060\u304D\u3042\u308A\u304C\u3068\u3046\u3054\u3056\u3044\u307E\u3057\u305F\u3002\",\r\n\"\u76EE\u306E\u524D\u306E\u30B2\u30FC\u30C8\u306B\u6F5C\u3063\u3066\u9000\u5BA4\u3057\u3066\u304F\u3060\u3055\u3044\u3002\",\r\n\"\u8B1D\u793C\u306F\u5F8C\u65E5\u306B\u4ED8\u4E0E\u3057\u307E\u3059\u3002\"];\r\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
+        true);\n    let sentences = [\"\u5B9F\u9A13\u306F\u4EE5\u4E0A\u306B\u306A\u308A\u307E\u3059\u3002\",\n\"\u3054\u53C2\u52A0\u3044\u305F\u3060\u304D\u3042\u308A\u304C\u3068\u3046\u3054\u3056\u3044\u307E\u3057\u305F\u3002\",\n\"\u76EE\u306E\u524D\u306E\u30B2\u30FC\u30C8\u306B\u6F5C\u3063\u3066\u9000\u5BA4\u3057\u3066\u304F\u3060\u3055\u3044\u3002\",\n\"\u8B1D\u793C\u306F\u5F8C\u65E5\u306B\u4ED8\u4E0E\u3057\u307E\u3059\u3002\"];\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
         }\n}\n\n\nfunction DuringState(deltaTime) {\n  const STATE_ID = $.state.state_id;\n 
         const CONDITION = $.groupState.currentCondition;\n\n}\n\n\nfunction OnStateExit()
         {\n  const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
@@ -2452,6 +2516,131 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 7239389177757853448}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1318099202
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[1]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 2e272b7d442c24a6591b6126321e23fb,
+        type: 3}
+    - target: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_Name
+      value: RightHandWrapper
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: sourceCode
+      value: "$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\", \"state_exit\",
+        \"boolean\")) {\n        OnStateExit();\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\n    }\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\n        $.setStateCompat(\"this\", \"state_enter\", false);\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
+        OnStateEnter();\n    }\n    DuringState(deltaTime);\n    Update(deltaTime);\n})\n\nfunction
+        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
+        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
+        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
+        RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
+        UploadRecordedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
+        OnStateEnter() {}\n\nfunction OnStateExit() {}\n\nfunction DuringState(deltaTime)
+        {}\n\nfunction Update(deltaTime) {}\n\r\nfunction OnStateEnter() {\n  const
+        STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+        if (STATE_ID === 0) {\n    $.setStateCompat('this', 'exp_showItem', false);\n 
+        }\n  if (STATE_ID === 2) {\n    $.setStateCompat('this', 'exp_showItem',
+        true);\n  }\n  if (STATE_ID === 6) {\n    $.setStateCompat('this', 'exp_showItem',
+        true);\n  }\n}\n\n\nfunction DuringState(deltaTime) {\n  const STATE_ID =
+        $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n}\n\n\nfunction
+        OnStateExit() {\n  const STATE_ID = $.state.state_id;\n  const CONDITION
+        = $.groupState.currentCondition;\n\n  if (STATE_ID === 2) {\n    $.setStateCompat('this',
+        'exp_showItem', false);\n  }\n  if (STATE_ID === 6) {\n    $.setStateCompat('this',
+        'exp_showItem', false);\n  }\n}\n\n\n\n"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758608954925073686, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: host
+      value: 
+      objectReference: {fileID: 7533049804749356259}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: de40e14777f5f4d3190981c4f4b1cddf, type: 3}
+--- !u!4 &1318099203 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+    type: 3}
+  m_PrefabInstance: {fileID: 1318099202}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1318099215 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
+    type: 3}
+  m_PrefabInstance: {fileID: 1318099202}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1352467987
 GameObject:
   m_ObjectHideFlags: 0
@@ -2762,21 +2951,20 @@ PrefabInstance:
     - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: sourceCode
-      value: "$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\", \"state_exit\",
-        \"boolean\")) {\r\n        OnStateExit();\r\n        $.setStateCompat(\"this\",
-        \"state_exit\", false);\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
-        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
-        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
-        OnStateEnter();\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_isActive\",
-        \"boolean\")) {\r\n        DuringState(deltaTime);\r\n    }\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
-        ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
-        HideItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\r\n}\r\n\r\nfunction
-        ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
-        RecordCustomData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
-        UploadRecordedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
-        OnStateEnter() {}\r\n\r\nfunction OnStateExit() {}\r\n\r\nfunction DuringState(deltaTime)
-        {}\r\n\r\nfunction Update(deltaTime) {}\r\n\r\nfunction OnStateEnter() {\n 
-        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+      value: "$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\", \"state_exit\",
+        \"boolean\")) {\n        OnStateExit();\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\n    }\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\n        $.setStateCompat(\"this\", \"state_enter\", false);\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
+        OnStateEnter();\n    }\n    DuringState(deltaTime);\n    Update(deltaTime);\n})\n\nfunction
+        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
+        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
+        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
+        RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
+        UploadRecordedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
+        OnStateEnter() {}\n\nfunction OnStateExit() {}\n\nfunction DuringState(deltaTime)
+        {}\n\nfunction Update(deltaTime) {}\n\r\nfunction OnStateEnter() {\n  const
+        STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
         if (STATE_ID === 11) {\n    $.setStateCompat('this', 'exp_showItem', true);\n 
         }\n}\n\n\nfunction DuringState(deltaTime) {\n  const STATE_ID = $.state.state_id;\n 
         const CONDITION = $.groupState.currentCondition;\n\n}\n\n\nfunction OnStateExit()
@@ -2850,136 +3038,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1623559906}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1628302865
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: clusterScripts.Array.data[1]
-      value: 
-      objectReference: {fileID: 5022602860645237092, guid: 73ce26fa46a513d4aa7a319022ef9d47,
-        type: 3}
-    - target: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_Name
-      value: PracticeManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: sourceCode
-      value: "$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\", \"state_exit\",
-        \"boolean\")) {\r\n        OnStateExit();\r\n        $.setStateCompat(\"this\",
-        \"state_exit\", false);\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
-        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
-        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
-        OnStateEnter();\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_isActive\",
-        \"boolean\")) {\r\n        DuringState(deltaTime);\r\n    }\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
-        ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
-        HideItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\r\n}\r\n\r\nfunction
-        ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
-        RecordCustomData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
-        UploadRecordedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
-        OnStateEnter() {}\r\n\r\nfunction OnStateExit() {}\r\n\r\nfunction DuringState(deltaTime)
-        {}\r\n\r\nfunction Update(deltaTime) {}\r\n\r\nfunction OnStateEnter() {\n 
-        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
-        if (STATE_ID === 2) {\n    $.state.player = $.getPlayersNear($.getPosition(),
-        Infinity)[0];\r\n$.state.handOffset = new Quaternion()\r\n  .setFromEulerAngles(new
-        Vector3(0, 90, 0)); // \u5B9F\u8EAB\u4F53\u306E\u624B\uFF08\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\uFF09\u3068\u30D0\u30FC\u30C1\u30E3\u30EB\u624B\u306E\u56DE\u8EE2\u306E\u5DEE\u3092\u88DC\u6B63\u3059\u308B\u30AA\u30D5\u30BB\u30C3\u30C8\r\n\r\n$.subNode(\"StartingPoint\").setEnabled(true);
-        // \u539F\u70B9\u3092\u8868\u793A\u3059\u308B\r\n$.subNode(\"TargetPoint\").setEnabled(false);
-        // \u30BF\u30FC\u30B2\u30C3\u30C8\u3092\u975E\u8868\u793A\u306B\u3059\u308B\r\n\r\n//
-        \u539F\u70B9\u3092\u624B\u524D30cm\u306E\u4F4D\u7F6E\u306B\u7F6E\u304F\r\n$.subNode(\"StartingPoint\").setPosition(\r\n 
-        $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new
-        Vector3(0, -0.3, 0.3)));\r\n\r\n// \u30BF\u30FC\u30B2\u30C3\u30C8\u3092\u624B\u524D60cm\u306E\u4F4D\u7F6E\u306B\u7F6E\u304F\r\n$.subNode(\"TargetPoint\").setPosition(\r\n 
-        $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new
-        Vector3(0, -0.3, 0.6)));\n  }\n}\n\n\nfunction DuringState(deltaTime) {\n 
-        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
-        if (STATE_ID === 2) {\n    if (!$.state.player || !$.state.handOriginalPos)
-        return;\r\n\r\n$.subNode(\"RightHandAnchor\").setPosition(\r\n  $.state.handOriginalPos.clone()\r\n   
-        .add($.state.player.getHumanoidBonePosition(HumanoidBone.RightHand).clone()\r\n     
-        .sub($.state.handOriginalPos)\r\n      .multiplyScalar($.state.isReaching
-        ? $.state.gains[$.state.gainID] : 1)));\r\n\n$.subNode(\"RightHandAnchor\")\r\n 
-        .setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand)\r\n   
-        .clone().multiply($.state.handOffset));\n  }\n}\n\n\nfunction OnStateExit()
-        {\n  const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n}\n\n\n$.onStart(()
-        => {\r\n  $.state.gains = [1, 0.75, 1.25];\r\n  $.state.gainID = 0;\r\n});\r\n\r\n$.onCollide(collision
-        => {\r\n  if ($.state.isReaching) {\r\n    $.state.isReaching = false;\r\n   
-        $.state.gainID = $.state.gainID + 1;\r\n    ToNextState();\r\n  } else {\r\n   
-        $.subNode(\"StartingPoint\").setEnabled(false);\r\n    $.subNode(\"TargetPoint\").setEnabled(true);\r\n   
-        $.state.handOriginalPos = $.subNode(\"RightHandAnchor\").getPosition().clone();\r\n   
-        $.state.isReaching = true;\r\n  }\r\n});\n"
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6758608954925073686, guid: de40e14777f5f4d3190981c4f4b1cddf,
-        type: 3}
-      propertyPath: host
-      value: 
-      objectReference: {fileID: 7533049804749356259}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: de40e14777f5f4d3190981c4f4b1cddf, type: 3}
---- !u!4 &1628302866 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
-    type: 3}
-  m_PrefabInstance: {fileID: 1628302865}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1660421756
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3006,21 +3064,20 @@ PrefabInstance:
     - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: sourceCode
-      value: "$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\", \"state_exit\",
-        \"boolean\")) {\r\n        OnStateExit();\r\n        $.setStateCompat(\"this\",
-        \"state_exit\", false);\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
-        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
-        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
-        OnStateEnter();\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_isActive\",
-        \"boolean\")) {\r\n        DuringState(deltaTime);\r\n    }\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
-        ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
-        HideItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\r\n}\r\n\r\nfunction
-        ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
-        RecordCustomData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
-        UploadRecordedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
-        OnStateEnter() {}\r\n\r\nfunction OnStateExit() {}\r\n\r\nfunction DuringState(deltaTime)
-        {}\r\n\r\nfunction Update(deltaTime) {}\r\n\r\nfunction OnStateEnter() {\n 
-        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+      value: "$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\", \"state_exit\",
+        \"boolean\")) {\n        OnStateExit();\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\n    }\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\n        $.setStateCompat(\"this\", \"state_enter\", false);\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
+        OnStateEnter();\n    }\n    DuringState(deltaTime);\n    Update(deltaTime);\n})\n\nfunction
+        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
+        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
+        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
+        RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
+        UploadRecordedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
+        OnStateEnter() {}\n\nfunction OnStateExit() {}\n\nfunction DuringState(deltaTime)
+        {}\n\nfunction Update(deltaTime) {}\n\r\nfunction OnStateEnter() {\n  const
+        STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
         if (STATE_ID === 0) {\n    $.setStateCompat('this', 'exp_showItem', true);\n 
         }\n  if (STATE_ID === 1) {\n    $.subNode(\"Text\").setText(\"\u958B\u59CB\");\n 
         }\n  if (STATE_ID === 5) {\n    $.setStateCompat('this', 'exp_showItem',
@@ -3362,103 +3419,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1660421757}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &1664663657
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1664663658}
-  - component: {fileID: 1664663661}
-  - component: {fileID: 1664663660}
-  - component: {fileID: 1664663659}
-  m_Layer: 0
-  m_Name: Sphere
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1664663658
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1664663657}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1628302866}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &1664663659
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1664663657}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!23 &1664663660
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1664663657}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 0
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 47abdc187efdfce4982dece068f2a74e, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &1664663661
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1664663657}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &1752504904
 GameObject:
   m_ObjectHideFlags: 0
@@ -3608,21 +3568,20 @@ PrefabInstance:
     - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: sourceCode
-      value: "$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\", \"state_exit\",
-        \"boolean\")) {\r\n        OnStateExit();\r\n        $.setStateCompat(\"this\",
-        \"state_exit\", false);\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
-        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
-        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
-        OnStateEnter();\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_isActive\",
-        \"boolean\")) {\r\n        DuringState(deltaTime);\r\n    }\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
-        ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
-        HideItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\r\n}\r\n\r\nfunction
-        ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
-        RecordCustomData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
-        UploadRecordedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
-        OnStateEnter() {}\r\n\r\nfunction OnStateExit() {}\r\n\r\nfunction DuringState(deltaTime)
-        {}\r\n\r\nfunction Update(deltaTime) {}\r\n\r\nfunction OnStateEnter() {\n 
-        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+      value: "$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\", \"state_exit\",
+        \"boolean\")) {\n        OnStateExit();\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\n    }\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\n        $.setStateCompat(\"this\", \"state_enter\", false);\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
+        OnStateEnter();\n    }\n    DuringState(deltaTime);\n    Update(deltaTime);\n})\n\nfunction
+        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
+        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
+        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
+        RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
+        UploadRecordedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
+        OnStateEnter() {}\n\nfunction OnStateExit() {}\n\nfunction DuringState(deltaTime)
+        {}\n\nfunction Update(deltaTime) {}\n\r\nfunction OnStateEnter() {\n  const
+        STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
         if (STATE_ID === 0) {\n    $.setStateCompat('this', 'exp_showItem', false);\n 
         }\n  if (STATE_ID === 3) {\n    $.setStateCompat('this', 'exp_showItem',
         true);\n  }\n  if (STATE_ID === 7) {\n    $.setStateCompat('this', 'exp_showItem',
@@ -3967,6 +3926,223 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1894959715}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1928910881
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1928910882}
+  m_Layer: 0
+  m_Name: RightHandAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1928910882
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928910881}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2028246688}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &2028246687
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[1]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 26e6a3ff09eb244128d97347e09394f3,
+        type: 3}
+    - target: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_Name
+      value: TaskManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: sourceCode
+      value: "$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\", \"state_exit\",
+        \"boolean\")) {\n        OnStateExit();\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\n    }\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\n        $.setStateCompat(\"this\", \"state_enter\", false);\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
+        OnStateEnter();\n    }\n    DuringState(deltaTime);\n    Update(deltaTime);\n})\n\nfunction
+        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
+        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
+        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
+        RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
+        UploadRecordedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
+        OnStateEnter() {}\n\nfunction OnStateExit() {}\n\nfunction DuringState(deltaTime)
+        {}\n\nfunction Update(deltaTime) {}\n\r\nfunction OnStateEnter() {\n  const
+        STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+        if (STATE_ID === 0) {\n    $.setStateCompat('this', 'exp_showItem', false);\n 
+        }\n  if (STATE_ID === 2) {\n    $.state.practiceGains = [1, 0.75, 1.25];\n$.state.practiceGainID
+        = 0;\nReset();\n    $.setStateCompat('this', 'exp_showItem', true);\n  }\n 
+        if (STATE_ID === 6) {\n    Reset();\n    $.setStateCompat('this', 'exp_showItem',
+        true);\n  }\n}\n\n\nfunction DuringState(deltaTime) {\n  const STATE_ID =
+        $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+        if (STATE_ID === 2) {\n    UpdateHandTransform($.state.practiceGains[$.state.practiceGainID]);\n 
+        }\n  if (STATE_ID === 6) {\n    UpdateHandTransform(parseFloat(CONDITION[\"gain\"]));\n 
+        }\n}\n\n\nfunction OnStateExit() {\n  const STATE_ID = $.state.state_id;\n 
+        const CONDITION = $.groupState.currentCondition;\n\n  if (STATE_ID === 2)
+        {\n    $.setStateCompat('this', 'exp_showItem', false);\n  }\n  if (STATE_ID
+        === 6) {\n    $.setStateCompat('this', 'exp_showItem', false);\n  }\n}\n\n\nfunction
+        Reset() { // \u30EA\u30BB\u30C3\u30C8\u51E6\u7406\n  // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u521D\u671F\u72B6\u614B\u3092\u8A2D\u5B9A\n 
+        $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\n  $.state.handOriginalPos
+        = $.subNode(\"RightHandAnchor\").getPosition().clone();\n\n  // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u5B9F\u969B\u306E\u624B\uFF08\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC\uFF09\u3068\u4EEE\u60F3\u624B\u306E\u56DE\u8EE2\u306E\u305A\u308C\u3092\u88DC\u6B63\u3059\u308B\u305F\u3081\u306E\u30AA\u30D5\u30BB\u30C3\u30C8\u3092\u8A2D\u5B9A\n 
+        $.state.handOffset = new Quaternion().setFromEulerAngles(new Vector3(0, 90,
+        0));\n\n  // \u539F\u70B9 (StartingPoint) \u3092\u8868\u793A\u3057\u3001\u30BF\u30FC\u30B2\u30C3\u30C8
+        (TargetPoint) \u3092\u975E\u8868\u793A\u306B\u3059\u308B\n  $.subNode(\"StartingPoint\").setEnabled(true);\n 
+        $.subNode(\"TargetPoint\").setEnabled(false);\n\n  // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u982D\u90E8\u4F4D\u7F6E\u3092\u57FA\u6E96\u306B\u3001\u539F\u70B9\u3092\u982D\u306E30cm\u624B\u524D\uFF0B30cm\u4E0B\u306B\u914D\u7F6E\n 
+        $.subNode(\"StartingPoint\").setPosition(\n    $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new
+        Vector3(0, -0.3, 0.3)));\n\n  // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u982D\u90E8\u4F4D\u7F6E\u3092\u57FA\u6E96\u306B\u3001\u30BF\u30FC\u30B2\u30C3\u30C8\u3092\u982D\u306E60cm\u624B\u524D\uFF0B30cm\u4E0B\u306B\u914D\u7F6E\n 
+        $.subNode(\"TargetPoint\").setPosition(\n    $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new
+        Vector3(0, -0.3, 0.6)));\n}\n\n// \u53F3\u624B\u30A2\u30F3\u30AB\u30FC\uFF08\u53F3\u624B\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8\u306EParent
+        Constraints\u304C\u53C2\u7167\u3057\u3066\u3044\u308B\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8\uFF09\u306E\u4F4D\u7F6E\u3092\u3001\n//
+        \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u53F3\u624B\u4F4D\u7F6E\u306B\u540C\u671F\u3055\u305B\u3001\u3055\u3089\u306B\u30B2\u30A4\u30F3\u3092\u9069\u7528\u3059\u308B\nfunction
+        UpdateHandTransform(gain) {\n  if (!$.state.player || !$.state.handOriginalPos)
+        return;\n\n  // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u53F3\u624B\u4F4D\u7F6E\u3068\u30AA\u30EA\u30B8\u30CA\u30EB\u4F4D\u7F6E\u306E\u5DEE\u5206\u306B\u30B2\u30A4\u30F3\u3092\u639B\u3051\u3001\u53F3\u624B\u30A2\u30F3\u30AB\u30FC\u3092\u79FB\u52D5\n 
+        $.subNode(\"RightHandAnchor\").setPosition(\n    $.state.handOriginalPos.clone()\n     
+        .add($.state.player.getHumanoidBonePosition(HumanoidBone.RightHand).clone()\n       
+        .sub($.state.handOriginalPos).multiplyScalar($.state.isReaching ? gain :
+        1)));\n\n  // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u53F3\u624B\u306E\u56DE\u8EE2\u306B\u88DC\u6B63\u30AA\u30D5\u30BB\u30C3\u30C8\u3092\u9069\u7528\u3057\u3066\u3001\u53F3\u624B\u30A2\u30F3\u30AB\u30FC\u3092\u56DE\u8EE2\n 
+        $.subNode(\"RightHandAnchor\")\n    .setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand)\n     
+        .clone().multiply($.state.handOffset));\n}\n\n// \u885D\u7A81\u30A4\u30D9\u30F3\u30C8\u304C\u767A\u751F\u3057\u305F\u969B\u306B\u5B9F\u884C\u3055\u308C\u308B\u51E6\u7406\n$.onCollide(collision
+        => {\n  // \u885D\u7A81\u5BFE\u8C61\u304C\u5B58\u5728\u3057\u306A\u3044\u3001\u307E\u305F\u306F
+        \"RightHand\" \u30AA\u30D6\u30B8\u30A7\u30AF\u30C8\u3067\u306F\u306A\u3044\u5834\u5408\u306F\u51E6\u7406\u3092\u4E2D\u65AD\n 
+        if (!collision.handle || !$.worldItemReference(\"RightHand\") || collision.handle.id
+        !== $.worldItemReference(\"RightHand\").id) return;\n\n  if ($.state.isReaching)
+        {\n    // \u3059\u3067\u306B\u30EA\u30FC\u30C1\u30F3\u30B0\u72B6\u614B\u306E\u5834\u5408\u3001\u30EA\u30FC\u30C1\u30F3\u30B0\u3092\u7D42\u4E86\u3057\u3001\u7DF4\u7FD2\u30B2\u30A4\u30F3ID\u3092\u66F4\u65B0\n   
+        $.state.isReaching = false;\n    $.state.practiceGainID = $.state.practiceGainID
+        + 1;\n    ToNextState(); // \u6B21\u306E\u72B6\u614B\u3078\u9077\u79FB\n 
+        } else {\n    // \u30EA\u30FC\u30C1\u30F3\u30B0\u304C\u958B\u59CB\u3055\u308C\u3066\u3044\u306A\u3044\u5834\u5408\u3001\u30BF\u30FC\u30B2\u30C3\u30C8\u3092\u8868\u793A\u3057\u3001\u539F\u70B9\u3092\u975E\u8868\u793A\u306B\u3059\u308B\n   
+        $.subNode(\"StartingPoint\").setEnabled(false);\n    $.subNode(\"TargetPoint\").setEnabled(true);\n   
+        // \u73FE\u5728\u306E\u53F3\u624B\u30A2\u30F3\u30AB\u30FC\u306E\u4F4D\u7F6E\u3092\u8A18\u9332\n   
+        $.state.handOriginalPos = $.subNode(\"RightHandAnchor\").getPosition().clone();\n   
+        $.state.isReaching = true;\n  }\n});\n"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758608954925073686, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: host
+      value: 
+      objectReference: {fileID: 7533049804749356259}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: de40e14777f5f4d3190981c4f4b1cddf, type: 3}
+--- !u!4 &2028246688 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+    type: 3}
+  m_PrefabInstance: {fileID: 2028246687}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2028246689 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
+    type: 3}
+  m_PrefabInstance: {fileID: 2028246687}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &2028246690
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2028246689}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
+--- !u!114 &2028246703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2028246689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49554f6eafb04d538a589436719e8fa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldItemReferences:
+  - id: RightHand
+    item: {fileID: 1318099215}
 --- !u!1 &2029845014
 GameObject:
   m_ObjectHideFlags: 0
@@ -4200,17 +4376,16 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1107838079, guid: 7a3b3cea72501334595167f4bb75fffe, type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\n\r\n$.onUpdate(()
-        => {\r\n  if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\r\n     
-        $.setStateCompat(\"this\", \"state_enter\", false);\r\n      OnStateEnter();\r\n 
-        }\r\n})\r\n\r\nfunction OnStateEnter() {\r\n  const request = {\r\n    type:
-        \"postDoneIdfcs\",\r\n    token: token || \"\",\r\n    eID: expID || \"\",\r\n   
-        idfcs: $.getPlayersNear($.getPosition().clone(), Infinity).map(player =>
-        player.idfc),\r\n  };\r\n  $.callExternal(JSON.stringify(request), \"doneIdfcsPosted\");\r\n}\r\n\r\n$.onExternalCallEnd((res,
-        meta, err) =>\r\n{\r\n  if (res == null) {\r\n    $.log(\"callExternal ERROR:
-        \" + err);\r\n    return;\r\n  }\r\n\r\n  if (meta === \"doneIdfcsPosted\")
-        {\r\n    $.log(\"idfc of users that are done with this experiment this time
-        are recorded.\");\r\n  }\r\n});"
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\n$.onUpdate(()
+        => {\n  if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\n     
+        $.setStateCompat(\"this\", \"state_enter\", false);\n      OnStateEnter();\n 
+        }\n})\n\nfunction OnStateEnter() {\n  const request = {\n    type: \"postDoneIdfcs\",\n   
+        token: token || \"\",\n    eID: expID || \"\",\n    idfcs: $.getPlayersNear($.getPosition().clone(),
+        Infinity).map(player => player.idfc),\n  };\n  $.callExternal(JSON.stringify(request),
+        \"doneIdfcsPosted\");\n}\n\n$.onExternalCallEnd((res, meta, err) =>\n{\n 
+        if (res == null) {\n    $.log(\"callExternal ERROR: \" + err);\n    return;\n 
+        }\n\n  if (meta === \"doneIdfcsPosted\") {\n    $.log(\"idfc of users that
+        are done with this experiment this time are recorded.\");\n  }\n});"
       objectReference: {fileID: 0}
     - target: {fileID: 1523856785490388474, guid: 7a3b3cea72501334595167f4bb75fffe,
         type: 3}
@@ -4296,6 +4471,31 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 814595608}
     m_Modifications:
+    - target: {fileID: 600138419, guid: bebbd8fabd7b322468f1d18e8b32081c, type: 3}
+      propertyPath: sourceCode
+      value: "// Deprecated\n\n/*\n$.onStart(() => {\n  $.state.inRoomIdfcs = [];\n 
+        $.state.newPlayers = [];\n})\n\n$.onUpdate(() => {\n  if ($.getStateCompat(\"this\",
+        \"exp_checkJoinEligibility\", \"boolean\")) {\n    $.setStateCompat(\"this\",
+        \"exp_checkJoinEligibility\", false);\n\n    const newPlayers = $.getPlayersNear($.getPosition(),
+        1)\n      .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));\n    \n   
+        if (newPlayers.length > 0) {\n      $.state.newPlayers = newPlayers;\n     
+        $.log(newPlayers[0].idfc);\n\n      const request = {\n        type: \"checkJoinEligibility\",\n       
+        token: token || \"\",\n        eID: expID || \"\",\n        idfcs: newPlayers.map(p
+        => p.idfc).join(\"|\")\n      };\n      $.callExternal(JSON.stringify(request),
+        \"joinEligibilityChecked\");\n    }\n  }\n})\n\n$.onExternalCallEnd((res,
+        meta, err) =>\n{\n  if (res == null) {\n    $.log(\"callExternal ERROR: \"
+        + err);\n    return;\n  }\n\n  if (meta === \"joinEligibilityChecked\") {\n   
+        const parsedRes = JSON.parse(res);\n    $.state.newPlayers.forEach(newPlayer
+        => {\n      if (parsedRes.ineligibleIdfcs.includes(newPlayer.idfc)) {\n       
+        // TODO: Show message about that this player is not eligible to join this
+        experiment, and teleport the player back to LUIDA bar world.\n      } else
+        {\n        newPlayer.setMoveSpeedRate(1);\n        $.state.inRoomIdfcs =
+        [ ...$.state.inRoomIdfcs, newPlayer.idfc ];\n        // TODO: Instead of
+        enabling move, teleport the player from the checking area to the task area.\n     
+        }\n    });\n    \n    $.state.newPlayers = [];\n    $.log(\"Only users who
+        have not joined this experiment before are allowed to proceed to the experiment.\");\n 
+        }\n});\n*/\n"
+      objectReference: {fileID: 0}
     - target: {fileID: 600138420, guid: bebbd8fabd7b322468f1d18e8b32081c, type: 3}
       propertyPath: id.value
       value: 13125816271300040863
@@ -4487,58 +4687,57 @@ PrefabInstance:
         = [\n    { name: \"gain\", values: [\"0.75\", \"0.8\", \"0.85\", \"0.9\",
         \"0.95\", \"1\", \"1.05\", \"1.1\", \"1.15\", \"1.2\", \"1.25\"], isRandom:
         true },\n];\nconst between_subjects_variables = [\n];\n\r\n$.onStart(() =>
-        {\r\n    reset();\r\n});\r\n\r\n$.onUpdate(() => {\r\n    if ($.state.trialID
-        !== $.getStateCompat(\"global\", \"exp_trialID\", \"integer\")) {\r\n       
-        $.state.trialID = $.getStateCompat(\"global\", \"exp_trialID\", \"integer\");\r\n       
-        if ($.state.trialID >= $.state.trialCount) {\r\n            $.sendSignalCompat(\"this\",
-        \"exp_resetTrials\");\r\n        } else if ($.state.trialID <= -1) {\r\n           
-        reset();\r\n        } else {\r\n            let condition = { ...$.state.betweenSubjectsConditions
-        };\r\n            for (let i = 0; i < $.state.withinSubjectsVariableNames.length;
-        i++) {\r\n                const varName = $.state.withinSubjectsVariableNames[i];\r\n               
-        const varValue = within_subjects_variables[i].values[$.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]];\r\n               
-        condition[varName] = varValue;\r\n            }\r\n            $.groupState.currentCondition
-        = condition;\r\n    \r\n            // Check if this is the last trial (if
-        true, stop repeating trials when next state transition is triggered)\r\n           
+        {\n    reset();\n});\n\n$.onUpdate(() => {\n    if ($.state.trialID !== $.getStateCompat(\"global\",
+        \"exp_trialID\", \"integer\")) {\n        $.state.trialID = $.getStateCompat(\"global\",
+        \"exp_trialID\", \"integer\");\n        if ($.state.trialID >= $.state.trialCount)
+        {\n            $.sendSignalCompat(\"this\", \"exp_resetTrials\");\n       
+        } else if ($.state.trialID <= -1) {\n            reset();\n        } else
+        {\n            let condition = { ...$.state.betweenSubjectsConditions };\n           
+        for (let i = 0; i < $.state.withinSubjectsVariableNames.length; i++) {\n               
+        const varName = $.state.withinSubjectsVariableNames[i];\n               
+        const varValue = within_subjects_variables[i].values[$.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]];\n               
+        condition[varName] = varValue;\n            }\n            $.groupState.currentCondition
+        = condition;\n    \n            // Check if this is the last trial (if true,
+        stop repeating trials when next state transition is triggered)\n           
         if ($.state.trialCount > 0 && !$.state.isLast && $.state.trialID >= $.state.trialCount
-        - 1) {\r\n                $.state.isLast = true;\r\n                $.sendSignalCompat(\"this\",
-        \"exp_readyToLeaveTrials\");\r\n            }\r\n        }\r\n    }\r\n});\r\n\r\n$.onReceive((messageType,
-        arg, sender) => {\r\n    switch (messageType) {\r\n        // case \"exp_questionnaire_answer\":\r\n       
-        //     $.state.betweenSubjectsConditions = GetBetweenSubjectsCondition(arg);\r\n       
-        //     break;\r\n        default:\r\n            break;\r\n    }\r\n});\r\n\r\nfunction
-        reset() {\r\n    $.state.trialID = -1;\r\n    $.state.betweenSubjectsConditions
-        = {};\r\n    $.state.withinSubjectsVariableNames = [];\r\n    $.state.withinSubjectsConditionIndicesByTrial
-        = [];\r\n    $.state.trialCount = 1;\r\n    $.groupState.currentCondition
-        = {};\r\n    initializeBetweenSubjectsConditionsRandomly();\r\n    try {\r\n       
-        initializeWithinSubjectsConditions(within_subjects_variables, trialsCountForEachUniqueCondition);\r\n   
-        } catch (error) {\r\n        $.log(error);\r\n        $.log(\"Within-subjects
-        variables are not defined.\");\r\n    }\r\n}\r\n\r\nfunction initializeBetweenSubjectsConditionsRandomly()
-        {\r\n    let betweenSubjectsCondition = {};\r\n    try {\r\n        between_subjects_variables.forEach(v
-        => {\r\n            betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random()
-        * v.values.length)];\r\n        });\r\n    } catch (e) {\r\n        $.log(\"Between-subjects
-        variables are not defined.\");\r\n    }\r\n    $.state.betweenSubjectsConditions
-        = betweenSubjectsCondition;\r\n}\r\n\r\nfunction initializeWithinSubjectsConditions(variables,
-        repeatsPerCond = 1) {\r\n    variables = [ ...variables.sort((a, b) => a.isRandom
-        - b.isRandom) ];\r\n    const varNames = variables.map(v => v.name);\r\n\r\n   
-        let indicesPerVar = variables.map(v => Array.from({ length: v.values.length
-        }, (_, i) => i));\r\n    let condIndicesList = indicesPerVar.reduce((acc,
-        array) => {\r\n        return acc.flatMap(accItem => array.map(arrayItem
-        => [...accItem, arrayItem]));\r\n    }, [[]]).flatMap(condIndices => Array.from({
-        length: repeatsPerCond }, () => condIndices));\r\n\r\n    let shufflePartitionSize
-        = 0;\r\n    for (let i = 0; i < variables.length; i++) {\r\n        if (variables[i].isRandom)
-        {\r\n            shufflePartitionSize = shufflePartitionSize === 0 ? variables[i].values.length
-        : shufflePartitionSize * variables[i].values.length;\r\n        }\r\n   
-        }\r\n    shufflePartitionSize *= repeatsPerCond;\r\n\r\n    if (shufflePartitionSize
-        > 0) {\r\n        const result = [...condIndicesList]; // Copy the array
-        to avoid mutating the original\r\n        for (let i = 0; i < condIndicesList.length;
-        i += shufflePartitionSize) {\r\n            let partition = result.slice(i,
-        i + shufflePartitionSize);\r\n            partition = shuffleArray(partition);\r\n           
-        result.splice(i, shufflePartitionSize, ...partition);\r\n        }\r\n       
-        condIndicesList = result;\r\n    }\r\n\r\n    $.state.withinSubjectsVariableNames
-        = varNames;\r\n    $.state.withinSubjectsConditionIndicesByTrial = condIndicesList;\r\n   
-        $.state.trialCount = condIndicesList.length;\r\n};\r\n\r\nfunction shuffleArray(array)
-        {\r\n    for (let i = array.length - 1; i > 0; i--) {\r\n        const j
-        = Math.floor(Math.random() * (i + 1));\r\n        [array[i], array[j]] =
-        [array[j], array[i]];\r\n    }\r\n    return array;\r\n}\r\n"
+        - 1) {\n                $.state.isLast = true;\n                $.sendSignalCompat(\"this\",
+        \"exp_readyToLeaveTrials\");\n            }\n        }\n    }\n});\n\n$.onReceive((messageType,
+        arg, sender) => {\n    switch (messageType) {\n        // case \"exp_questionnaire_answer\":\n       
+        //     $.state.betweenSubjectsConditions = GetBetweenSubjectsCondition(arg);\n       
+        //     break;\n        default:\n            break;\n    }\n});\n\nfunction
+        reset() {\n    $.state.trialID = -1;\n    $.state.betweenSubjectsConditions
+        = {};\n    $.state.withinSubjectsVariableNames = [];\n    $.state.withinSubjectsConditionIndicesByTrial
+        = [];\n    $.state.trialCount = 1;\n    $.groupState.currentCondition = {};\n   
+        initializeBetweenSubjectsConditionsRandomly();\n    try {\n        initializeWithinSubjectsConditions(within_subjects_variables,
+        trialsCountForEachUniqueCondition);\n    } catch (error) {\n        $.log(error);\n       
+        $.log(\"Within-subjects variables are not defined.\");\n    }\n}\n\nfunction
+        initializeBetweenSubjectsConditionsRandomly() {\n    let betweenSubjectsCondition
+        = {};\n    try {\n        between_subjects_variables.forEach(v => {\n           
+        betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random() * v.values.length)];\n       
+        });\n    } catch (e) {\n        $.log(\"Between-subjects variables are not
+        defined.\");\n    }\n    $.state.betweenSubjectsConditions = betweenSubjectsCondition;\n}\n\nfunction
+        initializeWithinSubjectsConditions(variables, repeatsPerCond = 1) {\n   
+        variables = [ ...variables.sort((a, b) => a.isRandom - b.isRandom) ];\n   
+        const varNames = variables.map(v => v.name);\n\n    let indicesPerVar = variables.map(v
+        => Array.from({ length: v.values.length }, (_, i) => i));\n    let condIndicesList
+        = indicesPerVar.reduce((acc, array) => {\n        return acc.flatMap(accItem
+        => array.map(arrayItem => [...accItem, arrayItem]));\n    }, [[]]).flatMap(condIndices
+        => Array.from({ length: repeatsPerCond }, () => condIndices));\n\n    let
+        shufflePartitionSize = 0;\n    for (let i = 0; i < variables.length; i++)
+        {\n        if (variables[i].isRandom) {\n            shufflePartitionSize
+        = shufflePartitionSize === 0 ? variables[i].values.length : shufflePartitionSize
+        * variables[i].values.length;\n        }\n    }\n    shufflePartitionSize
+        *= repeatsPerCond;\n\n    if (shufflePartitionSize > 0) {\n        const
+        result = [...condIndicesList]; // Copy the array to avoid mutating the original\n       
+        for (let i = 0; i < condIndicesList.length; i += shufflePartitionSize) {\n           
+        let partition = result.slice(i, i + shufflePartitionSize);\n            partition
+        = shuffleArray(partition);\n            result.splice(i, shufflePartitionSize,
+        ...partition);\n        }\n        condIndicesList = result;\n    }\n\n   
+        $.state.withinSubjectsVariableNames = varNames;\n    $.state.withinSubjectsConditionIndicesByTrial
+        = condIndicesList;\n    $.state.trialCount = condIndicesList.length;\n};\n\nfunction
+        shuffleArray(array) {\n    for (let i = array.length - 1; i > 0; i--) {\n       
+        const j = Math.floor(Math.random() * (i + 1));\n        [array[i], array[j]]
+        = [array[j], array[i]];\n    }\n    return array;\n}\n"
       objectReference: {fileID: 0}
     - target: {fileID: 2966719835339860264, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
@@ -4548,25 +4747,24 @@ PrefabInstance:
     - target: {fileID: 2966719835339860266, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\n\r\n$.onStart(()
-        => {\r\n    $.state.customData = {};\r\n})\r\n\r\n$.onUpdate(() => {\r\n   
-        if ($.getStateCompat(\"this\", \"exp_recordCustomData\", \"boolean\")) {\r\n       
-        $.setStateCompat(\"this\", \"exp_recordCustomData\", false);\r\n        recordData();\r\n   
-        }\r\n    if ($.getStateCompat(\"this\", \"exp_uploadCustomData\", \"boolean\"))
-        {\r\n        $.setStateCompat(\"this\", \"exp_uploadCustomData\", false);\r\n       
-        uploadData();\r\n    }\r\n})\r\n\r\nfunction recordData () {\r\n    $.state.customData
-        = calculateData();\r\n}\r\n\r\nfunction uploadData () {\r\n    $.log(\"Upload
-        custom data: \" + JSON.stringify($.state.customData));\r\n    let request
-        = {\r\n        type: \"uploadCustomData\",\r\n        token: token || \"\",\r\n       
-        dataByFileName: JSON.stringify($.state.customData),\r\n        eID: expID
-        || \"\",\r\n        pID: $.getPlayersNear($.getPosition().clone(), Infinity)[0].idfc
-        || \"\" // TODO: retrieve idfc through cluster Player Script\r\n    };\r\n   
-        $.callExternal(JSON.stringify(request), \"customDataUploaded\");\r\n}\r\n\r\n$.onExternalCallEnd((res,
-        meta, err) =>\r\n{\r\n    if (res == null) {\r\n        $.log(\"callExternal
-        ERROR: \" + err);\r\n        return;\r\n    }\r\n\r\n    if (meta === \"customDataUploaded\")
-        {\r\n        $.log(\"Custom recorded data uploaded\");\r\n    }\r\n});\r\nfunction
-        calculateData () {\r\n    let returnData = $.state.customData;\r\n    const
-        CONDITION = $.groupState.currentCondition;\r\n    return returnData;\r\n}"
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\n$.onStart(()
+        => {\n    $.state.customData = {};\n})\n\n$.onUpdate(() => {\n    if ($.getStateCompat(\"this\",
+        \"exp_recordCustomData\", \"boolean\")) {\n        $.setStateCompat(\"this\",
+        \"exp_recordCustomData\", false);\n        recordData();\n    }\n    if ($.getStateCompat(\"this\",
+        \"exp_uploadCustomData\", \"boolean\")) {\n        $.setStateCompat(\"this\",
+        \"exp_uploadCustomData\", false);\n        uploadData();\n    }\n})\n\nfunction
+        recordData () {\n    $.state.customData = calculateData();\n}\n\nfunction
+        uploadData () {\n    $.log(\"Upload custom data: \" + JSON.stringify($.state.customData));\n   
+        let request = {\n        type: \"uploadCustomData\",\n        token: token
+        || \"\",\n        dataByFileName: JSON.stringify($.state.customData),\n       
+        eID: expID || \"\",\n        pID: $.getPlayersNear($.getPosition().clone(),
+        Infinity)[0].idfc || \"\" // TODO: retrieve idfc through cluster Player Script\n   
+        };\n    $.callExternal(JSON.stringify(request), \"customDataUploaded\");\n}\n\n$.onExternalCallEnd((res,
+        meta, err) =>\n{\n    if (res == null) {\n        $.log(\"callExternal ERROR:
+        \" + err);\n        return;\n    }\n\n    if (meta === \"customDataUploaded\")
+        {\n        $.log(\"Custom recorded data uploaded\");\n    }\n});\r\nfunction
+        calculateData () {\n    let returnData = $.state.customData;\n    const CONDITION
+        = $.groupState.currentCondition;\n    return returnData;\n}"
       objectReference: {fileID: 0}
     - target: {fileID: 2966719835339860267, guid: c429a845517c96a419988cd638c846f1,
         type: 3}

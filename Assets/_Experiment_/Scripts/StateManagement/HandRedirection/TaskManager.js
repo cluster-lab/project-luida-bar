@@ -2,21 +2,18 @@ function OnStateEnter() {
   const STATE_ID = $.state.state_id;
   const CONDITION = $.groupState.currentCondition;
 
+  if (STATE_ID === 0) {
+    $.setStateCompat('this', 'exp_showItem', false);
+  }
+  if (STATE_ID === 2) {
+    $.state.practiceGains = [1, 0.75, 1.25];
+$.state.practiceGainID = 0;
+Reset();
+    $.setStateCompat('this', 'exp_showItem', true);
+  }
   if (STATE_ID === 6) {
-    $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];
-$.state.handOffset = new Quaternion()
-  .setFromEulerAngles(new Vector3(0, 90, 0)); // 実身体の手（コントローラ）とバーチャル手の回転の差を補正するオフセット
-
-$.subNode("StartingPoint").setEnabled(true); // 原点を表示する
-$.subNode("TargetPoint").setEnabled(false); // ターゲットを非表示にする
-
-// 原点を手前30cmの位置に置く
-$.subNode("StartingPoint").setPosition(
-  $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new Vector3(0, -0.3, 0.3)));
-
-// ターゲットを手前60cmの位置に置く
-$.subNode("TargetPoint").setPosition(
-  $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new Vector3(0, -0.3, 0.6)));
+    Reset();
+    $.setStateCompat('this', 'exp_showItem', true);
   }
 }
 
@@ -25,20 +22,11 @@ function DuringState(deltaTime) {
   const STATE_ID = $.state.state_id;
   const CONDITION = $.groupState.currentCondition;
 
+  if (STATE_ID === 2) {
+    UpdateHandTransform($.state.practiceGains[$.state.practiceGainID]);
+  }
   if (STATE_ID === 6) {
-    if (!$.state.player || !$.state.handOriginalPos) return;
-
-// バーチャル手の位置を計算する：実身体の手（コントローラ）の移動量×ゲイン
-$.subNode("RightHandAnchor").setPosition(
-  $.state.handOriginalPos.clone()
-    .add($.state.player.getHumanoidBonePosition(HumanoidBone.RightHand).clone()
-      .sub($.state.handOriginalPos)
-      .multiplyScalar($.state.isReaching ? $.state.gain : 1)));
-  
-// バーチャル手の回転を実身体の手と同期させる
-$.subNode("RightHandAnchor")
-  .setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand)
-    .clone().multiply($.state.handOffset));
+    UpdateHandTransform(parseFloat(CONDITION["gain"]));
   }
 }
 
@@ -47,18 +35,69 @@ function OnStateExit() {
   const STATE_ID = $.state.state_id;
   const CONDITION = $.groupState.currentCondition;
 
+  if (STATE_ID === 2) {
+    $.setStateCompat('this', 'exp_showItem', false);
+  }
+  if (STATE_ID === 6) {
+    $.setStateCompat('this', 'exp_showItem', false);
+  }
 }
 
 
+function Reset() { // リセット処理
+  // プレイヤーの初期状態を設定
+  $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];
+  $.state.handOriginalPos = $.subNode("RightHandAnchor").getPosition().clone();
+
+  // プレイヤーの実際の手（コントローラー）と仮想手の回転のずれを補正するためのオフセットを設定
+  $.state.handOffset = new Quaternion().setFromEulerAngles(new Vector3(0, 90, 0));
+
+  // 原点 (StartingPoint) を表示し、ターゲット (TargetPoint) を非表示にする
+  $.subNode("StartingPoint").setEnabled(true);
+  $.subNode("TargetPoint").setEnabled(false);
+
+  // プレイヤーの頭部位置を基準に、原点を頭の30cm手前＋30cm下に配置
+  $.subNode("StartingPoint").setPosition(
+    $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new Vector3(0, -0.3, 0.3)));
+
+  // プレイヤーの頭部位置を基準に、ターゲットを頭の60cm手前＋30cm下に配置
+  $.subNode("TargetPoint").setPosition(
+    $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new Vector3(0, -0.3, 0.6)));
+}
+
+// 右手アンカー（右手オブジェクトのParent Constraintsが参照しているオブジェクト）の位置を、
+// プレイヤーの右手位置に同期させ、さらにゲインを適用する
+function UpdateHandTransform(gain) {
+  if (!$.state.player || !$.state.handOriginalPos) return;
+
+  // プレイヤーの右手位置とオリジナル位置の差分にゲインを掛け、右手アンカーを移動
+  $.subNode("RightHandAnchor").setPosition(
+    $.state.handOriginalPos.clone()
+      .add($.state.player.getHumanoidBonePosition(HumanoidBone.RightHand).clone()
+        .sub($.state.handOriginalPos).multiplyScalar($.state.isReaching ? gain : 1)));
+
+  // プレイヤーの右手の回転に補正オフセットを適用して、右手アンカーを回転
+  $.subNode("RightHandAnchor")
+    .setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand)
+      .clone().multiply($.state.handOffset));
+}
+
+// 衝突イベントが発生した際に実行される処理
 $.onCollide(collision => {
+  // 衝突対象が存在しない、または "RightHand" オブジェクトではない場合は処理を中断
+  if (!collision.handle || !$.worldItemReference("RightHand") || collision.handle.id !== $.worldItemReference("RightHand").id) return;
+
   if ($.state.isReaching) {
-    $.state.isReaching = false; // リーチング（目標地点まで手を伸ばす）フラグをfalseにする
-    ToNextState(); // 次のステート（質問に回答するフェーズ）に遷移させる
+    // すでにリーチング状態の場合、リーチングを終了し、練習ゲインIDを更新
+    $.state.isReaching = false;
+    $.state.practiceGainID = $.state.practiceGainID + 1;
+    ToNextState(); // 次の状態へ遷移
   } else {
+    // リーチングが開始されていない場合、ターゲットを表示し、原点を非表示にする
     $.subNode("StartingPoint").setEnabled(false);
     $.subNode("TargetPoint").setEnabled(true);
-    $.state.gain = parseFloat(CONDITION["gain"]); // この試行におけるゲインの値を設定する
+    // 現在の右手アンカーの位置を記録
     $.state.handOriginalPos = $.subNode("RightHandAnchor").getPosition().clone();
-    $.state.isReaching = true; // リーチング（目標地点まで手を伸ばす）フラグをtrueにする
+    $.state.isReaching = true;
   }
 });
