@@ -5,11 +5,16 @@ function OnStateEnter() {
   if (STATE_ID === 0) {
     $.setStateCompat('this', 'exp_showItem', true);
   }
-  if (STATE_ID === 4) {
-    $.setStateCompat('this', 'exp_showItem', true);
+  if (STATE_ID === 2) {
+    $.subNode("Text").setText("練習");
   }
   if (STATE_ID === 8) {
     $.setStateCompat('this', 'exp_showItem', true);
+    $.subNode("Text").setText("開始");
+  }
+  if (STATE_ID === 11) {
+    $.setStateCompat('this', 'exp_showItem', true);
+    $.subNode("Text").setText("次へ");
   }
 }
 
@@ -25,13 +30,13 @@ function OnStateExit() {
   const STATE_ID = $.state.state_id;
   const CONDITION = $.groupState.currentCondition;
 
-  if (STATE_ID === 1) {
-    $.setStateCompat('this', 'exp_showItem', false);
-  }
-  if (STATE_ID === 4) {
+  if (STATE_ID === 2) {
     $.setStateCompat('this', 'exp_showItem', false);
   }
   if (STATE_ID === 8) {
+    $.setStateCompat('this', 'exp_showItem', false);
+  }
+  if (STATE_ID === 11) {
     $.setStateCompat('this', 'exp_showItem', false);
   }
 }

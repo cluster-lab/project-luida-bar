@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17412685, g: 0.21774654, b: 0.2999423, a: 1}
+  m_IndirectSpecularColor: {r: 0.17412737, g: 0.21774727, b: 0.29994345, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -123,6 +123,82 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &15381491
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 15381492}
+  - component: {fileID: 15381494}
+  - component: {fileID: 15381493}
+  m_Layer: 0
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &15381492
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 15381491}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1736130596}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &15381493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 15381491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: f5ae1ffa4079740adbc2a09d4188d1f0, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &15381494
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 15381491}
+  m_CullTransparentMesh: 0
 --- !u!1 &31239172
 GameObject:
   m_ObjectHideFlags: 0
@@ -229,6 +305,104 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 8992573125486817700}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &136027452
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 136027453}
+  - component: {fileID: 136027456}
+  - component: {fileID: 136027455}
+  - component: {fileID: 136027454}
+  m_Layer: 0
+  m_Name: base
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &136027453
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 136027452}
+  m_LocalRotation: {x: 0.116706125, y: 0.6974093, z: 0.6974093, w: -0.116706125}
+  m_LocalPosition: {x: 0, y: 0.1, z: 0}
+  m_LocalScale: {x: -100.000084, y: -100.000046, z: -8.866501}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 340942896}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: -90.00001, y: 199, z: 0}
+--- !u!64 &136027454
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 136027452}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 2534964839176971238, guid: 503a86fbbbe72c1419d2302a4a748b26, type: 3}
+--- !u!23 &136027455
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 136027452}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 5181ed0c86a14f342ba25e99a6a61a7d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &136027456
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 136027452}
+  m_Mesh: {fileID: 2534964839176971238, guid: 503a86fbbbe72c1419d2302a4a748b26, type: 3}
 --- !u!1001 &187747857
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -250,26 +424,27 @@ PrefabInstance:
     - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: sourceCode
-      value: "$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\", \"state_exit\",
-        \"boolean\")) {\n        OnStateExit();\n        $.setStateCompat(\"this\",
-        \"state_exit\", false);\n    }\n    if ($.getStateCompat(\"this\", \"state_enter\",
-        \"boolean\")) {\n        $.setStateCompat(\"this\", \"state_enter\", false);\n       
-        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
-        OnStateEnter();\n    }\n    DuringState(deltaTime);\n    Update(deltaTime);\n})\n\nfunction
-        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
-        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
-        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
-        RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
-        UploadRecordedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
-        OnStateEnter() {}\n\nfunction OnStateExit() {}\n\nfunction DuringState(deltaTime)
-        {}\n\nfunction Update(deltaTime) {}\n\r\nfunction OnStateEnter() {\n  const
-        STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
-        if (STATE_ID === 5) {\n    $.state.taskTime = 0;\n  }\n}\n\n\nfunction DuringState(deltaTime)
-        {\n  const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
-        if (STATE_ID === 5) {\n    if ($.getStateCompat(\"global\", \"isInTask\",
-        \"boolean\")) {\n  $.state.taskTime = $.state.taskTime + deltaTime;\n}\n 
+      value: "$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\", \"state_exit\",
+        \"boolean\")) {\r\n        OnStateExit();\r\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
+        OnStateEnter();\r\n    }\r\n    DuringState(deltaTime);\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
+        ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
+        HideItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\r\n}\r\n\r\nfunction
+        ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
+        RecordCustomData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
+        UploadRecordedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
+        OnStateEnter() {}\r\n\r\nfunction OnStateExit() {}\r\n\r\nfunction DuringState(deltaTime)
+        {}\r\n\r\nfunction Update(deltaTime) {}\r\n\r\nfunction OnStateEnter() {\n 
+        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+        if (STATE_ID === 9) {\n    $.state.taskTime = 0;\n  }\n  if (STATE_ID ===
+        11) {\n    $.sendSignalCompat('this', 'exp_uploadCustomData');\n  }\n}\n\n\nfunction
+        DuringState(deltaTime) {\n  const STATE_ID = $.state.state_id;\n  const CONDITION
+        = $.groupState.currentCondition;\n\n  if (STATE_ID === 9) {\n    if ($.getStateCompat(\"global\",
+        \"isInTask\", \"boolean\")) {\n  $.state.taskTime = $.state.taskTime + deltaTime;\n}\n 
         }\n}\n\n\nfunction OnStateExit() {\n  const STATE_ID = $.state.state_id;\n 
-        const CONDITION = $.groupState.currentCondition;\n\n  if (STATE_ID === 5)
+        const CONDITION = $.groupState.currentCondition;\n\n  if (STATE_ID === 9)
         {\n    $.setStateCompat(\"owner\", \"taskTime\", $.state.taskTime);\n   
         $.sendSignalCompat('this', 'exp_recordCustomData');\n  }\n}\n\n\n\n"
       objectReference: {fileID: 0}
@@ -281,7 +456,7 @@ PrefabInstance:
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -340,12 +515,416 @@ PrefabInstance:
       objectReference: {fileID: 7533049804749356268}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de40e14777f5f4d3190981c4f4b1cddf, type: 3}
+--- !u!1 &256890850
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 256890851}
+  - component: {fileID: 256890853}
+  - component: {fileID: 256890852}
+  m_Layer: 0
+  m_Name: cylinder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &256890851
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 256890850}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -0, y: 0.45, z: 0}
+  m_LocalScale: {x: 59.157997, y: 59.157997, z: 31.546593}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 340942896}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!23 &256890852
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 256890850}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: ae76523df76f8a34bad44f60b1628183, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &256890853
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 256890850}
+  m_Mesh: {fileID: 2534964839176971238, guid: 816f81b6af783ae4a99218d998c87761, type: 3}
 --- !u!4 &329068714 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
     type: 3}
   m_PrefabInstance: {fileID: 946405690}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &340942895
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[1]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 4c71ae797e47196428a6d1ac9f5f06fa,
+        type: 3}
+    - target: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_Name
+      value: ExitGate
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: sourceCode
+      value: "$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\", \"state_exit\",
+        \"boolean\")) {\r\n        OnStateExit();\r\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
+        OnStateEnter();\r\n    }\r\n    DuringState(deltaTime);\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
+        ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
+        HideItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\r\n}\r\n\r\nfunction
+        ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
+        RecordCustomData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
+        UploadRecordedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
+        OnStateEnter() {}\r\n\r\nfunction OnStateExit() {}\r\n\r\nfunction DuringState(deltaTime)
+        {}\r\n\r\nfunction Update(deltaTime) {}\r\n\r\nfunction OnStateEnter() {\n 
+        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+        if (STATE_ID === 0) {\n    $.setStateCompat('this', 'exp_showItem', false);\n 
+        }\n  if (STATE_ID === 11) {\n    $.setStateCompat('this', 'exp_showItem',
+        true);\n  }\n}\n\n\nfunction DuringState(deltaTime) {\n  const STATE_ID =
+        $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n}\n\n\nfunction
+        OnStateExit() {\n  const STATE_ID = $.state.state_id;\n  const CONDITION
+        = $.groupState.currentCondition;\n\n}\n\n\n\n"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: id.value
+      value: 16892417026538282455
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758608954925073686, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: host
+      value: 
+      objectReference: {fileID: 7533049804749356268}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: de40e14777f5f4d3190981c4f4b1cddf, type: 3}
+--- !u!4 &340942896 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+    type: 3}
+  m_PrefabInstance: {fileID: 340942895}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &412642774
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[1]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 4cdad1d173f4d1f48848f82a7011228c,
+        type: 3}
+    - target: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_Name
+      value: Message
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: sourceCode
+      value: "$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\", \"state_exit\",
+        \"boolean\")) {\r\n        OnStateExit();\r\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
+        OnStateEnter();\r\n    }\r\n    DuringState(deltaTime);\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
+        ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
+        HideItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\r\n}\r\n\r\nfunction
+        ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
+        RecordCustomData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
+        UploadRecordedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
+        OnStateEnter() {}\r\n\r\nfunction OnStateExit() {}\r\n\r\nfunction DuringState(deltaTime)
+        {}\r\n\r\nfunction Update(deltaTime) {}\r\n\r\nfunction OnStateEnter() {\n 
+        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+        if (STATE_ID === 0) {\n    $.setStateCompat('this', 'exp_showItem', false);\n 
+        }\n  if (STATE_ID === 2) {\n    $.setStateCompat('this', 'exp_showItem',
+        true);\n    $.subNode(\"Text\").setText(`\u30BF\u30B9\u30AF\u5185\u5BB9\u306F\u3001\u30AB\u30FC\u30BD\u30EB\u3092\u63B4\u307F\u3001\r\n\u30BF\u30FC\u30B2\u30C3\u30C8\u307E\u3067\u52D5\u304B\u3057\u305F\u3089\u30DC\u30BF\u30F3\u3092\u62BC\u3059\u3053\u3068\u306B\u306A\u308A\u307E\u3059\u3002\r\n\u307E\u305A\u306F3\u56DE\u7DF4\u7FD2\u3092\u884C\u3044\u3001\u305D\u306E\u5F8C\u672C\u756A\u309236\u56DE\u884C\u3044\u307E\u3059\u3002\r\n\u6E96\u5099\u304C\u3067\u304D\u305F\u3089\u3001\u8A2D\u5B9A\u753B\u9762\u3067\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u3092\u975E\u8868\u793A\u306B\u3057\u3001\r\n\u524D\u3092\u898B\u3066\u300C\u7DF4\u7FD2\u300D\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\u3002\r`);\n 
+        }\n  if (STATE_ID === 4) {\n    $.subNode(\"Text\").setText(`\u7070\u8272\u306E\u30AB\u30FC\u30BD\u30EB\u3092\u63B4\u307F\uFF08\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u306E\u4E2D\u6307\u30DC\u30BF\u30F3\u3092\u62BC\u3059\uFF09\u3001\r\n\u9EC4\u8272\u306E\u30EA\u30BB\u30C3\u30C8\u30AD\u30E5\u30FC\u30D6\u307E\u3067\u52D5\u304B\u3057\u305F\u3089\u3001\r\n\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u306E\u4EBA\u5DEE\u3057\u6307\u30DC\u30BF\u30F3\u3092\u62BC\u3059\u3002\r\n\u6B21\u306B\u8D64\u3044\u30BF\u30FC\u30B2\u30C3\u30C8\u30AD\u30E5\u30FC\u30D6\u307E\u3067\u52D5\u304B\u3057\u305F\u3089\u3001\r\n\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u306E\u4EBA\u5DEE\u3057\u6307\u30DC\u30BF\u30F3\u3092\u62BC\u3059\u3002\r`);\n 
+        }\n  if (STATE_ID === 6) {\n    $.subNode(\"Text\").setText(`\u624B\u3092\u4E0B\u308D\u3057\u3066\u304F\u3060\u3055\u3044\u3002\r\n\u4F11\u61A9\u3092\u53D6\u3063\u3066\u304B\u3089\u518D\u958B\u3057\u3066\u3044\u305F\u3060\u3044\u3066\u5927\u4E08\u592B\u3067\u3059\u3002\r\r`);\n 
+        }\n  if (STATE_ID === 8) {\n    $.subNode(\"Text\").setText(`\u3053\u308C\u304B\u3089\u306F\u672C\u756A\u306E\u8A66\u884C\u309236\u56DE\u884C\u3044\u307E\u3059\u3002\r\n\u6E96\u5099\u304C\u3067\u304D\u305F\u3089\u524D\u3092\u5411\u3044\u3066\u3001\r\n\u300C\u958B\u59CB\u300D\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\u3002\r\r\r`);\n 
+        }\n  if (STATE_ID === 9) {\n    $.subNode(\"Text\").setText(`\u7070\u8272\u306E\u30AB\u30FC\u30BD\u30EB\u3092\u63B4\u307F\uFF08\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u306E\u4E2D\u6307\u30DC\u30BF\u30F3\u3092\u62BC\u3059\uFF09\u3001\r\n\u9EC4\u8272\u306E\u30EA\u30BB\u30C3\u30C8\u30AD\u30E5\u30FC\u30D6\u307E\u3067\u52D5\u304B\u3057\u305F\u3089\u3001\r\n\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u306E\u4EBA\u5DEE\u3057\u6307\u30DC\u30BF\u30F3\u3092\u62BC\u3059\u3002\r\n\u6B21\u306B\u8D64\u3044\u30BF\u30FC\u30B2\u30C3\u30C8\u30AD\u30E5\u30FC\u30D6\u307E\u3067\u52D5\u304B\u3057\u305F\u3089\u3001\r\n\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u306E\u4EBA\u5DEE\u3057\u6307\u30DC\u30BF\u30F3\u3092\u62BC\u3059\u3002\r`);\n 
+        }\n  if (STATE_ID === 11) {\n    $.subNode(\"Text\").setText(`\u624B\u3092\u4E0B\u308D\u3057\u3066\u304F\u3060\u3055\u3044\u3002\r\n\u4F11\u61A9\u3092\u53D6\u3063\u3066\u304B\u3089\u518D\u958B\u3057\u3066\u3044\u305F\u3060\u3044\u3066\u5927\u4E08\u592B\u3067\u3059\u3002\r\r`);\n 
+        }\n  if (STATE_ID === 11) {\n    $.subNode(\"Text\").setText(`\u30BF\u30B9\u30AF\u306F\u4EE5\u4E0A\u306B\u306A\u308A\u307E\u3059\u3002\n\u304A\u75B2\u308C\u69D8\u3067\u3059\u3002\n\u6700\u5F8C\u306B\u8CEA\u554F\u7D19\u306B\u3054\u8A18\u5165\u3092\u304A\u9858\u3044\u3057\u307E\u3059\u3002\n\u300C\u6B21\u3078\u300D\u30DC\u30BF\u30F3\u3092\u30AF\u30EA\u30C3\u30AF\u3057\u3066\u9032\u3093\u3067\u304F\u3060\u3055\u3044\u3002\r\r`);\n 
+        }\n  if (STATE_ID === 11) {\n    $.setStateCompat('this', 'exp_showItem',
+        true);\n    $.subNode(\"Text\").setText(`\u5B9F\u9A13\u306F\u4EE5\u4E0A\u306B\u306A\u308A\u307E\u3059\u3002\r\n\u3054\u53C2\u52A0\u3044\u305F\u3060\u304D\u3042\u308A\u304C\u3068\u3046\u3054\u3056\u3044\u307E\u3057\u305F\uFF01\r\n\u8B1D\u793C\u306Ecluster
+        point\u306F\u5F8C\u65E5\u306B\u4ED8\u4E0E\u3057\u307E\u3059\u3002\r\n\u76EE\u306E\u524D\u306E\u30B2\u30FC\u30C8\u306B\u6F5C\u3063\u3066\u9000\u5BA4\u3057\u3066\u304F\u3060\u3055\u3044\u3002\r\r\r`);\n 
+        }\n}\n\n\nfunction DuringState(deltaTime) {\n  const STATE_ID = $.state.state_id;\n 
+        const CONDITION = $.groupState.currentCondition;\n\n}\n\n\nfunction OnStateExit()
+        {\n  const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+        if (STATE_ID === 11) {\n    $.setStateCompat('this', 'exp_showItem', false);\n 
+        }\n}\n\n\n\n"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: id.value
+      value: 11240289896361455556
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758608954925073686, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: host
+      value: 
+      objectReference: {fileID: 7533049804749356268}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: de40e14777f5f4d3190981c4f4b1cddf, type: 3}
+--- !u!1 &412642775 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
+    type: 3}
+  m_PrefabInstance: {fileID: 412642774}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &412642776 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+    type: 3}
+  m_PrefabInstance: {fileID: 412642774}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &412642777
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 412642775}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &412642778
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 412642775}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 0e028c7d7604f7e40818164664f0f854, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &412642779
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 412642775}
+  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1001 &421114790
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -424,133 +1003,152 @@ PrefabInstance:
       propertyPath: m_Name
       value: Questionnaire
       objectReference: {fileID: 0}
+    - target: {fileID: 5697374075709122387, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: id.value
+      value: 5093371895668963170
+      objectReference: {fileID: 0}
     - target: {fileID: 5697374075709122390, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\n$.onStart(()
-        => {\n    reset();\n});\n\n$.onUpdate((deltaTime) => {\n    // Ensure that
-        the question is only initialized after all currently displayed answer options
-        are destroyed\n    if (!$.state.isInitiated && $.getStateCompat(\"this\",
-        \"form_set_content_active\", \"boolean\")) {\n        $.state.isInitiated
-        = true;\n        $.state.qID = 0;\n        $.subNode(\"LoadingHint\").setEnabled(true);\n\n       
-        // Reintroduced callExternal to get questions\n        const questionnaireID
-        = $.getStateCompat(\"this\", \"qID\", \"integer\");\n        if (questionnaireID
-        !== -1) {\n            let request = { type: \"questions\", token: token
-        || \"\", eID: expID || \"\", qID: questionnaireID };\n            $.callExternal(JSON.stringify(request),
-        \"getQuestions\");\n        }\n    }\n\n    if ($.state.tryInitQuestion &&
-        !$.state.answerOptionUIs.some(ans => ans.exists())) {\n        initQuestion();\n   
-        }\n\n    // Timer to trigger batch generation of answer options\n    $.state.timer
-        = ($.state.timer || 0) + deltaTime;\n    if ($.state.timer > 0.2 && $.state.pendingAnswerOptions
-        && $.state.pendingAnswerOptions.length > 0) {\n        spawnNextAnswerOption();\n       
-        $.state.timer = 0; // Reset the timer after generating a batch\n    }\n});\n\n$.onInteract(()
-        => {\n    $.setStateCompat(\"this\", \"form_set_content_active\", true);\n   
-        $.setStateCompat(\"this\", \"form_set_start_hint_active\", false);\n});\n\n$.onReceive((messageType,
-        arg) => {\n    if (!$.state.isInitiated) return;\n    switch (messageType)
-        {\n        case \"form_answer\":\n            handleFormAnswer(arg);\n           
-        break;\n        case \"form_to_next\":\n            saveAnswer();\n           
-        break;\n        case \"form_to_prev\":\n            toPrev();\n           
-        break;\n    }\n});\n\nfunction tryInitQuestion() {\n    $.state.tryInitQuestion
-        = true;\n}\n\nfunction initQuestion() {\n    // Prepare to stop destruction
-        of answer options and initialize a new question\n    $.sendSignalCompat(\"this\",
-        \"form_stop_destroy_answer_option\");\n    $.state.tryInitQuestion = false;\n   
-        $.state.answerOptionUIs = [];\n    $.state.answerOptionLocalPositions = [];\n   
-        const q = $.state.questions[$.state.qID];\n    $.subNode(\"Title\").setText(q.title);\n   
-        $.subNode(\"Description\").setText(q.description);\n    $.state.questionTypeID
-        = q.questionTypeID;\n    $.state.answerOptions = q.answerOptions;\n    spawnAnswerOptionUI();\n}\n\nfunction
-        spawnAnswerOptionUI() {\n    $.state.pendingAnswerOptions = $.state.answerOptions.slice();\n   
-        $.state.answerOptionIndex = 0;\n}\n\nfunction addAnswerOption (id, localPos,
-        rot, ansId) {\n    const itemHandle = $.createItem(id, $.getPosition().clone().add(localPos.clone().applyQuaternion(rot)),
-        rot);\n    $.state.answerOptionUIs = [...$.state.answerOptionUIs, itemHandle];\n   
+      value: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\n\r\n$.onStart(()
+        => {\r\n    reset();\r\n});\r\n\r\n$.onUpdate((deltaTime) => {\r\n    //
+        Ensure that the question is only initialized after all currently displayed
+        answer options are destroyed\r\n    if (!$.state.isInitiated && $.getStateCompat(\"this\",
+        \"form_set_content_active\", \"boolean\")) {\r\n        $.state.isInitiated
+        = true;\r\n        $.state.qID = 0;\r\n        $.subNode(\"LoadingHint\").setEnabled(true);\r\n\r\n       
+        // Reintroduced callExternal to get questions\r\n        const questionnaireID
+        = $.getStateCompat(\"this\", \"qID\", \"integer\");\r\n        if (questionnaireID
+        !== -1) {\r\n            let request = { type: \"questions\", token: token
+        || \"\", eID: expID || \"\", qID: questionnaireID };\r\n            $.callExternal(JSON.stringify(request),
+        \"getQuestions\");\r\n        }\r\n    }\r\n\r\n    if ($.state.tryInitQuestion
+        && !$.state.answerOptionUIs.some(ans => ans.exists())) {\r\n        initQuestion();\r\n   
+        }\r\n\r\n    // Timer to trigger batch generation of answer options\r\n   
+        $.state.timer = ($.state.timer || 0) + deltaTime;\r\n    if ($.state.timer
+        > 0.2 && $.state.pendingAnswerOptions && $.state.pendingAnswerOptions.length
+        > 0) {\r\n        spawnNextAnswerOption();\r\n        $.state.timer = 0;
+        // Reset the timer after generating a batch\r\n    }\r\n});\r\n\r\n$.onInteract(()
+        => {\r\n    $.setStateCompat(\"this\", \"form_set_content_active\", true);\r\n   
+        $.setStateCompat(\"this\", \"form_set_start_hint_active\", false);\r\n});\r\n\r\n$.onReceive((messageType,
+        arg) => {\r\n    if (!$.state.isInitiated) return;\r\n    switch (messageType)
+        {\r\n        case \"form_answer\":\r\n            handleFormAnswer(arg);\r\n           
+        break;\r\n        case \"form_to_next\":\r\n            saveAnswer();\r\n           
+        break;\r\n        case \"form_to_prev\":\r\n            toPrev();\r\n           
+        break;\r\n    }\r\n});\r\n\r\nfunction tryInitQuestion() {\r\n    $.state.tryInitQuestion
+        = true;\r\n}\r\n\r\nfunction initQuestion() {\r\n    // Prepare to stop destruction
+        of answer options and initialize a new question\r\n    $.sendSignalCompat(\"this\",
+        \"form_stop_destroy_answer_option\");\r\n    $.state.tryInitQuestion = false;\r\n   
+        $.state.answerOptionUIs = [];\r\n    $.state.answerOptionLocalPositions =
+        [];\r\n    const q = $.state.questions[$.state.qID];\r\n    $.subNode(\"Title\").setText(q.title);\r\n   
+        $.subNode(\"Description\").setText(q.description);\r\n    $.state.questionTypeID
+        = q.questionTypeID;\r\n    $.state.answerOptions = q.answerOptions;\r\n   
+        spawnAnswerOptionUI();\r\n}\r\n\r\nfunction spawnAnswerOptionUI() {\r\n   
+        $.state.pendingAnswerOptions = $.state.answerOptions.slice();\r\n    $.state.answerOptionIndex
+        = 0;\r\n}\r\n\r\nfunction addAnswerOption (id, localPos, rot, ansId) {\r\n   
+        const itemHandle = $.createItem(id, $.getPosition().clone().add(localPos.clone().applyQuaternion(rot)),
+        rot);\r\n    $.state.answerOptionUIs = [...$.state.answerOptionUIs, itemHandle];\r\n   
         $.state.answerOptionLocalPositions = [...$.state.answerOptionLocalPositions,
-        localPos];\n    itemHandle.send(\"form_init_answer_option\", { value: ansId
-        + 1, label: $.state.answerOptions[ansId] });\n}\n\nfunction spawnNextAnswerOption()
-        {\n    const n = $.state.pendingAnswerOptions.length || 0;\n    if ($.state.answerOptionIndex
-        >= n) {\n        $.state.pendingAnswerOptions = [];\n        return;\n   
-        }\n\n    let rotOffset = $.getRotation().clone();\n    let answerUiId = \"\";\n\n   
-        // Maximum number of rows (per column)\n    const maxRows = 5;\n    const
-        batchSize = 3; // Number of options to generate in each batch\n    const
-        numColumns = Math.ceil(n / maxRows); // Calculate number of columns based
-        on total options and max rows per column\n\n    // Adjust x-position based
-        on number of columns to center them\n    const totalWidth = numColumns *
-        0.5; // Adjust total width depending on your frame size\n    let i = 0;\n\n   
-        for (i = 0; i < batchSize && $.state.answerOptionIndex < n; i++) {\n       
-        let columnIndex = Math.floor($.state.answerOptionIndex / maxRows);\n       
-        let rowIndex = $.state.answerOptionIndex % maxRows;\n\n        // Calculate
-        dynamic x and y positions\n        let x = (columnIndex - (numColumns - 1)
-        / 2) - 0.2; // Adjust 0.5 for spacing between columns\n        let y = ((maxRows
-        - 1) / 2 - rowIndex) * 0.2 - 0.1; // 0.2 is the vertical spacing between
-        rows\n\n        switch ($.state.questionTypeID) {\n            case 0: //
-        Radio Buttons (single answer)\n            case 2: // Checkbox (multiple
-        answers)\n                answerUiId = new WorldItemTemplateId($.state.questionTypeID
-        === 0\n                    ? \"answer-option-radio-button\"\n                   
-        : \"answer-option-checkbox\");\n\n                // Add the option at calculated
-        x and y positions\n                addAnswerOption(answerUiId, new Vector3(x,
-        y, 0), rotOffset, $.state.answerOptionIndex);\n                break;\n\n           
-        case 1: // Linear Scale\n                answerUiId = new WorldItemTemplateId(\"answer-option-scale-button\");\n\n               
+        localPos];\r\n    itemHandle.send(\"form_init_answer_option\", { value: ansId
+        + 1, label: $.state.answerOptions[ansId] });\r\n}\r\n\r\nfunction spawnNextAnswerOption()
+        {\r\n    const n = $.state.pendingAnswerOptions.length || 0;\r\n    if ($.state.answerOptionIndex
+        >= n) {\r\n        $.state.pendingAnswerOptions = [];\r\n        return;\r\n   
+        }\r\n\r\n    let rotOffset = $.getRotation().clone();\r\n    let answerUiId
+        = \"\";\r\n\r\n    // Maximum number of rows (per column)\r\n    const maxRows
+        = 5;\r\n    const batchSize = 3; // Number of options to generate in each
+        batch\r\n    const numColumns = Math.ceil(n / maxRows); // Calculate number
+        of columns based on total options and max rows per column\r\n\r\n    // Adjust
+        x-position based on number of columns to center them\r\n    const totalWidth
+        = numColumns * 0.5; // Adjust total width depending on your frame size\r\n   
+        let i = 0;\r\n\r\n    for (i = 0; i < batchSize && $.state.answerOptionIndex
+        < n; i++) {\r\n        let columnIndex = Math.floor($.state.answerOptionIndex
+        / maxRows);\r\n        let rowIndex = $.state.answerOptionIndex % maxRows;\r\n\r\n       
+        // Calculate dynamic x and y positions\r\n        let x = (columnIndex -
+        (numColumns - 1) / 2) - 0.2; // Adjust 0.5 for spacing between columns\r\n       
+        let y = ((maxRows - 1) / 2 - rowIndex) * 0.2 - 0.1; // 0.2 is the vertical
+        spacing between rows\r\n\r\n        switch ($.state.questionTypeID) {\r\n           
+        case 0: // Radio Buttons (single answer)\r\n            case 2: // Checkbox
+        (multiple answers)\r\n                answerUiId = new WorldItemTemplateId($.state.questionTypeID
+        === 0\r\n                    ? \"answer-option-radio-button\"\r\n                   
+        : \"answer-option-checkbox\");\r\n\r\n                // Add the option at
+        calculated x and y positions\r\n                addAnswerOption(answerUiId,
+        new Vector3(x, y, 0), rotOffset, $.state.answerOptionIndex);\r\n               
+        break;\r\n\r\n            case 1: // Linear Scale\r\n                answerUiId
+        = new WorldItemTemplateId(\"answer-option-scale-button\");\r\n\r\n               
         let scaleX = ((n > 11 ? 3 : 2) / (n - 1)) * ($.state.answerOptionIndex -
-        (n - 1) / 2);\n                addAnswerOption(answerUiId, new Vector3(scaleX,
-        0, 0), rotOffset, $.state.answerOptionIndex);\n                break;\n\n           
-        case 3: // Toggle\n                answerUiId = new WorldItemTemplateId(\"answer-option-toggle\");\n               
-        addAnswerOption(answerUiId, new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);\n               
-        break;\n\n            case 4: // Text Input\n                answerUiId =
-        new WorldItemTemplateId(\"answer-option-text-input\");\n                addAnswerOption(answerUiId,
-        new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);\n               
-        break;\n\n            default:\n                break;\n        }\n\n       
-        $.state.answerOptionIndex += 1;\n    }\n}\n\nfunction destroyAnswerOptionUIs()
-        {\n    // Send a signal to destroy the current answer option UI elements\n   
-        $.sendSignalCompat(\"this\", \"form_destroy_answer_option\");\n}\n\nfunction
-        handleFormAnswer(arg) {\n    let posOffset = $.getPosition().clone();\n   
-        switch ($.state.questionTypeID) {\n        case 0: // Radio Buttons\n       
-        case 1: // Linear Scale\n            $.subNode(\"RadioButtonIndicator\").setEnabled(true);\n           
+        (n - 1) / 2);\r\n                addAnswerOption(answerUiId, new Vector3(scaleX,
+        0, 0), rotOffset, $.state.answerOptionIndex);\r\n                break;\r\n\r\n           
+        case 3: // Toggle\r\n                answerUiId = new WorldItemTemplateId(\"answer-option-toggle\");\r\n               
+        addAnswerOption(answerUiId, new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);\r\n               
+        break;\r\n\r\n            case 4: // Text Input\r\n                answerUiId
+        = new WorldItemTemplateId(\"answer-option-text-input\");\r\n               
+        addAnswerOption(answerUiId, new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);\r\n               
+        break;\r\n\r\n            default:\r\n                break;\r\n        }\r\n\r\n       
+        $.state.answerOptionIndex += 1;\r\n    }\r\n}\r\n\r\nfunction destroyAnswerOptionUIs()
+        {\r\n    // Send a signal to destroy the current answer option UI elements\r\n   
+        $.sendSignalCompat(\"this\", \"form_destroy_answer_option\");\r\n}\r\n\r\nfunction
+        handleFormAnswer(arg) {\r\n    let posOffset = $.getPosition().clone();\r\n   
+        switch ($.state.questionTypeID) {\r\n        case 0: // Radio Buttons\r\n       
+        case 1: // Linear Scale\r\n            $.subNode(\"RadioButtonIndicator\").setEnabled(true);\r\n           
         $.subNode(\"RadioButtonIndicator\").setPosition($.state.answerOptionLocalPositions[arg
-        - 1].clone());\n        case 3: // Toggle\n        case 4: // Text Input\n           
-        $.state.tmpAnswer = arg;\n            break;\n        case 2: // Checkbox\n           
-        if (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];\n           
-        if (arg.isOn) {\n                if (!$.state.tmpAnswer.includes(arg.value))
-        $.state.tmpAnswer = [...$.state.tmpAnswer, arg.value];\n            } else
-        {\n                $.state.tmpAnswer = $.state.tmpAnswer.filter(item => item
-        !== arg.value);\n            }\n            break;\n    }\n}\n\nfunction
-        saveAnswer() {\n    if (!$.state.questions[$.state.qID]) return;\n    if
-        ($.state.questions[$.state.qID].isRequired && (!$.state.tmpAnswer && $.state.tmpAnswer
-        !== false)) return;\n    $.state.answers = { ...$.state.answers, [$.state.qID]:
-        $.state.tmpAnswer };\n    toNext();\n}\n\nfunction submitAnswers() {\n   
-        $.log(\"Send final answers: \" + JSON.stringify($.state.answers));\n    let
-        request = {\n        type: \"questionAnswers\",\n        token: token ||
-        \"\",\n        eID: expID || \"\",\n        qID: $.getStateCompat(\"this\",
-        \"qID\", \"integer\") || 0,\n        pID: $.getPlayersNear($.getPosition().clone(),
-        100)[0].idfc || \"\", // TODO: retrieve idfc through cluster Player Script\n       
-        answers: JSON.stringify($.state.answers)\n    };\n    const conditionManager
-        = $.worldItemReference(\"ConditionManager\");\n    if (conditionManager)
-        {\n        conditionManager.send(\"exp_questionnaire_answer\", $.state.answers);\n   
-        }\n    $.callExternal(JSON.stringify(request), \"postQuestionAnswers\");\n   
-        $.setStateCompat(\"this\", \"form_set_content_active\", false);\n    reset(false);\n}\n\nfunction
-        toNext() {\n    destroyAnswerOptionUIs(); // Ensure previous UI elements
-        are destroyed\n    $.state.qID = $.state.qID + 1;\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\n   
-        if ($.state.qID >= $.state.questions.length) {\n        submitAnswers();\n   
-        } else {\n        $.state.tmpAnswer = null;\n        tryInitQuestion();\n   
-        }\n}\n\nfunction toPrev() {\n    if ($.state.qID <= 0) return;\n    destroyAnswerOptionUIs();
-        // Ensure previous UI elements are destroyed\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\n   
-        $.state.qID = $.state.qID - 1;\n    $.state.tmpAnswer = null;\n    tryInitQuestion();\n}\n\nfunction
-        reset(showStartHint = true) {\n    destroyAnswerOptionUIs(); // Reset will
-        also destroy any existing answer option UIs\n    $.setStateCompat(\"this\",
-        \"form_set_start_hint_active\", showStartHint);\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\n   
-        $.state.answers = {};\n    $.state.qID = 0;\n    $.state.isInitiated = false;\n   
-        $.state.tryInitQuestion = false;\n    $.state.answerOptionUIs = [];\n   
-        $.state.answerOptionLocalPositions = [];\n    $.state.answerOptionIndex =
-        0;\n    $.state.pendingAnswerOptions = [];\n    $.setStateCompat(\"this\",
-        \"form_set_content_active\", false);\n}\n\n$.onExternalCallEnd((res, meta,
-        err) => {\n    if (res == null) {\n        $.log(\"callExternal ERROR: \"
-        + err);\n        return;\n    }\n\n    if (meta === \"getQuestions\") {\n       
-        const parsedRes = JSON.parse(res);\n        $.state.questions = parsedRes.questions;\n       
-        $.subNode(\"LoadingHint\").setEnabled(false);\n        tryInitQuestion();\n   
-        }\n\n    if (meta === \"postQuestionAnswers\") {\n        $.log(\"Answers
-        recorded!\");\n        $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n       
-        reset(false);\n    }\n});\n"
+        - 1].clone());\r\n        case 3: // Toggle\r\n        case 4: // Text Input\r\n           
+        $.state.tmpAnswer = arg;\r\n            break;\r\n        case 2: // Checkbox\r\n           
+        if (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];\r\n           
+        if (arg.isOn) {\r\n                if (!$.state.tmpAnswer.includes(arg.value))
+        $.state.tmpAnswer = [...$.state.tmpAnswer, arg.value];\r\n            } else
+        {\r\n                $.state.tmpAnswer = $.state.tmpAnswer.filter(item =>
+        item !== arg.value);\r\n            }\r\n            break;\r\n    }\r\n}\r\n\r\nfunction
+        saveAnswer() {\r\n    if (!$.state.questions[$.state.qID]) return;\r\n   
+        if ($.state.questions[$.state.qID].isRequired && (!$.state.tmpAnswer && $.state.tmpAnswer
+        !== false)) return;\r\n    $.state.answers = { ...$.state.answers, [$.state.qID]:
+        $.state.tmpAnswer };\r\n    toNext();\r\n}\r\n\r\nfunction submitAnswers()
+        {\r\n    $.log(\"Send final answers: \" + JSON.stringify($.state.answers));\r\n   
+        let request = {\r\n        type: \"questionAnswers\",\r\n        token: token
+        || \"\",\r\n        eID: expID || \"\",\r\n        qID: $.getStateCompat(\"this\",
+        \"qID\", \"integer\") || 0,\r\n        pID: $.getPlayersNear($.getPosition().clone(),
+        100)[0].idfc || \"\", // TODO: retrieve idfc through cluster Player Script\r\n       
+        answers: JSON.stringify($.state.answers)\r\n    };\r\n    const conditionManager
+        = $.worldItemReference(\"ConditionManager\");\r\n    if (conditionManager)
+        {\r\n        conditionManager.send(\"exp_questionnaire_answer\", $.state.answers);\r\n   
+        }\r\n    $.callExternal(JSON.stringify(request), \"postQuestionAnswers\");\r\n   
+        $.setStateCompat(\"this\", \"form_set_content_active\", false);\r\n    reset(false);\r\n}\r\n\r\nfunction
+        toNext() {\r\n    destroyAnswerOptionUIs(); // Ensure previous UI elements
+        are destroyed\r\n    $.state.qID = $.state.qID + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
+        if ($.state.qID >= $.state.questions.length) {\r\n        submitAnswers();\r\n   
+        } else {\r\n        $.state.tmpAnswer = null;\r\n        tryInitQuestion();\r\n   
+        }\r\n}\r\n\r\nfunction toPrev() {\r\n    if ($.state.qID <= 0) return;\r\n   
+        destroyAnswerOptionUIs(); // Ensure previous UI elements are destroyed\r\n   
+        $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n    $.state.qID
+        = $.state.qID - 1;\r\n    $.state.tmpAnswer = null;\r\n    tryInitQuestion();\r\n}\r\n\r\nfunction
+        reset(showStartHint = true) {\r\n    destroyAnswerOptionUIs(); // Reset will
+        also destroy any existing answer option UIs\r\n    $.setStateCompat(\"this\",
+        \"form_set_start_hint_active\", showStartHint);\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
+        $.state.answers = {};\r\n    $.state.qID = 0;\r\n    $.state.isInitiated
+        = false;\r\n    $.state.tryInitQuestion = false;\r\n    $.state.answerOptionUIs
+        = [];\r\n    $.state.answerOptionLocalPositions = [];\r\n    $.state.answerOptionIndex
+        = 0;\r\n    $.state.pendingAnswerOptions = [];\r\n    $.setStateCompat(\"this\",
+        \"form_set_content_active\", false);\r\n}\r\n\r\n$.onExternalCallEnd((res,
+        meta, err) => {\r\n    if (res == null) {\r\n        $.log(\"callExternal
+        ERROR: \" + err);\r\n        return;\r\n    }\r\n\r\n    if (meta === \"getQuestions\")
+        {\r\n        const parsedRes = JSON.parse(res);\r\n        $.state.questions
+        = parsedRes.questions;\r\n        $.subNode(\"LoadingHint\").setEnabled(false);\r\n       
+        tryInitQuestion();\r\n    }\r\n\r\n    if (meta === \"postQuestionAnswers\")
+        {\r\n        $.log(\"Answers recorded!\");\r\n        $.sendSignalCompat(\"this\",
+        \"state_triggerTransition\");\r\n        reset(false);\r\n    }\r\n});\r\n"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075919056181, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: id.value
+      value: 9234149810213978403
       objectReference: {fileID: 0}
     - target: {fileID: 5697374076674148509, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
       propertyPath: id.value
       value: 10379630477196180747
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374076976329125, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: id.value
+      value: 11112238119339029003
       objectReference: {fileID: 0}
     - target: {fileID: 6652979657310920572, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
@@ -1095,28 +1693,33 @@ PrefabInstance:
     - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: sourceCode
-      value: "$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\", \"state_exit\",
-        \"boolean\")) {\n        OnStateExit();\n        $.setStateCompat(\"this\",
-        \"state_exit\", false);\n    }\n    if ($.getStateCompat(\"this\", \"state_enter\",
-        \"boolean\")) {\n        $.setStateCompat(\"this\", \"state_enter\", false);\n       
-        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
-        OnStateEnter();\n    }\n    DuringState(deltaTime);\n    Update(deltaTime);\n})\n\nfunction
-        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
-        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
-        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
-        RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
-        UploadRecordedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
-        OnStateEnter() {}\n\nfunction OnStateExit() {}\n\nfunction DuringState(deltaTime)
-        {}\n\nfunction Update(deltaTime) {}\n\r\nfunction OnStateEnter() {\n  const
-        STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+      value: "$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\", \"state_exit\",
+        \"boolean\")) {\r\n        OnStateExit();\r\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
+        OnStateEnter();\r\n    }\r\n    DuringState(deltaTime);\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
+        ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
+        HideItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\r\n}\r\n\r\nfunction
+        ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
+        RecordCustomData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
+        UploadRecordedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
+        OnStateEnter() {}\r\n\r\nfunction OnStateExit() {}\r\n\r\nfunction DuringState(deltaTime)
+        {}\r\n\r\nfunction Update(deltaTime) {}\r\n\r\nfunction OnStateEnter() {\n 
+        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
         if (STATE_ID === 0) {\n    $.setStateCompat('this', 'exp_showItem', false);\n 
-        }\n  if (STATE_ID === 2) {\n    $.setStateCompat('this', 'exp_showItem',
-        true);\n  }\n  if (STATE_ID === 5) {\n    $.setStateCompat('this', 'exp_showItem',
-        true);\n  }\n}\n\n\nfunction DuringState(deltaTime) {\n  const STATE_ID =
-        $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n}\n\n\nfunction
+        }\n  if (STATE_ID === 4) {\n    if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(),
+        Infinity)[0];\nlet originPos = $.state.player.getHumanoidBonePosition(HumanoidBone.Head)\n 
+        .clone().add(new Vector3(0, -0.2, 0.4));\n$.setPosition(originPos);\n   
+        $.setStateCompat('this', 'exp_showItem', true);\n  }\n  if (STATE_ID ===
+        9) {\n    if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(),
+        Infinity)[0];\nlet originPos = $.state.player.getHumanoidBonePosition(HumanoidBone.Head)\n 
+        .clone().add(new Vector3(0, -0.2, 0.4));\n$.setPosition(originPos);\n   
+        $.setStateCompat('this', 'exp_showItem', true);\n  }\n}\n\n\nfunction DuringState(deltaTime)
+        {\n  const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n}\n\n\nfunction
         OnStateExit() {\n  const STATE_ID = $.state.state_id;\n  const CONDITION
-        = $.groupState.currentCondition;\n\n  if (STATE_ID === 2) {\n    $.setStateCompat('this',
-        'exp_showItem', false);\n  }\n  if (STATE_ID === 5) {\n    $.setStateCompat('this',
+        = $.groupState.currentCondition;\n\n  if (STATE_ID === 4) {\n    $.setStateCompat('this',
+        'exp_showItem', false);\n  }\n  if (STATE_ID === 9) {\n    $.setStateCompat('this',
         'exp_showItem', false);\n  }\n}\n\n\n\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
@@ -1127,7 +1730,7 @@ PrefabInstance:
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -1354,6 +1957,56 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2649498283320326531}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1114730177
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1114730178}
+  - component: {fileID: 1114730179}
+  m_Layer: 0
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1114730178
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1114730177}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.01}
+  m_LocalScale: {x: 0.2, y: 0.5, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 412642776}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1114730179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1114730177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 661c45a344104837b0ee4901951c608c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textMesh: {fileID: 0}
+  text: "\u30E1\u30C3\u30BB\u30FC\u30B8"
+  size: 0.1
+  textAnchor: 4
+  textAlignment: 1
+  color: {r: 0, g: 0, b: 0, a: 1}
 --- !u!1001 &1174003743
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1581,30 +2234,32 @@ PrefabInstance:
     - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: sourceCode
-      value: "$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\", \"state_exit\",
-        \"boolean\")) {\n        OnStateExit();\n        $.setStateCompat(\"this\",
-        \"state_exit\", false);\n    }\n    if ($.getStateCompat(\"this\", \"state_enter\",
-        \"boolean\")) {\n        $.setStateCompat(\"this\", \"state_enter\", false);\n       
-        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
-        OnStateEnter();\n    }\n    DuringState(deltaTime);\n    Update(deltaTime);\n})\n\nfunction
-        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
-        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
-        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
-        RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
-        UploadRecordedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
-        OnStateEnter() {}\n\nfunction OnStateExit() {}\n\nfunction DuringState(deltaTime)
-        {}\n\nfunction Update(deltaTime) {}\n\r\nfunction OnStateEnter() {\n  const
-        STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+      value: "$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\", \"state_exit\",
+        \"boolean\")) {\r\n        OnStateExit();\r\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
+        OnStateEnter();\r\n    }\r\n    DuringState(deltaTime);\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
+        ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
+        HideItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\r\n}\r\n\r\nfunction
+        ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
+        RecordCustomData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
+        UploadRecordedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
+        OnStateEnter() {}\r\n\r\nfunction OnStateExit() {}\r\n\r\nfunction DuringState(deltaTime)
+        {}\r\n\r\nfunction Update(deltaTime) {}\r\n\r\nfunction OnStateEnter() {\n 
+        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
         if (STATE_ID === 0) {\n    $.setStateCompat('this', 'exp_showItem', true);\n 
-        }\n  if (STATE_ID === 4) {\n    $.setStateCompat('this', 'exp_showItem',
-        true);\n  }\n  if (STATE_ID === 8) {\n    $.setStateCompat('this', 'exp_showItem',
-        true);\n  }\n}\n\n\nfunction DuringState(deltaTime) {\n  const STATE_ID =
-        $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n}\n\n\nfunction
-        OnStateExit() {\n  const STATE_ID = $.state.state_id;\n  const CONDITION
-        = $.groupState.currentCondition;\n\n  if (STATE_ID === 1) {\n    $.setStateCompat('this',
-        'exp_showItem', false);\n  }\n  if (STATE_ID === 4) {\n    $.setStateCompat('this',
-        'exp_showItem', false);\n  }\n  if (STATE_ID === 8) {\n    $.setStateCompat('this',
-        'exp_showItem', false);\n  }\n}\n\n\n\n"
+        }\n  if (STATE_ID === 2) {\n    $.subNode(\"Text\").setText(\"\u7DF4\u7FD2\");\n 
+        }\n  if (STATE_ID === 8) {\n    $.setStateCompat('this', 'exp_showItem',
+        true);\n    $.subNode(\"Text\").setText(\"\u958B\u59CB\");\n  }\n  if (STATE_ID
+        === 11) {\n    $.setStateCompat('this', 'exp_showItem', true);\n    $.subNode(\"Text\").setText(\"\u6B21\u3078\");\n 
+        }\n}\n\n\nfunction DuringState(deltaTime) {\n  const STATE_ID = $.state.state_id;\n 
+        const CONDITION = $.groupState.currentCondition;\n\n}\n\n\nfunction OnStateExit()
+        {\n  const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+        if (STATE_ID === 2) {\n    $.setStateCompat('this', 'exp_showItem', false);\n 
+        }\n  if (STATE_ID === 8) {\n    $.setStateCompat('this', 'exp_showItem',
+        false);\n  }\n  if (STATE_ID === 11) {\n    $.setStateCompat('this', 'exp_showItem',
+        false);\n  }\n}\n\n\n\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -1614,7 +2269,7 @@ PrefabInstance:
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -2007,6 +2662,68 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1434940726}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1564197607
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1564197608}
+  - component: {fileID: 1564197610}
+  - component: {fileID: 1564197609}
+  m_Layer: 0
+  m_Name: WorldGate
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1564197608
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1564197607}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 340942896}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &1564197609
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1564197607}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &1564197610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1564197607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88e2bee252abf41829451dd430b50cba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldOrEventId: 006d765e-f961-435b-a183-77c35a42e241
+  key: 
+  confirmTransition: 0
 --- !u!1 &1587392266
 GameObject:
   m_ObjectHideFlags: 0
@@ -2026,7 +2743,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1587392267
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2100,7 +2817,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1708551650}
   m_RootOrder: 0
@@ -2225,29 +2942,30 @@ PrefabInstance:
     - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: sourceCode
-      value: "$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\", \"state_exit\",
-        \"boolean\")) {\n        OnStateExit();\n        $.setStateCompat(\"this\",
-        \"state_exit\", false);\n    }\n    if ($.getStateCompat(\"this\", \"state_enter\",
-        \"boolean\")) {\n        $.setStateCompat(\"this\", \"state_enter\", false);\n       
-        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
-        OnStateEnter();\n    }\n    DuringState(deltaTime);\n    Update(deltaTime);\n})\n\nfunction
-        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
-        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
-        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
-        RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
-        UploadRecordedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
-        OnStateEnter() {}\n\nfunction OnStateExit() {}\n\nfunction DuringState(deltaTime)
-        {}\n\nfunction Update(deltaTime) {}\n\r\nfunction OnStateEnter() {\n  const
-        STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+      value: "$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\", \"state_exit\",
+        \"boolean\")) {\r\n        OnStateExit();\r\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
+        OnStateEnter();\r\n    }\r\n    DuringState(deltaTime);\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
+        ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
+        HideItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\r\n}\r\n\r\nfunction
+        ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
+        RecordCustomData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
+        UploadRecordedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
+        OnStateEnter() {}\r\n\r\nfunction OnStateExit() {}\r\n\r\nfunction DuringState(deltaTime)
+        {}\r\n\r\nfunction Update(deltaTime) {}\r\n\r\nfunction OnStateEnter() {\n 
+        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
         if (STATE_ID === 0) {\n    $.setStateCompat('this', 'exp_showItem', false);\n 
-        }\n  if (STATE_ID === 2) {\n    if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(),
+        }\n  if (STATE_ID === 4) {\n    if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(),
         Infinity)[0];\nif (!$.state.practiceID) $.state.practiceID = 0;\n\n// \u30BF\u30FC\u30B2\u30C3\u30C8\u306E\u5EA7\u6A19\nlet
         param = practiceParams[$.state.practiceID];\nlet originPos = $.state.player.getHumanoidBonePosition(HumanoidBone.Head)\n 
         .clone().add(new Vector3(0, 0, 0.5));\n$.setPosition(originPos.add(new Vector3(param.x
         / 300, param.y / 300, param.z / 300)));\n\n// \u30BF\u30FC\u30B2\u30C3\u30C8\u306E\u30B5\u30A4\u30BA\nlet
         s = param.s / 300;\n$.getUnityComponent(\"Transform\").unityProp.localScale
-        = new Vector3(s, s, s);\n    $.setStateCompat('this', 'exp_showItem', true);\n 
-        }\n  if (STATE_ID === 5) {\n    if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(),
+        = new Vector3(s, s, s);\n\n// \u8272\u3092\u534A\u900F\u660E\u306B\n$.material(\"mat\").setBaseColor(1,
+        0, 0, 0.7);\n    $.setStateCompat('this', 'exp_showItem', true);\n  }\n 
+        if (STATE_ID === 9) {\n    if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(),
         Infinity)[0];\n\n// xy\u8DDD\u96E2\u306E\u5B9F\u9A13\u6761\u4EF6\u304B\u3089xy\u5EA7\u6A19\u3092\u30E9\u30F3\u30C0\u30E0\u306B\u6C7A\u3081\u308B\nlet
         xyCoord = xyCoordCandidates[parseInt(CONDITION[\"xy\"])][Math.floor(Math.random()
         * 4)];\n\n// \u30BF\u30FC\u30B2\u30C3\u30C8\u3092\u6307\u5B9A\u3055\u308C\u305F\u4F4D\u7F6E\u307E\u3067\u52D5\u304B\u3059\nlet
@@ -2257,22 +2975,30 @@ PrefabInstance:
         y, z)));\n\n// \u30BF\u30FC\u30B2\u30C3\u30C8\u306E\u30B5\u30A4\u30BA\u3092\u5B9F\u9A13\u6761\u4EF6\u306B\u5408\u308F\u305B\u308B\nlet
         s = parseInt(CONDITION[\"s\"]) / 300;\n$.getUnityComponent(\"Transform\").unityProp.localScale
         = new Vector3(s, s, s);\n\n// x\u3068y\u306E\u5024\u3092\u4FDD\u5B58\u3059\u308B\n$.setStateCompat(\"owner\",
-        \"x\", xyCoord.x);\n$.setStateCompat(\"owner\", \"y\", xyCoord.y);\n    $.setStateCompat('this',
-        'exp_showItem', true);\n  }\n}\n\n\nfunction DuringState(deltaTime) {\n 
-        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n}\n\n\nfunction
-        OnStateExit() {\n  const STATE_ID = $.state.state_id;\n  const CONDITION
-        = $.groupState.currentCondition;\n\n  if (STATE_ID === 2) {\n    $.setStateCompat('this',
-        'exp_showItem', false);\n    $.state.practiceID = $.state.practiceID + 1;\n 
-        }\n  if (STATE_ID === 5) {\n    $.setStateCompat('this', 'exp_showItem',
-        false);\n  }\n}\n\n\nconst practiceParams = [\n  { x: -50, y: 50, z: 0, s:
-        16 },\n  { x: 10, y: 10, z: -25, s: 2 },\n  { x: 30, y: -30, z: 50, s: 48
-        }\n];\n\nconst xyCoordCandidates = [\n   [{ x: 10, y: 10 }, { x: -10, y:
-        10 }, { x: 10 , y: -10 }, { x: -10, y: -10 }],\n   [{ x: 30, y: 0  }, { x:
-        0  , y: 30 }, { x: -30, y: 0   }, { x: 0  , y: -30 }],\n   [{ x: 30, y: 30
-        }, { x: -30, y: 30 }, { x: 30 , y: -30 }, { x: -30, y: -30 }],\n   [{ x:
-        50, y: 0  }, { x: 0  , y: 50 }, { x: -50, y: 0   }, { x: 0  , y: -50 }],\n  
-        [{ x: 50, y: 50 }, { x: -50, y: 50 }, { x: 50 , y: -50 }, { x: -50, y: -50
-        }]\n];\n"
+        \"x\", xyCoord.x);\n$.setStateCompat(\"owner\", \"y\", xyCoord.y);\n\n//
+        \u8272\u3092\u534A\u900F\u660E\u306B\n$.material(\"mat\").setBaseColor(1,
+        0, 0, 0.7);\n    $.setStateCompat('this', 'exp_showItem', true);\n  }\n}\n\n\nfunction
+        DuringState(deltaTime) {\n  const STATE_ID = $.state.state_id;\n  const CONDITION
+        = $.groupState.currentCondition;\n\n  if (STATE_ID === 4) {\n    // \u30DB\u30D0\u30FC\u6642\u306F\u4E0D\u900F\u660E\u306B\u3057\u3001\u975E\u30DB\u30D0\u30FC\u6642\u306F\u534A\u900F\u660E\u306B\u3059\u308B\nif
+        ($.state.isHovered !== $.getStateCompat(\"this\", \"isHovered\", \"boolean\"))
+        {\n  $.material(\"mat\").setBaseColor(1, 0, 0, $.state.isHovered ? 0.7 :
+        1);\n  $.state.isHovered = !$.state.isHovered;\n  $.log($.state.isHovered);\n}\n 
+        }\n  if (STATE_ID === 9) {\n    // \u30DB\u30D0\u30FC\u6642\u306F\u4E0D\u900F\u660E\u306B\u3057\u3001\u975E\u30DB\u30D0\u30FC\u6642\u306F\u534A\u900F\u660E\u306B\u3059\u308B\nif
+        ($.state.isHovered !== $.getStateCompat(\"this\", \"isHovered\", \"boolean\"))
+        {\n  $.material(\"mat\").setBaseColor(1, 0, 0, $.state.isHovered ? 0.7 :
+        1);\n  $.state.isHovered = !$.state.isHovered;\n}\n  }\n}\n\n\nfunction OnStateExit()
+        {\n  const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+        if (STATE_ID === 4) {\n    $.setStateCompat('this', 'exp_showItem', false);\n   
+        $.state.practiceID = $.state.practiceID + 1;\n  }\n  if (STATE_ID === 9)
+        {\n    $.setStateCompat('this', 'exp_showItem', false);\n  }\n}\n\n\nconst
+        practiceParams = [\n  { x: -50, y: 50, z: 0, s: 16 },\n  { x: 10, y: 10,
+        z: -25, s: 2 },\n  { x: 30, y: -30, z: 50, s: 48 }\n];\n\nconst xyCoordCandidates
+        = [\n   [{ x: 10, y: 10 }, { x: -10, y: 10 }, { x: 10 , y: -10 }, { x: -10,
+        y: -10 }],\n   [{ x: 30, y: 0  }, { x: 0  , y: 30 }, { x: -30, y: 0   },
+        { x: 0  , y: -30 }],\n   [{ x: 30, y: 30 }, { x: -30, y: 30 }, { x: 30 ,
+        y: -30 }, { x: -30, y: -30 }],\n   [{ x: 50, y: 0  }, { x: 0  , y: 50 },
+        { x: -50, y: 0   }, { x: 0  , y: -50 }],\n   [{ x: 50, y: 50 }, { x: -50,
+        y: 50 }, { x: 50 , y: -50 }, { x: -50, y: -50 }]\n];\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -2282,7 +3008,7 @@ PrefabInstance:
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -2542,6 +3268,46 @@ MonoBehaviour:
               operatorExpression:
                 operator: 0
                 operands: []
+    - singleStatement:
+        targetState:
+          target: 0
+          key: isHovered
+          parameterType: 1
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 0
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 0
+              key: isHovered
+              type: 1
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 0
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
 --- !u!114 &1708551653
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2556,7 +3322,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: {fileID: 1708551649}
   collisionEventType: 1
-  collisionType: 1
+  collisionType: -1
   triggers:
   - target: 0
     specifiedTargetItem: {fileID: 0}
@@ -2582,7 +3348,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: {fileID: 1708551649}
   collisionEventType: 0
-  collisionType: 1
+  collisionType: -1
   triggers:
   - target: 0
     specifiedTargetItem: {fileID: 0}
@@ -2596,7 +3362,7 @@ MonoBehaviour:
       vector3Value: {x: 0, y: 0, z: 0}
 --- !u!114 &1708551655
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -2684,6 +3450,171 @@ MonoBehaviour:
   itemMaterialSets:
   - id: mat
     material: {fileID: 2100000, guid: e59b8f7b6175d479ab15a0f7beddeabd, type: 2}
+--- !u!114 &1708551680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1708551648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 557c1287071b147459bb6f001560c6e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 1708551649}
+  rb: {fileID: 1708551681}
+--- !u!54 &1708551681
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1708551648}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
+--- !u!114 &1708551682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1708551648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f90a8458122ef47c3b840e286a75994a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 1708551649}
+  triggers:
+  - target: 0
+    specifiedTargetItem: {fileID: 0}
+    key: isHovered
+    type: 1
+    value:
+      boolValue: 0
+      floatValue: 0
+      integerValue: 0
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+  - target: 4
+    specifiedTargetItem: {fileID: 0}
+    key: isInTask
+    type: 1
+    value:
+      boolValue: 0
+      floatValue: 0
+      integerValue: 0
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+--- !u!1 &1736130595
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1736130596}
+  - component: {fileID: 1736130599}
+  - component: {fileID: 1736130598}
+  - component: {fileID: 1736130597}
+  m_Layer: 0
+  m_Name: SignBoard
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1736130596
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1736130595}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1.25}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 15381492}
+  m_Father: {fileID: 340942896}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 2.25}
+  m_SizeDelta: {x: 480, y: 270}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1736130597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1736130595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &1736130598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1736130595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UiScaleMode: 0
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 800, y: 600}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 1
+--- !u!223 &1736130599
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1736130595}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &1752504904
 GameObject:
   m_ObjectHideFlags: 0
@@ -2715,7 +3646,7 @@ Transform:
   - {fileID: 1434940727}
   - {fileID: 814595608}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1802546508
 PrefabInstance:
@@ -2930,35 +3861,44 @@ PrefabInstance:
     - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: sourceCode
-      value: "$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\", \"state_exit\",
-        \"boolean\")) {\n        OnStateExit();\n        $.setStateCompat(\"this\",
-        \"state_exit\", false);\n    }\n    if ($.getStateCompat(\"this\", \"state_enter\",
-        \"boolean\")) {\n        $.setStateCompat(\"this\", \"state_enter\", false);\n       
-        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
-        OnStateEnter();\n    }\n    DuringState(deltaTime);\n    Update(deltaTime);\n})\n\nfunction
-        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
-        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
-        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
-        RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
-        UploadRecordedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
-        OnStateEnter() {}\n\nfunction OnStateExit() {}\n\nfunction DuringState(deltaTime)
-        {}\n\nfunction Update(deltaTime) {}\n\r\nfunction OnStateEnter() {\n  const
-        STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+      value: "$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\", \"state_exit\",
+        \"boolean\")) {\r\n        OnStateExit();\r\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\r\n    }\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
+        OnStateEnter();\r\n    }\r\n    DuringState(deltaTime);\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
+        ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
+        HideItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\r\n}\r\n\r\nfunction
+        ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
+        RecordCustomData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
+        UploadRecordedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
+        OnStateEnter() {}\r\n\r\nfunction OnStateExit() {}\r\n\r\nfunction DuringState(deltaTime)
+        {}\r\n\r\nfunction Update(deltaTime) {}\r\n\r\nfunction OnStateEnter() {\n 
+        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
         if (STATE_ID === 0) {\n    $.setStateCompat('this', 'exp_showItem', false);\n 
-        }\n  if (STATE_ID === 2) {\n    if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(),
+        }\n  if (STATE_ID === 4) {\n    if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(),
         Infinity)[0];\n\n// \u539F\u70B9\uFF08\u982D\u306E\u6B63\u9762\u304B\u308950cm\uFF09\u307E\u3067\u52D5\u304B\u3059\nlet
         originPos = $.state.player.getHumanoidBonePosition(HumanoidBone.Head)\n 
-        .clone().add(new Vector3(0, 0, 0.5));\n$.setPosition(originPos);\n    $.setStateCompat('this',
-        'exp_showItem', true);\n  }\n  if (STATE_ID === 5) {\n    if (!$.state.player)
-        $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\n\n// \u539F\u70B9\uFF08\u982D\u306E\u6B63\u9762\u304B\u308950cm\uFF09\u307E\u3067\u52D5\u304B\u3059\nlet
+        .clone().add(new Vector3(0, 0, 0.5));\n$.setPosition(originPos);\n\n// \u8272\u3092\u534A\u900F\u660E\u306B\n$.material(\"mat\").setBaseColor(1,
+        1, 0, 0.7);\n    $.setStateCompat('this', 'exp_showItem', true);\n  }\n 
+        if (STATE_ID === 9) {\n    if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(),
+        Infinity)[0];\n\n// \u539F\u70B9\uFF08\u982D\u306E\u6B63\u9762\u304B\u308950cm\uFF09\u307E\u3067\u52D5\u304B\u3059\nlet
         originPos = $.state.player.getHumanoidBonePosition(HumanoidBone.Head)\n 
-        .clone().add(new Vector3(0, 0, 0.5));\n$.setPosition(originPos);\n    $.setStateCompat('this',
-        'exp_showItem', true);\n  }\n}\n\n\nfunction DuringState(deltaTime) {\n 
-        const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n}\n\n\nfunction
-        OnStateExit() {\n  const STATE_ID = $.state.state_id;\n  const CONDITION
-        = $.groupState.currentCondition;\n\n  if (STATE_ID === 2) {\n    $.setStateCompat('this',
-        'exp_showItem', false);\n  }\n  if (STATE_ID === 5) {\n    $.setStateCompat('this',
-        'exp_showItem', false);\n  }\n}\n\n\n\n"
+        .clone().add(new Vector3(0, 0, 0.5));\n$.setPosition(originPos);\n\n// \u8272\u3092\u534A\u900F\u660E\u306B\n$.material(\"mat\").setBaseColor(1,
+        1, 0, 0.7);\n    $.setStateCompat('this', 'exp_showItem', true);\n  }\n}\n\n\nfunction
+        DuringState(deltaTime) {\n  const STATE_ID = $.state.state_id;\n  const CONDITION
+        = $.groupState.currentCondition;\n\n  if (STATE_ID === 4) {\n    // \u30DB\u30D0\u30FC\u6642\u306F\u4E0D\u900F\u660E\u306B\u3057\u3001\u975E\u30DB\u30D0\u30FC\u6642\u306F\u534A\u900F\u660E\u306B\u3059\u308B\nif
+        ($.state.isHovered !== $.getStateCompat(\"this\", \"isHovered\", \"boolean\"))
+        {\n  $.material(\"mat\").setBaseColor(1, 1, 0, $.state.isHovered ? 0.7 :
+        1);\n  $.state.isHovered = !$.state.isHovered;\n}\n  }\n  if (STATE_ID ===
+        9) {\n    // \u30DB\u30D0\u30FC\u6642\u306F\u4E0D\u900F\u660E\u306B\u3057\u3001\u975E\u30DB\u30D0\u30FC\u6642\u306F\u534A\u900F\u660E\u306B\u3059\u308B\nif
+        ($.state.isHovered !== $.getStateCompat(\"this\", \"isHovered\", \"boolean\"))
+        {\n  $.material(\"mat\").setBaseColor(1, 1, 0, $.state.isHovered ? 0.7 :
+        1);\n  $.state.isHovered = !$.state.isHovered;\n}\n  }\n}\n\n\nfunction OnStateExit()
+        {\n  const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
+        if (STATE_ID === 4) {\n    $.setStateCompat('this', 'exp_showItem', false);\n 
+        }\n  if (STATE_ID === 9) {\n    $.setStateCompat('this', 'exp_showItem',
+        false);\n  }\n}\n\n\n\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -2968,7 +3908,7 @@ PrefabInstance:
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -3188,6 +4128,46 @@ MonoBehaviour:
               operatorExpression:
                 operator: 0
                 operands: []
+    - singleStatement:
+        targetState:
+          target: 0
+          key: isHovered
+          parameterType: 0
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 0
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 0
+              key: isHovered
+              type: 1
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 0
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
 --- !u!114 &1930095108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3202,7 +4182,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: {fileID: 1930095104}
   collisionEventType: 1
-  collisionType: 1
+  collisionType: -1
   triggers:
   - target: 0
     specifiedTargetItem: {fileID: 0}
@@ -3228,7 +4208,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: {fileID: 1930095104}
   collisionEventType: 0
-  collisionType: 1
+  collisionType: -1
   triggers:
   - target: 0
     specifiedTargetItem: {fileID: 0}
@@ -3255,6 +4235,60 @@ MonoBehaviour:
   itemMaterialSets:
   - id: mat
     material: {fileID: 2100000, guid: 2e79e8e8e03ec461aa14ac6b0ea90d08, type: 2}
+--- !u!114 &1930095133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930095103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 557c1287071b147459bb6f001560c6e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 1930095104}
+  rb: {fileID: 1930095134}
+--- !u!54 &1930095134
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930095103}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
+--- !u!114 &1930095135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930095103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f90a8458122ef47c3b840e286a75994a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 1930095104}
+  triggers:
+  - target: 0
+    specifiedTargetItem: {fileID: 0}
+    key: isHovered
+    type: 1
+    value:
+      boolValue: 0
+      floatValue: 0
+      integerValue: 0
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
 --- !u!1 &2029845014
 GameObject:
   m_ObjectHideFlags: 0
@@ -3287,7 +4321,7 @@ Transform:
   - {fileID: 787405257}
   - {fileID: 1604143552}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2042168209
 PrefabInstance:
@@ -3488,16 +4522,17 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1107838079, guid: 7a3b3cea72501334595167f4bb75fffe, type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\n$.onUpdate(()
-        => {\n  if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\n     
-        $.setStateCompat(\"this\", \"state_enter\", false);\n      OnStateEnter();\n 
-        }\n})\n\nfunction OnStateEnter() {\n  const request = {\n    type: \"postDoneIdfcs\",\n   
-        token: token || \"\",\n    eID: expID || \"\",\n    idfcs: $.getPlayersNear($.getPosition().clone(),
-        Infinity).map(player => player.idfc),\n  };\n  $.callExternal(JSON.stringify(request),
-        \"doneIdfcsPosted\");\n}\n\n$.onExternalCallEnd((res, meta, err) =>\n{\n 
-        if (res == null) {\n    $.log(\"callExternal ERROR: \" + err);\n    return;\n 
-        }\n\n  if (meta === \"doneIdfcsPosted\") {\n    $.log(\"idfc of users that
-        are done with this experiment this time are recorded.\");\n  }\n});"
+      value: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\n\r\n$.onUpdate(()
+        => {\r\n  if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\r\n     
+        $.setStateCompat(\"this\", \"state_enter\", false);\r\n      OnStateEnter();\r\n 
+        }\r\n})\r\n\r\nfunction OnStateEnter() {\r\n  const request = {\r\n    type:
+        \"postDoneIdfcs\",\r\n    token: token || \"\",\r\n    eID: expID || \"\",\r\n   
+        idfcs: $.getPlayersNear($.getPosition().clone(), Infinity).map(player =>
+        player.idfc),\r\n  };\r\n  $.callExternal(JSON.stringify(request), \"doneIdfcsPosted\");\r\n}\r\n\r\n$.onExternalCallEnd((res,
+        meta, err) =>\r\n{\r\n  if (res == null) {\r\n    $.log(\"callExternal ERROR:
+        \" + err);\r\n    return;\r\n  }\r\n\r\n  if (meta === \"doneIdfcsPosted\")
+        {\r\n    $.log(\"idfc of users that are done with this experiment this time
+        are recorded.\");\r\n  }\r\n});"
       objectReference: {fileID: 0}
     - target: {fileID: 1523856785490388474, guid: 7a3b3cea72501334595167f4bb75fffe,
         type: 3}
@@ -3585,28 +4620,29 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 600138419, guid: bebbd8fabd7b322468f1d18e8b32081c, type: 3}
       propertyPath: sourceCode
-      value: "// Deprecated\n\n/*\n$.onStart(() => {\n  $.state.inRoomIdfcs = [];\n 
-        $.state.newPlayers = [];\n})\n\n$.onUpdate(() => {\n  if ($.getStateCompat(\"this\",
-        \"exp_checkJoinEligibility\", \"boolean\")) {\n    $.setStateCompat(\"this\",
-        \"exp_checkJoinEligibility\", false);\n\n    const newPlayers = $.getPlayersNear($.getPosition(),
-        1)\n      .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));\n    \n   
-        if (newPlayers.length > 0) {\n      $.state.newPlayers = newPlayers;\n     
-        $.log(newPlayers[0].idfc);\n\n      const request = {\n        type: \"checkJoinEligibility\",\n       
-        token: token || \"\",\n        eID: expID || \"\",\n        idfcs: newPlayers.map(p
-        => p.idfc).join(\"|\")\n      };\n      $.callExternal(JSON.stringify(request),
-        \"joinEligibilityChecked\");\n    }\n  }\n})\n\n$.onExternalCallEnd((res,
-        meta, err) =>\n{\n  if (res == null) {\n    $.log(\"callExternal ERROR: \"
-        + err);\n    return;\n  }\n\n  if (meta === \"joinEligibilityChecked\") {\n   
-        const parsedRes = JSON.parse(res);\n    $.state.newPlayers.forEach(newPlayer
-        => {\n      if (parsedRes.ineligibleIdfcs.includes(newPlayer.idfc)) {\n       
+      value: "// Deprecated\r\n\r\n/*\r\n$.onStart(() => {\r\n  $.state.inRoomIdfcs
+        = [];\r\n  $.state.newPlayers = [];\r\n})\r\n\r\n$.onUpdate(() => {\r\n 
+        if ($.getStateCompat(\"this\", \"exp_checkJoinEligibility\", \"boolean\"))
+        {\r\n    $.setStateCompat(\"this\", \"exp_checkJoinEligibility\", false);\r\n\r\n   
+        const newPlayers = $.getPlayersNear($.getPosition(), 1)\r\n      .filter(p
+        => !$.state.inRoomIdfcs.includes(p.idfc));\r\n    \r\n    if (newPlayers.length
+        > 0) {\r\n      $.state.newPlayers = newPlayers;\r\n      $.log(newPlayers[0].idfc);\r\n\r\n     
+        const request = {\r\n        type: \"checkJoinEligibility\",\r\n        token:
+        token || \"\",\r\n        eID: expID || \"\",\r\n        idfcs: newPlayers.map(p
+        => p.idfc).join(\"|\")\r\n      };\r\n      $.callExternal(JSON.stringify(request),
+        \"joinEligibilityChecked\");\r\n    }\r\n  }\r\n})\r\n\r\n$.onExternalCallEnd((res,
+        meta, err) =>\r\n{\r\n  if (res == null) {\r\n    $.log(\"callExternal ERROR:
+        \" + err);\r\n    return;\r\n  }\r\n\r\n  if (meta === \"joinEligibilityChecked\")
+        {\r\n    const parsedRes = JSON.parse(res);\r\n    $.state.newPlayers.forEach(newPlayer
+        => {\r\n      if (parsedRes.ineligibleIdfcs.includes(newPlayer.idfc)) {\r\n       
         // TODO: Show message about that this player is not eligible to join this
-        experiment, and teleport the player back to LUIDA bar world.\n      } else
-        {\n        newPlayer.setMoveSpeedRate(1);\n        $.state.inRoomIdfcs =
-        [ ...$.state.inRoomIdfcs, newPlayer.idfc ];\n        // TODO: Instead of
-        enabling move, teleport the player from the checking area to the task area.\n     
-        }\n    });\n    \n    $.state.newPlayers = [];\n    $.log(\"Only users who
-        have not joined this experiment before are allowed to proceed to the experiment.\");\n 
-        }\n});\n*/\n"
+        experiment, and teleport the player back to LUIDA bar world.\r\n      } else
+        {\r\n        newPlayer.setMoveSpeedRate(1);\r\n        $.state.inRoomIdfcs
+        = [ ...$.state.inRoomIdfcs, newPlayer.idfc ];\r\n        // TODO: Instead
+        of enabling move, teleport the player from the checking area to the task
+        area.\r\n      }\r\n    });\r\n    \r\n    $.state.newPlayers = [];\r\n   
+        $.log(\"Only users who have not joined this experiment before are allowed
+        to proceed to the experiment.\");\r\n  }\r\n});\r\n*/\r\n"
       objectReference: {fileID: 0}
     - target: {fileID: 600138420, guid: bebbd8fabd7b322468f1d18e8b32081c, type: 3}
       propertyPath: id.value
@@ -3796,58 +4832,62 @@ PrefabInstance:
         type: 3}
       propertyPath: sourceCode
       value: "const trialsCountForEachUniqueCondition = 1;\nconst within_subjects_variables
-        = [\n];\nconst between_subjects_variables = [\n];\n\r\n$.onStart(() => {\n   
-        reset();\n});\n\n$.onUpdate(() => {\n    if ($.state.trialID !== $.getStateCompat(\"global\",
-        \"exp_trialID\", \"integer\")) {\n        $.state.trialID = $.getStateCompat(\"global\",
-        \"exp_trialID\", \"integer\");\n        if ($.state.trialID >= $.state.trialCount)
-        {\n            $.sendSignalCompat(\"this\", \"exp_resetTrials\");\n       
-        } else if ($.state.trialID <= -1) {\n            reset();\n        } else
-        {\n            let condition = { ...$.state.betweenSubjectsConditions };\n           
-        for (let i = 0; i < $.state.withinSubjectsVariableNames.length; i++) {\n               
-        const varName = $.state.withinSubjectsVariableNames[i];\n               
-        const varValue = within_subjects_variables[i].values[$.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]];\n               
-        condition[varName] = varValue;\n            }\n            $.groupState.currentCondition
-        = condition;\n    \n            // Check if this is the last trial (if true,
-        stop repeating trials when next state transition is triggered)\n           
+        = [\n    { name: \"xy\", values: [\"0\", \"1\", \"2\", \"3\", \"4\"], isRandom:
+        true },\n    { name: \"d\", values: [\"-50\", \"-25\", \"0\", \"25\", \"50\"],
+        isRandom: true },\n    { name: \"s\", values: [\"2\", \"8\", \"16\", \"48\"],
+        isRandom: true },\n];\nconst between_subjects_variables = [\n];\n\r\n$.onStart(()
+        => {\r\n    reset();\r\n});\r\n\r\n$.onUpdate(() => {\r\n    if ($.state.trialID
+        !== $.getStateCompat(\"global\", \"exp_trialID\", \"integer\")) {\r\n       
+        $.state.trialID = $.getStateCompat(\"global\", \"exp_trialID\", \"integer\");\r\n       
+        if ($.state.trialID >= $.state.trialCount) {\r\n            $.sendSignalCompat(\"this\",
+        \"exp_resetTrials\");\r\n        } else if ($.state.trialID <= -1) {\r\n           
+        reset();\r\n        } else {\r\n            let condition = { ...$.state.betweenSubjectsConditions
+        };\r\n            for (let i = 0; i < $.state.withinSubjectsVariableNames.length;
+        i++) {\r\n                const varName = $.state.withinSubjectsVariableNames[i];\r\n               
+        const varValue = within_subjects_variables[i].values[$.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]];\r\n               
+        condition[varName] = varValue;\r\n            }\r\n            $.groupState.currentCondition
+        = condition;\r\n    \r\n            // Check if this is the last trial (if
+        true, stop repeating trials when next state transition is triggered)\r\n           
         if ($.state.trialCount > 0 && !$.state.isLast && $.state.trialID >= $.state.trialCount
-        - 1) {\n                $.state.isLast = true;\n                $.sendSignalCompat(\"this\",
-        \"exp_readyToLeaveTrials\");\n            }\n        }\n    }\n});\n\n$.onReceive((messageType,
-        arg, sender) => {\n    switch (messageType) {\n        // case \"exp_questionnaire_answer\":\n       
-        //     $.state.betweenSubjectsConditions = GetBetweenSubjectsCondition(arg);\n       
-        //     break;\n        default:\n            break;\n    }\n});\n\nfunction
-        reset() {\n    $.state.trialID = -1;\n    $.state.betweenSubjectsConditions
-        = {};\n    $.state.withinSubjectsVariableNames = [];\n    $.state.withinSubjectsConditionIndicesByTrial
-        = [];\n    $.state.trialCount = 1;\n    $.groupState.currentCondition = {};\n   
-        initializeBetweenSubjectsConditionsRandomly();\n    try {\n        initializeWithinSubjectsConditions(within_subjects_variables,
-        trialsCountForEachUniqueCondition);\n    } catch (error) {\n        $.log(error);\n       
-        $.log(\"Within-subjects variables are not defined.\");\n    }\n}\n\nfunction
-        initializeBetweenSubjectsConditionsRandomly() {\n    let betweenSubjectsCondition
-        = {};\n    try {\n        between_subjects_variables.forEach(v => {\n           
-        betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random() * v.values.length)];\n       
-        });\n    } catch (e) {\n        $.log(\"Between-subjects variables are not
-        defined.\");\n    }\n    $.state.betweenSubjectsConditions = betweenSubjectsCondition;\n}\n\nfunction
-        initializeWithinSubjectsConditions(variables, repeatsPerCond = 1) {\n   
-        variables = [ ...variables.sort((a, b) => a.isRandom - b.isRandom) ];\n   
-        const varNames = variables.map(v => v.name);\n\n    let indicesPerVar = variables.map(v
-        => Array.from({ length: v.values.length }, (_, i) => i));\n    let condIndicesList
-        = indicesPerVar.reduce((acc, array) => {\n        return acc.flatMap(accItem
-        => array.map(arrayItem => [...accItem, arrayItem]));\n    }, [[]]).flatMap(condIndices
-        => Array.from({ length: repeatsPerCond }, () => condIndices));\n\n    let
-        shufflePartitionSize = 0;\n    for (let i = 0; i < variables.length; i++)
-        {\n        if (variables[i].isRandom) {\n            shufflePartitionSize
-        = shufflePartitionSize === 0 ? variables[i].values.length : shufflePartitionSize
-        * variables[i].values.length;\n        }\n    }\n    shufflePartitionSize
-        *= repeatsPerCond;\n\n    if (shufflePartitionSize > 0) {\n        const
-        result = [...condIndicesList]; // Copy the array to avoid mutating the original\n       
-        for (let i = 0; i < condIndicesList.length; i += shufflePartitionSize) {\n           
-        let partition = result.slice(i, i + shufflePartitionSize);\n            partition
-        = shuffleArray(partition);\n            result.splice(i, shufflePartitionSize,
-        ...partition);\n        }\n        condIndicesList = result;\n    }\n\n   
-        $.state.withinSubjectsVariableNames = varNames;\n    $.state.withinSubjectsConditionIndicesByTrial
-        = condIndicesList;\n    $.state.trialCount = condIndicesList.length;\n};\n\nfunction
-        shuffleArray(array) {\n    for (let i = array.length - 1; i > 0; i--) {\n       
-        const j = Math.floor(Math.random() * (i + 1));\n        [array[i], array[j]]
-        = [array[j], array[i]];\n    }\n    return array;\n}\n"
+        - 1) {\r\n                $.state.isLast = true;\r\n                $.sendSignalCompat(\"this\",
+        \"exp_readyToLeaveTrials\");\r\n            }\r\n        }\r\n    }\r\n});\r\n\r\n$.onReceive((messageType,
+        arg, sender) => {\r\n    switch (messageType) {\r\n        // case \"exp_questionnaire_answer\":\r\n       
+        //     $.state.betweenSubjectsConditions = GetBetweenSubjectsCondition(arg);\r\n       
+        //     break;\r\n        default:\r\n            break;\r\n    }\r\n});\r\n\r\nfunction
+        reset() {\r\n    $.state.trialID = -1;\r\n    $.state.betweenSubjectsConditions
+        = {};\r\n    $.state.withinSubjectsVariableNames = [];\r\n    $.state.withinSubjectsConditionIndicesByTrial
+        = [];\r\n    $.state.trialCount = 1;\r\n    $.groupState.currentCondition
+        = {};\r\n    initializeBetweenSubjectsConditionsRandomly();\r\n    try {\r\n       
+        initializeWithinSubjectsConditions(within_subjects_variables, trialsCountForEachUniqueCondition);\r\n   
+        } catch (error) {\r\n        $.log(error);\r\n        $.log(\"Within-subjects
+        variables are not defined.\");\r\n    }\r\n}\r\n\r\nfunction initializeBetweenSubjectsConditionsRandomly()
+        {\r\n    let betweenSubjectsCondition = {};\r\n    try {\r\n        between_subjects_variables.forEach(v
+        => {\r\n            betweenSubjectsCondition[v.name] = v.values[Math.floor(Math.random()
+        * v.values.length)];\r\n        });\r\n    } catch (e) {\r\n        $.log(\"Between-subjects
+        variables are not defined.\");\r\n    }\r\n    $.state.betweenSubjectsConditions
+        = betweenSubjectsCondition;\r\n}\r\n\r\nfunction initializeWithinSubjectsConditions(variables,
+        repeatsPerCond = 1) {\r\n    variables = [ ...variables.sort((a, b) => a.isRandom
+        - b.isRandom) ];\r\n    const varNames = variables.map(v => v.name);\r\n\r\n   
+        let indicesPerVar = variables.map(v => Array.from({ length: v.values.length
+        }, (_, i) => i));\r\n    let condIndicesList = indicesPerVar.reduce((acc,
+        array) => {\r\n        return acc.flatMap(accItem => array.map(arrayItem
+        => [...accItem, arrayItem]));\r\n    }, [[]]).flatMap(condIndices => Array.from({
+        length: repeatsPerCond }, () => condIndices));\r\n\r\n    let shufflePartitionSize
+        = 0;\r\n    for (let i = 0; i < variables.length; i++) {\r\n        if (variables[i].isRandom)
+        {\r\n            shufflePartitionSize = shufflePartitionSize === 0 ? variables[i].values.length
+        : shufflePartitionSize * variables[i].values.length;\r\n        }\r\n   
+        }\r\n    shufflePartitionSize *= repeatsPerCond;\r\n\r\n    if (shufflePartitionSize
+        > 0) {\r\n        const result = [...condIndicesList]; // Copy the array
+        to avoid mutating the original\r\n        for (let i = 0; i < condIndicesList.length;
+        i += shufflePartitionSize) {\r\n            let partition = result.slice(i,
+        i + shufflePartitionSize);\r\n            partition = shuffleArray(partition);\r\n           
+        result.splice(i, shufflePartitionSize, ...partition);\r\n        }\r\n       
+        condIndicesList = result;\r\n    }\r\n\r\n    $.state.withinSubjectsVariableNames
+        = varNames;\r\n    $.state.withinSubjectsConditionIndicesByTrial = condIndicesList;\r\n   
+        $.state.trialCount = condIndicesList.length;\r\n};\r\n\r\nfunction shuffleArray(array)
+        {\r\n    for (let i = array.length - 1; i > 0; i--) {\r\n        const j
+        = Math.floor(Math.random() * (i + 1));\r\n        [array[i], array[j]] =
+        [array[j], array[i]];\r\n    }\r\n    return array;\r\n}\r\n"
       objectReference: {fileID: 0}
     - target: {fileID: 2966719835339860264, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
@@ -3857,24 +4897,32 @@ PrefabInstance:
     - target: {fileID: 2966719835339860266, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\n$.onStart(()
-        => {\n    $.state.customData = {};\n})\n\n$.onUpdate(() => {\n    if ($.getStateCompat(\"this\",
-        \"exp_recordCustomData\", \"boolean\")) {\n        $.setStateCompat(\"this\",
-        \"exp_recordCustomData\", false);\n        recordData();\n    }\n    if ($.getStateCompat(\"this\",
-        \"exp_uploadCustomData\", \"boolean\")) {\n        $.setStateCompat(\"this\",
-        \"exp_uploadCustomData\", false);\n        uploadData();\n    }\n})\n\nfunction
-        recordData () {\n    $.state.customData = calculateData();\n}\n\nfunction
-        uploadData () {\n    $.log(\"Upload custom data: \" + JSON.stringify($.state.customData));\n   
-        let request = {\n        type: \"uploadCustomData\",\n        token: token
-        || \"\",\n        dataByFileName: JSON.stringify($.state.customData),\n       
-        eID: expID || \"\",\n        pID: $.getPlayersNear($.getPosition().clone(),
-        Infinity)[0].idfc || \"\" // TODO: retrieve idfc through cluster Player Script\n   
-        };\n    $.callExternal(JSON.stringify(request), \"customDataUploaded\");\n}\n\n$.onExternalCallEnd((res,
-        meta, err) =>\n{\n    if (res == null) {\n        $.log(\"callExternal ERROR:
-        \" + err);\n        return;\n    }\n\n    if (meta === \"customDataUploaded\")
-        {\n        $.log(\"Custom recorded data uploaded\");\n    }\n});\r\nfunction
-        calculateData () {\n    let returnData = $.state.customData;\n    const CONDITION
-        = $.groupState.currentCondition;\n    return returnData;\n}"
+      value: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\n\r\n$.onStart(()
+        => {\r\n    $.state.customData = {};\r\n})\r\n\r\n$.onUpdate(() => {\r\n   
+        if ($.getStateCompat(\"this\", \"exp_recordCustomData\", \"boolean\")) {\r\n       
+        $.setStateCompat(\"this\", \"exp_recordCustomData\", false);\r\n        recordData();\r\n   
+        }\r\n    if ($.getStateCompat(\"this\", \"exp_uploadCustomData\", \"boolean\"))
+        {\r\n        $.setStateCompat(\"this\", \"exp_uploadCustomData\", false);\r\n       
+        uploadData();\r\n    }\r\n})\r\n\r\nfunction recordData () {\r\n    $.state.customData
+        = calculateData();\r\n}\r\n\r\nfunction uploadData () {\r\n    $.log(\"Upload
+        custom data: \" + JSON.stringify($.state.customData));\r\n    let request
+        = {\r\n        type: \"uploadCustomData\",\r\n        token: token || \"\",\r\n       
+        dataByFileName: JSON.stringify($.state.customData),\r\n        eID: expID
+        || \"\",\r\n        pID: $.getPlayersNear($.getPosition().clone(), Infinity)[0].idfc
+        || \"\" // TODO: retrieve idfc through cluster Player Script\r\n    };\r\n   
+        $.callExternal(JSON.stringify(request), \"customDataUploaded\");\r\n}\r\n\r\n$.onExternalCallEnd((res,
+        meta, err) =>\r\n{\r\n    if (res == null) {\r\n        $.log(\"callExternal
+        ERROR: \" + err);\r\n        return;\r\n    }\r\n\r\n    if (meta === \"customDataUploaded\")
+        {\r\n        $.log(\"Custom recorded data uploaded\");\r\n    }\r\n});\r\nfunction
+        calculateData () {\n  let returnData = $.state.customData;\n  const CONDITION
+        = $.groupState.currentCondition;\n\n  function saveData_taskTime() {\nlet
+        data =  {\n  t: $.getStateCompat(\"owner\", \"taskTime\", \"float\"),\n 
+        x: $.getStateCompat(\"owner\", \"x\", \"integer\"),\n  y: $.getStateCompat(\"owner\",
+        \"y\", \"integer\"),\n  z: CONDITION[\"d\"],\n  s: CONDITION[\"s\"]\n};\n$.log(JSON.stringify(data));\nreturn
+        data;\n    return {};\n  }\n  const newRecord_taskTime = saveData_taskTime();\n 
+        if (\"taskTime\" in returnData && Array.isArray(returnData[\"taskTime\"]))
+        {\n    returnData[\"taskTime\"].push(newRecord_taskTime);\n  } else {\n   
+        returnData[\"taskTime\"] = [newRecord_taskTime];\n  }\n\n  return returnData;\n}\n"
       objectReference: {fileID: 0}
     - target: {fileID: 2966719835339860267, guid: c429a845517c96a419988cd638c846f1,
         type: 3}

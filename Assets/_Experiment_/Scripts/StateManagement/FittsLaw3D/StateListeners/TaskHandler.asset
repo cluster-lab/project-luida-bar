@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TaskHandler
   m_EditorClassIdentifier: 
   stateListeners:
-  - stateID: 5
+  - stateID: 9
     onStateStartedActions:
     - predefinedAction:
         actionType: 
@@ -41,4 +41,16 @@ MonoBehaviour:
       customAction: 
       showCustomActionFoldout: 0
     onStateExitedFoldout: 1
+  - stateID: 11
+    onStateStartedActions:
+    - predefinedAction:
+        actionType: Upload recorded data
+        codeSnippet: $.sendSignalCompat('this', 'exp_uploadCustomData');
+      customAction: 
+      showCustomActionFoldout: 0
+    onStateStartedFoldout: 1
+    duringStateActions: []
+    duringStateFoldout: 0
+    onStateExitedActions: []
+    onStateExitedFoldout: 0
   otherImplementation: 

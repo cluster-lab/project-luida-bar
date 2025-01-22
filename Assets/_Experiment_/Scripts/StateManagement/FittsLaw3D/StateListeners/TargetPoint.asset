@@ -25,7 +25,7 @@ MonoBehaviour:
     duringStateFoldout: 0
     onStateExitedActions: []
     onStateExitedFoldout: 0
-  - stateID: 2
+  - stateID: 4
     onStateStartedActions:
     - predefinedAction:
         actionType: 
@@ -36,7 +36,8 @@ MonoBehaviour:
         .clone().add(new Vector3(0, 0, 0.5));\n$.setPosition(originPos.add(new Vector3(param.x
         / 300, param.y / 300, param.z / 300)));\n\n// \u30BF\u30FC\u30B2\u30C3\u30C8\u306E\u30B5\u30A4\u30BA\nlet
         s = param.s / 300;\n$.getUnityComponent(\"Transform\").unityProp.localScale
-        = new Vector3(s, s, s);"
+        = new Vector3(s, s, s);\n\n// \u8272\u3092\u534A\u900F\u660E\u306B\n$.material(\"mat\").setBaseColor(1,
+        0, 0, 0.7);"
       showCustomActionFoldout: 1
     - predefinedAction:
         actionType: Show item
@@ -44,8 +45,16 @@ MonoBehaviour:
       customAction: 
       showCustomActionFoldout: 0
     onStateStartedFoldout: 1
-    duringStateActions: []
-    duringStateFoldout: 0
+    duringStateActions:
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: "// \u30DB\u30D0\u30FC\u6642\u306F\u4E0D\u900F\u660E\u306B\u3057\u3001\u975E\u30DB\u30D0\u30FC\u6642\u306F\u534A\u900F\u660E\u306B\u3059\u308B\nif
+        ($.state.isHovered !== $.getStateCompat(\"this\", \"isHovered\", \"boolean\"))
+        {\n  $.material(\"mat\").setBaseColor(1, 0, 0, $.state.isHovered ? 0.7 :
+        1);\n  $.state.isHovered = !$.state.isHovered;\n  $.log($.state.isHovered);\n}"
+      showCustomActionFoldout: 1
+    duringStateFoldout: 1
     onStateExitedActions:
     - predefinedAction:
         actionType: Hide item
@@ -58,7 +67,7 @@ MonoBehaviour:
       customAction: $.state.practiceID = $.state.practiceID + 1;
       showCustomActionFoldout: 1
     onStateExitedFoldout: 1
-  - stateID: 5
+  - stateID: 9
     onStateStartedActions:
     - predefinedAction:
         actionType: 
@@ -73,7 +82,9 @@ MonoBehaviour:
         y, z)));\n\n// \u30BF\u30FC\u30B2\u30C3\u30C8\u306E\u30B5\u30A4\u30BA\u3092\u5B9F\u9A13\u6761\u4EF6\u306B\u5408\u308F\u305B\u308B\nlet
         s = parseInt(CONDITION[\"s\"]) / 300;\n$.getUnityComponent(\"Transform\").unityProp.localScale
         = new Vector3(s, s, s);\n\n// x\u3068y\u306E\u5024\u3092\u4FDD\u5B58\u3059\u308B\n$.setStateCompat(\"owner\",
-        \"x\", xyCoord.x);\n$.setStateCompat(\"owner\", \"y\", xyCoord.y);"
+        \"x\", xyCoord.x);\n$.setStateCompat(\"owner\", \"y\", xyCoord.y);\n\n//
+        \u8272\u3092\u534A\u900F\u660E\u306B\n$.material(\"mat\").setBaseColor(1,
+        0, 0, 0.7);"
       showCustomActionFoldout: 1
     - predefinedAction:
         actionType: Show item
@@ -81,8 +92,16 @@ MonoBehaviour:
       customAction: 
       showCustomActionFoldout: 0
     onStateStartedFoldout: 1
-    duringStateActions: []
-    duringStateFoldout: 0
+    duringStateActions:
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: "// \u30DB\u30D0\u30FC\u6642\u306F\u4E0D\u900F\u660E\u306B\u3057\u3001\u975E\u30DB\u30D0\u30FC\u6642\u306F\u534A\u900F\u660E\u306B\u3059\u308B\nif
+        ($.state.isHovered !== $.getStateCompat(\"this\", \"isHovered\", \"boolean\"))
+        {\n  $.material(\"mat\").setBaseColor(1, 0, 0, $.state.isHovered ? 0.7 :
+        1);\n  $.state.isHovered = !$.state.isHovered;\n}"
+      showCustomActionFoldout: 1
+    duringStateFoldout: 1
     onStateExitedActions:
     - predefinedAction:
         actionType: Hide item

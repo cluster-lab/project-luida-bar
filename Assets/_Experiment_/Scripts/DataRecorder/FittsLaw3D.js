@@ -1,5 +1,25 @@
 function calculateData () {
-    let returnData = $.state.customData;
-    const CONDITION = $.groupState.currentCondition;
-    return returnData;
+  let returnData = $.state.customData;
+  const CONDITION = $.groupState.currentCondition;
+
+  function saveData_taskTime() {
+let data =  {
+  t: $.getStateCompat("owner", "taskTime", "float"),
+  x: $.getStateCompat("owner", "x", "integer"),
+  y: $.getStateCompat("owner", "y", "integer"),
+  z: CONDITION["d"],
+  s: CONDITION["s"]
+};
+$.log(JSON.stringify(data));
+return data;
+    return {};
+  }
+  const newRecord_taskTime = saveData_taskTime();
+  if ("taskTime" in returnData && Array.isArray(returnData["taskTime"])) {
+    returnData["taskTime"].push(newRecord_taskTime);
+  } else {
+    returnData["taskTime"] = [newRecord_taskTime];
+  }
+
+  return returnData;
 }

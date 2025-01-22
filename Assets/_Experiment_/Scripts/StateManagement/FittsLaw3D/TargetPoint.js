@@ -5,7 +5,7 @@ function OnStateEnter() {
   if (STATE_ID === 0) {
     $.setStateCompat('this', 'exp_showItem', false);
   }
-  if (STATE_ID === 2) {
+  if (STATE_ID === 4) {
     if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];
 if (!$.state.practiceID) $.state.practiceID = 0;
 
@@ -18,9 +18,12 @@ $.setPosition(originPos.add(new Vector3(param.x / 300, param.y / 300, param.z / 
 // ターゲットのサイズ
 let s = param.s / 300;
 $.getUnityComponent("Transform").unityProp.localScale = new Vector3(s, s, s);
+
+// 色を半透明に
+$.material("mat").setBaseColor(1, 0, 0, 0.7);
     $.setStateCompat('this', 'exp_showItem', true);
   }
-  if (STATE_ID === 5) {
+  if (STATE_ID === 9) {
     if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];
 
 // xy距離の実験条件からxy座標をランダムに決める
@@ -41,6 +44,9 @@ $.getUnityComponent("Transform").unityProp.localScale = new Vector3(s, s, s);
 // xとyの値を保存する
 $.setStateCompat("owner", "x", xyCoord.x);
 $.setStateCompat("owner", "y", xyCoord.y);
+
+// 色を半透明に
+$.material("mat").setBaseColor(1, 0, 0, 0.7);
     $.setStateCompat('this', 'exp_showItem', true);
   }
 }
@@ -50,6 +56,21 @@ function DuringState(deltaTime) {
   const STATE_ID = $.state.state_id;
   const CONDITION = $.groupState.currentCondition;
 
+  if (STATE_ID === 4) {
+    // ホバー時は不透明にし、非ホバー時は半透明にする
+if ($.state.isHovered !== $.getStateCompat("this", "isHovered", "boolean")) {
+  $.material("mat").setBaseColor(1, 0, 0, $.state.isHovered ? 0.7 : 1);
+  $.state.isHovered = !$.state.isHovered;
+  $.log($.state.isHovered);
+}
+  }
+  if (STATE_ID === 9) {
+    // ホバー時は不透明にし、非ホバー時は半透明にする
+if ($.state.isHovered !== $.getStateCompat("this", "isHovered", "boolean")) {
+  $.material("mat").setBaseColor(1, 0, 0, $.state.isHovered ? 0.7 : 1);
+  $.state.isHovered = !$.state.isHovered;
+}
+  }
 }
 
 
@@ -57,11 +78,11 @@ function OnStateExit() {
   const STATE_ID = $.state.state_id;
   const CONDITION = $.groupState.currentCondition;
 
-  if (STATE_ID === 2) {
+  if (STATE_ID === 4) {
     $.setStateCompat('this', 'exp_showItem', false);
     $.state.practiceID = $.state.practiceID + 1;
   }
-  if (STATE_ID === 5) {
+  if (STATE_ID === 9) {
     $.setStateCompat('this', 'exp_showItem', false);
   }
 }

@@ -25,25 +25,13 @@ MonoBehaviour:
     duringStateFoldout: 0
     onStateExitedActions: []
     onStateExitedFoldout: 0
-  - stateID: 1
-    onStateStartedActions: []
-    onStateStartedFoldout: 0
-    duringStateActions: []
-    duringStateFoldout: 0
-    onStateExitedActions:
-    - predefinedAction:
-        actionType: Hide item
-        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
-      customAction: 
-      showCustomActionFoldout: 0
-    onStateExitedFoldout: 1
-  - stateID: 4
+  - stateID: 2
     onStateStartedActions:
     - predefinedAction:
-        actionType: Show item
-        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
-      customAction: 
-      showCustomActionFoldout: 0
+        actionType: 
+        codeSnippet: 
+      customAction: "$.subNode(\"Text\").setText(\"\u7DF4\u7FD2\");"
+      showCustomActionFoldout: 1
     onStateStartedFoldout: 1
     duringStateActions: []
     duringStateFoldout: 0
@@ -61,6 +49,33 @@ MonoBehaviour:
         codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
       customAction: 
       showCustomActionFoldout: 0
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: "$.subNode(\"Text\").setText(\"\u958B\u59CB\");"
+      showCustomActionFoldout: 1
+    onStateStartedFoldout: 1
+    duringStateActions: []
+    duringStateFoldout: 0
+    onStateExitedActions:
+    - predefinedAction:
+        actionType: Hide item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
+      customAction: 
+      showCustomActionFoldout: 0
+    onStateExitedFoldout: 1
+  - stateID: 11
+    onStateStartedActions:
+    - predefinedAction:
+        actionType: Show item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
+      customAction: 
+      showCustomActionFoldout: 0
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: "$.subNode(\"Text\").setText(\"\u6B21\u3078\");"
+      showCustomActionFoldout: 1
     onStateStartedFoldout: 1
     duringStateActions: []
     duringStateFoldout: 0

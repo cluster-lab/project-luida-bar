@@ -25,7 +25,7 @@ MonoBehaviour:
     duringStateFoldout: 0
     onStateExitedActions: []
     onStateExitedFoldout: 0
-  - stateID: 2
+  - stateID: 4
     onStateStartedActions:
     - predefinedAction:
         actionType: 
@@ -33,7 +33,8 @@ MonoBehaviour:
       customAction: "if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(),
         Infinity)[0];\n\n// \u539F\u70B9\uFF08\u982D\u306E\u6B63\u9762\u304B\u308950cm\uFF09\u307E\u3067\u52D5\u304B\u3059\nlet
         originPos = $.state.player.getHumanoidBonePosition(HumanoidBone.Head)\n 
-        .clone().add(new Vector3(0, 0, 0.5));\n$.setPosition(originPos);"
+        .clone().add(new Vector3(0, 0, 0.5));\n$.setPosition(originPos);\n\n// \u8272\u3092\u534A\u900F\u660E\u306B\n$.material(\"mat\").setBaseColor(1,
+        1, 0, 0.7);"
       showCustomActionFoldout: 1
     - predefinedAction:
         actionType: Show item
@@ -41,8 +42,16 @@ MonoBehaviour:
       customAction: 
       showCustomActionFoldout: 0
     onStateStartedFoldout: 1
-    duringStateActions: []
-    duringStateFoldout: 0
+    duringStateActions:
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: "// \u30DB\u30D0\u30FC\u6642\u306F\u4E0D\u900F\u660E\u306B\u3057\u3001\u975E\u30DB\u30D0\u30FC\u6642\u306F\u534A\u900F\u660E\u306B\u3059\u308B\nif
+        ($.state.isHovered !== $.getStateCompat(\"this\", \"isHovered\", \"boolean\"))
+        {\n  $.material(\"mat\").setBaseColor(1, 1, 0, $.state.isHovered ? 0.7 :
+        1);\n  $.state.isHovered = !$.state.isHovered;\n}"
+      showCustomActionFoldout: 1
+    duringStateFoldout: 1
     onStateExitedActions:
     - predefinedAction:
         actionType: Hide item
@@ -50,7 +59,7 @@ MonoBehaviour:
       customAction: 
       showCustomActionFoldout: 0
     onStateExitedFoldout: 1
-  - stateID: 5
+  - stateID: 9
     onStateStartedActions:
     - predefinedAction:
         actionType: 
@@ -58,7 +67,8 @@ MonoBehaviour:
       customAction: "if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(),
         Infinity)[0];\n\n// \u539F\u70B9\uFF08\u982D\u306E\u6B63\u9762\u304B\u308950cm\uFF09\u307E\u3067\u52D5\u304B\u3059\nlet
         originPos = $.state.player.getHumanoidBonePosition(HumanoidBone.Head)\n 
-        .clone().add(new Vector3(0, 0, 0.5));\n$.setPosition(originPos);"
+        .clone().add(new Vector3(0, 0, 0.5));\n$.setPosition(originPos);\n\n// \u8272\u3092\u534A\u900F\u660E\u306B\n$.material(\"mat\").setBaseColor(1,
+        1, 0, 0.7);"
       showCustomActionFoldout: 1
     - predefinedAction:
         actionType: Show item
@@ -66,8 +76,16 @@ MonoBehaviour:
       customAction: 
       showCustomActionFoldout: 0
     onStateStartedFoldout: 1
-    duringStateActions: []
-    duringStateFoldout: 0
+    duringStateActions:
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: "// \u30DB\u30D0\u30FC\u6642\u306F\u4E0D\u900F\u660E\u306B\u3057\u3001\u975E\u30DB\u30D0\u30FC\u6642\u306F\u534A\u900F\u660E\u306B\u3059\u308B\nif
+        ($.state.isHovered !== $.getStateCompat(\"this\", \"isHovered\", \"boolean\"))
+        {\n  $.material(\"mat\").setBaseColor(1, 1, 0, $.state.isHovered ? 0.7 :
+        1);\n  $.state.isHovered = !$.state.isHovered;\n}"
+      showCustomActionFoldout: 1
+    duringStateFoldout: 1
     onStateExitedActions:
     - predefinedAction:
         actionType: Hide item
