@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: acb8c4c8a0a4dc6418e2f4d59454f5e3, type: 3}
-  m_Name: WorldGateToLuidaBar
+  m_Name: WorldGate_D
   m_EditorClassIdentifier: 
   stateListeners:
   - stateID: 0
@@ -28,10 +28,10 @@ MonoBehaviour:
   - stateID: 6
     onStateStartedActions:
     - predefinedAction:
-        actionType: Show item
-        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
-      customAction: 
-      showCustomActionFoldout: 0
+        actionType: 
+        codeSnippet: 
+      customAction: if (CONDITION["avatar"] === "D") ShowItem();
+      showCustomActionFoldout: 1
     onStateStartedFoldout: 1
     duringStateActions: []
     duringStateFoldout: 0

@@ -6,7 +6,7 @@ function OnStateEnter() {
     $.setStateCompat('this', 'exp_showItem', false);
   }
   if (STATE_ID === 6) {
-    $.setStateCompat('this', 'exp_showItem', true);
+    if (CONDITION["avatar"] === "D") ShowItem();
   }
 }
 

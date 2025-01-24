@@ -1,0 +1,28 @@
+function OnStateEnter() {
+  const STATE_ID = $.state.state_id;
+  const CONDITION = $.groupState.currentCondition;
+
+  if (STATE_ID === 0) {
+    $.setStateCompat('this', 'exp_showItem', false);
+  }
+  if (STATE_ID === 6) {
+    if (CONDITION["avatar"] === "L") ShowItem();
+  }
+}
+
+
+function DuringState(deltaTime) {
+  const STATE_ID = $.state.state_id;
+  const CONDITION = $.groupState.currentCondition;
+
+}
+
+
+function OnStateExit() {
+  const STATE_ID = $.state.state_id;
+  const CONDITION = $.groupState.currentCondition;
+
+}
+
+
+
