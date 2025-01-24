@@ -60,10 +60,12 @@ function initQuestion() {
     $.state.answerOptionUIs = [];
     $.state.answerOptionLocalPositions = [];
     const q = $.state.questions[$.state.qID];
-    $.subNode("Title").setText(q.title);
-    $.subNode("Description").setText(q.description);
-    $.state.questionTypeID = q.questionTypeID;
-    $.state.answerOptions = q.answerOptions;
+    $.subNode("Title").setText(q.t);
+    $.subNode("Description").setText(q.d);
+    $.state.questionTypeID = q.i;
+    $.state.answerOptions = Array.isArray(q.a)
+        ? q.a
+        : (typeof q.a === "string" ? q.a.split(",") : []) ;
     spawnAnswerOptionUI();
 }
 
@@ -171,7 +173,7 @@ function handleFormAnswer(arg) {
 
 function saveAnswer() {
     if (!$.state.questions[$.state.qID]) return;
-    if ($.state.questions[$.state.qID].isRequired && (!$.state.tmpAnswer && $.state.tmpAnswer !== false)) return;
+    if ($.state.questions[$.state.qID].r && (!$.state.tmpAnswer && $.state.tmpAnswer !== false)) return;
     $.state.answers = { ...$.state.answers, [$.state.qID]: $.state.tmpAnswer };
     toNext();
 }
