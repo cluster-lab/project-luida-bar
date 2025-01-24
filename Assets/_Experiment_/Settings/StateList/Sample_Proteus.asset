@@ -21,11 +21,18 @@ MonoBehaviour:
     RepeatDestStateName: Start
     RepeatCount: 1
   - StateName: Acclimatization
-    DestStateName: Instruction
+    DestStateName: Questionnaire
     HasExitTime: 1
-    ExitTime: 3
+    ExitTime: 15
     IsRepeated: 0
     RepeatDestStateName: Start
+    RepeatCount: 1
+  - StateName: Questionnaire
+    DestStateName: Instruction
+    HasExitTime: 1
+    ExitTime: 0
+    IsRepeated: 0
+    RepeatDestStateName: Practice - Task
     RepeatCount: 1
   - StateName: Instruction
     DestStateName: Practice - Task
@@ -37,14 +44,14 @@ MonoBehaviour:
   - StateName: Practice - Task
     DestStateName: Practice - Rest
     HasExitTime: 1
-    ExitTime: 10
+    ExitTime: 240
     IsRepeated: 0
     RepeatDestStateName: 
     RepeatCount: 1
   - StateName: Practice - Rest
     DestStateName: MoveToAvatarWorld
     HasExitTime: 1
-    ExitTime: 3
+    ExitTime: 5
     IsRepeated: 0
     RepeatDestStateName: Practice - Task
     RepeatCount: 1

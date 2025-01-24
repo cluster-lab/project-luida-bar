@@ -5,7 +5,7 @@ function OnStateEnter() {
   if (STATE_ID === 0) {
     $.setStateCompat('this', 'exp_showItem', true);
   }
-  if (STATE_ID === 2) {
+  if (STATE_ID === 3) {
     $.setStateCompat('this', 'exp_showItem', true);
   }
 }
@@ -25,7 +25,7 @@ function OnStateExit() {
   if (STATE_ID === 0) {
     $.setStateCompat('this', 'exp_showItem', false);
   }
-  if (STATE_ID === 2) {
+  if (STATE_ID === 3) {
     $.setStateCompat('this', 'exp_showItem', false);
   }
 }
