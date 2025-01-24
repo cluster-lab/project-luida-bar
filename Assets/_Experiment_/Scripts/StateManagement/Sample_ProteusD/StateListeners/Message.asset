@@ -23,11 +23,7 @@ MonoBehaviour:
     - predefinedAction:
         actionType: 
         codeSnippet: 
-      customAction: '$.subNode("Text").setText(`
-
-        Start
-
-        `);'
+      customAction: "$.subNode(\"Text\").setText(`\u3053\u308C\u3088\u308A30\u79D2\u9593\u3001\u93E1\u3092\u898B\u306A\u304C\u3089\u3001\n\u6E96\u5099\u4F53\u64CD\u306A\u3069\u3092\u3057\u3066\u4F53\u3092\u52D5\u304B\u3057\u307E\u3057\u3087\u3046\u3002\n\u300C\u958B\u59CB\u300D\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u59CB\u3081\u3066\u304F\u3060\u3055\u3044\u3002\n`);"
       showCustomActionFoldout: 1
     onStateStartedFoldout: 1
     duringStateActions: []
@@ -49,11 +45,7 @@ MonoBehaviour:
     - predefinedAction:
         actionType: 
         codeSnippet: 
-      customAction: '$.subNode("Text").setText(`
-
-        Instruction
-
-        `);'
+      customAction: "$.subNode(\"Text\").setText(`\u3053\u308C\u3088\u308A4\u5206\u9593\u3001\n\u6642\u3005\u93E1\u3084\u3054\u81EA\u8EAB\u306E\u8155\u3092\u898B\u306A\u304C\u3089\u3001\n\u5148\u7A0B\u306E\u52D5\u753B\u306E\u4E2D\u306E\u6F14\u594F\u8005\u3068\u540C\u69D8\u306E\u6C17\u5206\u3067\n\u30B8\u30E3\u30F3\u30D9\u30C9\u30E9\u30E0\u306E\u6F14\u594F\u3092\u884C\u3063\u3066\u3044\u305F\u3060\u304D\u307E\u3059\u3002\n\u305D\u308C\u3067\u306F\u300C\u958B\u59CB\u300D\u30DC\u30BF\u30F3\u3092\u30AF\u30EA\u30C3\u30AF\u3057\u3066\n\u6F14\u594F\u3092\u59CB\u3081\u3066\u304F\u3060\u3055\u3044\u3002`);"
       showCustomActionFoldout: 1
     onStateStartedFoldout: 1
     duringStateActions: []
@@ -65,7 +57,7 @@ MonoBehaviour:
       customAction: 
       showCustomActionFoldout: 0
     onStateExitedFoldout: 1
-  - stateID: 4
+  - stateID: 7
     onStateStartedActions:
     - predefinedAction:
         actionType: Show item
@@ -75,27 +67,30 @@ MonoBehaviour:
     - predefinedAction:
         actionType: 
         codeSnippet: 
-      customAction: '$.subNode("Text").setText(`
-
-        Rest
-
-        `);'
+      customAction: "$.subNode(\"Text\").setText(`\u304A\u75B2\u308C\u69D8\u3067\u3059\u3002\u3044\u3044\u6F14\u594F\u3067\u3057\u305F\uFF01\n\u6700\u5F8C\u306B\u30A2\u30F3\u30B1\u30FC\u30C8\u306B\u3054\u8A18\u5165\u304F\u3060\u3055\u3044\u3002`);"
       showCustomActionFoldout: 1
     onStateStartedFoldout: 1
     duringStateActions: []
     duringStateFoldout: 0
-    onStateExitedActions: []
-    onStateExitedFoldout: 0
-  - stateID: 5
+    onStateExitedActions:
+    - predefinedAction:
+        actionType: Hide item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
+      customAction: 
+      showCustomActionFoldout: 0
+    onStateExitedFoldout: 1
+  - stateID: 9
     onStateStartedActions:
+    - predefinedAction:
+        actionType: Show item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
+      customAction: 
+      showCustomActionFoldout: 0
     - predefinedAction:
         actionType: 
         codeSnippet: 
-      customAction: '$.subNode("Text").setText(`
-
-        Next world
-
-        `);'
+      customAction: "$.subNode(\"Text\").setText(`\u5B9F\u9A13\u306F\u4EE5\u4E0A\u306B\u306A\u308A\u307E\u3059\u3002\n\u3054\u53C2\u52A0\u3044\u305F\u3060\u304D\u3042\u308A\u304C\u3068\u3046\u3054\u3056\u3044\u307E\u3057\u305F\uFF01\n\u8B1D\u793C\u306F\u5F8C\u65E5\u306B\u4ED8\u4E0E\u3057\u307E\u3059\u3002\n\u76EE\u306E\u524D\u306B\u3042\u308B\u30DD\u30FC\u30BF\u30EB\u306B\u6F5C\u3063\u3066\n\u9000\u5BA4\u3057\u3066\u304F\u3060\u3055\u3044\u3002`);\n$.setStateCompat(\"owner\",
+        \"exp_participantMoveSpeed\", 1);"
       showCustomActionFoldout: 1
     onStateStartedFoldout: 1
     duringStateActions: []

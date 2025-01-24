@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: acb8c4c8a0a4dc6418e2f4d59454f5e3, type: 3}
-  m_Name: MirrorWrapper
+  m_Name: WorldGateToLuidaBar
   m_EditorClassIdentifier: 
   stateListeners:
   - stateID: 0
@@ -25,7 +25,7 @@ MonoBehaviour:
     duringStateFoldout: 0
     onStateExitedActions: []
     onStateExitedFoldout: 0
-  - stateID: 4
+  - stateID: 9
     onStateStartedActions:
     - predefinedAction:
         actionType: Show item
@@ -35,28 +35,6 @@ MonoBehaviour:
     onStateStartedFoldout: 1
     duringStateActions: []
     duringStateFoldout: 0
-    onStateExitedActions:
-    - predefinedAction:
-        actionType: Hide item
-        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
-      customAction: 
-      showCustomActionFoldout: 0
-    onStateExitedFoldout: 1
-  - stateID: 1
-    onStateStartedActions:
-    - predefinedAction:
-        actionType: Show item
-        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
-      customAction: 
-      showCustomActionFoldout: 0
-    onStateStartedFoldout: 1
-    duringStateActions: []
-    duringStateFoldout: 0
-    onStateExitedActions:
-    - predefinedAction:
-        actionType: Hide item
-        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
-      customAction: 
-      showCustomActionFoldout: 0
-    onStateExitedFoldout: 1
+    onStateExitedActions: []
+    onStateExitedFoldout: 0
   otherImplementation: 

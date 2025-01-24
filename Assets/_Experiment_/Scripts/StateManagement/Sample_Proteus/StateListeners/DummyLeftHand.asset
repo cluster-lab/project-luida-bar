@@ -42,6 +42,11 @@ MonoBehaviour:
         // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u5DE6\u624B\u306E\u56DE\u8EE2\u3068\u540C\u671F\u3055\u305B\u308B\n$.setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.LeftHand).clone());"
       showCustomActionFoldout: 1
     duringStateFoldout: 1
-    onStateExitedActions: []
-    onStateExitedFoldout: 0
+    onStateExitedActions:
+    - predefinedAction:
+        actionType: Hide item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
+      customAction: 
+      showCustomActionFoldout: 0
+    onStateExitedFoldout: 1
   otherImplementation: 

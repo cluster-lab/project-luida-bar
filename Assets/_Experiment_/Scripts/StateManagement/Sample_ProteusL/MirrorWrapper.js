@@ -8,6 +8,9 @@ function OnStateEnter() {
   if (STATE_ID === 4) {
     $.setStateCompat('this', 'exp_showItem', true);
   }
+  if (STATE_ID === 1) {
+    $.setStateCompat('this', 'exp_showItem', true);
+  }
 }
 
 
@@ -23,6 +26,9 @@ function OnStateExit() {
   const CONDITION = $.groupState.currentCondition;
 
   if (STATE_ID === 4) {
+    $.setStateCompat('this', 'exp_showItem', false);
+  }
+  if (STATE_ID === 1) {
     $.setStateCompat('this', 'exp_showItem', false);
   }
 }

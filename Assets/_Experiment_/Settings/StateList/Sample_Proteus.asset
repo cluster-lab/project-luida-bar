@@ -23,13 +23,13 @@ MonoBehaviour:
   - StateName: Acclimatization
     DestStateName: Questionnaire
     HasExitTime: 1
-    ExitTime: 15
+    ExitTime: 240
     IsRepeated: 0
     RepeatDestStateName: Start
     RepeatCount: 1
   - StateName: Questionnaire
     DestStateName: Instruction
-    HasExitTime: 1
+    HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
     RepeatDestStateName: Practice - Task

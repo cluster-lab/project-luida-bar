@@ -23,17 +23,8 @@ MonoBehaviour:
     - predefinedAction:
         actionType: 
         codeSnippet: 
-      customAction: '$.subNode("Text").setText(`
-
-        Start
-
-        `);'
+      customAction: "$.subNode(\"Text\").setText(`\u672C\u5B9F\u9A13\u3067\u306F\u3001\n\u30A2\u30D5\u30EA\u30AB\u30F3\u30B8\u30E3\u30F3\u30D9\u30C9\u30E9\u30E0\u3068\u3044\u3046\u697D\u5668\u3092\u7528\u3044\u3066\u3001\n4\u5206\u9593\u306E\u30BB\u30C3\u30B7\u30E7\u30F3\u30922\u56DE\u6F14\u594F\u3057\u3066\u3044\u305F\u3060\u304D\u307E\u3059\u3002\n\u307E\u305A\u3001\u96F0\u56F2\u6C17\u3092\u3064\u304B\u3093\u3067\u3044\u305F\u3060\u304F\u305F\u3081\u306B\u3001\n\u30B8\u30E3\u30F3\u30D9\u30C9\u30E9\u30E0\u306E\u6F14\u594F\u52D5\u753B\u3092\u518D\u751F\u3057\u307E\u3059\u306E\u3067\u3001\n\u6700\u5F8C\u307E\u3067\u3054\u8996\u8074\u304F\u3060\u3055\u3044\u3002`);"
       showCustomActionFoldout: 1
-    - predefinedAction:
-        actionType: Record custom data
-        codeSnippet: $.sendSignalCompat('this', 'exp_recordCustomData');
-      customAction: 
-      showCustomActionFoldout: 0
     onStateStartedFoldout: 1
     duringStateActions: []
     duringStateFoldout: 0
@@ -54,13 +45,8 @@ MonoBehaviour:
     - predefinedAction:
         actionType: 
         codeSnippet: 
-      customAction: "$.subNode(\"Text\").setText(`\u624B\u524D\u306B\u73FE\u308C\u305F\u30C9\u30E9\u30E0\u3092\u8A66\u3057\u306B\u53E9\u3044\u3066\u307F\u3066\u304F\u3060\u3055\u3044\u3002\n\u305D\u306E\u5F8C\u300C\u6B21\u3078\u300D\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3001\u5148\u7A0B\u306E\u52D5\u753B\u306E\u4E2D\u306E\u6F14\u594F\u8005\u3068\u540C\u69D8\u306E\u6C17\u5206\u3067\u3001\n4\u5206\u9593\u306E\u6F14\u594F\u3092\u59CB\u3081\u3066\u304F\u3060\u3055\u3044\u3002\n\u96A3\u306B\u4ED6\u306E\u4EBA\u304C\u5C45\u3066\u3082\u3001\u305D\u306E\u4EBA\u306B\u5408\u308F\u305B\u308B\u5FC5\u8981\u306F\u3042\u308A\u307E\u305B\u3093\u3002`);"
+      customAction: "$.subNode(\"Text\").setText(`\u624B\u524D\u306B\u73FE\u308C\u305F\u30B8\u30E3\u30F3\u30D9\u30C9\u30E9\u30E0\u3092\n\u8A66\u3057\u306B\u53E9\u3044\u3066\u307F\u3066\u304F\u3060\u3055\u3044\u3002\n\u305D\u306E\u5F8C\u300C\u6B21\u3078\u300D\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3001\n\u5148\u7A0B\u306E\u52D5\u753B\u306E\u4E2D\u306E\u6F14\u594F\u8005\u3068\u540C\u69D8\u306E\u6C17\u5206\u3067\u3001\n4\u5206\u9593\u306E\u6F14\u594F\u3092\u59CB\u3081\u3066\u304F\u3060\u3055\u3044\u3002`);"
       showCustomActionFoldout: 1
-    - predefinedAction:
-        actionType: Upload recorded data
-        codeSnippet: $.sendSignalCompat('this', 'exp_uploadCustomData');
-      customAction: 
-      showCustomActionFoldout: 0
     onStateStartedFoldout: 1
     duringStateActions: []
     duringStateFoldout: 0
@@ -93,20 +79,9 @@ MonoBehaviour:
     - predefinedAction:
         actionType: 
         codeSnippet: 
-      customAction: "$.subNode(\"Text\").setText(`\u7DF4\u7FD2\u306F\u4EE5\u4E0A\u306B\u306A\u308A\u307E\u3059\u3002\n\u76EE\u306E\u524D\u306B\u3042\u308B\u30DD\u30FC\u30BF\u30EB\u306B\u6F5C\u3063\u3066\u3001\n\u6B21\u306E\u30BB\u30C3\u30B7\u30E7\u30F3\u306B\u79FB\u52D5\u3057\u3066\u304F\u3060\u3055\u3044\u3002`);"
+      customAction: "$.subNode(\"Text\").setText(`\u76EE\u306E\u524D\u306B\u3042\u308B\u30DD\u30FC\u30BF\u30EB\u306B\u6F5C\u3063\u3066\u3001\n\u6B21\u306E\u30BB\u30C3\u30B7\u30E7\u30F3\u306B\u79FB\u52D5\u3057\u3066\u304F\u3060\u3055\u3044\u3002`);\n$.setStateCompat(\"owner\",
+        \"exp_participantMoveSpeed\", 1);"
       showCustomActionFoldout: 1
-    onStateStartedFoldout: 1
-    duringStateActions: []
-    duringStateFoldout: 0
-    onStateExitedActions: []
-    onStateExitedFoldout: 0
-  - stateID: 1
-    onStateStartedActions:
-    - predefinedAction:
-        actionType: Record custom data
-        codeSnippet: $.sendSignalCompat('this', 'exp_recordCustomData');
-      customAction: 
-      showCustomActionFoldout: 0
     onStateStartedFoldout: 1
     duringStateActions: []
     duringStateFoldout: 0
