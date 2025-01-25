@@ -76,16 +76,15 @@ MonoBehaviour:
     uploadData();\r\n    }\r\n})\r\n\r\nfunction recordData () {\r\n    $.state.customData
     = calculateData();\r\n}\r\n\r\nfunction uploadData () {\r\n    $.log(\"Upload
     custom data: \" + JSON.stringify($.state.customData));\r\n    let request = {\r\n       
-    type: \"uploadCustomData\",\r\n        token: token || \"\",\r\n        dataByFileName:
-    JSON.stringify($.state.customData),\r\n        eID: expID || \"\",\r\n       
-    pID: $.getPlayersNear($.getPosition().clone(), Infinity)[0].idfc || \"\" // TODO:
-    retrieve idfc through cluster Player Script\r\n    };\r\n    $.callExternal(JSON.stringify(request),
-    \"customDataUploaded\");\r\n}\r\n\r\n$.onExternalCallEnd((res, meta, err) =>\r\n{\r\n   
-    if (res == null) {\r\n        $.log(\"callExternal ERROR: \" + err);\r\n       
-    return;\r\n    }\r\n\r\n    if (meta === \"customDataUploaded\") {\r\n       
-    $.log(\"Custom recorded data uploaded\");\r\n    }\r\n});\r\nfunction calculateData
-    () {\r\n    let returnData = $.state.customData;\r\n    const CONDITION = $.groupState.currentCondition;\r\n   
-    return returnData;\r\n}"
+    type: \"uploadCustomData\",\r\n        token: token || \"\",\r\n        data:
+    $.state.customData,\r\n        eID: expID || \"\",\r\n        pID: $.getPlayersNear($.getPosition().clone(),
+    Infinity)[0].idfc || \"\" // TODO: retrieve idfc through cluster Player Script\r\n   
+    };\r\n    $.callExternal(JSON.stringify(request), \"customDataUploaded\");\r\n}\r\n\r\n$.onExternalCallEnd((res,
+    meta, err) =>\r\n{\r\n    if (res == null) {\r\n        $.log(\"callExternal
+    ERROR: \" + err);\r\n        return;\r\n    }\r\n\r\n    if (meta === \"customDataUploaded\")
+    {\r\n        $.log(\"Response after customDataUploaded called: \" + JSON.stringify(res));\r\n   
+    }\r\n});\r\nfunction calculateData () {\r\n    let returnData = $.state.customData;\r\n   
+    const CONDITION = $.groupState.currentCondition;\r\n    return returnData;\r\n}"
 --- !u!114 &4976748577095326931
 MonoBehaviour:
   m_ObjectHideFlags: 0
