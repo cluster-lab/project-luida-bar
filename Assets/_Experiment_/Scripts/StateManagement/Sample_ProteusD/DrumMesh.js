@@ -8,6 +8,9 @@ function OnStateEnter() {
   if (STATE_ID === 4) {
     $.setStateCompat('this', 'exp_showItem', true);
   }
+  if (STATE_ID === 2) {
+    $.setStateCompat('this', 'exp_showItem', true);
+  }
 }
 
 

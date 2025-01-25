@@ -42,4 +42,16 @@ MonoBehaviour:
       customAction: 
       showCustomActionFoldout: 0
     onStateExitedFoldout: 1
+  - stateID: 2
+    onStateStartedActions:
+    - predefinedAction:
+        actionType: Show item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
+      customAction: 
+      showCustomActionFoldout: 0
+    onStateStartedFoldout: 1
+    duringStateActions: []
+    duringStateFoldout: 0
+    onStateExitedActions: []
+    onStateExitedFoldout: 0
   otherImplementation: 
