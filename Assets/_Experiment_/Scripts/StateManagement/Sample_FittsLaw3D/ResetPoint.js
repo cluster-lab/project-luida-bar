@@ -5,7 +5,7 @@ function OnStateEnter() {
   if (STATE_ID === 0) {
     $.setStateCompat('this', 'exp_showItem', false);
   }
-  if (STATE_ID === 4) {
+  if (STATE_ID === 3) {
     if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];
 
 // 原点（頭の正面から50cm）まで動かす
@@ -17,7 +17,7 @@ $.setPosition(originPos);
 $.material("mat").setBaseColor(1, 1, 0, 0.7);
     $.setStateCompat('this', 'exp_showItem', true);
   }
-  if (STATE_ID === 9) {
+  if (STATE_ID === 6) {
     if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];
 
 // 原点（頭の正面から50cm）まで動かす
@@ -36,14 +36,14 @@ function DuringState(deltaTime) {
   const STATE_ID = $.state.state_id;
   const CONDITION = $.groupState.currentCondition;
 
-  if (STATE_ID === 4) {
+  if (STATE_ID === 3) {
     // ホバー時は不透明にし、非ホバー時は半透明にする
 if ($.state.isHovered !== $.getStateCompat("this", "isHovered", "boolean")) {
   $.material("mat").setBaseColor(1, 1, 0, $.state.isHovered ? 0.7 : 1);
   $.state.isHovered = !$.state.isHovered;
 }
   }
-  if (STATE_ID === 9) {
+  if (STATE_ID === 6) {
     // ホバー時は不透明にし、非ホバー時は半透明にする
 if ($.state.isHovered !== $.getStateCompat("this", "isHovered", "boolean")) {
   $.material("mat").setBaseColor(1, 1, 0, $.state.isHovered ? 0.7 : 1);
@@ -57,10 +57,10 @@ function OnStateExit() {
   const STATE_ID = $.state.state_id;
   const CONDITION = $.groupState.currentCondition;
 
-  if (STATE_ID === 4) {
+  if (STATE_ID === 3) {
     $.setStateCompat('this', 'exp_showItem', false);
   }
-  if (STATE_ID === 9) {
+  if (STATE_ID === 6) {
     $.setStateCompat('this', 'exp_showItem', false);
   }
 }

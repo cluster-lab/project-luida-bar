@@ -23,10 +23,20 @@ MonoBehaviour:
     onStateStartedFoldout: 1
     duringStateActions: []
     duringStateFoldout: 0
-    onStateExitedActions: []
-    onStateExitedFoldout: 0
+    onStateExitedActions:
+    - predefinedAction:
+        actionType: Hide item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
+      customAction: 
+      showCustomActionFoldout: 0
+    onStateExitedFoldout: 1
   - stateID: 2
     onStateStartedActions:
+    - predefinedAction:
+        actionType: Show item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
+      customAction: 
+      showCustomActionFoldout: 0
     - predefinedAction:
         actionType: 
         codeSnippet: 
@@ -42,7 +52,7 @@ MonoBehaviour:
       customAction: 
       showCustomActionFoldout: 0
     onStateExitedFoldout: 1
-  - stateID: 8
+  - stateID: 5
     onStateStartedActions:
     - predefinedAction:
         actionType: Show item
@@ -64,7 +74,7 @@ MonoBehaviour:
       customAction: 
       showCustomActionFoldout: 0
     onStateExitedFoldout: 1
-  - stateID: 11
+  - stateID: 9
     onStateStartedActions:
     - predefinedAction:
         actionType: Show item

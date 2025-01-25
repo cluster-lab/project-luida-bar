@@ -5,14 +5,14 @@ function OnStateEnter() {
   if (STATE_ID === 0) {
     $.setStateCompat('this', 'exp_showItem', false);
   }
-  if (STATE_ID === 4) {
+  if (STATE_ID === 3) {
     if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];
 let originPos = $.state.player.getHumanoidBonePosition(HumanoidBone.Head)
   .clone().add(new Vector3(0, -0.2, 0.4));
 $.setPosition(originPos);
     $.setStateCompat('this', 'exp_showItem', true);
   }
-  if (STATE_ID === 9) {
+  if (STATE_ID === 6) {
     if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];
 let originPos = $.state.player.getHumanoidBonePosition(HumanoidBone.Head)
   .clone().add(new Vector3(0, -0.2, 0.4));
@@ -33,10 +33,10 @@ function OnStateExit() {
   const STATE_ID = $.state.state_id;
   const CONDITION = $.groupState.currentCondition;
 
-  if (STATE_ID === 4) {
+  if (STATE_ID === 3) {
     $.setStateCompat('this', 'exp_showItem', false);
   }
-  if (STATE_ID === 9) {
+  if (STATE_ID === 6) {
     $.setStateCompat('this', 'exp_showItem', false);
   }
 }

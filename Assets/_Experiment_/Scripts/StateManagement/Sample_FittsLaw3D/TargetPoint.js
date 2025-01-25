@@ -5,7 +5,7 @@ function OnStateEnter() {
   if (STATE_ID === 0) {
     $.setStateCompat('this', 'exp_showItem', false);
   }
-  if (STATE_ID === 4) {
+  if (STATE_ID === 3) {
     if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];
 if (!$.state.practiceID) $.state.practiceID = 0;
 
@@ -23,7 +23,7 @@ $.getUnityComponent("Transform").unityProp.localScale = new Vector3(s, s, s);
 $.material("mat").setBaseColor(1, 0, 0, 0.7);
     $.setStateCompat('this', 'exp_showItem', true);
   }
-  if (STATE_ID === 9) {
+  if (STATE_ID === 6) {
     if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];
 
 // xy距離の実験条件からxy座標をランダムに決める
@@ -56,7 +56,7 @@ function DuringState(deltaTime) {
   const STATE_ID = $.state.state_id;
   const CONDITION = $.groupState.currentCondition;
 
-  if (STATE_ID === 4) {
+  if (STATE_ID === 3) {
     // ホバー時は不透明にし、非ホバー時は半透明にする
 if ($.state.isHovered !== $.getStateCompat("this", "isHovered", "boolean")) {
   $.material("mat").setBaseColor(1, 0, 0, $.state.isHovered ? 0.7 : 1);
@@ -64,7 +64,7 @@ if ($.state.isHovered !== $.getStateCompat("this", "isHovered", "boolean")) {
   $.log($.state.isHovered);
 }
   }
-  if (STATE_ID === 9) {
+  if (STATE_ID === 6) {
     // ホバー時は不透明にし、非ホバー時は半透明にする
 if ($.state.isHovered !== $.getStateCompat("this", "isHovered", "boolean")) {
   $.material("mat").setBaseColor(1, 0, 0, $.state.isHovered ? 0.7 : 1);
@@ -78,11 +78,11 @@ function OnStateExit() {
   const STATE_ID = $.state.state_id;
   const CONDITION = $.groupState.currentCondition;
 
-  if (STATE_ID === 4) {
+  if (STATE_ID === 3) {
     $.setStateCompat('this', 'exp_showItem', false);
     $.state.practiceID = $.state.practiceID + 1;
   }
-  if (STATE_ID === 9) {
+  if (STATE_ID === 6) {
     $.setStateCompat('this', 'exp_showItem', false);
   }
 }

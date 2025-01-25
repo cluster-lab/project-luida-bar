@@ -25,7 +25,7 @@ MonoBehaviour:
     duringStateFoldout: 0
     onStateExitedActions: []
     onStateExitedFoldout: 0
-  - stateID: 4
+  - stateID: 3
     onStateStartedActions:
     - predefinedAction:
         actionType: 
@@ -67,7 +67,7 @@ MonoBehaviour:
       customAction: $.state.practiceID = $.state.practiceID + 1;
       showCustomActionFoldout: 1
     onStateExitedFoldout: 1
-  - stateID: 9
+  - stateID: 6
     onStateStartedActions:
     - predefinedAction:
         actionType: 
