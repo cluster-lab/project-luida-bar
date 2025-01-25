@@ -78,7 +78,7 @@ PrefabInstance:
     - target: {fileID: 8187736243628620956, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: worldOrEventId
-      value: 006d765e-f961-435b-a183-77c35a42e241
+      value: 29ac4e39-e7af-4467-b3ba-dea011473eb0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bcb4321352c07a94480b4dd0ff0fadee, type: 3}
