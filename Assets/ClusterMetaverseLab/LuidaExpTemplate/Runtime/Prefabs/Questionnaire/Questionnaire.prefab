@@ -609,9 +609,10 @@ MonoBehaviour:
     of answer options and initialize a new question\r\n    $.sendSignalCompat(\"this\",
     \"form_stop_destroy_answer_option\");\r\n    $.state.tryInitQuestion = false;\r\n   
     $.state.answerOptionUIs = [];\r\n    $.state.answerOptionLocalPositions = [];\r\n   
-    const q = $.state.questions[$.state.qID];\r\n    $.subNode(\"Title\").setText(q.title);\r\n   
-    $.subNode(\"Description\").setText(q.description);\r\n    $.state.questionTypeID
-    = q.questionTypeID;\r\n    $.state.answerOptions = q.answerOptions;\r\n    spawnAnswerOptionUI();\r\n}\r\n\r\nfunction
+    const q = $.state.questions[$.state.qID];\r\n    $.subNode(\"Title\").setText(q.t);\r\n   
+    $.subNode(\"Description\").setText(q.d);\r\n    $.state.questionTypeID = q.i;\r\n   
+    $.state.answerOptions = Array.isArray(q.a)\r\n        ? q.a\r\n        : (typeof
+    q.a === \"string\" ? q.a.split(\",\") : []) ;\r\n    spawnAnswerOptionUI();\r\n}\r\n\r\nfunction
     spawnAnswerOptionUI() {\r\n    $.state.pendingAnswerOptions = $.state.answerOptions.slice();\r\n   
     $.state.answerOptionIndex = 0;\r\n}\r\n\r\nfunction addAnswerOption (id, localPos,
     rot, ansId) {\r\n    const itemHandle = $.createItem(id, $.getPosition().clone().add(localPos.clone().applyQuaternion(rot)),
@@ -666,15 +667,15 @@ MonoBehaviour:
     {\r\n                $.state.tmpAnswer = $.state.tmpAnswer.filter(item => item
     !== arg.value);\r\n            }\r\n            break;\r\n    }\r\n}\r\n\r\nfunction
     saveAnswer() {\r\n    if (!$.state.questions[$.state.qID]) return;\r\n    if
-    ($.state.questions[$.state.qID].isRequired && (!$.state.tmpAnswer && $.state.tmpAnswer
-    !== false)) return;\r\n    $.state.answers = { ...$.state.answers, [$.state.qID]:
-    $.state.tmpAnswer };\r\n    toNext();\r\n}\r\n\r\nfunction submitAnswers() {\r\n   
-    $.log(\"Send final answers: \" + JSON.stringify($.state.answers));\r\n    let
-    request = {\r\n        type: \"questionAnswers\",\r\n        token: token ||
-    \"\",\r\n        eID: expID || \"\",\r\n        qID: $.getStateCompat(\"this\",
-    \"qID\", \"integer\") || 0,\r\n        pID: $.getPlayersNear($.getPosition().clone(),
+    ($.state.questions[$.state.qID].r && (!$.state.tmpAnswer && $.state.tmpAnswer
+    !== false)) return;\r\n    let answers = [ ...$.state.answers ];\r\n    answers[$.state.qID]
+    = $.state.tmpAnswer;\r\n    $.state.answers = answers;\r\n    toNext();\r\n}\r\n\r\nfunction
+    submitAnswers() {\r\n    $.log(\"Send final answers: \" + JSON.stringify($.state.answers));\r\n   
+    let request = {\r\n        type: \"questionAnswers\",\r\n        token: token
+    || \"\",\r\n        eID: expID || \"\",\r\n        qID: $.getStateCompat(\"this\",
+    \"qID\", \"integer\").toString() || \"1\",\r\n        pID: $.getPlayersNear($.getPosition().clone(),
     100)[0].idfc || \"\", // TODO: retrieve idfc through cluster Player Script\r\n       
-    answers: JSON.stringify($.state.answers)\r\n    };\r\n    const conditionManager
+    // pRole: \"\",\r\n        answers: $.state.answers\r\n    };\r\n    const conditionManager
     = $.worldItemReference(\"ConditionManager\");\r\n    if (conditionManager) {\r\n       
     conditionManager.send(\"exp_questionnaire_answer\", $.state.answers);\r\n   
     }\r\n    $.callExternal(JSON.stringify(request), \"postQuestionAnswers\");\r\n   
@@ -690,7 +691,7 @@ MonoBehaviour:
     reset(showStartHint = true) {\r\n    destroyAnswerOptionUIs(); // Reset will
     also destroy any existing answer option UIs\r\n    $.setStateCompat(\"this\",
     \"form_set_start_hint_active\", showStartHint);\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
-    $.state.answers = {};\r\n    $.state.qID = 0;\r\n    $.state.isInitiated = false;\r\n   
+    $.state.answers = [];\r\n    $.state.qID = 0;\r\n    $.state.isInitiated = false;\r\n   
     $.state.tryInitQuestion = false;\r\n    $.state.answerOptionUIs = [];\r\n   
     $.state.answerOptionLocalPositions = [];\r\n    $.state.answerOptionIndex = 0;\r\n   
     $.state.pendingAnswerOptions = [];\r\n    $.setStateCompat(\"this\", \"form_set_content_active\",
