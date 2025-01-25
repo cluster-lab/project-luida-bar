@@ -10,7 +10,6 @@ let data =  {
   z: CONDITION["d"],
   s: CONDITION["s"]
 };
-$.log(JSON.stringify(data));
 return data;
     return {};
   }

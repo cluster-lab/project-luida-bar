@@ -45,7 +45,7 @@ function OnStateEnter() {
 お疲れ様です。
 最後に質問紙にご記入をお願いします。
 「次へ」ボタンをクリックして進んでください。`);
-    $.setStateCompat('this', 'exp_showItem', false);
+    $.setStateCompat('this', 'exp_showItem', true);
   }
   if (STATE_ID === 11) {
     $.setStateCompat('this', 'exp_showItem', true);
@@ -69,6 +69,9 @@ function OnStateExit() {
   const STATE_ID = $.state.state_id;
   const CONDITION = $.groupState.currentCondition;
 
+  if (STATE_ID === 9) {
+    $.setStateCompat('this', 'exp_showItem', false);
+  }
 }
 
 

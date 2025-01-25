@@ -24,7 +24,7 @@ MonoBehaviour:
     duringStateActions: []
     duringStateFoldout: 0
     onStateExitedActions: []
-    onStateExitedFoldout: 0
+    onStateExitedFoldout: 1
   - stateID: 2
     onStateStartedActions:
     - predefinedAction:
@@ -110,15 +110,20 @@ MonoBehaviour:
       customAction: "$.subNode(\"Text\").setText(`\u30BF\u30B9\u30AF\u306F\u4EE5\u4E0A\u306B\u306A\u308A\u307E\u3059\u3002\n\u304A\u75B2\u308C\u69D8\u3067\u3059\u3002\n\u6700\u5F8C\u306B\u8CEA\u554F\u7D19\u306B\u3054\u8A18\u5165\u3092\u304A\u9858\u3044\u3057\u307E\u3059\u3002\n\u300C\u6B21\u3078\u300D\u30DC\u30BF\u30F3\u3092\u30AF\u30EA\u30C3\u30AF\u3057\u3066\u9032\u3093\u3067\u304F\u3060\u3055\u3044\u3002\r\r`);"
       showCustomActionFoldout: 1
     - predefinedAction:
-        actionType: Hide item
-        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
+        actionType: Show item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
       customAction: 
       showCustomActionFoldout: 0
     onStateStartedFoldout: 1
     duringStateActions: []
     duringStateFoldout: 0
-    onStateExitedActions: []
-    onStateExitedFoldout: 0
+    onStateExitedActions:
+    - predefinedAction:
+        actionType: Hide item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
+      customAction: 
+      showCustomActionFoldout: 0
+    onStateExitedFoldout: 1
   - stateID: 11
     onStateStartedActions:
     - predefinedAction:
