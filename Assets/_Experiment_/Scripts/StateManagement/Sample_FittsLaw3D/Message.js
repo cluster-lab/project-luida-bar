@@ -53,6 +53,7 @@ function OnStateEnter() {
 ご参加いただきありがとうございました！
 謝礼は後日に付与します。
 目の前のゲートに潜って退室してください。`);
+$.setStateCompat("owner", "exp_participantMoveSpeed", 1);
   }
 }
 

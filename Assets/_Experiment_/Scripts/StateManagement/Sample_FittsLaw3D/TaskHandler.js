@@ -5,6 +5,9 @@ function OnStateEnter() {
   if (STATE_ID === 6) {
     $.state.taskTime = 0;
   }
+  if (STATE_ID === 9) {
+    $.sendSignalCompat('this', 'exp_uploadCustomData');
+  }
 }
 
 

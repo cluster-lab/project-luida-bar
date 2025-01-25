@@ -42,10 +42,15 @@ MonoBehaviour:
       showCustomActionFoldout: 0
     onStateExitedFoldout: 1
   - stateID: 9
-    onStateStartedActions: []
+    onStateStartedActions:
+    - predefinedAction:
+        actionType: Upload recorded data
+        codeSnippet: $.sendSignalCompat('this', 'exp_uploadCustomData');
+      customAction: 
+      showCustomActionFoldout: 0
     onStateStartedFoldout: 1
     duringStateActions: []
-    duringStateFoldout: 0
+    duringStateFoldout: 1
     onStateExitedActions: []
-    onStateExitedFoldout: 0
+    onStateExitedFoldout: 1
   otherImplementation: 

@@ -85,7 +85,7 @@ MonoBehaviour:
     RepeatCount: 1
   - StateName: Questionnaire (post-exp)
     DestStateName: End
-    HasExitTime: 0
+    HasExitTime: 1
     ExitTime: 0
     IsRepeated: 0
     RepeatDestStateName: 
