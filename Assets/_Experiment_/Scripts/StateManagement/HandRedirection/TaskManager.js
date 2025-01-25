@@ -4,14 +4,14 @@ function OnStateEnter() {
 
   if (STATE_ID === 0) {
     $.setStateCompat('this', 'exp_showItem', false);
-  }
-  if (STATE_ID === 2) {
     $.state.practiceGains = [1, 0.75, 1.25];
 $.state.practiceGainID = 0;
-Reset();
+  }
+  if (STATE_ID === 3) {
+    Reset();
     $.setStateCompat('this', 'exp_showItem', true);
   }
-  if (STATE_ID === 6) {
+  if (STATE_ID === 7) {
     Reset();
     $.setStateCompat('this', 'exp_showItem', true);
   }
@@ -22,10 +22,10 @@ function DuringState(deltaTime) {
   const STATE_ID = $.state.state_id;
   const CONDITION = $.groupState.currentCondition;
 
-  if (STATE_ID === 2) {
+  if (STATE_ID === 3) {
     UpdateHandTransform($.state.practiceGains[$.state.practiceGainID]);
   }
-  if (STATE_ID === 6) {
+  if (STATE_ID === 7) {
     UpdateHandTransform(parseFloat(CONDITION["gain"]));
   }
 }
@@ -35,10 +35,11 @@ function OnStateExit() {
   const STATE_ID = $.state.state_id;
   const CONDITION = $.groupState.currentCondition;
 
-  if (STATE_ID === 2) {
+  if (STATE_ID === 3) {
     $.setStateCompat('this', 'exp_showItem', false);
+    $.state.practiceGainID = $.state.practiceGainID + 1;
   }
-  if (STATE_ID === 6) {
+  if (STATE_ID === 7) {
     $.setStateCompat('this', 'exp_showItem', false);
   }
 }
@@ -90,7 +91,6 @@ $.onCollide(collision => {
   if ($.state.isReaching) {
     // すでにリーチング状態の場合、リーチングを終了し、練習ゲインIDを更新
     $.state.isReaching = false;
-    $.state.practiceGainID = $.state.practiceGainID + 1;
     ToNextState(); // 次の状態へ遷移
   } else {
     // リーチングが開始されていない場合、ターゲットを表示し、原点を非表示にする
