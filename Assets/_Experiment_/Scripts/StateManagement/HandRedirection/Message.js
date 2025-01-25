@@ -68,6 +68,7 @@ $.subNode("Text").setText(sentences.join("\n"));
 "目の前のゲートに潜って退室してください。",
 "謝礼は後日に付与します。"];
 $.subNode("Text").setText(sentences.join("\n"));
+$.setStateCompat("owner", "exp_participantMoveSpeed", 1);
   }
 }
 
