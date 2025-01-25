@@ -174,7 +174,9 @@ function handleFormAnswer(arg) {
 function saveAnswer() {
     if (!$.state.questions[$.state.qID]) return;
     if ($.state.questions[$.state.qID].r && (!$.state.tmpAnswer && $.state.tmpAnswer !== false)) return;
-    $.state.answers = { ...$.state.answers, [$.state.qID]: $.state.tmpAnswer };
+    let answers = [ ...$.state.answers ];
+    answers[$.state.qID] = $.state.tmpAnswer;
+    $.state.answers = answers;
     toNext();
 }
 
@@ -184,9 +186,10 @@ function submitAnswers() {
         type: "questionAnswers",
         token: token || "",
         eID: expID || "",
-        qID: $.getStateCompat("this", "qID", "integer") || 0,
+        qID: $.getStateCompat("this", "qID", "integer").toString() || "1",
         pID: $.getPlayersNear($.getPosition().clone(), 100)[0].idfc || "", // TODO: retrieve idfc through cluster Player Script
-        answers: JSON.stringify($.state.answers)
+        // pRole: "",
+        answers: $.state.answers
     };
     const conditionManager = $.worldItemReference("ConditionManager");
     if (conditionManager) {
@@ -222,7 +225,7 @@ function reset(showStartHint = true) {
     destroyAnswerOptionUIs(); // Reset will also destroy any existing answer option UIs
     $.setStateCompat("this", "form_set_start_hint_active", showStartHint);
     $.subNode("RadioButtonIndicator").setEnabled(false);
-    $.state.answers = {};
+    $.state.answers = [];
     $.state.qID = 0;
     $.state.isInitiated = false;
     $.state.tryInitQuestion = false;
