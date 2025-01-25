@@ -22,7 +22,7 @@ MonoBehaviour:
     RepeatCount: 1
   - StateName: Questionnaire (pre-exp)
     DestStateName: Instruction
-    HasExitTime: 1
+    HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
     RepeatDestStateName: Practice - Task

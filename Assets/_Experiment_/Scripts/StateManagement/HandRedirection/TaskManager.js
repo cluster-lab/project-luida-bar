@@ -15,6 +15,9 @@ $.state.practiceGainID = 0;
     Reset();
     $.setStateCompat('this', 'exp_showItem', true);
   }
+  if (STATE_ID === 10) {
+    $.sendSignalCompat('this', 'exp_uploadCustomData');
+  }
 }
 
 
@@ -27,6 +30,12 @@ function DuringState(deltaTime) {
   }
   if (STATE_ID === 7) {
     UpdateHandTransform(parseFloat(CONDITION["gain"]));
+  }
+  if (STATE_ID === 5) {
+    UpdateHandTransform(1);
+  }
+  if (STATE_ID === 9) {
+    UpdateHandTransform(1);
   }
 }
 
@@ -41,6 +50,7 @@ function OnStateExit() {
   }
   if (STATE_ID === 7) {
     $.setStateCompat('this', 'exp_showItem', false);
+    $.sendSignalCompat('this', 'exp_recordCustomData');
   }
 }
 

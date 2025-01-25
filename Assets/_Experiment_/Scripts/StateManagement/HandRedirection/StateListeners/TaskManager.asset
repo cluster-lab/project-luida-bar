@@ -91,7 +91,48 @@ MonoBehaviour:
         codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
       customAction: 
       showCustomActionFoldout: 0
+    - predefinedAction:
+        actionType: Record custom data
+        codeSnippet: $.sendSignalCompat('this', 'exp_recordCustomData');
+      customAction: 
+      showCustomActionFoldout: 0
     onStateExitedFoldout: 1
+  - stateID: 10
+    onStateStartedActions:
+    - predefinedAction:
+        actionType: Upload recorded data
+        codeSnippet: $.sendSignalCompat('this', 'exp_uploadCustomData');
+      customAction: 
+      showCustomActionFoldout: 0
+    onStateStartedFoldout: 1
+    duringStateActions: []
+    duringStateFoldout: 0
+    onStateExitedActions: []
+    onStateExitedFoldout: 0
+  - stateID: 5
+    onStateStartedActions: []
+    onStateStartedFoldout: 0
+    duringStateActions:
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: UpdateHandTransform(1);
+      showCustomActionFoldout: 1
+    duringStateFoldout: 1
+    onStateExitedActions: []
+    onStateExitedFoldout: 0
+  - stateID: 9
+    onStateStartedActions: []
+    onStateStartedFoldout: 0
+    duringStateActions:
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: UpdateHandTransform(1);
+      showCustomActionFoldout: 1
+    duringStateFoldout: 1
+    onStateExitedActions: []
+    onStateExitedFoldout: 0
   otherImplementation: "function Reset() { // \u30EA\u30BB\u30C3\u30C8\u51E6\u7406\n 
     // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u521D\u671F\u72B6\u614B\u3092\u8A2D\u5B9A\n 
     $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\n  $.state.handOriginalPos

@@ -43,7 +43,6 @@ $.subNode("Text").setText(sentences.join("\n"));
 "玉は触れられたら30cm先まで移動します。",
 "移動後の玉にもう一度触れてください。"];
 $.subNode("Text").setText(sentences.join("\n"));
-$.log(CONDITION["gain"]);
   }
   if (STATE_ID === 8) {
     let sentences = ["Q: バーチャル空間の中の手は実身体の手より",
