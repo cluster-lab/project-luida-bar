@@ -1195,12 +1195,12 @@ PrefabInstance:
     - target: {fileID: 5697374075333026450, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 5697374075333026450, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5697374075333026450, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
@@ -3086,7 +3086,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88e2bee252abf41829451dd430b50cba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldOrEventId: 006d765e-f961-435b-a183-77c35a42e241
+  worldOrEventId: 29ac4e39-e7af-4467-b3ba-dea011473eb0
   key: 
   confirmTransition: 0
 --- !u!1 &1587392266
@@ -5289,15 +5289,15 @@ PrefabInstance:
         =>\r\n{\r\n    if (res == null) {\r\n        $.log(\"callExternal ERROR:
         \" + err);\r\n        return;\r\n    }\r\n\r\n    if (meta === \"customDataUploaded\")
         {\r\n        $.log(\"Response after customDataUploaded called: \" + JSON.stringify(res));\r\n   
-        }\r\n});\r\nfunction calculateData () {\n  let returnData = $.state.customData;\n 
-        const CONDITION = $.groupState.currentCondition;\n\n  function saveData_taskTime()
-        {\nlet data =  {\r\n  t: $.getStateCompat(\"owner\", \"taskTime\", \"float\"),\r\n 
+        }\r\n});\r\nfunction calculateData () {\r\n  let returnData = $.state.customData;\r\n 
+        const CONDITION = $.groupState.currentCondition;\r\n\r\n  function saveData_taskTime()
+        {\r\nlet data =  {\r\n  t: $.getStateCompat(\"owner\", \"taskTime\", \"float\"),\r\n 
         x: $.getStateCompat(\"owner\", \"x\", \"integer\"),\r\n  y: $.getStateCompat(\"owner\",
         \"y\", \"integer\"),\r\n  z: CONDITION[\"d\"],\r\n  s: CONDITION[\"s\"]\r\n};\r\nreturn
-        data;\n    return {};\n  }\n  const newRecord_taskTime = saveData_taskTime();\n 
+        data;\r\n    return {};\r\n  }\r\n  const newRecord_taskTime = saveData_taskTime();\r\n 
         if (\"taskTime\" in returnData && Array.isArray(returnData[\"taskTime\"]))
-        {\n    returnData[\"taskTime\"].push(newRecord_taskTime);\n  } else {\n   
-        returnData[\"taskTime\"] = [newRecord_taskTime];\n  }\n\n  return returnData;\n}\n"
+        {\r\n    returnData[\"taskTime\"].push(newRecord_taskTime);\r\n  } else {\r\n   
+        returnData[\"taskTime\"] = [newRecord_taskTime];\r\n  }\r\n\r\n  return returnData;\r\n}\r\n"
       objectReference: {fileID: 0}
     - target: {fileID: 2966719835339860267, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
