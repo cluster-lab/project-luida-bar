@@ -22,7 +22,7 @@ function uploadData () {
     let request = {
         type: "uploadCustomData",
         token: token || "",
-        dataByFileName: JSON.stringify($.state.customData),
+        data: $.state.customData,
         eID: expID || "",
         pID: $.getPlayersNear($.getPosition().clone(), Infinity)[0].idfc || "" // TODO: retrieve idfc through cluster Player Script
     };
@@ -37,6 +37,6 @@ $.onExternalCallEnd((res, meta, err) =>
     }
 
     if (meta === "customDataUploaded") {
-        $.log("Custom recorded data uploaded");
+        $.log("Response after customDataUploaded called: " + JSON.stringify(res));
     }
 });
