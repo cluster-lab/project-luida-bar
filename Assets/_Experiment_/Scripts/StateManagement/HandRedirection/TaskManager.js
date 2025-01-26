@@ -32,10 +32,10 @@ function DuringState(deltaTime) {
     UpdateHandTransform(parseFloat(CONDITION["gain"]));
   }
   if (STATE_ID === 5) {
-    UpdateHandTransform(1);
+    UpdateHandTransform($.state.practiceGains[$.state.practiceGainID]);
   }
   if (STATE_ID === 9) {
-    UpdateHandTransform(1);
+    UpdateHandTransform(parseFloat(CONDITION["gain"]));
   }
 }
 
@@ -46,11 +46,13 @@ function OnStateExit() {
 
   if (STATE_ID === 3) {
     $.setStateCompat('this', 'exp_showItem', false);
-    $.state.practiceGainID = $.state.practiceGainID + 1;
   }
   if (STATE_ID === 7) {
     $.setStateCompat('this', 'exp_showItem', false);
     $.sendSignalCompat('this', 'exp_recordCustomData');
+  }
+  if (STATE_ID === 5) {
+    $.state.practiceGainID = $.state.practiceGainID + 1;
   }
 }
 
@@ -99,8 +101,9 @@ $.onCollide(collision => {
   if (!collision.handle || !$.worldItemReference("RightHand") || collision.handle.id !== $.worldItemReference("RightHand").id) return;
 
   if ($.state.isReaching) {
-    // すでにリーチング状態の場合、リーチングを終了し、練習ゲインIDを更新
+    // すでにリーチング状態の場合、リーチングを終了する
     $.state.isReaching = false;
+    $.subNode("TargetPoint").setEnabled(false);
     ToNextState(); // 次の状態へ遷移
   } else {
     // リーチングが開始されていない場合、ターゲットを表示し、原点を非表示にする

@@ -59,11 +59,6 @@ MonoBehaviour:
         codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
       customAction: 
       showCustomActionFoldout: 0
-    - predefinedAction:
-        actionType: 
-        codeSnippet: 
-      customAction: $.state.practiceGainID = $.state.practiceGainID + 1;
-      showCustomActionFoldout: 1
     onStateExitedFoldout: 1
   - stateID: 7
     onStateStartedActions:
@@ -116,11 +111,16 @@ MonoBehaviour:
     - predefinedAction:
         actionType: 
         codeSnippet: 
-      customAction: UpdateHandTransform(1);
+      customAction: UpdateHandTransform($.state.practiceGains[$.state.practiceGainID]);
       showCustomActionFoldout: 1
     duringStateFoldout: 1
-    onStateExitedActions: []
-    onStateExitedFoldout: 0
+    onStateExitedActions:
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: $.state.practiceGainID = $.state.practiceGainID + 1;
+      showCustomActionFoldout: 1
+    onStateExitedFoldout: 1
   - stateID: 9
     onStateStartedActions: []
     onStateStartedFoldout: 0
@@ -128,7 +128,7 @@ MonoBehaviour:
     - predefinedAction:
         actionType: 
         codeSnippet: 
-      customAction: UpdateHandTransform(1);
+      customAction: UpdateHandTransform(parseFloat(CONDITION["gain"]));
       showCustomActionFoldout: 1
     duringStateFoldout: 1
     onStateExitedActions: []
@@ -159,9 +159,10 @@ MonoBehaviour:
     \"RightHand\" \u30AA\u30D6\u30B8\u30A7\u30AF\u30C8\u3067\u306F\u306A\u3044\u5834\u5408\u306F\u51E6\u7406\u3092\u4E2D\u65AD\n 
     if (!collision.handle || !$.worldItemReference(\"RightHand\") || collision.handle.id
     !== $.worldItemReference(\"RightHand\").id) return;\n\n  if ($.state.isReaching)
-    {\n    // \u3059\u3067\u306B\u30EA\u30FC\u30C1\u30F3\u30B0\u72B6\u614B\u306E\u5834\u5408\u3001\u30EA\u30FC\u30C1\u30F3\u30B0\u3092\u7D42\u4E86\u3057\u3001\u7DF4\u7FD2\u30B2\u30A4\u30F3ID\u3092\u66F4\u65B0\n   
-    $.state.isReaching = false;\n    ToNextState(); // \u6B21\u306E\u72B6\u614B\u3078\u9077\u79FB\n 
-    } else {\n    // \u30EA\u30FC\u30C1\u30F3\u30B0\u304C\u958B\u59CB\u3055\u308C\u3066\u3044\u306A\u3044\u5834\u5408\u3001\u30BF\u30FC\u30B2\u30C3\u30C8\u3092\u8868\u793A\u3057\u3001\u539F\u70B9\u3092\u975E\u8868\u793A\u306B\u3059\u308B\n   
+    {\n    // \u3059\u3067\u306B\u30EA\u30FC\u30C1\u30F3\u30B0\u72B6\u614B\u306E\u5834\u5408\u3001\u30EA\u30FC\u30C1\u30F3\u30B0\u3092\u7D42\u4E86\u3059\u308B\n   
+    $.state.isReaching = false;\n    $.subNode(\"TargetPoint\").setEnabled(false);\n   
+    ToNextState(); // \u6B21\u306E\u72B6\u614B\u3078\u9077\u79FB\n  } else {\n   
+    // \u30EA\u30FC\u30C1\u30F3\u30B0\u304C\u958B\u59CB\u3055\u308C\u3066\u3044\u306A\u3044\u5834\u5408\u3001\u30BF\u30FC\u30B2\u30C3\u30C8\u3092\u8868\u793A\u3057\u3001\u539F\u70B9\u3092\u975E\u8868\u793A\u306B\u3059\u308B\n   
     $.subNode(\"StartingPoint\").setEnabled(false);\n    $.subNode(\"TargetPoint\").setEnabled(true);\n   
     // \u73FE\u5728\u306E\u53F3\u624B\u30A2\u30F3\u30AB\u30FC\u306E\u4F4D\u7F6E\u3092\u8A18\u9332\n   
     $.state.handOriginalPos = $.subNode(\"RightHandAnchor\").getPosition().clone();\n   
