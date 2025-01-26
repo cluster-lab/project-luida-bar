@@ -60,8 +60,8 @@ function initQuestion() {
     $.state.answerOptionUIs = [];
     $.state.answerOptionLocalPositions = [];
     const q = $.state.questions[$.state.qID];
-    $.subNode("Title").setText(q.t);
-    $.subNode("Description").setText(q.d);
+    $.subNode("Title").setText(splitTextByWidth(q.t, 50));
+    $.subNode("Description").setText(splitTextByWidth(q.d, 100));
     $.state.questionTypeID = q.i;
     $.state.answerOptions = Array.isArray(q.a)
         ? q.a
@@ -255,3 +255,29 @@ $.onExternalCallEnd((res, meta, err) => {
         reset(false);
     }
 });
+
+function splitTextByWidth(text, maxWidth = 50) {
+    const lines = [];
+    let currentLine = '';
+    let currentWidth = 0;
+
+    for (const char of text) {
+        // Check if the character is full-width (2 bytes in UTF-16)
+        const charWidth = char.match(/[^\x00-\x7F]/) ? 2 : 1;
+
+        if (currentWidth + charWidth > maxWidth) {
+        lines.push(currentLine);
+        currentLine = '';
+        currentWidth = 0;
+        }
+
+        currentLine += char;
+        currentWidth += charWidth;
+    }
+
+    if (currentLine) {
+        lines.push(currentLine);
+    }
+
+    return lines.join('\n');
+}
