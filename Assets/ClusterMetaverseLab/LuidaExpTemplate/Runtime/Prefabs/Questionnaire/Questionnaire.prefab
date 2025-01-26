@@ -1154,7 +1154,7 @@ MonoBehaviour:
   size: 0.025
   textAnchor: 4
   textAlignment: 0
-  color: {r: 0, g: 0, b: 0, a: 1}
+  color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &3032356309767737638
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1306,7 +1306,7 @@ MonoBehaviour:
   size: 0.05
   textAnchor: 4
   textAlignment: 1
-  color: {r: 0, g: 0, b: 0, a: 1}
+  color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &9182349118550176443
 MonoBehaviour:
   m_ObjectHideFlags: 0
