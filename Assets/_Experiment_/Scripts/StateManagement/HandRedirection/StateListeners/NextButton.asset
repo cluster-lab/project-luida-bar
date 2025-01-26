@@ -23,7 +23,12 @@ MonoBehaviour:
     onStateStartedFoldout: 1
     duringStateActions: []
     duringStateFoldout: 0
-    onStateExitedActions: []
+    onStateExitedActions:
+    - predefinedAction:
+        actionType: Hide item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
+      customAction: 
+      showCustomActionFoldout: 0
     onStateExitedFoldout: 1
   - stateID: 2
     onStateStartedActions:
@@ -32,6 +37,11 @@ MonoBehaviour:
         codeSnippet: 
       customAction: "$.subNode(\"Text\").setText(\"\u958B\u59CB\");"
       showCustomActionFoldout: 1
+    - predefinedAction:
+        actionType: Show item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
+      customAction: 
+      showCustomActionFoldout: 0
     onStateStartedFoldout: 1
     duringStateActions: []
     duringStateFoldout: 0

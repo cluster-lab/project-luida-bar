@@ -7,6 +7,7 @@ function OnStateEnter() {
   }
   if (STATE_ID === 2) {
     $.subNode("Text").setText("開始");
+    $.setStateCompat('this', 'exp_showItem', true);
   }
   if (STATE_ID === 6) {
     $.setStateCompat('this', 'exp_showItem', true);
@@ -29,6 +30,9 @@ function OnStateExit() {
   const STATE_ID = $.state.state_id;
   const CONDITION = $.groupState.currentCondition;
 
+  if (STATE_ID === 0) {
+    $.setStateCompat('this', 'exp_showItem', false);
+  }
   if (STATE_ID === 2) {
     $.setStateCompat('this', 'exp_showItem', false);
   }

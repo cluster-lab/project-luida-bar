@@ -5,7 +5,7 @@ function calculateData () {
   function saveData_taskAnswer() {
 return {
   gain: CONDITION["gain"],
-  isFaster: $.getStateCompat("global", "isFaster", "boolean");
+  isFaster: $.getStateCompat("global", "isFaster", "boolean")
 };
     return {};
   }
