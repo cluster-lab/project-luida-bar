@@ -611,7 +611,8 @@ MonoBehaviour:
     = [];\n    const q = $.state.questions[$.state.qID];\n    $.subNode(\"Title\").setText(splitTextByWidth(q.t,
     50));\n    $.subNode(\"Description\").setText(splitTextByWidth(q.d, 100));\n   
     $.state.questionTypeID = q.i;\n    $.state.answerOptions = Array.isArray(q.a)\n       
-    ? q.a\n        : (typeof q.a === \"string\" ? q.a.split(\",\") : []) ;\n    spawnAnswerOptionUI();\n}\n\nfunction
+    ? q.a\n        : (typeof q.a === \"string\" ? q.a.split(\",\") : []) ;\n    if
+    ($.state.answerOptions.length === 0) $.state.answerOptions = [\"\"];\n    spawnAnswerOptionUI();\n}\n\nfunction
     spawnAnswerOptionUI() {\n    $.state.pendingAnswerOptions = $.state.answerOptions.slice();\n   
     $.state.answerOptionIndex = 0;\n}\n\nfunction addAnswerOption (id, localPos,
     rot, ansId) {\n    const itemHandle = $.createItem(id, $.getPosition().clone().add(localPos.clone().applyQuaternion(rot)),
@@ -1138,7 +1139,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5697374075775875167}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0.45, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1633,7 +1634,7 @@ Transform:
   m_GameObject: {fileID: 8408533183222688948}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.5, y: 1.75, z: 1}
+  m_LocalScale: {x: 2.5, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5697374075709122391}
