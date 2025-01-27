@@ -4,7 +4,7 @@ function calculateData () {
 
   function saveData_taskTime() {
 let data =  {
-  t: $.getStateCompat("owner", "taskTime", "float"),
+  t: Number(($.getStateCompat("owner", "taskTime", "float")).toFixed(4)),
   x: $.getStateCompat("owner", "x", "integer"),
   y: $.getStateCompat("owner", "y", "integer"),
   z: CONDITION["d"],
