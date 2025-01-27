@@ -7,12 +7,13 @@ $.onUpdate((deltaTime) => {
     if (!$.state.isInitiated && $.getStateCompat("this", "form_set_content_active", "boolean")) {
         $.state.isInitiated = true;
         $.state.qID = 0;
+        $.state.questions = [];
         $.subNode("LoadingHint").setEnabled(true);
 
         // Reintroduced callExternal to get questions
         const questionnaireID = $.getStateCompat("this", "qID", "integer");
         if (questionnaireID !== -1) {
-            let request = { type: "questions", token: token || "", eID: expID || "", qID: questionnaireID };
+            let request = { type: "questions", token: token || "", eID: expID || "", qID: questionnaireID, startIndex: 0 };
             $.callExternal(JSON.stringify(request), "getQuestions");
         }
     }
@@ -244,9 +245,19 @@ $.onExternalCallEnd((res, meta, err) => {
 
     if (meta === "getQuestions") {
         const parsedRes = JSON.parse(res);
-        $.state.questions = parsedRes.questions;
+
+        let isFirstGet = $.state.questions.length === 0;
+        $.state.questions = [ ...$.state.questions, ...parsedRes.questions ];
         $.subNode("LoadingHint").setEnabled(false);
-        tryInitQuestion();
+        if (isFirstGet) tryInitQuestion();
+
+        if ("isDone" in parsedRes && !parsedRes.isDone) {
+            const questionnaireID = $.getStateCompat("this", "qID", "integer");
+            if (questionnaireID !== -1) {
+                let request = { type: "questions", token: token || "", eID: expID || "", qID: questionnaireID, startIndex: $.state.questions.length };
+                $.callExternal(JSON.stringify(request), "getQuestions");
+            }
+        }
     }
 
     if (meta === "postQuestionAnswers") {
