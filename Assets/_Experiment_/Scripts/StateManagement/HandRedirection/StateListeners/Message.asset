@@ -23,15 +23,7 @@ MonoBehaviour:
     onStateStartedFoldout: 1
     duringStateActions: []
     duringStateFoldout: 0
-    onStateExitedActions:
-    - predefinedAction:
-        actionType: 
-        codeSnippet: 
-      customAction: '
-
-        $.setStateCompat("owner", "exp_participantMoveSpeed",
-        1);'
-      showCustomActionFoldout: 1
+    onStateExitedActions: []
     onStateExitedFoldout: 1
   - stateID: 2
     onStateStartedActions:
@@ -151,7 +143,7 @@ MonoBehaviour:
       customAction: 
       showCustomActionFoldout: 0
     onStateExitedFoldout: 1
-  - stateID: 12
+  - stateID: 13
     onStateStartedActions:
     - predefinedAction:
         actionType: Show item

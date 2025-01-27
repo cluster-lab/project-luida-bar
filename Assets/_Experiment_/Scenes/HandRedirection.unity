@@ -537,6 +537,7 @@ PrefabInstance:
         50));\n    $.subNode(\"Description\").setText(splitTextByWidth(q.d, 100));\n   
         $.state.questionTypeID = q.i;\n    $.state.answerOptions = Array.isArray(q.a)\n       
         ? q.a\n        : (typeof q.a === \"string\" ? q.a.split(\",\") : []) ;\n   
+        if ($.state.answerOptions.length === 0) $.state.answerOptions = [\"\"];\n   
         spawnAnswerOptionUI();\n}\n\nfunction spawnAnswerOptionUI() {\n    $.state.pendingAnswerOptions
         = $.state.answerOptions.slice();\n    $.state.answerOptionIndex = 0;\n}\n\nfunction
         addAnswerOption (id, localPos, rot, ansId) {\n    const itemHandle = $.createItem(id,
@@ -1497,6 +1498,107 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 479520849}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &537290590
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1352467988}
+    m_Modifications:
+    - target: {fileID: 3594218895443089410, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: id.value
+      value: 5879447461558328302
+      objectReference: {fileID: 0}
+    - target: {fileID: 3594218895443089411, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_Name
+      value: Questionnaire (post-exp-2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
+--- !u!4 &537290591 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 537290590}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &537290592 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9066732491794337766, guid: 3105867d6c14a45979c616d46caf8a2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 537290590}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &553056464
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2208,6 +2310,323 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 925701002}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &992768599
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 537290592}
+    m_Modifications:
+    - target: {fileID: 679173099575055621, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[0]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: c22e594b3eff3364c8217424a55e9588,
+        type: 3}
+    - target: {fileID: 1154675398573189425, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2283742839625838976, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: worldItemTemplates.Array.data[0].itemTemplateId.value
+      value: 16372347920221920323
+      objectReference: {fileID: 0}
+    - target: {fileID: 2283742839625838976, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: worldItemTemplates.Array.data[1].itemTemplateId.value
+      value: 653939095723753486
+      objectReference: {fileID: 0}
+    - target: {fileID: 2283742839625838976, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: worldItemTemplates.Array.data[2].itemTemplateId.value
+      value: 8057460474561801597
+      objectReference: {fileID: 0}
+    - target: {fileID: 2283742839625838976, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: worldItemTemplates.Array.data[3].itemTemplateId.value
+      value: 1049686230736764237
+      objectReference: {fileID: 0}
+    - target: {fileID: 2283742839625838976, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: worldItemTemplates.Array.data[4].itemTemplateId.value
+      value: 17722357788832572141
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075333026450, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075333026450, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075333026450, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075333026450, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075333026450, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075333026450, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075333026450, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075333026450, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075333026450, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075333026450, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075333026450, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075333026451, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: m_Name
+      value: Questionnaire
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075709122379, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: itemTemplateId.value
+      value: 1049686230736764237
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075709122380, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: itemTemplateId.value
+      value: 17722357788832572141
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075709122382, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: itemTemplateId.value
+      value: 16372347920221920323
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075709122383, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: itemTemplateId.value
+      value: 653939095723753486
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075709122384, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: itemTemplateId.value
+      value: 8057460474561801597
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075709122387, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: id.value
+      value: 1225124990204994951
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075709122390, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: sourceCode
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\n$.onStart(()
+        => {\n    reset();\n});\n\n$.onUpdate((deltaTime) => {\n    // Ensure that
+        the question is only initialized after all currently displayed answer options
+        are destroyed\n    if (!$.state.isInitiated && $.getStateCompat(\"this\",
+        \"form_set_content_active\", \"boolean\")) {\n        $.state.isInitiated
+        = true;\n        $.state.qID = 0;\n        $.state.questions = [];\n       
+        $.subNode(\"LoadingHint\").setEnabled(true);\n\n        // Reintroduced callExternal
+        to get questions\n        const questionnaireID = $.getStateCompat(\"this\",
+        \"qID\", \"integer\");\n        if (questionnaireID !== -1) {\n           
+        let request = { type: \"questions\", token: token || \"\", eID: expID ||
+        \"\", qID: questionnaireID, startIndex: 0 };\n            $.callExternal(JSON.stringify(request),
+        \"getQuestions\");\n        }\n    }\n\n    if ($.state.tryInitQuestion &&
+        !$.state.answerOptionUIs.some(ans => ans.exists())) {\n        initQuestion();\n   
+        }\n\n    // Timer to trigger batch generation of answer options\n    $.state.timer
+        = ($.state.timer || 0) + deltaTime;\n    if ($.state.timer > 0.2 && $.state.pendingAnswerOptions
+        && $.state.pendingAnswerOptions.length > 0) {\n        spawnNextAnswerOption();\n       
+        $.state.timer = 0; // Reset the timer after generating a batch\n    }\n});\n\n$.onInteract(()
+        => {\n    $.setStateCompat(\"this\", \"form_set_content_active\", true);\n   
+        $.setStateCompat(\"this\", \"form_set_start_hint_active\", false);\n});\n\n$.onReceive((messageType,
+        arg) => {\n    if (!$.state.isInitiated) return;\n    switch (messageType)
+        {\n        case \"form_answer\":\n            handleFormAnswer(arg);\n           
+        break;\n        case \"form_to_next\":\n            saveAnswer();\n           
+        break;\n        case \"form_to_prev\":\n            toPrev();\n           
+        break;\n    }\n});\n\nfunction tryInitQuestion() {\n    $.state.tryInitQuestion
+        = true;\n}\n\nfunction initQuestion() {\n    // Prepare to stop destruction
+        of answer options and initialize a new question\n    $.sendSignalCompat(\"this\",
+        \"form_stop_destroy_answer_option\");\n    $.state.tryInitQuestion = false;\n   
+        $.state.answerOptionUIs = [];\n    $.state.answerOptionLocalPositions = [];\n   
+        const q = $.state.questions[$.state.qID];\n    $.subNode(\"Title\").setText(splitTextByWidth(q.t,
+        50));\n    $.subNode(\"Description\").setText(splitTextByWidth(q.d, 100));\n   
+        $.state.questionTypeID = q.i;\n    $.state.answerOptions = Array.isArray(q.a)\n       
+        ? q.a\n        : (typeof q.a === \"string\" ? q.a.split(\",\") : []) ;\n   
+        if ($.state.answerOptions.length === 0) $.state.answerOptions = [\"\"];\n   
+        spawnAnswerOptionUI();\n}\n\nfunction spawnAnswerOptionUI() {\n    $.state.pendingAnswerOptions
+        = $.state.answerOptions.slice();\n    $.state.answerOptionIndex = 0;\n}\n\nfunction
+        addAnswerOption (id, localPos, rot, ansId) {\n    const itemHandle = $.createItem(id,
+        $.getPosition().clone().add(localPos.clone().applyQuaternion(rot)), rot);\n   
+        $.state.answerOptionUIs = [...$.state.answerOptionUIs, itemHandle];\n   
+        $.state.answerOptionLocalPositions = [...$.state.answerOptionLocalPositions,
+        localPos];\n    itemHandle.send(\"form_init_answer_option\", { value: ansId
+        + 1, label: $.state.answerOptions[ansId] });\n}\n\nfunction spawnNextAnswerOption()
+        {\n    const n = $.state.pendingAnswerOptions.length || 0;\n    if ($.state.answerOptionIndex
+        >= n) {\n        $.state.pendingAnswerOptions = [];\n        return;\n   
+        }\n\n    let rotOffset = $.getRotation().clone();\n    let answerUiId = \"\";\n\n   
+        // Maximum number of rows (per column)\n    const maxRows = 5;\n    const
+        batchSize = 3; // Number of options to generate in each batch\n    const
+        numColumns = Math.ceil(n / maxRows); // Calculate number of columns based
+        on total options and max rows per column\n\n    // Adjust x-position based
+        on number of columns to center them\n    const totalWidth = numColumns *
+        0.5; // Adjust total width depending on your frame size\n    let i = 0;\n\n   
+        for (i = 0; i < batchSize && $.state.answerOptionIndex < n; i++) {\n       
+        let columnIndex = Math.floor($.state.answerOptionIndex / maxRows);\n       
+        let rowIndex = $.state.answerOptionIndex % maxRows;\n\n        // Calculate
+        dynamic x and y positions\n        let x = (columnIndex - (numColumns - 1)
+        / 2) - 0.2; // Adjust 0.5 for spacing between columns\n        let y = ((maxRows
+        - 1) / 2 - rowIndex) * 0.2 - 0.1; // 0.2 is the vertical spacing between
+        rows\n\n        switch ($.state.questionTypeID) {\n            case 0: //
+        Radio Buttons (single answer)\n            case 2: // Checkbox (multiple
+        answers)\n                answerUiId = new WorldItemTemplateId($.state.questionTypeID
+        === 0\n                    ? \"answer-option-radio-button\"\n                   
+        : \"answer-option-checkbox\");\n\n                // Add the option at calculated
+        x and y positions\n                addAnswerOption(answerUiId, new Vector3(x,
+        y, 0), rotOffset, $.state.answerOptionIndex);\n                break;\n\n           
+        case 1: // Linear Scale\n                answerUiId = new WorldItemTemplateId(\"answer-option-scale-button\");\n\n               
+        let scaleX = ((n > 11 ? 3 : 2) / (n - 1)) * ($.state.answerOptionIndex -
+        (n - 1) / 2);\n                addAnswerOption(answerUiId, new Vector3(scaleX,
+        0, 0), rotOffset, $.state.answerOptionIndex);\n                break;\n\n           
+        case 3: // Toggle\n                answerUiId = new WorldItemTemplateId(\"answer-option-toggle\");\n               
+        addAnswerOption(answerUiId, new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);\n               
+        break;\n\n            case 4: // Text Input\n                answerUiId =
+        new WorldItemTemplateId(\"answer-option-text-input\");\n                addAnswerOption(answerUiId,
+        new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);\n               
+        break;\n\n            default:\n                break;\n        }\n\n       
+        $.state.answerOptionIndex += 1;\n    }\n}\n\nfunction destroyAnswerOptionUIs()
+        {\n    // Send a signal to destroy the current answer option UI elements\n   
+        $.sendSignalCompat(\"this\", \"form_destroy_answer_option\");\n}\n\nfunction
+        handleFormAnswer(arg) {\n    let posOffset = $.getPosition().clone();\n   
+        switch ($.state.questionTypeID) {\n        case 0: // Radio Buttons\n       
+        case 1: // Linear Scale\n            $.subNode(\"RadioButtonIndicator\").setEnabled(true);\n           
+        $.subNode(\"RadioButtonIndicator\").setPosition($.state.answerOptionLocalPositions[arg
+        - 1].clone());\n        case 3: // Toggle\n        case 4: // Text Input\n           
+        $.state.tmpAnswer = arg;\n            break;\n        case 2: // Checkbox\n           
+        if (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];\n           
+        if (arg.isOn) {\n                if (!$.state.tmpAnswer.includes(arg.value))
+        $.state.tmpAnswer = [...$.state.tmpAnswer, arg.value];\n            } else
+        {\n                $.state.tmpAnswer = $.state.tmpAnswer.filter(item => item
+        !== arg.value);\n            }\n            break;\n    }\n}\n\nfunction
+        saveAnswer() {\n    if (!$.state.questions[$.state.qID]) return;\n    if
+        ($.state.questions[$.state.qID].r && (!$.state.tmpAnswer && $.state.tmpAnswer
+        !== false)) return;\n    let answers = [ ...$.state.answers ];\n    answers[$.state.qID]
+        = $.state.tmpAnswer;\n    $.state.answers = answers;\n    toNext();\n}\n\nfunction
+        submitAnswers() {\n    $.log(\"Send final answers: \" + JSON.stringify($.state.answers));\n   
+        let request = {\n        type: \"questionAnswers\",\n        token: token
+        || \"\",\n        eID: expID || \"\",\n        qID: $.getStateCompat(\"this\",
+        \"qID\", \"integer\").toString() || \"1\",\n        pID: $.getPlayersNear($.getPosition().clone(),
+        100)[0].idfc || \"\", // TODO: retrieve idfc through cluster Player Script\n       
+        // pRole: \"\",\n        answers: $.state.answers\n    };\n    const conditionManager
+        = $.worldItemReference(\"ConditionManager\");\n    if (conditionManager)
+        {\n        conditionManager.send(\"exp_questionnaire_answer\", $.state.answers);\n   
+        }\n    $.callExternal(JSON.stringify(request), \"postQuestionAnswers\");\n   
+        $.setStateCompat(\"this\", \"form_set_content_active\", false);\n    reset(false);\n}\n\nfunction
+        toNext() {\n    destroyAnswerOptionUIs(); // Ensure previous UI elements
+        are destroyed\n    $.state.qID = $.state.qID + 1;\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\n   
+        if ($.state.qID >= $.state.questions.length) {\n        submitAnswers();\n   
+        } else {\n        $.state.tmpAnswer = null;\n        tryInitQuestion();\n   
+        }\n}\n\nfunction toPrev() {\n    if ($.state.qID <= 0) return;\n    destroyAnswerOptionUIs();
+        // Ensure previous UI elements are destroyed\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\n   
+        $.state.qID = $.state.qID - 1;\n    $.state.tmpAnswer = null;\n    tryInitQuestion();\n}\n\nfunction
+        reset(showStartHint = true) {\n    destroyAnswerOptionUIs(); // Reset will
+        also destroy any existing answer option UIs\n    $.setStateCompat(\"this\",
+        \"form_set_start_hint_active\", showStartHint);\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\n   
+        $.state.answers = [];\n    $.state.qID = 0;\n    $.state.isInitiated = false;\n   
+        $.state.tryInitQuestion = false;\n    $.state.answerOptionUIs = [];\n   
+        $.state.answerOptionLocalPositions = [];\n    $.state.answerOptionIndex =
+        0;\n    $.state.pendingAnswerOptions = [];\n    $.setStateCompat(\"this\",
+        \"form_set_content_active\", false);\n}\n\n$.onExternalCallEnd((res, meta,
+        err) => {\n    if (res == null) {\n        $.log(\"callExternal ERROR: \"
+        + err);\n        return;\n    }\n\n    if (meta === \"getQuestions\") {\n       
+        const parsedRes = JSON.parse(res);\n\n        let isFirstGet = $.state.questions.length
+        === 0;\n        $.state.questions = [ ...$.state.questions, ...parsedRes.questions
+        ];\n        $.subNode(\"LoadingHint\").setEnabled(false);\n        if (isFirstGet)
+        tryInitQuestion();\n\n        if (\"isDone\" in parsedRes && !parsedRes.isDone)
+        {\n            const questionnaireID = $.getStateCompat(\"this\", \"qID\",
+        \"integer\");\n            if (questionnaireID !== -1) {\n               
+        let request = { type: \"questions\", token: token || \"\", eID: expID ||
+        \"\", qID: questionnaireID, startIndex: $.state.questions.length };\n               
+        $.callExternal(JSON.stringify(request), \"getQuestions\");\n            }\n       
+        }\n    }\n\n    if (meta === \"postQuestionAnswers\") {\n        $.log(\"Answers
+        recorded!\");\n        $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n       
+        reset(false);\n    }\n});\n\nfunction splitTextByWidth(text, maxWidth = 50)
+        {\n    const lines = [];\n    let currentLine = '';\n    let currentWidth
+        = 0;\n\n    for (const char of text) {\n        // Check if the character
+        is full-width (2 bytes in UTF-16)\n        const charWidth = char.match(/[^\\x00-\\x7F]/)
+        ? 2 : 1;\n\n        if (currentWidth + charWidth > maxWidth) {\n        lines.push(currentLine);\n       
+        currentLine = '';\n        currentWidth = 0;\n        }\n\n        currentLine
+        += char;\n        currentWidth += charWidth;\n    }\n\n    if (currentLine)
+        {\n        lines.push(currentLine);\n    }\n\n    return lines.join('\\n');\n}\n"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374075919056181, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: id.value
+      value: 18387375449945275515
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374076674148509, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: id.value
+      value: 15817762391784299660
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374076976329125, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: id.value
+      value: 7129891449410109293
+      objectReference: {fileID: 0}
+    - target: {fileID: 6652979657310920572, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: textMesh
+      value: 
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5fc328789f6f647509a5de61027d8680, type: 3}
+--- !u!1 &992768600 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5697374075709122392, guid: 5fc328789f6f647509a5de61027d8680,
+    type: 3}
+  m_PrefabInstance: {fileID: 992768599}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &992768601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992768600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49554f6eafb04d538a589436719e8fa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldItemReferences:
+  - id: ConditionManager
+    item: {fileID: 7533049804749356261}
 --- !u!1 &997367276
 GameObject:
   m_ObjectHideFlags: 0
@@ -2421,6 +2840,7 @@ PrefabInstance:
         50));\n    $.subNode(\"Description\").setText(splitTextByWidth(q.d, 100));\n   
         $.state.questionTypeID = q.i;\n    $.state.answerOptions = Array.isArray(q.a)\n       
         ? q.a\n        : (typeof q.a === \"string\" ? q.a.split(\",\") : []) ;\n   
+        if ($.state.answerOptions.length === 0) $.state.answerOptions = [\"\"];\n   
         spawnAnswerOptionUI();\n}\n\nfunction spawnAnswerOptionUI() {\n    $.state.pendingAnswerOptions
         = $.state.answerOptions.slice();\n    $.state.answerOptionIndex = 0;\n}\n\nfunction
         addAnswerOption (id, localPos, rot, ansId) {\n    const itemHandle = $.createItem(id,
@@ -3107,13 +3527,12 @@ PrefabInstance:
         }\n  if (STATE_ID === 8) {\n    let sentences = [\"Q: \u30D0\u30FC\u30C1\u30E3\u30EB\u7A7A\u9593\u306E\u4E2D\u306E\u624B\u306F\u5B9F\u8EAB\u4F53\u306E\u624B\u3088\u308A\",\r\n\"\u901F\u304F\u52D5\u3044\u305F\u304B\uFF1F\u9045\u304F\u52D5\u3044\u305F\u304B\uFF1F\",\r\n\"\u5206\u304B\u3089\u306A\u3044\u5834\u5408\u306F\u3069\u3061\u3089\u304B\u306E\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\"];\r\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
         }\n  if (STATE_ID === 9) {\n    $.subNode(\"Text\").setText(\"\u624B\u3092\u304A\u308D\u3057\u3066\u304F\u3060\u3055\u3044\");\n 
         }\n  if (STATE_ID === 10) {\n    let sentences = [\"\u30BF\u30B9\u30AF\u306F\u4EE5\u4E0A\u306B\u306A\u308A\u307E\u3059\u3002\",\r\n\"\u304A\u75B2\u308C\u69D8\u3067\u3059\u3002\",\r\n\"\u6700\u5F8C\u306B\u8CEA\u554F\u7D19\u306B\u3054\u8A18\u5165\u3092\u304A\u9858\u3044\u3057\u307E\u3059\u3002\",\r\n\"\u300C\u6B21\u3078\u300D\u30DC\u30BF\u30F3\u3092\u30AF\u30EA\u30C3\u30AF\u3057\u3066\u9032\u3093\u3067\u304F\u3060\u3055\u3044\u3002\"];\r\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
-        }\n  if (STATE_ID === 12) {\n    $.setStateCompat('this', 'exp_showItem',
+        }\n  if (STATE_ID === 13) {\n    $.setStateCompat('this', 'exp_showItem',
         true);\n    let sentences = [\"\u5B9F\u9A13\u306F\u4EE5\u4E0A\u306B\u306A\u308A\u307E\u3059\u3002\",\r\n\"\u3054\u53C2\u52A0\u3044\u305F\u3060\u304D\u3042\u308A\u304C\u3068\u3046\u3054\u3056\u3044\u307E\u3057\u305F\u3002\",\r\n\"\u76EE\u306E\u524D\u306E\u30B2\u30FC\u30C8\u306B\u6F5C\u3063\u3066\u9000\u5BA4\u3057\u3066\u304F\u3060\u3055\u3044\u3002\",\r\n\"\u8B1D\u793C\u306F\u5F8C\u65E5\u306B\u4ED8\u4E0E\u3057\u307E\u3059\u3002\"];\r\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n$.setStateCompat(\"owner\",
         \"exp_participantMoveSpeed\", 1);\n  }\n}\n\n\nfunction DuringState(deltaTime)
         {\n  const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n}\n\n\nfunction
         OnStateExit() {\n  const STATE_ID = $.state.state_id;\n  const CONDITION
-        = $.groupState.currentCondition;\n\n  if (STATE_ID === 0) {\n    \n$.setStateCompat(\"owner\",
-        \"exp_participantMoveSpeed\", 1);\n  }\n  if (STATE_ID === 10) {\n    $.setStateCompat('this',
+        = $.groupState.currentCondition;\n\n  if (STATE_ID === 10) {\n    $.setStateCompat('this',
         'exp_showItem', false);\n  }\n}\n\n\n\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
@@ -3445,6 +3864,7 @@ Transform:
   - {fileID: 112032908}
   - {fileID: 2042168210}
   - {fileID: 1232226265}
+  - {fileID: 537290591}
   - {fileID: 1107838076}
   m_Father: {fileID: 7533049804749356260}
   m_RootOrder: 5
@@ -3730,7 +4150,7 @@ PrefabInstance:
         OnStateEnter() {}\n\nfunction OnStateExit() {}\n\nfunction DuringState(deltaTime)
         {}\n\nfunction Update(deltaTime) {}\n\r\nfunction OnStateEnter() {\n  const
         STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
-        if (STATE_ID === 12) {\n    $.setStateCompat('this', 'exp_showItem', true);\n 
+        if (STATE_ID === 13) {\n    $.setStateCompat('this', 'exp_showItem', true);\n 
         }\n  if (STATE_ID === 0) {\n    $.setStateCompat('this', 'exp_showItem',
         false);\n  }\n}\n\n\nfunction DuringState(deltaTime) {\n  const STATE_ID
         = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n}\n\n\nfunction
@@ -5185,17 +5605,17 @@ PrefabInstance:
     - target: {fileID: 1523856785490388475, guid: 7a3b3cea72501334595167f4bb75fffe,
         type: 3}
       propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
-      value: 12
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 5452303497717695092, guid: 7a3b3cea72501334595167f4bb75fffe,
         type: 3}
       propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
-      value: 12
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 5878395029816850200, guid: 7a3b3cea72501334595167f4bb75fffe,
         type: 3}
       propertyPath: m_RootOrder
-      value: 12
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 5878395029816850200, guid: 7a3b3cea72501334595167f4bb75fffe,
         type: 3}
@@ -5543,25 +5963,42 @@ PrefabInstance:
     - target: {fileID: 2966719835339860266, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\n$.onStart(()
-        => {\n    $.state.customData = {};\n})\n\n$.onUpdate(() => {\n    if ($.getStateCompat(\"this\",
-        \"exp_recordCustomData\", \"boolean\")) {\n        $.setStateCompat(\"this\",
-        \"exp_recordCustomData\", false);\n        recordData();\n    }\n    if ($.getStateCompat(\"this\",
-        \"exp_uploadCustomData\", \"boolean\")) {\n        $.setStateCompat(\"this\",
-        \"exp_uploadCustomData\", false);\n        uploadData();\n    }\n})\n\nfunction
-        recordData () {\n    $.state.customData = calculateData();\n}\n\nfunction
-        uploadData () {\n    $.log(\"Upload custom data: \" + JSON.stringify($.state.customData));\n   
-        let request = {\n        type: \"uploadCustomData\",\n        token: token
-        || \"\",\n        data: $.state.customData,\n        eID: expID || \"\",\n       
-        pID: $.getPlayersNear($.getPosition().clone(), Infinity)[0].idfc || \"\"
-        // TODO: retrieve idfc through cluster Player Script\n    };\n    $.callExternal(JSON.stringify(request),
-        \"customDataUploaded\");\n}\n\n$.onExternalCallEnd((res, meta, err) =>\n{\n   
-        if (res == null) {\n        $.log(\"callExternal ERROR: \" + err);\n       
-        return;\n    }\n\n    if (meta === \"customDataUploaded\") {\n        $.log(\"Response
-        after customDataUploaded called: \" + JSON.stringify(res));\n    }\n});\r\nfunction
-        calculateData () {\n  let returnData = $.state.customData;\n  const CONDITION
-        = $.groupState.currentCondition;\n\n  function saveData_taskAnswer() {\nlet
-        data = {\n  gain: CONDITION[\"gain\"],\n  isFaster: $.getStateCompat(\"global\",
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\nconst uploadInterval
+        = 1;\nconst dataLengthPerUpload = 15;\n\n$.onStart(() => {\n    $.state.customData
+        = {};\n    $.state.uploadIndex = 0;\n    $.state.elapsedTime = 0;\n    $.state.dataLength
+        = 0;\n    $.state.isUploading = false;\n})\n\n$.onUpdate((deltaTime) => {\n   
+        if ($.getStateCompat(\"this\", \"exp_recordCustomData\", \"boolean\")) {\n       
+        $.setStateCompat(\"this\", \"exp_recordCustomData\", false);\n        recordData();\n   
+        }\n    if ($.getStateCompat(\"this\", \"exp_uploadCustomData\", \"boolean\"))
+        {\n        if ($.state.uploadIndex === 0) {\n            uploadDataInit();\n           
+        $.setStateCompat(\"this\", \"exp_uploadCustomData\", false);\n        }\n   
+        }\n    if ($.state.isUploading) {\n        $.state.elapsedTime = $.state.elapsedTime
+        + deltaTime;\n        if ($.state.elapsedTime >= uploadInterval && $.state.uploadIndex
+        < Math.ceil($.state.dataLength / dataLengthPerUpload)) {\n            $.state.elapsedTime
+        = 0;\n            uploadDataStep();\n        }\n    }\n})\n\nfunction recordData
+        () {\n    $.state.customData = calculateData();\n}\n\nfunction uploadDataInit()
+        {\n    $.state.uploadIndex = 0;\n    $.state.elapsedTime = 0;\n    $.state.isUploading
+        = true;\n    let firstFileName = Object.keys($.state.customData)[0];\n   
+        if (firstFileName) {\n        $.state.dataLength = $.state.customData[firstFileName].length;\n   
+        }\n}\n\nfunction uploadDataStep() {\n    $.log($.state.uploadIndex);\n   
+        if ($.state.uploadIndex < Math.ceil($.state.dataLength / dataLengthPerUpload))
+        {\n        const slicedData = Object.fromEntries(\n            Object.entries($.state.customData).map(([key,
+        value]) => [\n                key,\n                value.slice($.state.uploadIndex
+        * dataLengthPerUpload, ($.state.uploadIndex + 1) * dataLengthPerUpload)\n           
+        ])\n        );\n        let request = {\n            type: \"uploadCustomData\",\n           
+        token: token || \"\",\n            data: slicedData,\n            eID: expID
+        || \"\",\n            pID: $.getPlayersNear($.getPosition().clone(), Infinity)[0].idfc
+        || \"\" // TODO: retrieve idfc through cluster Player Script\n        };\n       
+        $.log(request);\n        $.callExternal(JSON.stringify(request), \"customDataUploaded\");\n       
+        $.state.uploadIndex = $.state.uploadIndex + 1;\n\n        if ($.state.uploadIndex
+        >= Math.ceil($.state.dataLength / dataLengthPerUpload)) {\n            $.state.uploadIndex
+        = 0;\n            $.state.isUploading = false;\n        }\n    }\n}\n\n$.onExternalCallEnd((res,
+        meta, err) =>\n{\n    if (res == null) {\n        $.log(\"callExternal ERROR:
+        \" + err);\n        return;\n    }\n\n    if (meta === \"customDataUploaded\")
+        {\n        $.log(\"Response after customDataUploaded called: \" + JSON.stringify(res));\n   
+        }\n});\r\nfunction calculateData () {\n  let returnData = $.state.customData;\n 
+        const CONDITION = $.groupState.currentCondition;\n\n  function saveData_taskAnswer()
+        {\nlet data = {\n  gain: CONDITION[\"gain\"],\n  isFaster: $.getStateCompat(\"global\",
         \"isFaster\", \"boolean\")\n};\nreturn data;\n    return {};\n  }\n  const
         newRecord_taskAnswer = saveData_taskAnswer();\n  if (\"taskAnswer\" in returnData
         && Array.isArray(returnData[\"taskAnswer\"])) {\n    returnData[\"taskAnswer\"].push(newRecord_taskAnswer);\n 

@@ -62,7 +62,7 @@ $.subNode("Text").setText(sentences.join("\n"));
 "「次へ」ボタンをクリックして進んでください。"];
 $.subNode("Text").setText(sentences.join("\n"));
   }
-  if (STATE_ID === 12) {
+  if (STATE_ID === 13) {
     $.setStateCompat('this', 'exp_showItem', true);
     let sentences = ["実験は以上になります。",
 "ご参加いただきありがとうございました。",
@@ -85,10 +85,6 @@ function OnStateExit() {
   const STATE_ID = $.state.state_id;
   const CONDITION = $.groupState.currentCondition;
 
-  if (STATE_ID === 0) {
-    
-$.setStateCompat("owner", "exp_participantMoveSpeed", 1);
-  }
   if (STATE_ID === 10) {
     $.setStateCompat('this', 'exp_showItem', false);
   }
