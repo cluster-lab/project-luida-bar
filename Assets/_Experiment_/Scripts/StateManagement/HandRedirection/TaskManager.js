@@ -37,6 +37,12 @@ function DuringState(deltaTime) {
   if (STATE_ID === 9) {
     UpdateHandTransform(parseFloat(CONDITION["gain"]));
   }
+  if (STATE_ID === 4) {
+    UpdateHandTransform($.state.practiceGains[$.state.practiceGainID]);
+  }
+  if (STATE_ID === 8) {
+    UpdateHandTransform(parseFloat(CONDITION["gain"]));
+  }
 }
 
 
@@ -49,10 +55,12 @@ function OnStateExit() {
   }
   if (STATE_ID === 7) {
     $.setStateCompat('this', 'exp_showItem', false);
-    $.sendSignalCompat('this', 'exp_recordCustomData');
   }
   if (STATE_ID === 5) {
     $.state.practiceGainID = $.state.practiceGainID + 1;
+  }
+  if (STATE_ID === 8) {
+    $.sendSignalCompat('this', 'exp_recordCustomData');
   }
 }
 
@@ -61,6 +69,7 @@ function Reset() { // リセット処理
   // プレイヤーの初期状態を設定
   $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];
   $.state.handOriginalPos = $.subNode("RightHandAnchor").getPosition().clone();
+  $.state.isReaching = false;
 
   // プレイヤーの実際の手（コントローラー）と仮想手の回転のずれを補正するためのオフセットを設定
   $.state.handOffset = new Quaternion().setFromEulerAngles(new Vector3(0, 90, 0));
@@ -69,13 +78,13 @@ function Reset() { // リセット処理
   $.subNode("StartingPoint").setEnabled(true);
   $.subNode("TargetPoint").setEnabled(false);
 
-  // プレイヤーの頭部位置を基準に、原点を頭の30cm手前＋30cm下に配置
+  // プレイヤーの頭部位置を基準に、原点を頭の35cm手前＋30cm下に配置
   $.subNode("StartingPoint").setPosition(
-    $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new Vector3(0, -0.3, 0.3)));
+    $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new Vector3(0, -0.3, 0.35)));
 
-  // プレイヤーの頭部位置を基準に、ターゲットを頭の60cm手前＋30cm下に配置
+  // プレイヤーの頭部位置を基準に、ターゲットを頭の65cm手前＋30cm下に配置
   $.subNode("TargetPoint").setPosition(
-    $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new Vector3(0, -0.3, 0.6)));
+    $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new Vector3(0, -0.3, 0.65)));
 }
 
 // 右手アンカー（右手オブジェクトのParent Constraintsが参照しているオブジェクト）の位置を、
@@ -101,8 +110,7 @@ $.onCollide(collision => {
   if (!collision.handle || !$.worldItemReference("RightHand") || collision.handle.id !== $.worldItemReference("RightHand").id) return;
 
   if ($.state.isReaching) {
-    // すでにリーチング状態の場合、リーチングを終了する
-    $.state.isReaching = false;
+    // すでにリーチング状態の場合、現在の試行を終了する
     $.subNode("TargetPoint").setEnabled(false);
     ToNextState(); // 次の状態へ遷移
   } else {

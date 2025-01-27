@@ -15,9 +15,10 @@ function OnStateEnter() {
 $.subNode("Text").setText(sentences.join("\n"));
   }
   if (STATE_ID === 3) {
-    let sentences = ["右手の人差し指で、",
-"目の前に現れた緑の玉に触れてください。",
+    let sentences = ["頭を少し下に向けたら緑の玉が見えます。",
+"その玉に右手の人差し指で触れてください。",
 "玉は触れられたら30cm先まで移動します。",
+"右手をゆっくり動かし、",
 "移動後の玉にもう一度触れてください。"];
 $.subNode("Text").setText(sentences.join("\n"));
   }
@@ -38,9 +39,10 @@ $.subNode("Text").setText(sentences.join("\n"));
 $.subNode("Text").setText(sentences.join("\n"));
   }
   if (STATE_ID === 7) {
-    let sentences = ["右手の人差し指で、",
-"目の前に現れた緑の玉に触れてください。",
+    let sentences = ["頭を少し下に向けたら緑の玉が見えます。",
+"その玉に右手の人差し指で触れてください。",
 "玉は触れられたら30cm先まで移動します。",
+"右手をゆっくり動かし、",
 "移動後の玉にもう一度触れてください。"];
 $.subNode("Text").setText(sentences.join("\n"));
   }

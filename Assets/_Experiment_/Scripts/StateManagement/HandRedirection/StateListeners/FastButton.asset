@@ -54,11 +54,6 @@ MonoBehaviour:
     duringStateFoldout: 0
     onStateExitedActions:
     - predefinedAction:
-        actionType: Record custom data
-        codeSnippet: $.sendSignalCompat('this', 'exp_recordCustomData');
-      customAction: 
-      showCustomActionFoldout: 0
-    - predefinedAction:
         actionType: Hide item
         codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
       customAction: 

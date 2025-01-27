@@ -284,7 +284,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   worldOrEventId: 29ac4e39-e7af-4467-b3ba-dea011473eb0
   key: 
-  confirmTransition: 0
+  confirmTransition: 1
 --- !u!1 &110700923
 GameObject:
   m_ObjectHideFlags: 0
@@ -510,11 +510,12 @@ PrefabInstance:
         the question is only initialized after all currently displayed answer options
         are destroyed\n    if (!$.state.isInitiated && $.getStateCompat(\"this\",
         \"form_set_content_active\", \"boolean\")) {\n        $.state.isInitiated
-        = true;\n        $.state.qID = 0;\n        $.subNode(\"LoadingHint\").setEnabled(true);\n\n       
-        // Reintroduced callExternal to get questions\n        const questionnaireID
-        = $.getStateCompat(\"this\", \"qID\", \"integer\");\n        if (questionnaireID
-        !== -1) {\n            let request = { type: \"questions\", token: token
-        || \"\", eID: expID || \"\", qID: questionnaireID };\n            $.callExternal(JSON.stringify(request),
+        = true;\n        $.state.qID = 0;\n        $.state.questions = [];\n       
+        $.subNode(\"LoadingHint\").setEnabled(true);\n\n        // Reintroduced callExternal
+        to get questions\n        const questionnaireID = $.getStateCompat(\"this\",
+        \"qID\", \"integer\");\n        if (questionnaireID !== -1) {\n           
+        let request = { type: \"questions\", token: token || \"\", eID: expID ||
+        \"\", qID: questionnaireID, startIndex: 0 };\n            $.callExternal(JSON.stringify(request),
         \"getQuestions\");\n        }\n    }\n\n    if ($.state.tryInitQuestion &&
         !$.state.answerOptionUIs.some(ans => ans.exists())) {\n        initQuestion();\n   
         }\n\n    // Timer to trigger batch generation of answer options\n    $.state.timer
@@ -621,9 +622,16 @@ PrefabInstance:
         \"form_set_content_active\", false);\n}\n\n$.onExternalCallEnd((res, meta,
         err) => {\n    if (res == null) {\n        $.log(\"callExternal ERROR: \"
         + err);\n        return;\n    }\n\n    if (meta === \"getQuestions\") {\n       
-        const parsedRes = JSON.parse(res);\n        $.state.questions = parsedRes.questions;\n       
-        $.subNode(\"LoadingHint\").setEnabled(false);\n        tryInitQuestion();\n   
-        }\n\n    if (meta === \"postQuestionAnswers\") {\n        $.log(\"Answers
+        const parsedRes = JSON.parse(res);\n\n        let isFirstGet = $.state.questions.length
+        === 0;\n        $.state.questions = [ ...$.state.questions, ...parsedRes.questions
+        ];\n        $.subNode(\"LoadingHint\").setEnabled(false);\n        if (isFirstGet)
+        tryInitQuestion();\n\n        if (\"isDone\" in parsedRes && !parsedRes.isDone)
+        {\n            const questionnaireID = $.getStateCompat(\"this\", \"qID\",
+        \"integer\");\n            if (questionnaireID !== -1) {\n               
+        let request = { type: \"questions\", token: token || \"\", eID: expID ||
+        \"\", qID: questionnaireID, startIndex: $.state.questions.length };\n               
+        $.callExternal(JSON.stringify(request), \"getQuestions\");\n            }\n       
+        }\n    }\n\n    if (meta === \"postQuestionAnswers\") {\n        $.log(\"Answers
         recorded!\");\n        $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n       
         reset(false);\n    }\n});\n\nfunction splitTextByWidth(text, maxWidth = 50)
         {\n    const lines = [];\n    let currentLine = '';\n    let currentWidth
@@ -714,9 +722,8 @@ PrefabInstance:
         $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n}\n\n\nfunction
         OnStateExit() {\n  const STATE_ID = $.state.state_id;\n  const CONDITION
         = $.groupState.currentCondition;\n\n  if (STATE_ID === 4) {\n    $.setStateCompat('this',
-        'exp_showItem', false);\n  }\n  if (STATE_ID === 8) {\n    $.sendSignalCompat('this',
-        'exp_recordCustomData');\n    $.setStateCompat('this', 'exp_showItem', false);\n 
-        }\n}\n\n\n\n"
+        'exp_showItem', false);\n  }\n  if (STATE_ID === 8) {\n    $.setStateCompat('this',
+        'exp_showItem', false);\n  }\n}\n\n\n\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -973,22 +980,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: {fileID: 147284850}
   triggers:
-  - target: 0
-    specifiedTargetItem: {fileID: 0}
-    key: toNextState
-    type: 0
-    value:
-      boolValue: 0
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
   - target: 4
     specifiedTargetItem: {fileID: 0}
     key: isFaster
     type: 1
     value:
       boolValue: 1
+      floatValue: 0
+      integerValue: 0
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+  - target: 0
+    specifiedTargetItem: {fileID: 0}
+    key: toNextState
+    type: 0
+    value:
+      boolValue: 0
       floatValue: 0
       integerValue: 0
       vector2Value: {x: 0, y: 0}
@@ -2262,7 +2269,7 @@ PrefabInstance:
     - target: {fileID: 1154675398573189425, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
       propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2283742839625838976, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
@@ -2387,11 +2394,12 @@ PrefabInstance:
         the question is only initialized after all currently displayed answer options
         are destroyed\n    if (!$.state.isInitiated && $.getStateCompat(\"this\",
         \"form_set_content_active\", \"boolean\")) {\n        $.state.isInitiated
-        = true;\n        $.state.qID = 0;\n        $.subNode(\"LoadingHint\").setEnabled(true);\n\n       
-        // Reintroduced callExternal to get questions\n        const questionnaireID
-        = $.getStateCompat(\"this\", \"qID\", \"integer\");\n        if (questionnaireID
-        !== -1) {\n            let request = { type: \"questions\", token: token
-        || \"\", eID: expID || \"\", qID: questionnaireID };\n            $.callExternal(JSON.stringify(request),
+        = true;\n        $.state.qID = 0;\n        $.state.questions = [];\n       
+        $.subNode(\"LoadingHint\").setEnabled(true);\n\n        // Reintroduced callExternal
+        to get questions\n        const questionnaireID = $.getStateCompat(\"this\",
+        \"qID\", \"integer\");\n        if (questionnaireID !== -1) {\n           
+        let request = { type: \"questions\", token: token || \"\", eID: expID ||
+        \"\", qID: questionnaireID, startIndex: 0 };\n            $.callExternal(JSON.stringify(request),
         \"getQuestions\");\n        }\n    }\n\n    if ($.state.tryInitQuestion &&
         !$.state.answerOptionUIs.some(ans => ans.exists())) {\n        initQuestion();\n   
         }\n\n    // Timer to trigger batch generation of answer options\n    $.state.timer
@@ -2498,9 +2506,16 @@ PrefabInstance:
         \"form_set_content_active\", false);\n}\n\n$.onExternalCallEnd((res, meta,
         err) => {\n    if (res == null) {\n        $.log(\"callExternal ERROR: \"
         + err);\n        return;\n    }\n\n    if (meta === \"getQuestions\") {\n       
-        const parsedRes = JSON.parse(res);\n        $.state.questions = parsedRes.questions;\n       
-        $.subNode(\"LoadingHint\").setEnabled(false);\n        tryInitQuestion();\n   
-        }\n\n    if (meta === \"postQuestionAnswers\") {\n        $.log(\"Answers
+        const parsedRes = JSON.parse(res);\n\n        let isFirstGet = $.state.questions.length
+        === 0;\n        $.state.questions = [ ...$.state.questions, ...parsedRes.questions
+        ];\n        $.subNode(\"LoadingHint\").setEnabled(false);\n        if (isFirstGet)
+        tryInitQuestion();\n\n        if (\"isDone\" in parsedRes && !parsedRes.isDone)
+        {\n            const questionnaireID = $.getStateCompat(\"this\", \"qID\",
+        \"integer\");\n            if (questionnaireID !== -1) {\n               
+        let request = { type: \"questions\", token: token || \"\", eID: expID ||
+        \"\", qID: questionnaireID, startIndex: $.state.questions.length };\n               
+        $.callExternal(JSON.stringify(request), \"getQuestions\");\n            }\n       
+        }\n    }\n\n    if (meta === \"postQuestionAnswers\") {\n        $.log(\"Answers
         recorded!\");\n        $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n       
         reset(false);\n    }\n});\n\nfunction splitTextByWidth(text, maxWidth = 50)
         {\n    const lines = [];\n    let currentLine = '';\n    let currentWidth
@@ -3083,17 +3098,17 @@ PrefabInstance:
         STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n 
         if (STATE_ID === 0) {\n    $.setStateCompat('this', 'exp_showItem', false);\n 
         }\n  if (STATE_ID === 2) {\n    $.setStateCompat('this', 'exp_showItem',
-        true);\n    let sentences = [\"\u3053\u308C\u304B\u3089\u306F\u3001\u53F3\u624B\u306E\u4EBA\u5DEE\u3057\u6307\u3067\u7DD1\u306E\u7389\u3092\u89E6\u3063\u3066\u3001\",\n\"\u8CEA\u554F\u306B\u7B54\u3048\u308B\u3001\u3068\u3044\u3046\u30BF\u30B9\u30AF\u3092\u884C\u3063\u3066\u3044\u305F\u3060\u304D\u307E\u3059\u3002\",\n\"\u307E\u305A\u306F3\u56DE\u7DF4\u7FD2\u3057\u307E\u3057\u3087\u3046\u3002\",\n\"\u6E96\u5099\u304C\u3067\u304D\u305F\u3089\u3001\u8A2D\u5B9A\u753B\u9762\u3067\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u3092\u975E\u8868\u793A\u306B\u3057\u3001\",\n\"\u524D\u3092\u898B\u3066\u300C\u958B\u59CB\u300D\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\u3002\"];\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
-        }\n  if (STATE_ID === 3) {\n    let sentences = [\"\u53F3\u624B\u306E\u4EBA\u5DEE\u3057\u6307\u3067\u3001\",\n\"\u76EE\u306E\u524D\u306B\u73FE\u308C\u305F\u7DD1\u306E\u7389\u306B\u89E6\u308C\u3066\u304F\u3060\u3055\u3044\u3002\",\n\"\u7389\u306F\u89E6\u308C\u3089\u308C\u305F\u308930cm\u5148\u307E\u3067\u79FB\u52D5\u3057\u307E\u3059\u3002\",\n\"\u79FB\u52D5\u5F8C\u306E\u7389\u306B\u3082\u3046\u4E00\u5EA6\u89E6\u308C\u3066\u304F\u3060\u3055\u3044\u3002\"];\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
-        }\n  if (STATE_ID === 4) {\n    let sentences = [\"Q: \u30D0\u30FC\u30C1\u30E3\u30EB\u7A7A\u9593\u306E\u4E2D\u306E\u624B\u306F\u5B9F\u8EAB\u4F53\u306E\u624B\u3088\u308A\",\n\"\u901F\u304F\u52D5\u3044\u305F\u304B\uFF1F\u9045\u304F\u52D5\u3044\u305F\u304B\uFF1F\",\n\"\u5206\u304B\u3089\u306A\u3044\u5834\u5408\u306F\u3069\u3061\u3089\u304B\u306E\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\"];\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
+        true);\n    let sentences = [\"\u3053\u308C\u304B\u3089\u306F\u3001\u53F3\u624B\u306E\u4EBA\u5DEE\u3057\u6307\u3067\u7DD1\u306E\u7389\u3092\u89E6\u3063\u3066\u3001\",\r\n\"\u8CEA\u554F\u306B\u7B54\u3048\u308B\u3001\u3068\u3044\u3046\u30BF\u30B9\u30AF\u3092\u884C\u3063\u3066\u3044\u305F\u3060\u304D\u307E\u3059\u3002\",\r\n\"\u307E\u305A\u306F3\u56DE\u7DF4\u7FD2\u3057\u307E\u3057\u3087\u3046\u3002\",\r\n\"\u6E96\u5099\u304C\u3067\u304D\u305F\u3089\u3001\u8A2D\u5B9A\u753B\u9762\u3067\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u3092\u975E\u8868\u793A\u306B\u3057\u3001\",\r\n\"\u524D\u3092\u898B\u3066\u300C\u958B\u59CB\u300D\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\u3002\"];\r\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
+        }\n  if (STATE_ID === 3) {\n    let sentences = [\"\u982D\u3092\u5C11\u3057\u4E0B\u306B\u5411\u3051\u305F\u3089\u7DD1\u306E\u7389\u304C\u898B\u3048\u307E\u3059\u3002\",\r\n\"\u305D\u306E\u7389\u306B\u53F3\u624B\u306E\u4EBA\u5DEE\u3057\u6307\u3067\u89E6\u308C\u3066\u304F\u3060\u3055\u3044\u3002\",\r\n\"\u7389\u306F\u89E6\u308C\u3089\u308C\u305F\u308930cm\u5148\u307E\u3067\u79FB\u52D5\u3057\u307E\u3059\u3002\",\r\n\"\u53F3\u624B\u3092\u3086\u3063\u304F\u308A\u52D5\u304B\u3057\u3001\",\r\n\"\u79FB\u52D5\u5F8C\u306E\u7389\u306B\u3082\u3046\u4E00\u5EA6\u89E6\u308C\u3066\u304F\u3060\u3055\u3044\u3002\"];\r\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
+        }\n  if (STATE_ID === 4) {\n    let sentences = [\"Q: \u30D0\u30FC\u30C1\u30E3\u30EB\u7A7A\u9593\u306E\u4E2D\u306E\u624B\u306F\u5B9F\u8EAB\u4F53\u306E\u624B\u3088\u308A\",\r\n\"\u901F\u304F\u52D5\u3044\u305F\u304B\uFF1F\u9045\u304F\u52D5\u3044\u305F\u304B\uFF1F\",\r\n\"\u5206\u304B\u3089\u306A\u3044\u5834\u5408\u306F\u3069\u3061\u3089\u304B\u306E\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\"];\r\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
         }\n  if (STATE_ID === 5) {\n    $.subNode(\"Text\").setText(\"\u624B\u3092\u304A\u308D\u3057\u3066\u304F\u3060\u3055\u3044\");\n 
-        }\n  if (STATE_ID === 6) {\n    let sentences = [\"\u7DF4\u7FD2\u306F\u4EE5\u4E0A\u306B\u306A\u308A\u307E\u3059\u3002\",\n\"\u3053\u3053\u304B\u3089\u306F\u672C\u756A\u3067\u3059\u3002\",\n\"\u540C\u3058\u624B\u9806\u3067\u30BF\u30B9\u30AF\u309222\u56DE\u884C\u3063\u3066\u304F\u3060\u3055\u3044\u3002\",\n\"\u6E96\u5099\u304C\u3067\u304D\u305F\u3089\u3001\u524D\u3092\u898B\u3066\u958B\u59CB\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\"];\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
-        }\n  if (STATE_ID === 7) {\n    let sentences = [\"\u53F3\u624B\u306E\u4EBA\u5DEE\u3057\u6307\u3067\u3001\",\n\"\u76EE\u306E\u524D\u306B\u73FE\u308C\u305F\u7DD1\u306E\u7389\u306B\u89E6\u308C\u3066\u304F\u3060\u3055\u3044\u3002\",\n\"\u7389\u306F\u89E6\u308C\u3089\u308C\u305F\u308930cm\u5148\u307E\u3067\u79FB\u52D5\u3057\u307E\u3059\u3002\",\n\"\u79FB\u52D5\u5F8C\u306E\u7389\u306B\u3082\u3046\u4E00\u5EA6\u89E6\u308C\u3066\u304F\u3060\u3055\u3044\u3002\"];\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
-        }\n  if (STATE_ID === 8) {\n    let sentences = [\"Q: \u30D0\u30FC\u30C1\u30E3\u30EB\u7A7A\u9593\u306E\u4E2D\u306E\u624B\u306F\u5B9F\u8EAB\u4F53\u306E\u624B\u3088\u308A\",\n\"\u901F\u304F\u52D5\u3044\u305F\u304B\uFF1F\u9045\u304F\u52D5\u3044\u305F\u304B\uFF1F\",\n\"\u5206\u304B\u3089\u306A\u3044\u5834\u5408\u306F\u3069\u3061\u3089\u304B\u306E\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\"];\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
+        }\n  if (STATE_ID === 6) {\n    let sentences = [\"\u7DF4\u7FD2\u306F\u4EE5\u4E0A\u306B\u306A\u308A\u307E\u3059\u3002\",\r\n\"\u3053\u3053\u304B\u3089\u306F\u672C\u756A\u3067\u3059\u3002\",\r\n\"\u540C\u3058\u624B\u9806\u3067\u30BF\u30B9\u30AF\u309222\u56DE\u884C\u3063\u3066\u304F\u3060\u3055\u3044\u3002\",\r\n\"\u6E96\u5099\u304C\u3067\u304D\u305F\u3089\u3001\u524D\u3092\u898B\u3066\u958B\u59CB\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\"];\r\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
+        }\n  if (STATE_ID === 7) {\n    let sentences = [\"\u982D\u3092\u5C11\u3057\u4E0B\u306B\u5411\u3051\u305F\u3089\u7DD1\u306E\u7389\u304C\u898B\u3048\u307E\u3059\u3002\",\r\n\"\u305D\u306E\u7389\u306B\u53F3\u624B\u306E\u4EBA\u5DEE\u3057\u6307\u3067\u89E6\u308C\u3066\u304F\u3060\u3055\u3044\u3002\",\r\n\"\u7389\u306F\u89E6\u308C\u3089\u308C\u305F\u308930cm\u5148\u307E\u3067\u79FB\u52D5\u3057\u307E\u3059\u3002\",\r\n\"\u53F3\u624B\u3092\u3086\u3063\u304F\u308A\u52D5\u304B\u3057\u3001\",\r\n\"\u79FB\u52D5\u5F8C\u306E\u7389\u306B\u3082\u3046\u4E00\u5EA6\u89E6\u308C\u3066\u304F\u3060\u3055\u3044\u3002\"];\r\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
+        }\n  if (STATE_ID === 8) {\n    let sentences = [\"Q: \u30D0\u30FC\u30C1\u30E3\u30EB\u7A7A\u9593\u306E\u4E2D\u306E\u624B\u306F\u5B9F\u8EAB\u4F53\u306E\u624B\u3088\u308A\",\r\n\"\u901F\u304F\u52D5\u3044\u305F\u304B\uFF1F\u9045\u304F\u52D5\u3044\u305F\u304B\uFF1F\",\r\n\"\u5206\u304B\u3089\u306A\u3044\u5834\u5408\u306F\u3069\u3061\u3089\u304B\u306E\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\"];\r\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
         }\n  if (STATE_ID === 9) {\n    $.subNode(\"Text\").setText(\"\u624B\u3092\u304A\u308D\u3057\u3066\u304F\u3060\u3055\u3044\");\n 
-        }\n  if (STATE_ID === 10) {\n    let sentences = [\"\u30BF\u30B9\u30AF\u306F\u4EE5\u4E0A\u306B\u306A\u308A\u307E\u3059\u3002\",\n\"\u304A\u75B2\u308C\u69D8\u3067\u3059\u3002\",\n\"\u6700\u5F8C\u306B\u8CEA\u554F\u7D19\u306B\u3054\u8A18\u5165\u3092\u304A\u9858\u3044\u3057\u307E\u3059\u3002\",\n\"\u300C\u6B21\u3078\u300D\u30DC\u30BF\u30F3\u3092\u30AF\u30EA\u30C3\u30AF\u3057\u3066\u9032\u3093\u3067\u304F\u3060\u3055\u3044\u3002\"];\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
+        }\n  if (STATE_ID === 10) {\n    let sentences = [\"\u30BF\u30B9\u30AF\u306F\u4EE5\u4E0A\u306B\u306A\u308A\u307E\u3059\u3002\",\r\n\"\u304A\u75B2\u308C\u69D8\u3067\u3059\u3002\",\r\n\"\u6700\u5F8C\u306B\u8CEA\u554F\u7D19\u306B\u3054\u8A18\u5165\u3092\u304A\u9858\u3044\u3057\u307E\u3059\u3002\",\r\n\"\u300C\u6B21\u3078\u300D\u30DC\u30BF\u30F3\u3092\u30AF\u30EA\u30C3\u30AF\u3057\u3066\u9032\u3093\u3067\u304F\u3060\u3055\u3044\u3002\"];\r\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n 
         }\n  if (STATE_ID === 12) {\n    $.setStateCompat('this', 'exp_showItem',
-        true);\n    let sentences = [\"\u5B9F\u9A13\u306F\u4EE5\u4E0A\u306B\u306A\u308A\u307E\u3059\u3002\",\n\"\u3054\u53C2\u52A0\u3044\u305F\u3060\u304D\u3042\u308A\u304C\u3068\u3046\u3054\u3056\u3044\u307E\u3057\u305F\u3002\",\n\"\u76EE\u306E\u524D\u306E\u30B2\u30FC\u30C8\u306B\u6F5C\u3063\u3066\u9000\u5BA4\u3057\u3066\u304F\u3060\u3055\u3044\u3002\",\n\"\u8B1D\u793C\u306F\u5F8C\u65E5\u306B\u4ED8\u4E0E\u3057\u307E\u3059\u3002\"];\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n$.setStateCompat(\"owner\",
+        true);\n    let sentences = [\"\u5B9F\u9A13\u306F\u4EE5\u4E0A\u306B\u306A\u308A\u307E\u3059\u3002\",\r\n\"\u3054\u53C2\u52A0\u3044\u305F\u3060\u304D\u3042\u308A\u304C\u3068\u3046\u3054\u3056\u3044\u307E\u3057\u305F\u3002\",\r\n\"\u76EE\u306E\u524D\u306E\u30B2\u30FC\u30C8\u306B\u6F5C\u3063\u3066\u9000\u5BA4\u3057\u3066\u304F\u3060\u3055\u3044\u3002\",\r\n\"\u8B1D\u793C\u306F\u5F8C\u65E5\u306B\u4ED8\u4E0E\u3057\u307E\u3059\u3002\"];\r\n$.subNode(\"Text\").setText(sentences.join(\"\\n\"));\n$.setStateCompat(\"owner\",
         \"exp_participantMoveSpeed\", 1);\n  }\n}\n\n\nfunction DuringState(deltaTime)
         {\n  const STATE_ID = $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n}\n\n\nfunction
         OnStateExit() {\n  const STATE_ID = $.state.state_id;\n  const CONDITION
@@ -4347,9 +4362,8 @@ PrefabInstance:
         $.state.state_id;\n  const CONDITION = $.groupState.currentCondition;\n\n}\n\n\nfunction
         OnStateExit() {\n  const STATE_ID = $.state.state_id;\n  const CONDITION
         = $.groupState.currentCondition;\n\n  if (STATE_ID === 4) {\n    $.setStateCompat('this',
-        'exp_showItem', false);\n  }\n  if (STATE_ID === 8) {\n    $.sendSignalCompat('this',
-        'exp_recordCustomData');\n    $.setStateCompat('this', 'exp_showItem', false);\n 
-        }\n}\n\n\n\n"
+        'exp_showItem', false);\n  }\n  if (STATE_ID === 8) {\n    $.setStateCompat('this',
+        'exp_showItem', false);\n  }\n}\n\n\n\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -4606,20 +4620,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: {fileID: 1894959716}
   triggers:
-  - target: 0
+  - target: 4
     specifiedTargetItem: {fileID: 0}
-    key: toNextState
-    type: 0
+    key: isFaster
+    type: 1
     value:
       boolValue: 0
       floatValue: 0
       integerValue: 0
       vector2Value: {x: 0, y: 0}
       vector3Value: {x: 0, y: 0, z: 0}
-  - target: 4
+  - target: 0
     specifiedTargetItem: {fileID: 0}
-    key: isFaster
-    type: 1
+    key: toNextState
+    type: 0
     value:
       boolValue: 0
       floatValue: 0
@@ -4766,23 +4780,27 @@ PrefabInstance:
         }\n  if (STATE_ID === 7) {\n    UpdateHandTransform(parseFloat(CONDITION[\"gain\"]));\n 
         }\n  if (STATE_ID === 5) {\n    UpdateHandTransform($.state.practiceGains[$.state.practiceGainID]);\n 
         }\n  if (STATE_ID === 9) {\n    UpdateHandTransform(parseFloat(CONDITION[\"gain\"]));\n 
+        }\n  if (STATE_ID === 4) {\n    UpdateHandTransform($.state.practiceGains[$.state.practiceGainID]);\n 
+        }\n  if (STATE_ID === 8) {\n    UpdateHandTransform(parseFloat(CONDITION[\"gain\"]));\n 
         }\n}\n\n\nfunction OnStateExit() {\n  const STATE_ID = $.state.state_id;\n 
         const CONDITION = $.groupState.currentCondition;\n\n  if (STATE_ID === 3)
         {\n    $.setStateCompat('this', 'exp_showItem', false);\n  }\n  if (STATE_ID
-        === 7) {\n    $.setStateCompat('this', 'exp_showItem', false);\n    $.sendSignalCompat('this',
-        'exp_recordCustomData');\n  }\n  if (STATE_ID === 5) {\n    $.state.practiceGainID
-        = $.state.practiceGainID + 1;\n  }\n}\n\n\nfunction Reset() { // \u30EA\u30BB\u30C3\u30C8\u51E6\u7406\n 
-        // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u521D\u671F\u72B6\u614B\u3092\u8A2D\u5B9A\n 
+        === 7) {\n    $.setStateCompat('this', 'exp_showItem', false);\n  }\n  if
+        (STATE_ID === 5) {\n    $.state.practiceGainID = $.state.practiceGainID +
+        1;\n  }\n  if (STATE_ID === 8) {\n    $.sendSignalCompat('this', 'exp_recordCustomData');\n 
+        }\n}\n\n\nfunction Reset() { // \u30EA\u30BB\u30C3\u30C8\u51E6\u7406\n  //
+        \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u521D\u671F\u72B6\u614B\u3092\u8A2D\u5B9A\n 
         $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\n  $.state.handOriginalPos
-        = $.subNode(\"RightHandAnchor\").getPosition().clone();\n\n  // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u5B9F\u969B\u306E\u624B\uFF08\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC\uFF09\u3068\u4EEE\u60F3\u624B\u306E\u56DE\u8EE2\u306E\u305A\u308C\u3092\u88DC\u6B63\u3059\u308B\u305F\u3081\u306E\u30AA\u30D5\u30BB\u30C3\u30C8\u3092\u8A2D\u5B9A\n 
+        = $.subNode(\"RightHandAnchor\").getPosition().clone();\n  $.state.isReaching
+        = false;\n\n  // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u5B9F\u969B\u306E\u624B\uFF08\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC\uFF09\u3068\u4EEE\u60F3\u624B\u306E\u56DE\u8EE2\u306E\u305A\u308C\u3092\u88DC\u6B63\u3059\u308B\u305F\u3081\u306E\u30AA\u30D5\u30BB\u30C3\u30C8\u3092\u8A2D\u5B9A\n 
         $.state.handOffset = new Quaternion().setFromEulerAngles(new Vector3(0, 90,
         0));\n\n  // \u539F\u70B9 (StartingPoint) \u3092\u8868\u793A\u3057\u3001\u30BF\u30FC\u30B2\u30C3\u30C8
         (TargetPoint) \u3092\u975E\u8868\u793A\u306B\u3059\u308B\n  $.subNode(\"StartingPoint\").setEnabled(true);\n 
-        $.subNode(\"TargetPoint\").setEnabled(false);\n\n  // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u982D\u90E8\u4F4D\u7F6E\u3092\u57FA\u6E96\u306B\u3001\u539F\u70B9\u3092\u982D\u306E30cm\u624B\u524D\uFF0B30cm\u4E0B\u306B\u914D\u7F6E\n 
+        $.subNode(\"TargetPoint\").setEnabled(false);\n\n  // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u982D\u90E8\u4F4D\u7F6E\u3092\u57FA\u6E96\u306B\u3001\u539F\u70B9\u3092\u982D\u306E35cm\u624B\u524D\uFF0B30cm\u4E0B\u306B\u914D\u7F6E\n 
         $.subNode(\"StartingPoint\").setPosition(\n    $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new
-        Vector3(0, -0.3, 0.3)));\n\n  // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u982D\u90E8\u4F4D\u7F6E\u3092\u57FA\u6E96\u306B\u3001\u30BF\u30FC\u30B2\u30C3\u30C8\u3092\u982D\u306E60cm\u624B\u524D\uFF0B30cm\u4E0B\u306B\u914D\u7F6E\n 
+        Vector3(0, -0.3, 0.35)));\n\n  // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u982D\u90E8\u4F4D\u7F6E\u3092\u57FA\u6E96\u306B\u3001\u30BF\u30FC\u30B2\u30C3\u30C8\u3092\u982D\u306E65cm\u624B\u524D\uFF0B30cm\u4E0B\u306B\u914D\u7F6E\n 
         $.subNode(\"TargetPoint\").setPosition(\n    $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new
-        Vector3(0, -0.3, 0.6)));\n}\n\n// \u53F3\u624B\u30A2\u30F3\u30AB\u30FC\uFF08\u53F3\u624B\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8\u306EParent
+        Vector3(0, -0.3, 0.65)));\n}\n\n// \u53F3\u624B\u30A2\u30F3\u30AB\u30FC\uFF08\u53F3\u624B\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8\u306EParent
         Constraints\u304C\u53C2\u7167\u3057\u3066\u3044\u308B\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8\uFF09\u306E\u4F4D\u7F6E\u3092\u3001\n//
         \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u53F3\u624B\u4F4D\u7F6E\u306B\u540C\u671F\u3055\u305B\u3001\u3055\u3089\u306B\u30B2\u30A4\u30F3\u3092\u9069\u7528\u3059\u308B\nfunction
         UpdateHandTransform(gain) {\n  if (!$.state.player || !$.state.handOriginalPos)
@@ -4797,10 +4815,9 @@ PrefabInstance:
         \"RightHand\" \u30AA\u30D6\u30B8\u30A7\u30AF\u30C8\u3067\u306F\u306A\u3044\u5834\u5408\u306F\u51E6\u7406\u3092\u4E2D\u65AD\n 
         if (!collision.handle || !$.worldItemReference(\"RightHand\") || collision.handle.id
         !== $.worldItemReference(\"RightHand\").id) return;\n\n  if ($.state.isReaching)
-        {\n    // \u3059\u3067\u306B\u30EA\u30FC\u30C1\u30F3\u30B0\u72B6\u614B\u306E\u5834\u5408\u3001\u30EA\u30FC\u30C1\u30F3\u30B0\u3092\u7D42\u4E86\u3059\u308B\n   
-        $.state.isReaching = false;\n    $.subNode(\"TargetPoint\").setEnabled(false);\n   
-        ToNextState(); // \u6B21\u306E\u72B6\u614B\u3078\u9077\u79FB\n  } else {\n   
-        // \u30EA\u30FC\u30C1\u30F3\u30B0\u304C\u958B\u59CB\u3055\u308C\u3066\u3044\u306A\u3044\u5834\u5408\u3001\u30BF\u30FC\u30B2\u30C3\u30C8\u3092\u8868\u793A\u3057\u3001\u539F\u70B9\u3092\u975E\u8868\u793A\u306B\u3059\u308B\n   
+        {\n    // \u3059\u3067\u306B\u30EA\u30FC\u30C1\u30F3\u30B0\u72B6\u614B\u306E\u5834\u5408\u3001\u73FE\u5728\u306E\u8A66\u884C\u3092\u7D42\u4E86\u3059\u308B\n   
+        $.subNode(\"TargetPoint\").setEnabled(false);\n    ToNextState(); // \u6B21\u306E\u72B6\u614B\u3078\u9077\u79FB\n 
+        } else {\n    // \u30EA\u30FC\u30C1\u30F3\u30B0\u304C\u958B\u59CB\u3055\u308C\u3066\u3044\u306A\u3044\u5834\u5408\u3001\u30BF\u30FC\u30B2\u30C3\u30C8\u3092\u8868\u793A\u3057\u3001\u539F\u70B9\u3092\u975E\u8868\u793A\u306B\u3059\u308B\n   
         $.subNode(\"StartingPoint\").setEnabled(false);\n    $.subNode(\"TargetPoint\").setEnabled(true);\n   
         // \u73FE\u5728\u306E\u53F3\u624B\u30A2\u30F3\u30AB\u30FC\u306E\u4F4D\u7F6E\u3092\u8A18\u9332\n   
         $.state.handOriginalPos = $.subNode(\"RightHandAnchor\").getPosition().clone();\n   
@@ -5543,12 +5560,13 @@ PrefabInstance:
         return;\n    }\n\n    if (meta === \"customDataUploaded\") {\n        $.log(\"Response
         after customDataUploaded called: \" + JSON.stringify(res));\n    }\n});\r\nfunction
         calculateData () {\n  let returnData = $.state.customData;\n  const CONDITION
-        = $.groupState.currentCondition;\n\n  function saveData_taskAnswer() {\nreturn
-        {\n  gain: CONDITION[\"gain\"],\n  isFaster: $.getStateCompat(\"global\",
-        \"isFaster\", \"boolean\")\n};\n    return {};\n  }\n  const newRecord_taskAnswer
-        = saveData_taskAnswer();\n  if (\"taskAnswer\" in returnData && Array.isArray(returnData[\"taskAnswer\"]))
-        {\n    returnData[\"taskAnswer\"].push(newRecord_taskAnswer);\n  } else {\n   
-        returnData[\"taskAnswer\"] = [newRecord_taskAnswer];\n  }\n\n  return returnData;\n}\n"
+        = $.groupState.currentCondition;\n\n  function saveData_taskAnswer() {\nlet
+        data = {\n  gain: CONDITION[\"gain\"],\n  isFaster: $.getStateCompat(\"global\",
+        \"isFaster\", \"boolean\")\n};\nreturn data;\n    return {};\n  }\n  const
+        newRecord_taskAnswer = saveData_taskAnswer();\n  if (\"taskAnswer\" in returnData
+        && Array.isArray(returnData[\"taskAnswer\"])) {\n    returnData[\"taskAnswer\"].push(newRecord_taskAnswer);\n 
+        } else {\n    returnData[\"taskAnswer\"] = [newRecord_taskAnswer];\n  }\n\n 
+        return returnData;\n}\n"
       objectReference: {fileID: 0}
     - target: {fileID: 2966719835339860267, guid: c429a845517c96a419988cd638c846f1,
         type: 3}

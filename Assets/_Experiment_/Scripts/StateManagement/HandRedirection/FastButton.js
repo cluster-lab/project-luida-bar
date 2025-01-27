@@ -29,7 +29,6 @@ function OnStateExit() {
     $.setStateCompat('this', 'exp_showItem', false);
   }
   if (STATE_ID === 8) {
-    $.sendSignalCompat('this', 'exp_recordCustomData');
     $.setStateCompat('this', 'exp_showItem', false);
   }
 }

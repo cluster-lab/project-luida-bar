@@ -3,10 +3,11 @@ function calculateData () {
   const CONDITION = $.groupState.currentCondition;
 
   function saveData_taskAnswer() {
-return {
+let data = {
   gain: CONDITION["gain"],
   isFaster: $.getStateCompat("global", "isFaster", "boolean")
 };
+return data;
     return {};
   }
   const newRecord_taskAnswer = saveData_taskAnswer();
