@@ -23,7 +23,7 @@ function OnStateEnter() {
     $.subNode("Text").setText(`お疲れ様です。いい演奏でした！
 最後にアンケートにご記入ください。`);
   }
-  if (STATE_ID === 9) {
+  if (STATE_ID === 10) {
     $.setStateCompat('this', 'exp_showItem', true);
     $.subNode("Text").setText(`実験は以上になります。
 ご参加いただきありがとうございました！

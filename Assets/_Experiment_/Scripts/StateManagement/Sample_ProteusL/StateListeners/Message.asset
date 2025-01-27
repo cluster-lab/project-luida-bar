@@ -79,7 +79,7 @@ MonoBehaviour:
       customAction: 
       showCustomActionFoldout: 0
     onStateExitedFoldout: 1
-  - stateID: 9
+  - stateID: 10
     onStateStartedActions:
     - predefinedAction:
         actionType: Show item
