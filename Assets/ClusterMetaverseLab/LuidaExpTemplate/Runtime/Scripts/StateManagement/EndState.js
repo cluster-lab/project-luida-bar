@@ -1,7 +1,7 @@
 $.onUpdate(() => {
   if ($.getStateCompat("this", "state_enter", "boolean")) {
       $.setStateCompat("this", "state_enter", false);
-      OnStateEnter();
+      // OnStateEnter();
   }
 })
 
