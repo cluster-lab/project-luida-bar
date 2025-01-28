@@ -4,7 +4,7 @@ function calculateData () {
 
   function saveData_timeAndAvatar() {
 return {
-  p: $.getPlayersNear($.getPosition(), Infinity)[0].userDisplayName,
+  p: $.getPlayersNear($.getPosition(), Infinity)[0].userId,
   t: Date.now().toString(),
   a: "L",
 };

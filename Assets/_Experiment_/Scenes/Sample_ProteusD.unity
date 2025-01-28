@@ -20549,7 +20549,7 @@ PrefabInstance:
         {\r\n        $.log(\"Response after customDataUploaded called: \" + JSON.stringify(res));\r\n   
         }\r\n});\r\nfunction calculateData () {\n  let returnData = $.state.customData;\n 
         const CONDITION = $.groupState.currentCondition;\n\n  function saveData_timeAndAvatar()
-        {\nreturn {\n  p: $.getPlayersNear($.getPosition(), Infinity)[0].userDisplayName,\n 
+        {\nreturn {\n  p: $.getPlayersNear($.getPosition(), Infinity)[0].userId,\n 
         t: Date.now().toString(),\n  a: \"D\",\n};\n    return {};\n  }\n  const
         newRecord_timeAndAvatar = saveData_timeAndAvatar();\n  if (\"timeAndAvatar\"
         in returnData && Array.isArray(returnData[\"timeAndAvatar\"])) {\n    returnData[\"timeAndAvatar\"].push(newRecord_timeAndAvatar);\n 
