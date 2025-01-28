@@ -70,6 +70,7 @@ function Reset() { // リセット処理
   $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];
   $.state.handOriginalPos = $.subNode("RightHandAnchor").getPosition().clone();
   $.state.isReaching = false;
+  $.state.coolingTimer = 0;
 
   // プレイヤーの実際の手（コントローラー）と仮想手の回転のずれを補正するためのオフセットを設定
   $.state.handOffset = new Quaternion().setFromEulerAngles(new Vector3(0, 90, 0));
@@ -107,7 +108,7 @@ function UpdateHandTransform(gain) {
 // 衝突イベントが発生した際に実行される処理
 $.onCollide(collision => {
   // 衝突対象が存在しない、または "RightHand" オブジェクトではない場合は処理を中断
-  if (!collision.handle || !$.worldItemReference("RightHand") || collision.handle.id !== $.worldItemReference("RightHand").id) return;
+  if ($.state.coolingTimer < 0.5 || !collision.handle || !$.worldItemReference("RightHand") || collision.handle.id !== $.worldItemReference("RightHand").id) return;
 
   if ($.state.isReaching) {
     // すでにリーチング状態の場合、現在の試行を終了する
@@ -122,3 +123,8 @@ $.onCollide(collision => {
     $.state.isReaching = true;
   }
 });
+
+function Update(deltaTime) {
+  if (!$.state.coolingTimer) $.state.coolingTimer = 0;
+  $.state.coolingTimer += deltaTime;
+}

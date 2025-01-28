@@ -5212,7 +5212,7 @@ PrefabInstance:
         \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u521D\u671F\u72B6\u614B\u3092\u8A2D\u5B9A\n 
         $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\n  $.state.handOriginalPos
         = $.subNode(\"RightHandAnchor\").getPosition().clone();\n  $.state.isReaching
-        = false;\n\n  // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u5B9F\u969B\u306E\u624B\uFF08\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC\uFF09\u3068\u4EEE\u60F3\u624B\u306E\u56DE\u8EE2\u306E\u305A\u308C\u3092\u88DC\u6B63\u3059\u308B\u305F\u3081\u306E\u30AA\u30D5\u30BB\u30C3\u30C8\u3092\u8A2D\u5B9A\n 
+        = false;\n  $.state.coolingTimer = 0;\n\n  // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u5B9F\u969B\u306E\u624B\uFF08\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC\uFF09\u3068\u4EEE\u60F3\u624B\u306E\u56DE\u8EE2\u306E\u305A\u308C\u3092\u88DC\u6B63\u3059\u308B\u305F\u3081\u306E\u30AA\u30D5\u30BB\u30C3\u30C8\u3092\u8A2D\u5B9A\n 
         $.state.handOffset = new Quaternion().setFromEulerAngles(new Vector3(0, 90,
         0));\n\n  // \u539F\u70B9 (StartingPoint) \u3092\u8868\u793A\u3057\u3001\u30BF\u30FC\u30B2\u30C3\u30C8
         (TargetPoint) \u3092\u975E\u8868\u793A\u306B\u3059\u308B\n  $.subNode(\"StartingPoint\").setEnabled(true);\n 
@@ -5233,15 +5233,17 @@ PrefabInstance:
         .clone().multiply($.state.handOffset));\n}\n\n// \u885D\u7A81\u30A4\u30D9\u30F3\u30C8\u304C\u767A\u751F\u3057\u305F\u969B\u306B\u5B9F\u884C\u3055\u308C\u308B\u51E6\u7406\n$.onCollide(collision
         => {\n  // \u885D\u7A81\u5BFE\u8C61\u304C\u5B58\u5728\u3057\u306A\u3044\u3001\u307E\u305F\u306F
         \"RightHand\" \u30AA\u30D6\u30B8\u30A7\u30AF\u30C8\u3067\u306F\u306A\u3044\u5834\u5408\u306F\u51E6\u7406\u3092\u4E2D\u65AD\n 
-        if (!collision.handle || !$.worldItemReference(\"RightHand\") || collision.handle.id
-        !== $.worldItemReference(\"RightHand\").id) return;\n\n  if ($.state.isReaching)
-        {\n    // \u3059\u3067\u306B\u30EA\u30FC\u30C1\u30F3\u30B0\u72B6\u614B\u306E\u5834\u5408\u3001\u73FE\u5728\u306E\u8A66\u884C\u3092\u7D42\u4E86\u3059\u308B\n   
+        if ($.state.coolingTimer < 0.5 || !collision.handle || !$.worldItemReference(\"RightHand\")
+        || collision.handle.id !== $.worldItemReference(\"RightHand\").id) return;\n\n 
+        if ($.state.isReaching) {\n    // \u3059\u3067\u306B\u30EA\u30FC\u30C1\u30F3\u30B0\u72B6\u614B\u306E\u5834\u5408\u3001\u73FE\u5728\u306E\u8A66\u884C\u3092\u7D42\u4E86\u3059\u308B\n   
         $.subNode(\"TargetPoint\").setEnabled(false);\n    ToNextState(); // \u6B21\u306E\u72B6\u614B\u3078\u9077\u79FB\n 
         } else {\n    // \u30EA\u30FC\u30C1\u30F3\u30B0\u304C\u958B\u59CB\u3055\u308C\u3066\u3044\u306A\u3044\u5834\u5408\u3001\u30BF\u30FC\u30B2\u30C3\u30C8\u3092\u8868\u793A\u3057\u3001\u539F\u70B9\u3092\u975E\u8868\u793A\u306B\u3059\u308B\n   
         $.subNode(\"StartingPoint\").setEnabled(false);\n    $.subNode(\"TargetPoint\").setEnabled(true);\n   
         // \u73FE\u5728\u306E\u53F3\u624B\u30A2\u30F3\u30AB\u30FC\u306E\u4F4D\u7F6E\u3092\u8A18\u9332\n   
         $.state.handOriginalPos = $.subNode(\"RightHandAnchor\").getPosition().clone();\n   
-        $.state.isReaching = true;\n  }\n});\n"
+        $.state.isReaching = true;\n  }\n});\n\nfunction Update(deltaTime) {\n  if
+        (!$.state.coolingTimer) $.state.coolingTimer = 0;\n  $.state.coolingTimer
+        += deltaTime;\n}\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -5588,7 +5590,7 @@ PrefabInstance:
       propertyPath: sourceCode
       value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\n$.onUpdate(()
         => {\n  if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\n     
-        $.setStateCompat(\"this\", \"state_enter\", false);\n      OnStateEnter();\n 
+        $.setStateCompat(\"this\", \"state_enter\", false);\n      // OnStateEnter();\n 
         }\n})\n\nfunction OnStateEnter() {\n  const request = {\n    type: \"postDoneIdfcs\",\n   
         token: token || \"\",\n    eID: expID || \"\",\n    idfcs: $.getPlayersNear($.getPosition().clone(),
         Infinity).map(player => player.idfc),\n  };\n  $.callExternal(JSON.stringify(request),
