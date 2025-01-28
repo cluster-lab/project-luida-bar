@@ -26,11 +26,21 @@ MonoBehaviour:
     onStateExitedActions: []
     onStateExitedFoldout: 0
   - stateID: 4
-    onStateStartedActions: []
+    onStateStartedActions:
+    - predefinedAction:
+        actionType: Record custom data
+        codeSnippet: $.sendSignalCompat('this', 'exp_recordCustomData');
+      customAction: 
+      showCustomActionFoldout: 0
     onStateStartedFoldout: 1
     duringStateActions: []
     duringStateFoldout: 0
     onStateExitedActions:
+    - predefinedAction:
+        actionType: Record custom data
+        codeSnippet: $.sendSignalCompat('this', 'exp_recordCustomData');
+      customAction: 
+      showCustomActionFoldout: 0
     - predefinedAction:
         actionType: Hide item
         codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
@@ -42,6 +52,18 @@ MonoBehaviour:
     - predefinedAction:
         actionType: Show item
         codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
+      customAction: 
+      showCustomActionFoldout: 0
+    onStateStartedFoldout: 1
+    duringStateActions: []
+    duringStateFoldout: 0
+    onStateExitedActions: []
+    onStateExitedFoldout: 0
+  - stateID: 5
+    onStateStartedActions:
+    - predefinedAction:
+        actionType: Upload recorded data
+        codeSnippet: $.sendSignalCompat('this', 'exp_uploadCustomData');
       customAction: 
       showCustomActionFoldout: 0
     onStateStartedFoldout: 1

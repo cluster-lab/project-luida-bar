@@ -5,8 +5,14 @@ function OnStateEnter() {
   if (STATE_ID === 0) {
     $.setStateCompat('this', 'exp_showItem', false);
   }
+  if (STATE_ID === 4) {
+    $.sendSignalCompat('this', 'exp_recordCustomData');
+  }
   if (STATE_ID === 3) {
     $.setStateCompat('this', 'exp_showItem', true);
+  }
+  if (STATE_ID === 5) {
+    $.sendSignalCompat('this', 'exp_uploadCustomData');
   }
 }
 
@@ -23,6 +29,7 @@ function OnStateExit() {
   const CONDITION = $.groupState.currentCondition;
 
   if (STATE_ID === 4) {
+    $.sendSignalCompat('this', 'exp_recordCustomData');
     $.setStateCompat('this', 'exp_showItem', false);
   }
 }
