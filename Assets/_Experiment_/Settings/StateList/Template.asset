@@ -41,7 +41,7 @@ MonoBehaviour:
     IsRepeated: 0
     RepeatDestStateName: 
     RepeatCount: 1
-  - StateName: Practice - Task
+  - StateName: Practice - Start
     DestStateName: Practice - Rest
     HasExitTime: 0
     ExitTime: 0
@@ -56,13 +56,13 @@ MonoBehaviour:
     RepeatDestStateName: Practice - Task
     RepeatCount: 1
   - StateName: Preparation
-    DestStateName: Trial - Task
+    DestStateName: Trial - Start
     HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
     RepeatDestStateName: 
     RepeatCount: 1
-  - StateName: Trial - Task
+  - StateName: Trial - Start
     DestStateName: Trial - Rest
     HasExitTime: 0
     ExitTime: 0

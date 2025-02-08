@@ -23,8 +23,8 @@ public class StateListEditor : EditorWindow
     private const string WorldItemRefListObjectName = "WorldItemRefList";
 
     // Fixed states that must not be moved.
-    // Now, the fixed trial states are "Trial - Task" and "Trial - Rest".
-    private readonly string[] FixedStateNames = new string[] { "Preparation", "Trial - Task", "Trial - Rest", "End" };
+    // Now, the fixed trial states are "Trial - Start" and "Trial - Rest".
+    private readonly string[] FixedStateNames = new string[] { "Preparation", "Trial - Start", "Trial - Rest", "End" };
     private Vector2 scrollPos;
     private string sceneName;
 
@@ -98,7 +98,7 @@ public class StateListEditor : EditorWindow
 
         // Find special state indexes
         int preparationIndex = Array.FindIndex(stateList.States, s => s.StateName == "Preparation");
-        int trialTaskIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Task");
+        int trialTaskIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Start");
         int trialRestIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Rest");
         int endIndex = Array.FindIndex(stateList.States, s => s.StateName == "End");
 
@@ -163,7 +163,7 @@ public class StateListEditor : EditorWindow
             if (trialRestIndex >= 0 && i == trialRestIndex + 1)
                 EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
-            // --- Add Button between "Trial - Task" and "Trial - Rest" ---
+            // --- Add Button between "Trial - Start" and "Trial - Rest" ---
             // When i reaches "Trial - Rest", insert an "Add Trial State" button.
             if (trialTaskIndex != -1 && trialRestIndex != -1 && i == trialRestIndex)
             {
@@ -258,7 +258,7 @@ public class StateListEditor : EditorWindow
                 }
             }
             // For extra trial states (those not fixed and whose names start with "Trial - "),
-            // do not allow moving them beyond the fixed "Trial - Task" (up) or "Trial - Rest" (down)
+            // do not allow moving them beyond the fixed "Trial - Start" (up) or "Trial - Rest" (down)
             if (!isFixedState && stateName.stringValue.StartsWith("Trial - "))
             {
                 if (trialTaskIndex != -1 && i - 1 == trialTaskIndex)
@@ -425,9 +425,9 @@ public class StateListEditor : EditorWindow
 
         serializedStateList.ApplyModifiedProperties();
 
-        // --- NEW: Update "Trial - Task" transition destination ---
-        // Every time trial states are edited, set the "Trial - Task" state's destination to the state immediately following it.
-        int updatedTrialTaskIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Task");
+        // --- NEW: Update "Trial - Start" transition destination ---
+        // Every time trial states are edited, set the "Trial - Start" state's destination to the state immediately following it.
+        int updatedTrialTaskIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Start");
         if (updatedTrialTaskIndex != -1 && updatedTrialTaskIndex + 1 < stateList.States.Length)
             stateList.States[updatedTrialTaskIndex].DestStateName = stateList.States[updatedTrialTaskIndex + 1].StateName;
 
@@ -649,7 +649,7 @@ public class StateListEditor : EditorWindow
                             SerializedProperty trialTaskStateIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.operatorExpression.operands.Array.data[2].value.constant.integerValue");
                             if (trialTaskStateIdProp != null)
                             {
-                                trialTaskStateIdProp.intValue = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Task");
+                                trialTaskStateIdProp.intValue = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Start");
                                 serializedTransitionSettingLogic.ApplyModifiedProperties();
                             }
                         }
