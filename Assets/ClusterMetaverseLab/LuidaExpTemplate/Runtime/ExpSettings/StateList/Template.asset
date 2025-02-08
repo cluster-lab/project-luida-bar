@@ -42,13 +42,6 @@ MonoBehaviour:
     RepeatDestStateName: 
     RepeatCount: 1
   - StateName: Practice - Task
-    DestStateName: Practice - Questionnaire
-    HasExitTime: 0
-    ExitTime: 0
-    IsRepeated: 0
-    RepeatDestStateName: 
-    RepeatCount: 1
-  - StateName: Practice - Questionnaire
     DestStateName: Practice - Rest
     HasExitTime: 0
     ExitTime: 0
@@ -70,13 +63,6 @@ MonoBehaviour:
     RepeatDestStateName: 
     RepeatCount: 1
   - StateName: Trial - Task
-    DestStateName: Trial - Questionnaire
-    HasExitTime: 0
-    ExitTime: 0
-    IsRepeated: 0
-    RepeatDestStateName: 
-    RepeatCount: 1
-  - StateName: Trial - Questionnaire
     DestStateName: Trial - Rest
     HasExitTime: 0
     ExitTime: 0
