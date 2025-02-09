@@ -67,6 +67,9 @@ function initQuestion() {
     $.state.answerOptions = Array.isArray(q.a)
         ? q.a
         : (typeof q.a === "string" ? q.a.split(",") : []) ;
+    if (q.i === 1 && $.state.answerOptions.length === 0) {
+        $.state.answerOptions = [1,2,3,4,5,6,7];
+    }
     if ($.state.answerOptions.length === 0) $.state.answerOptions = [""];
     spawnAnswerOptionUI();
 }
