@@ -73,23 +73,28 @@ The collected data will be listed on LUIDA's web console for you to confirm and 
 ### English
 1. Download from the [newest release](https://github.com/cluster-lab/project-luida-bar/releases).
 2. Open the downloaded Unity project, **ignore the error at the first time, and import the following packages published by KaomoLab**.
-  - [**CSCombiner: Combine multiple ClusterScripts of one item inside Unity Editor**](https://vkao.booth.pm/items/5924956) (ver1.01)
-  - [**CSEmulator: Run ClusterScripts inside Unity Editor**](https://vkao.booth.pm/items/5111235) (newest version)
+    - [**CSCombiner: Combine multiple ClusterScripts of one item inside Unity Editor**](https://vkao.booth.pm/items/5924956) (ver1.01)
+    - [**CSEmulator: Run ClusterScripts inside Unity Editor**](https://vkao.booth.pm/items/5111235) (newest version)
 3. Issue an access token and register it for this Unity project (Follow the steps as shown in the picture below).
 ![cluster-access-token-registration](https://github.com/user-attachments/assets/aeec56a4-ed78-41b2-bb21-d519c659c0d5)
 4. Register URL  `https://luida-web-next.vercel.app/api/cluster` for Cluster's `callExternal` feature, and register the generated verify token for this implement template (Follow the steps as shown in the picture below).
 ![register-call-external-url](https://github.com/user-attachments/assets/f64e75df-93f2-4b1a-9b3a-36216405feb7)
+    - When opening Window > Luida Editor, if the following screen appears, please first enter the name of the scene for the experiment you are going to implement.
+![image](https://github.com/user-attachments/assets/be969afc-0dc8-43a3-995b-ae8f420a5e5b)
 
 
 ### 日本語
 1. [最新リリース](https://github.com/cluster-lab/project-luida-bar/releases)からダウンロードします。
 2. ダウンロードしたUnityプロジェクトを立ち上げ、**最初はエラーを無視し、立ち上げたら以下のパッケージをインポートします**。
-  - [**CSCombiner: Cluster Scriptを Unity Editor 上で結合するツール**](https://vkao.booth.pm/items/5924956) (ver1.01)
-  - [**CSEmulator: Cluster Scriptを Unity Editor 上で再生できるようにするツール**](https://vkao.booth.pm/items/5111235) (最新バージョン)
+    - [**CSCombiner: Cluster Scriptを Unity Editor 上で結合するツール**](https://vkao.booth.pm/items/5924956) (ver1.01)
+    - [**CSEmulator: Cluster Scriptを Unity Editor 上で再生できるようにするツール**](https://vkao.booth.pm/items/5111235) (最新バージョン)
 3. アクセストークンを発行し、Unityプロジェクトに登録します（下の画像に示された通りに行ってください）。
 ![cluster-access-token-registration-jp](https://github.com/user-attachments/assets/c06f43c6-3412-4462-92a9-ac3576252e99)
 4. clusterの外部通信機能用のURLを登録し、生成されたトークンを本実装テンプレートに登録します（下の画像に示された通りに行ってください）。
 ![register-call-external-url](https://github.com/user-attachments/assets/f64e75df-93f2-4b1a-9b3a-36216405feb7)
+    - Window > Luida Editor を開く際に、以下の画面が表示された場合、まずはご自身が実装する実験のシーン名をご入力ください。
+![image](https://github.com/user-attachments/assets/be969afc-0dc8-43a3-995b-ae8f420a5e5b)
+
 -----
 
 # Documentation (under construction...)
