@@ -13,7 +13,9 @@ public class StateListEditor : EditorWindow
     private StateList.State[] previousStates;
     private SerializedObject serializedStateList;
     private SerializedProperty statesProperty;
-    private string prefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/State.prefab";
+    private string statePrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/State.prefab";
+    private string trialRestStatePrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/Trial - Rest State.prefab";
+    private string prepareStatePrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/Preparation State.prefab";
     private const string RequiredObjectsWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
     private const string stateListTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/StateList/Template.asset";
     private const string stateManagementScriptFolderPathFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
@@ -514,7 +516,13 @@ public class StateListEditor : EditorWindow
             if (stateTransform == null)
             {
                 // Not found by stateID, so instantiate a new child.
-                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(
+                    stateName == "Preparation"
+                      ? prepareStatePrefabPath
+                      : ( stateName == "Trial - Rest"
+                        ? trialRestStatePrefabPath
+                        : statePrefabPath
+                    ));
                 if (prefab != null)
                 {
                     GameObject newChild = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
