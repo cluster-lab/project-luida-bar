@@ -404,7 +404,7 @@ public class ItemsManagerEditor : EditorWindow
                 // If this action is a "Set text" action, display an icon with a tooltip showing the text value.
                 if (actions[i].predefinedAction.actionType == "Set text")
                 {
-                    string textValue = GetSetTextValue(actions[i].customAction);
+                    string textValue = GetSetTextValue(actions[i].predefinedAction.codeSnippet);
                     GUIContent iconContent = EditorGUIUtility.IconContent("console.infoicon");
                     iconContent.tooltip = "Set text value: " + textValue;
                     GUILayout.Label(iconContent, GUILayout.Width(20), GUILayout.Height(20));
@@ -507,7 +507,7 @@ public class ItemsManagerEditor : EditorWindow
                             textView = newChild.AddComponent<ClusterVR.CreatorKit.World.Implements.TextView.TextView>();
                         }
                         string childName = textView.gameObject.name;
-                        string actionContent = "$.subNode('" + childName + "').setText('" + setTextInput + "');";
+                        string actionContent = "$.subNode('" + childName + "').setText(`" + setTextInput + "`);";
                         actions.Add(new StateListenerAction {
                             predefinedAction = new StateListeningAction("Set text", actionContent), // AvailableStateListeningActions[selectedActionIndex],
                             customAction = "",
@@ -912,7 +912,7 @@ public class ItemsManagerEditor : EditorWindow
 
     /// <summary>
     /// Returns the text value from a 'set text' action command.
-    /// Expected format: $.subNode('childName').setText('value');
+    /// Expected format: $.subNode('childName').setText(`value`);
     /// </summary>
     private string GetSetTextValue(string actionContent)
     {
@@ -920,7 +920,7 @@ public class ItemsManagerEditor : EditorWindow
         {
             return "";
         }
-        Match match = Regex.Match(actionContent, @"\.setText\('([^']*)'\)");
+        Match match = Regex.Match(actionContent, @"\.setText\(`([^`]*)`\)");
         if (match.Success && match.Groups.Count > 1)
         {
             return match.Groups[1].Value;
