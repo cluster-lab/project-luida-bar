@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using ClusterVR.CreatorKit.Item;
 using ClusterVR.CreatorKit.Item.Implements;
-using System.Text.RegularExpressions;
 
 public class ItemsManagerEditor : EditorWindow
 {
@@ -16,6 +16,8 @@ public class ItemsManagerEditor : EditorWindow
         new StateListeningAction("To next state", "$.sendSignalCompat('this', 'state_triggerTransition');"),
         new StateListeningAction("Record custom data", "$.sendSignalCompat('this', 'exp_recordCustomData');"),
         new StateListeningAction("Upload recorded data", "$.sendSignalCompat('this', 'exp_uploadCustomData');"),
+        // This will be overridden via the UI when adding a "Set text" action.
+        new StateListeningAction("Set text", "$.subNode('Text').setText('xxx');"),
     };
 
     private string newItemName = "";
@@ -49,6 +51,9 @@ public class ItemsManagerEditor : EditorWindow
 
     private int selectedActionIndex = 0;
     private Dictionary<List<StateListenerAction>, bool> isAddingActionState = new Dictionary<List<StateListenerAction>, bool>();
+
+    // Field to hold the text input for "Set text" actions.
+    private string setTextInput = "";
 
     public void OnEnable()
     {
@@ -124,13 +129,13 @@ public class ItemsManagerEditor : EditorWindow
             {
                 EditorGUILayout.Space();
                 EditorGUILayout.BeginVertical();
-                
+
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField(item.name, EditorStyles.boldLabel, GUILayout.Width(100));
                 EditorGUILayout.ObjectField(item, typeof(GameObject), true, GUILayout.Width(100));
                 EditorGUILayout.ObjectField(GetClusterScriptFromItem(item, out int scriptIndex), typeof(JavaScriptAsset), true, GUILayout.Width(100));
                 EditorGUILayout.EndHorizontal();
-                
+
                 EditorGUILayout.BeginHorizontal();
                 if (GUILayout.Button("Destroy"))
                 {
@@ -144,7 +149,7 @@ public class ItemsManagerEditor : EditorWindow
                     isStateListeningItemAssetLoaded = false;
                 }
                 EditorGUILayout.EndHorizontal();
-                
+
                 EditorGUILayout.EndVertical();
                 EditorGUILayout.Space();
             }
@@ -157,7 +162,7 @@ public class ItemsManagerEditor : EditorWindow
         EditorGUILayout.BeginVertical();
         EditorGUILayout.LabelField("Item Name", GUILayout.Width(70));
         newItemName = EditorGUILayout.TextField(newItemName, GUILayout.Width(80));
-        
+
         EditorGUILayout.LabelField("(Optional) Create with existing object", GUILayout.Width(210));
         referenceObject = (GameObject)EditorGUILayout.ObjectField(referenceObject, typeof(GameObject), true, GUILayout.Width(150));
 
@@ -179,7 +184,7 @@ public class ItemsManagerEditor : EditorWindow
                 ApplyChangesToScript();
             }
             EditorGUILayout.EndHorizontal();
-            
+
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
@@ -268,7 +273,7 @@ public class ItemsManagerEditor : EditorWindow
             {
                 EditorGUILayout.LabelField("No state listeners added yet.", EditorStyles.helpBox);
             }
-            
+
             EditorGUILayout.Space();
 
             EditorGUILayout.BeginVertical("box");
@@ -323,12 +328,12 @@ public class ItemsManagerEditor : EditorWindow
         EditorGUILayout.BeginVertical("box", GUILayout.Width(350));
         EditorGUILayout.LabelField("Available variables and functions inside code blocks", EditorStyles.largeLabel);
         EditorGUILayout.HelpBox("Check this column when you are implementing inside any code block on this panel.", MessageType.Info);
-        
+
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("--------------- Variables ---------------", EditorStyles.boldLabel);
         EditorGUILayout.LabelField("CONDITION", EditorStyles.boldLabel);
         EditorGUILayout.HelpBox("⋅ Accessible within 'Trial' states.\n⋅ Values are determined by your configured experimental variables and vary across trials.\n⋅ Use CONDITION[\"condition_name\"] to reference a specific condition within the current trial.", MessageType.Info);
-        
+
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("--------------- Functions ---------------", EditorStyles.boldLabel);
         EditorGUILayout.LabelField("ShowItem()", EditorStyles.boldLabel);
@@ -341,10 +346,10 @@ public class ItemsManagerEditor : EditorWindow
         EditorGUILayout.HelpBox("Record custom data as how you defined in the DataRecorder object", MessageType.Info);
         EditorGUILayout.LabelField("UploadRecordedData()", EditorStyles.boldLabel);
         EditorGUILayout.HelpBox("Upload the recorded custom data", MessageType.Info);
-        
+
         EditorGUILayout.EndVertical();
     }
-    
+
     private void DrawStateListener(StateListener listenerData)
     {
         EditorGUILayout.BeginVertical("box");
@@ -355,7 +360,7 @@ public class ItemsManagerEditor : EditorWindow
         {
             DrawActionsList(listenerData.onStateStartedActions, ref listenerData.onStateStartedFoldout);
         }
-        
+
         EditorGUILayout.Space();
 
         // During State
@@ -364,7 +369,7 @@ public class ItemsManagerEditor : EditorWindow
         {
             DrawActionsList(listenerData.duringStateActions, ref listenerData.duringStateFoldout);
         }
-        
+
         EditorGUILayout.Space();
 
         // On State Exited
@@ -392,11 +397,21 @@ public class ItemsManagerEditor : EditorWindow
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.Space(20);
 
-                // Display action label as text
+                // Display the action label as text
                 EditorGUILayout.LabelField("Action " + (i + 1) + ":", GUILayout.Width(70));
                 EditorGUILayout.LabelField(actions[i].GetActionLabel(), EditorStyles.boldLabel);
+
+                // If this action is a "Set text" action, display an icon with a tooltip showing the text value.
+                if (actions[i].predefinedAction.actionType == "Set text")
+                {
+                    string textValue = GetSetTextValue(actions[i].customAction);
+                    GUIContent iconContent = EditorGUIUtility.IconContent("console.infoicon");
+                    iconContent.tooltip = "Set text value: " + textValue;
+                    GUILayout.Label(iconContent, GUILayout.Width(20), GUILayout.Height(20));
+                }
+
                 GUILayout.FlexibleSpace();
-                
+
                 // Edit Custom Action (if applicable)
                 if (actions[i].predefinedAction.actionType == null || actions[i].predefinedAction.actionType.Length == 0)
                 {
@@ -458,7 +473,7 @@ public class ItemsManagerEditor : EditorWindow
         }
         else
         {
-            EditorGUILayout.BeginHorizontal("box", GUILayout.MaxWidth(200));
+            EditorGUILayout.BeginHorizontal("box", GUILayout.MaxWidth(400));
             if (GUILayout.Button("Hide", GUILayout.Width(40))) // Hide button
             {
                 isAddingActionState[actions] = false;
@@ -469,9 +484,46 @@ public class ItemsManagerEditor : EditorWindow
             EditorGUILayout.LabelField("Add Predefined action");
             EditorGUILayout.BeginHorizontal();
             selectedActionIndex = EditorGUILayout.Popup(selectedActionIndex, AvailableStateListeningActions.Select(action => action.actionType).ToArray());
+
+            // If the selected action is "Set text", show a textarea next to the dropdown.
+            if (AvailableStateListeningActions[selectedActionIndex].actionType == "Set text")
+            {
+                setTextInput = EditorGUILayout.TextArea(setTextInput, GUILayout.Width(150), GUILayout.Height(40));
+            }
+
             if (GUILayout.Button("Add", GUILayout.Width(50)))
             {
-                actions.Add(new StateListenerAction(AvailableStateListeningActions[selectedActionIndex]));
+                if (AvailableStateListeningActions[selectedActionIndex].actionType == "Set text")
+                {
+                    if (selectedStateListeningItem != null)
+                    {
+                        // Look for an existing TextView component among the children.
+                        var textView = selectedStateListeningItem.GetComponentInChildren<ClusterVR.CreatorKit.World.Implements.TextView.TextView>();
+                        if (textView == null)
+                        {
+                            // If not found, create a new child GameObject and add the TextView component.
+                            GameObject newChild = new GameObject("TextView");
+                            newChild.transform.SetParent(selectedStateListeningItem.transform);
+                            textView = newChild.AddComponent<ClusterVR.CreatorKit.World.Implements.TextView.TextView>();
+                        }
+                        string childName = textView.gameObject.name;
+                        string actionContent = "$.subNode('" + childName + "').setText('" + setTextInput + "');";
+                        actions.Add(new StateListenerAction {
+                            predefinedAction = new StateListeningAction("Set text", actionContent), // AvailableStateListeningActions[selectedActionIndex],
+                            customAction = "",
+                            showCustomActionFoldout = false
+                        });
+                        setTextInput = "";
+                    }
+                    else
+                    {
+                        EditorUtility.DisplayDialog("Error", "No State Listening Item selected.", "OK");
+                    }
+                }
+                else
+                {
+                    actions.Add(new StateListenerAction(AvailableStateListeningActions[selectedActionIndex]));
+                }
                 isAddingActionState[actions] = false; // Hide the UI after adding
             }
             EditorGUILayout.EndHorizontal();
@@ -481,7 +533,7 @@ public class ItemsManagerEditor : EditorWindow
             EditorGUILayout.LabelField("", GUI.skin.verticalSlider, GUILayout.Width(10));
             EditorGUILayout.LabelField("", GUI.skin.verticalSlider, GUILayout.Width(10));
             EditorGUILayout.EndVertical();
-        
+
             EditorGUILayout.BeginVertical("box");
             EditorGUILayout.LabelField("Add Custom action");
             EditorGUILayout.BeginHorizontal();
@@ -494,11 +546,11 @@ public class ItemsManagerEditor : EditorWindow
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndVertical();
             EditorGUILayout.Space();
-            
+
             EditorGUILayout.EndHorizontal();
         }
     }
-    
+
     private void CreateStateListeningItem(GameObject referenceObject = null)
     {
         if (string.IsNullOrEmpty(newItemName))
@@ -560,7 +612,7 @@ public class ItemsManagerEditor : EditorWindow
         return null;
     }
 
-    // Changed: Adds a new StateListener to the selected StateListeningItem
+    // Adds a new StateListener to the selected StateListeningItem
     private void AddStateListener(int stateIndex)
     {
         if (selectedStateListeningItem == null) return;
@@ -648,7 +700,7 @@ public class ItemsManagerEditor : EditorWindow
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         string scriptPath = string.Format(scriptFolderPathFormat, sceneName) + "/" + selectedStateListeningItemScript.name + ".js";
         string scriptContent = File.ReadAllText(scriptPath);
-        
+
         string newScriptContent = "";
         newScriptContent += GenerateOnStateEnterFunction();
         newScriptContent += "\n";
@@ -661,7 +713,6 @@ public class ItemsManagerEditor : EditorWindow
             newScriptContent += otherImplementationByItem[selectedStateListeningItem];
         }
         newScriptContent += "\n";
-        
 
         // Write the changes to the actual file
         File.WriteAllText(scriptPath, newScriptContent);
@@ -690,7 +741,7 @@ public class ItemsManagerEditor : EditorWindow
 
         Assets.KaomoLab.CSCombiner.CSCombiner.CombineAll();
     }
-    
+
     private string GenerateStateFunction(
         string functionName,
         Func<StateListener, List<StateListenerAction>> actionSelector,
@@ -748,7 +799,7 @@ public class ItemsManagerEditor : EditorWindow
             listener => listener.onStateExitedActions
         );
     }
-    
+
     private GameObject FindConditionManagerPrefabInstance()
     {
         GameObject[] rootObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
@@ -811,7 +862,7 @@ public class ItemsManagerEditor : EditorWindow
     private void CopyFromReferenceObject(GameObject newObject, GameObject referenceObject)
     {
         if (!referenceObject) return;
-        
+
         // Copy values from the reference object's Item component to the new object's Item component (without removing it)
         var referenceItem = referenceObject.GetComponent<ClusterVR.CreatorKit.Item.Implements.Item>();
         var newItem = newObject.GetComponent<ClusterVR.CreatorKit.Item.Implements.Item>();
@@ -842,7 +893,7 @@ public class ItemsManagerEditor : EditorWindow
             newChild.name = child.name;
         }
     }
-    
+
     private void CopyItemComponentValues(ClusterVR.CreatorKit.Item.Implements.Item sourceItem, ClusterVR.CreatorKit.Item.Implements.Item targetItem)
     {
         // Use SerializedObject to copy field values between components
@@ -857,5 +908,23 @@ public class ItemsManagerEditor : EditorWindow
         }
 
         targetSerializedItem.ApplyModifiedProperties(); // Apply changes to the target Item component
+    }
+
+    /// <summary>
+    /// Returns the text value from a 'set text' action command.
+    /// Expected format: $.subNode('childName').setText('value');
+    /// </summary>
+    private string GetSetTextValue(string actionContent)
+    {
+        if (string.IsNullOrEmpty(actionContent))
+        {
+            return "";
+        }
+        Match match = Regex.Match(actionContent, @"\.setText\('([^']*)'\)");
+        if (match.Success && match.Groups.Count > 1)
+        {
+            return match.Groups[1].Value;
+        }
+        return "";
     }
 }
