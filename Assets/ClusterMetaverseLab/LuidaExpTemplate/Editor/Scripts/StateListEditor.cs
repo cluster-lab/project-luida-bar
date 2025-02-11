@@ -147,14 +147,18 @@ public class StateListEditor : EditorWindow
                 if (GUILayout.Button("Add State"))
                 {
                     GUI.FocusControl(null);
-                    statesProperty.InsertArrayElementAtIndex(preparationIndex);
-                    int sourceIndex = preparationIndex - 1;
-                    if (sourceIndex >= 0)
-                        CopyStateFields(sourceIndex, preparationIndex);
-                    else
-                        InitializeStateDefaults(preparationIndex);
-                    stateOrderChanged = true;
+                    int newStateIndex = preparationIndex - 1;
+                    statesProperty.InsertArrayElementAtIndex(newStateIndex);
+                    // Initialize or copy defaults for the new state...
                     serializedStateList.ApplyModifiedProperties();
+                    
+                    // Now insert the new GameObject incrementally:
+                    InsertStateGameObjectAtIndex(newStateIndex);
+                    
+                    // And update the state_id for all states that come after the inserted one:
+                    UpdateStateIDsFromIndex(newStateIndex + 1);
+                    
+                    stateOrderChanged = true;
                     break;
                 }
                 EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
@@ -173,11 +177,19 @@ public class StateListEditor : EditorWindow
                 if (GUILayout.Button("Add Trial State"))
                 {
                     GUI.FocusControl(null);
-                    statesProperty.InsertArrayElementAtIndex(i);
-                    // Initialize with default name "Trial - "
-                    InitializeTrialStateDefaults(i);
-                    stateOrderChanged = true;
+                    int newTrialStateIndex = i;
+                    // Insert the new trial state into the serialized state list
+                    statesProperty.InsertArrayElementAtIndex(newTrialStateIndex);
+                    InitializeTrialStateDefaults(newTrialStateIndex);
                     serializedStateList.ApplyModifiedProperties();
+
+                    // Incrementally insert the new trial state's GameObject at the proper position:
+                    InsertTrialStateGameObjectAtIndex(newTrialStateIndex);
+
+                    // Update the state_id values for all subsequent states
+                    UpdateStateIDsFromIndex(newTrialStateIndex + 1);
+
+                    stateOrderChanged = true;
                     break;
                 }
             }
@@ -189,14 +201,18 @@ public class StateListEditor : EditorWindow
                 if (GUILayout.Button("Add State"))
                 {
                     GUI.FocusControl(null);
-                    statesProperty.InsertArrayElementAtIndex(endIndex);
-                    int sourceIndex = endIndex - 1;
-                    if (sourceIndex >= 0)
-                        CopyStateFields(sourceIndex, endIndex);
-                    else
-                        InitializeStateDefaults(endIndex);
-                    stateOrderChanged = true;
+                    int newStateIndex = endIndex - 1;
+                    statesProperty.InsertArrayElementAtIndex(newStateIndex);
+                    // Initialize or copy defaults for the new state...
                     serializedStateList.ApplyModifiedProperties();
+                    
+                    // Now insert the new GameObject incrementally:
+                    InsertStateGameObjectAtIndex(newStateIndex);
+                    
+                    // And update the state_id for all states that come after the inserted one:
+                    UpdateStateIDsFromIndex(newStateIndex + 1);
+                    
+                    stateOrderChanged = true;
                     break;
                 }
 
@@ -340,6 +356,33 @@ public class StateListEditor : EditorWindow
             {
                 GUI.FocusControl(null);
                 statesProperty.DeleteArrayElementAtIndex(i);
+                serializedStateList.ApplyModifiedProperties();
+
+                // Check if the state being removed is immediately before a fixed state.
+                // (For example, if it's right before "Preparation" or, in the trial states, right before "Trial - Rest".)
+                bool removeGameObjectIncrementally = false;
+                if (preparationIndex >= 0 && i == preparationIndex - 1)
+                {
+                    removeGameObjectIncrementally = true;
+                }
+                if (trialRestIndex >= 0 && i == trialRestIndex - 1)
+                {
+                    removeGameObjectIncrementally = true;
+                }
+                
+                // If we are in one of those special cases, remove the corresponding GameObject from the scene.
+                if (removeGameObjectIncrementally)
+                {
+                    GameObject statesContainer = FindOrCreateStatesContainer();
+                    Transform childToRemove = FindChildByStateID(statesContainer.transform, i);
+                    if (childToRemove != null)
+                    {
+                        DestroyImmediate(childToRemove.gameObject);
+                    }
+                }
+                
+                // Update the state_id values for all GameObjects after the removed one.
+                UpdateStateIDsFromIndex(i);
                 stateOrderChanged = true;
             }
             EditorGUI.EndDisabledGroup();
@@ -1097,5 +1140,101 @@ public class StateListEditor : EditorWindow
     private string GenerateOnStateExitFunction(StateListener[] listeners)
     {
         return GenerateStateFunction(listeners, "OnStateExit", listener => listener.onStateExitedActions);
+    }
+
+    private void InsertStateGameObjectAtIndex(int index)
+    {
+        // Find or create the "States" parent object
+        GameObject statesContainer = FindOrCreateStatesContainer();
+        // Determine the correct prefab for the new state
+        string stateName = stateList.States[index].StateName;
+        string prefabPath = (stateName == "Preparation")
+                                ? prepareStatePrefabPath
+                                : (stateName == "Trial - Rest")
+                                    ? trialRestStatePrefabPath
+                                    : statePrefabPath;
+        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+        if (prefab == null)
+        {
+            Debug.LogError("Prefab not found at " + prefabPath);
+            return;
+        }
+        // Instantiate the prefab
+        GameObject newState = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+        newState.name = stateName;
+        newState.transform.SetParent(statesContainer.transform, false);
+        // Immediately insert at the correct index:
+        newState.transform.SetSiblingIndex(index);
+        
+        // Update its transition state_id immediately:
+        GameObject transition = newState.transform.Find("Transition")?.gameObject;
+        if (transition != null)
+            UpdateTransitionCurrentStateId(transition, index);
+    }
+
+    private void UpdateStateIDsFromIndex(int startIndex)
+    {
+        // Assume the "States" container is already available
+        GameObject statesContainer = FindOrCreateStatesContainer();
+        for (int i = startIndex; i < statesContainer.transform.childCount; i++)
+        {
+            Transform child = statesContainer.transform.GetChild(i);
+            GameObject transition = child.Find("Transition")?.gameObject;
+            if (transition != null)
+            {
+                UpdateTransitionCurrentStateId(transition, i);
+            }
+        }
+    }
+
+    // Helper that finds (or creates) the "States" GameObject under the required wrapper
+    private GameObject FindOrCreateStatesContainer()
+    {
+        GameObject[] rootObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+        GameObject statesObject = null;
+        GameObject requiredObjectsWrapper = null;
+        foreach (GameObject obj in rootObjects)
+        {
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == RequiredObjectsWrapperPrefabPath)
+            {
+                requiredObjectsWrapper = obj;
+                statesObject = obj.transform.Find("States")?.gameObject;
+                break;
+            }
+        }
+        if (statesObject == null && requiredObjectsWrapper != null)
+        {
+            statesObject = new GameObject("States");
+            statesObject.transform.SetParent(requiredObjectsWrapper.transform, false);
+        }
+        return statesObject;
+    }
+
+    private void InsertTrialStateGameObjectAtIndex(int index)
+    {
+        // Find or create the "States" container
+        GameObject statesContainer = FindOrCreateStatesContainer();
+        // Get the state name (for a trial state, InitializeTrialStateDefaults will have set it to something like "Trial - X")
+        string stateName = stateList.States[index].StateName;
+        // For trial states, use the default state prefab (unless you have a separate one for trials)
+        string prefabPath = statePrefabPath;  // Change this if you have a different prefab for trial states.
+        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+        if (prefab == null)
+        {
+            Debug.LogError("Trial State prefab not found at " + prefabPath);
+            return;
+        }
+        // Instantiate the prefab and set its name
+        GameObject newTrialState = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+        newTrialState.name = stateName;
+        // Set its parent immediately
+        newTrialState.transform.SetParent(statesContainer.transform, false);
+        // Insert at the desired index
+        newTrialState.transform.SetSiblingIndex(index);
+        
+        // Update the state_id on its Transition component
+        GameObject transition = newTrialState.transform.Find("Transition")?.gameObject;
+        if (transition != null)
+            UpdateTransitionCurrentStateId(transition, index);
     }
 }
