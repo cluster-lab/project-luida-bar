@@ -38,6 +38,7 @@ function DuringState(deltaTime) {
   if (STATE_ID === 3) {
     // バーチャルハンドの座標 = 実際の右手の座標
 $.setPosition($.state.player.getHumanoidBonePosition(HumanoidBone.RightHand));
+$.setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand));
   }
   if (STATE_ID === 4) {
     // バーチャルハンドの座標 = 原点の座標 + ゲイン×(実際の右手の座標 - 原点の座標)
@@ -48,10 +49,12 @@ $.setPosition(
   $.state.originPos.clone()
     .add(displacement.multiplyScalar($.state.gain))
 );
+$.setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand));
   }
   if (STATE_ID === 8) {
     // バーチャルハンドの座標 = 実際の右手の座標
 $.setPosition($.state.player.getHumanoidBonePosition(HumanoidBone.RightHand));
+$.setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand));
   }
   if (STATE_ID === 9) {
     // バーチャルハンドの座標 = 原点の座標 + ゲイン×(実際の右手の座標 - 原点の座標)
@@ -63,6 +66,7 @@ $.setPosition(
   $.state.originPos.clone()
     .add(displacement.multiplyScalar(CONDITION["gain"]))
 );
+$.setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand));
   }
 }
 

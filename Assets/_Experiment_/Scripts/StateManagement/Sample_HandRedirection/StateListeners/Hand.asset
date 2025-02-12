@@ -44,7 +44,7 @@ MonoBehaviour:
         actionType: 
         codeSnippet: 
       customAction: "// \u30D0\u30FC\u30C1\u30E3\u30EB\u30CF\u30F3\u30C9\u306E\u5EA7\u6A19
-        = \u5B9F\u969B\u306E\u53F3\u624B\u306E\u5EA7\u6A19\n$.setPosition($.state.player.getHumanoidBonePosition(HumanoidBone.RightHand));"
+        = \u5B9F\u969B\u306E\u53F3\u624B\u306E\u5EA7\u6A19\n$.setPosition($.state.player.getHumanoidBonePosition(HumanoidBone.RightHand));\n$.setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand));"
       showCustomActionFoldout: 1
     duringStateFoldout: 1
     onStateExitedActions: []
@@ -68,7 +68,7 @@ MonoBehaviour:
         = \u539F\u70B9\u306E\u5EA7\u6A19 + \u30B2\u30A4\u30F3\xD7(\u5B9F\u969B\u306E\u53F3\u624B\u306E\u5EA7\u6A19
         - \u539F\u70B9\u306E\u5EA7\u6A19)\nlet displacement = $.state.player\n  .getHumanoidBonePosition(HumanoidBone.RightHand).clone()\n 
         .sub($.state.originPos);\n$.setPosition(\n  $.state.originPos.clone()\n   
-        .add(displacement.multiplyScalar($.state.gain))\n);"
+        .add(displacement.multiplyScalar($.state.gain))\n);\n$.setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand));"
       showCustomActionFoldout: 1
     duringStateFoldout: 1
     onStateExitedActions:
@@ -96,7 +96,7 @@ MonoBehaviour:
         actionType: 
         codeSnippet: 
       customAction: "// \u30D0\u30FC\u30C1\u30E3\u30EB\u30CF\u30F3\u30C9\u306E\u5EA7\u6A19
-        = \u5B9F\u969B\u306E\u53F3\u624B\u306E\u5EA7\u6A19\n$.setPosition($.state.player.getHumanoidBonePosition(HumanoidBone.RightHand));"
+        = \u5B9F\u969B\u306E\u53F3\u624B\u306E\u5EA7\u6A19\n$.setPosition($.state.player.getHumanoidBonePosition(HumanoidBone.RightHand));\n$.setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand));"
       showCustomActionFoldout: 1
     duringStateFoldout: 1
     onStateExitedActions: []
@@ -120,7 +120,7 @@ MonoBehaviour:
         - \u539F\u70B9\u306E\u5EA7\u6A19)\n// \u30B2\u30A4\u30F3\u306F\u8A66\u884C\u3054\u3068\u306E\u5B9F\u9A13\u6761\u4EF6\u306E\u5024\u3092\u4F7F\u3046\nlet
         displacement = $.state.player\n  .getHumanoidBonePosition(HumanoidBone.RightHand).clone()\n 
         .sub($.state.originPos);\n$.setPosition(\n  $.state.originPos.clone()\n   
-        .add(displacement.multiplyScalar(CONDITION[\"gain\"]))\n);"
+        .add(displacement.multiplyScalar(CONDITION[\"gain\"]))\n);\n$.setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand));"
       showCustomActionFoldout: 1
     duringStateFoldout: 1
     onStateExitedActions:
