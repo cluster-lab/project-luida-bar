@@ -7,7 +7,11 @@ function OnStateEnter() {
   }
   if (STATE_ID === 2) {
     $.setStateCompat('this', 'exp_showItem', true);
-    $.subNode('Text').setText(``);
+    $.subNode('Text').setText(`これからは、右手の人差し指で緑の玉を触って、
+質問に答える、というタスクを行っていただきます。
+まずは何回か練習しましょう。
+準備ができたら、設定画面でコントローラを非表示にし、
+前を見て「開始」ボタンを押してください。`);
   }
   if (STATE_ID === 3) {
     $.subNode('Text').setText(`右手の人差し指で、
