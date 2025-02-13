@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acb8c4c8a0a4dc6418e2f4d59454f5e3, type: 3}
+  m_Name: LeftHand
+  m_EditorClassIdentifier: 
+  stateListeners:
+  - stateID: 0
+    onStateStartedActions:
+    - predefinedAction:
+        actionType: Hide item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
+      customAction: 
+      showCustomActionFoldout: 0
+    onStateStartedFoldout: 1
+    duringStateActions: []
+    duringStateFoldout: 0
+    onStateExitedActions: []
+    onStateExitedFoldout: 0
+  - stateID: 3
+    onStateStartedActions:
+    - predefinedAction:
+        actionType: Show item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
+      customAction: 
+      showCustomActionFoldout: 0
+    onStateStartedFoldout: 1
+    duringStateActions:
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: "if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(),
+        Infinity)[0];\r\n// \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u624B\u306E\u4F4D\u7F6E\u3068\u540C\u671F\u3055\u305B\u308B\r\n$.setPosition($.state.player.getHumanoidBonePosition(HumanoidBone.LeftHand));\r\n$.setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.LeftHand));"
+      showCustomActionFoldout: 1
+    duringStateFoldout: 1
+    onStateExitedActions: []
+    onStateExitedFoldout: 0
+  - stateID: 4
+    onStateStartedActions: []
+    onStateStartedFoldout: 0
+    duringStateActions:
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: "if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(),
+        Infinity)[0];\r\n// \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u624B\u306E\u4F4D\u7F6E\u3068\u540C\u671F\u3055\u305B\u308B\r\n$.setPosition($.state.player.getHumanoidBonePosition(HumanoidBone.LeftHand));\r\n$.setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.LeftHand));"
+      showCustomActionFoldout: 1
+    duringStateFoldout: 1
+    onStateExitedActions:
+    - predefinedAction:
+        actionType: Hide item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
+      customAction: 
+      showCustomActionFoldout: 0
+    onStateExitedFoldout: 1
+  otherImplementation: 
