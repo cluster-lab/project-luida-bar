@@ -18,6 +18,7 @@ public class ItemsManagerEditor : EditorWindow
         new StateListeningAction("Upload recorded data", "$.sendSignalCompat('this', 'exp_uploadCustomData');"),
         // This will be overridden via the UI when adding a "Set text" action.
         new StateListeningAction("Set text", "$.subNode('Text').setText('xxx');"),
+        new StateListeningAction("Sleep", "0"),
     };
 
     private string newItemName = "";
@@ -54,6 +55,7 @@ public class ItemsManagerEditor : EditorWindow
 
     // Field to hold the text input for "Set text" actions.
     private string setTextInput = "";
+    private double sleepTimeInput = 0;
 
     public void OnEnable()
     {
@@ -399,7 +401,8 @@ public class ItemsManagerEditor : EditorWindow
 
                 // Display the action label as text
                 EditorGUILayout.LabelField("Action " + (i + 1) + ":", GUILayout.Width(70));
-                EditorGUILayout.LabelField(actions[i].GetActionLabel(), EditorStyles.boldLabel);
+                var actionLabel = actions[i].predefinedAction.actionType == "Sleep" ? ("Sleep " + actions[i].predefinedAction.codeSnippet + " seconds") : actions[i].GetActionLabel();
+                EditorGUILayout.LabelField(actionLabel, EditorStyles.boldLabel);
 
                 // If this action is a "Set text" action, display an icon with a tooltip showing the text value.
                 if (actions[i].predefinedAction.actionType == "Set text")
@@ -490,6 +493,10 @@ public class ItemsManagerEditor : EditorWindow
             {
                 setTextInput = EditorGUILayout.TextArea(setTextInput, GUILayout.Width(150), GUILayout.Height(40));
             }
+            else if (AvailableStateListeningActions[selectedActionIndex].actionType == "Sleep")
+            {
+                sleepTimeInput = EditorGUILayout.DoubleField("", sleepTimeInput, GUILayout.Width(50));
+            }
 
             if (GUILayout.Button("Add", GUILayout.Width(50)))
             {
@@ -514,6 +521,23 @@ public class ItemsManagerEditor : EditorWindow
                             showCustomActionFoldout = false
                         });
                         setTextInput = "";
+                    }
+                    else
+                    {
+                        EditorUtility.DisplayDialog("Error", "No State Listening Item selected.", "OK");
+                    }
+                }
+                else if (AvailableStateListeningActions[selectedActionIndex].actionType == "Sleep")
+                {
+                    if (selectedStateListeningItem != null)
+                    {
+                        string actionContent = sleepTimeInput.ToString();
+                        actions.Add(new StateListenerAction {
+                            predefinedAction = new StateListeningAction("Sleep", actionContent),
+                            customAction = "",
+                            showCustomActionFoldout = false
+                        });
+                        sleepTimeInput = 0;
                     }
                     else
                     {
@@ -702,11 +726,7 @@ public class ItemsManagerEditor : EditorWindow
         string scriptContent = File.ReadAllText(scriptPath);
 
         string newScriptContent = "";
-        newScriptContent += GenerateOnStateEnterFunction();
-        newScriptContent += "\n";
-        newScriptContent += GenerateDuringStateFunction();
-        newScriptContent += "\n";
-        newScriptContent += GenerateOnStateExitFunction();
+        newScriptContent += GenerateActionsObjects();
         if (otherImplementationByItem.ContainsKey(selectedStateListeningItem))
         {
             newScriptContent += "\n";
@@ -926,5 +946,63 @@ public class ItemsManagerEditor : EditorWindow
             return match.Groups[1].Value;
         }
         return "";
+    }
+
+    // Generates the three object literals (stateEnterActions, duringStateActions, stateExitActions)
+    private string GenerateActionsObjects()
+    {
+        string content = "";
+        content += GenerateActionsObject(listener => listener.onStateStartedActions, "stateEnterActions");
+        content += "\n";
+        content += GenerateActionsObject(listener => listener.duringStateActions, "duringStateActions");
+        content += "\n";
+        content += GenerateActionsObject(listener => listener.onStateExitedActions, "stateExitActions");
+        content += "\n";
+        return content;
+    }
+
+    private string GenerateActionsObject(Func<StateListener, List<StateListenerAction>> actionSelector, string objectName)
+    {
+        string result = $"const {objectName} = {{\n";
+        foreach (var listener in stateListenersByItem[selectedStateListeningItem])
+        {
+            int stateId = listener.stateID;
+            var actions = actionSelector(listener);
+            if (actions == null || actions.Count == 0)
+                continue;
+            result += $"    {stateId}: [\n";
+            foreach (var action in actions)
+            {
+                result += "        " + GenerateActionObject(action) + ",\n";
+            }
+            result += "    ],\n";
+        }
+        result += "}\n";
+        return result;
+    }
+
+    private string GenerateActionObject(StateListenerAction action)
+    {
+        // If the action is a sleep, output an object with type "sleep" and a value (defaulting to 3 if not specified)
+        if (action.predefinedAction.actionType != null && action.predefinedAction.actionType.Equals("Sleep", StringComparison.OrdinalIgnoreCase))
+        {
+            return $"{{ type: \"sleep\", value: {action.predefinedAction.codeSnippet} }}";
+        }
+        else
+        {
+            // For all other (exec) actions, output the action as an inline lambda function.
+            string code = "";
+            if (!string.IsNullOrEmpty(action.customAction))
+            {
+                code = action.customAction;
+            }
+            else if (!string.IsNullOrEmpty(action.predefinedAction.codeSnippet))
+            {
+                code = action.predefinedAction.codeSnippet;
+            }
+            code = code.Trim();
+            string indentedCode = code.Replace("\n", "\n            ");
+            return $"{{ type: \"exec\", action: () => {{\n            {indentedCode}\n        }} }}";
+        }
     }
 }
