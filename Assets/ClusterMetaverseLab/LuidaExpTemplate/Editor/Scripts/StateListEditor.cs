@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using ClusterVR.CreatorKit.Item;
 using ClusterVR.CreatorKit.Item.Implements;
 
@@ -803,58 +804,70 @@ public class StateListEditor : EditorWindow
     private void UpdateStateListeningItemsAfterReorder()
     {
         if (stateList == null || previousStates == null) return;
-        Dictionary<int, int> stateIdMap = new Dictionary<int, int>();
+
+        // 1) Build map: old index → new index (by StateName)
+        var stateIdMap = new Dictionary<int, int>();
         for (int i = 0; i < previousStates.Length; i++)
         {
-            string stateName = previousStates[i].StateName;
-            int newStateIndex = Array.FindIndex(stateList.States, s => s.StateName == stateName);
-            stateIdMap.Add(i, newStateIndex);
+            string name = previousStates[i].StateName;
+            int newIndex = Array.FindIndex(stateList.States, s => s.StateName == name);
+            stateIdMap.Add(i, newIndex);
         }
-        // (State listening items update code remains unchanged)
+
+        // 2) Locate all StateListeningItemData assets in your scene's StateListeners folder
         sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        string listenersFolderPath = string.Format(stateManagementScriptFolderPathFormat, sceneName) + "/StateListeners";
-        if (Directory.Exists(listenersFolderPath))
+        string listenersFolder = string.Format(stateManagementScriptFolderPathFormat, sceneName) + "/StateListeners";
+        if (Directory.Exists(listenersFolder))
         {
-            string[] assetFiles = Directory.GetFiles(listenersFolderPath, "*.asset");
-            foreach (string assetFile in assetFiles)
+            foreach (var assetFile in Directory.GetFiles(listenersFolder, "*.asset"))
             {
-                StateListeningItemData stateListeningItemData = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(assetFile);
-                if (stateListeningItemData != null)
+                var data = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(assetFile);
+                if (data == null) continue;
+
+                bool dirty = false;
+                var kept = new List<StateListener>();
+
+                // 3) Remap each listener's stateID
+                foreach (var listener in data.stateListeners)
                 {
-                    bool updated = false;
-                    var updatedListeners = new List<StateListener>();
-                    foreach (StateListener listener in stateListeningItemData.stateListeners)
+                    if (stateIdMap.TryGetValue(listener.stateID, out var mapped))
                     {
-                        if (stateIdMap.ContainsKey(listener.stateID))
-                        {
-                            listener.stateID = stateIdMap[listener.stateID];
-                            updated = true;
-                            if (listener.stateID >= 0)
-                                updatedListeners.Add(listener);
-                        }
-                        else
-                        {
-                            updatedListeners.Add(listener);
-                        }
+                        listener.stateID = mapped;
+                        dirty = true;
+                        // only keep valid mappings
+                        if (mapped >= 0) kept.Add(listener);
                     }
-                    stateListeningItemData.stateListeners = updatedListeners.ToArray();
-                    if (updated)
-                        EditorUtility.SetDirty(stateListeningItemData);
+                    else
+                    {
+                        // if the old ID wasn't found, just keep it untouched
+                        kept.Add(listener);
+                    }
                 }
-                
-                var itemName = assetFile.Replace(listenersFolderPath, "").Replace("\\", "").Replace(".asset", "");
-                string scriptPath = string.Format("Assets/_Experiment_/Scripts/StateManagement/{0}/{1}.js", sceneName, itemName);
-                string newScriptContent = "";
-                newScriptContent += GenerateOnStateEnterFunction(stateListeningItemData.stateListeners) + "\n";
-                newScriptContent += GenerateDuringStateFunction(stateListeningItemData.stateListeners) + "\n";
-                newScriptContent += GenerateOnStateExitFunction(stateListeningItemData.stateListeners) + "\n";
-                newScriptContent += stateListeningItemData.otherImplementation + "\n";
-                File.WriteAllText(scriptPath, newScriptContent);
+
+                // 4) Write back and mark dirty if anything changed
+                data.stateListeners = kept.ToArray();
+                if (dirty) EditorUtility.SetDirty(data);
+
+                // 5) Regenerate the `.js` for this item
+                string itemName = Path.GetFileNameWithoutExtension(assetFile);
+                string scriptPath = 
+                    $"Assets/_Experiment_/Scripts/StateManagement/{sceneName}/{itemName}.js";
+
+                var sb = new StringBuilder();
+                sb.AppendLine(GenerateOnStateEnterFunction(data.stateListeners));
+                sb.AppendLine(GenerateDuringStateFunction(data.stateListeners));
+                sb.AppendLine(GenerateOnStateExitFunction(data.stateListeners));
+                sb.AppendLine(data.otherImplementation);
+
+                File.WriteAllText(scriptPath, sb.ToString());
             }
         }
 
+        // 6) Persist all changes
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
+
+        // 7) Refresh our "previousStates" snapshot so next re-order diff will work
         Array.Copy(stateList.States, previousStates, stateList.States.Length);
     }
 
