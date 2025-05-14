@@ -236,13 +236,89 @@ public class ItemsManagerEditor : EditorWindow
         var rl = new ReorderableList(actions, typeof(StateListenerAction), true, true, true, true)
         {
             drawHeaderCallback = rect => EditorGUI.LabelField(rect, header, EditorStyles.boldLabel),
-            drawElementCallback = (rect, index, active, focused) =>
+            drawElementCallback = (rect, index, isActive, isFocused) =>
             {
                 var action = actions[index];
-                var label = action.predefinedAction.actionType == "Sleep"
-                    ? $"Sleep {action.predefinedAction.codeSnippet} seconds"
-                    : action.GetActionLabel();
-                EditorGUI.LabelField(rect, label);
+                float lineHeight = EditorGUIUtility.singleLineHeight;
+                float spacing = EditorGUIUtility.standardVerticalSpacing;
+
+                Rect dropdownRect = new Rect(rect.x, rect.y, rect.width, lineHeight);
+                // Rect dropdownRect = new Rect(rect.x, rect.y + lineHeight + spacing, rect.width * 0.5f, lineHeight);
+                Rect buttonRect = new Rect(rect.x + dropdownRect.width + 4, rect.y + lineHeight + spacing, rect.width * 0.5f - 4, lineHeight);
+
+                // Action Type Dropdown
+                var options = AvailableStateListeningActions.Select(a => a.actionType).ToList();
+                options.Add("Customized Action");
+
+                int selectedIndex = options.Count - 1; // Default to "Customized Action"
+                int builtinIndex = AvailableStateListeningActions
+                    .ToList()
+                    .FindIndex(a => a.actionType == action.predefinedAction.actionType);
+
+                if (builtinIndex != -1)
+                {
+                    selectedIndex = builtinIndex;
+                }
+
+                int newIndex = EditorGUI.Popup(dropdownRect, selectedIndex, options.ToArray());
+                if (newIndex != selectedIndex)
+                {
+                    if (newIndex < AvailableStateListeningActions.Length)
+                    {
+                        action.predefinedAction = AvailableStateListeningActions[newIndex];
+                        action.customAction = ""; // Reset customAction if switching from customized
+                    }
+                    else
+                    {
+                        action.predefinedAction = new StateListeningAction("Customized Action", "");
+                    }
+                }
+
+                // Show custom input only for "Set text" or "Sleep" or "Customized action"
+                if (action.predefinedAction.actionType == "Set text")
+                {
+                    // Label
+                    Rect labelRect = new Rect(rect.x, rect.y + lineHeight + spacing, 40f, lineHeight);
+                    EditorGUI.LabelField(labelRect, "Text");
+
+                    // Input Field next to label
+                    Rect fieldRect = new Rect(labelRect.xMax + 4, labelRect.y, rect.width - labelRect.width - 4, lineHeight);
+                    string val = GetSetTextValue(action.predefinedAction.codeSnippet);
+                    val = EditorGUI.TextArea(fieldRect, val);
+                    action.predefinedAction.codeSnippet = $"$.subNode('Text').setText(`{val}`);";
+                }
+                else if (action.predefinedAction.actionType == "Sleep")
+                {
+                    // Label
+                    Rect labelRect = new Rect(rect.x, rect.y + lineHeight + spacing, 100f, lineHeight);
+                    EditorGUI.LabelField(labelRect, "Sleep Time (s)");
+
+                    // Input Field next to label
+                    Rect fieldRect = new Rect(labelRect.xMax + 4, labelRect.y, rect.width - labelRect.width - 4, lineHeight);
+                    string val = action.predefinedAction.codeSnippet;
+                    val = EditorGUI.TextField(fieldRect, val);
+                    action.predefinedAction.codeSnippet = val;
+                }
+                else if (action.predefinedAction.actionType == "Customized Action")
+                {
+                    Rect textAreaRect = new Rect(rect.x, rect.y + (lineHeight + spacing), rect.width, lineHeight * 2);
+                    action.customAction = EditorGUI.TextArea(textAreaRect, action.customAction);
+                }
+            },
+            elementHeightCallback = index =>
+            {
+                var action = actions[index];
+                float lineHeight = EditorGUIUtility.singleLineHeight;
+                float spacing = EditorGUIUtility.standardVerticalSpacing;
+                float height = lineHeight + spacing; // Dropdown
+
+                if (action.predefinedAction.actionType == "Set text" || action.predefinedAction.actionType == "Sleep")
+                    height += lineHeight + spacing;
+
+                if (action.predefinedAction.actionType == "Customized Action")
+                    height += lineHeight * 2 + spacing;
+
+                return height + 6f;
             }
         };
         rl.onAddCallback = list =>
