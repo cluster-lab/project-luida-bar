@@ -135,75 +135,131 @@ public class ItemsManagerEditor : EditorWindow
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.Space(10);
 
-        // 4) Scrollable Y
+        // 4) Table (Scrollable Y)
         scrollPositionY = EditorGUILayout.BeginScrollView(
             scrollPositionY, false, true,
             GUILayout.ExpandWidth(true),
             GUILayout.ExpandHeight(true)
         );
 
+        // Header row
         EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("State Name | Item Name", GUILayout.Width(225));
+        bool isDarkColumn = true; // Start with dark for columns
+        for (int i = 0; i < _cachedItems.Length; i++)
+        {
+            var item = _cachedItems[i];
+            
+            // Set column background color
+            GUI.backgroundColor = isDarkColumn ? new Color(0.2f, 0.2f, 0.2f) : new Color(0.8f, 0.8f, 0.8f);
 
-        // 5a) State names column
-        EditorGUILayout.BeginVertical(GUILayout.Width(120));
-        EditorGUILayout.LabelField("State \\ Item", EditorStyles.boldLabel, GUILayout.MinHeight(30));
+            EditorGUILayout.BeginVertical("box", GUILayout.Width(250));
+            // Reference field
+            EditorGUILayout.LabelField(item.name, EditorStyles.boldLabel);
+            EditorGUILayout.BeginHorizontal();
+            var newReference = (GameObject)EditorGUILayout.ObjectField(item, typeof(GameObject), true);
+
+            // Update reference if changed
+            if (newReference != item)
+            {
+                Undo.RecordObject(item, "Update Reference");
+                item = newReference;
+            }
+
+            // Remove button
+            if (GUILayout.Button("Remove", GUILayout.Height(20)))
+            {
+                // Remove corresponding asset and JavaScript
+                string scene = SceneManager.GetActiveScene().name;
+                string folder = string.Format(ScriptFolderFormat, scene);
+                string jsPath = Path.Combine(folder, item.name + ".js");
+                string assetPath = Path.Combine(folder + "/StateListeners", item.name + ".asset");
+
+                if (File.Exists(jsPath)) File.Delete(jsPath);
+                if (File.Exists(assetPath)) AssetDatabase.DeleteAsset(assetPath);
+                
+                // Remove GameObject
+                Undo.DestroyObjectImmediate(item);
+
+                AssetDatabase.Refresh();
+                _needsRebuild = true;
+            }
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndVertical();
+
+            // Toggle column color for the next column
+            isDarkColumn = !isDarkColumn;
+        }
+        EditorGUILayout.EndHorizontal();
+
+        bool isBlueRow = true; // Start with blue for rows
+
         foreach (var name in _cachedStateNames)
         {
-            EditorGUILayout.BeginVertical(
-                GUI.skin.box,
-                GUILayout.MinHeight(60),
-                GUILayout.ExpandHeight(false)
-            );
-            EditorGUILayout.LabelField(name, GUILayout.ExpandHeight(true));
-            GUILayout.Space(50);
+            // Set row background color
+            GUI.backgroundColor = isBlueRow ? Color.blue : Color.gray;
+
+            EditorGUILayout.BeginHorizontal("box"); // Start a new row with background color
+
+            // State name column
+            EditorGUILayout.BeginVertical(GUILayout.Width(200));
+            EditorGUILayout.LabelField(name, EditorStyles.boldLabel, GUILayout.ExpandHeight(true));
             EditorGUILayout.EndVertical();
-        }
-        EditorGUILayout.EndVertical();
 
-        // 5b) Items columns (horizontal scroll)
-        scrollPositionX = EditorGUILayout.BeginScrollView(
-            scrollPositionX, true, false,
-            GUILayout.ExpandWidth(true),
-            GUILayout.ExpandHeight(true)
-        );
-        EditorGUILayout.BeginHorizontal();
-        foreach (var item in _cachedItems)
-        {
-            EditorGUILayout.BeginVertical("box", GUILayout.Width(200));
-            EditorGUILayout.LabelField(item.name, EditorStyles.boldLabel, GUILayout.MinHeight(30));
-
-            for (int si = 0; si < _cachedStateNames.Length; si++)
+            // Items columns
+            isDarkColumn = true; // Start with dark for columns
+            foreach (var item in _cachedItems)
             {
-                EditorGUILayout.BeginVertical(
-                    GUI.skin.box,
-                    GUILayout.MinHeight(60),
-                    GUILayout.ExpandHeight(false)
-                );
+                // Set column background color
+                GUI.backgroundColor = isDarkColumn ? new Color(0.2f, 0.2f, 0.2f) : new Color(0.8f, 0.8f, 0.8f);
+
+                GUILayout.Space(5);
+                EditorGUILayout.BeginHorizontal("box", GUILayout.Width(240));
+                GUILayout.Space(20);
+			    EditorGUILayout.BeginVertical();
+                GUILayout.Space(20);
 
                 stateListenersByItem.TryGetValue(item, out var list);
-                var listener = list?.FirstOrDefault(l => l.stateID == si);
+                var listener = list?.FirstOrDefault(l => l.stateID == Array.IndexOf(_cachedStateNames, name));
 
                 if (listener != null)
                 {
-                    DrawReorderableList(item, si, "OnStateStart", "On State Start");
-                    DrawReorderableList(item, si, "DuringState",  "During State");
-                    DrawReorderableList(item, si, "OnStateExit",  "On State End");
+                    DrawReorderableList(item, Array.IndexOf(_cachedStateNames, name), "OnStateStart", "On State Start");
+                    DrawReorderableList(item, Array.IndexOf(_cachedStateNames, name), "DuringState", "During State");
+                    DrawReorderableList(item, Array.IndexOf(_cachedStateNames, name), "OnStateExit", "On State End");
+                    // Add Remove button
+                    if (GUILayout.Button("Remove", GUILayout.Height(20)))
+                    {
+                        list.Remove(listener); // Remove the listener
+                        SaveItemToAsset(item); // Save changes to the asset
+                        _needsRebuild = true;  // Mark for rebuild
+                    }
                 }
                 else
                 {
                     if (GUILayout.Button("Add", GUILayout.Height(20)))
-                        AddStateListener(si, item);
+                        AddStateListener(Array.IndexOf(_cachedStateNames, name), item);
                 }
 
-                GUILayout.Space(50);
+                GUILayout.Space(20);
                 EditorGUILayout.EndVertical();
+                GUILayout.Space(20);
+                EditorGUILayout.EndHorizontal();
+                GUILayout.Space(5);
+
+                // Toggle column color for the next column
+                isDarkColumn = !isDarkColumn;
             }
 
-            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndHorizontal(); // End the row
+
+            // Toggle the color for the next row
+            isBlueRow = !isBlueRow;
         }
-        EditorGUILayout.EndHorizontal();
-        EditorGUILayout.EndScrollView();
-        EditorGUILayout.EndHorizontal();
+
+        // Reset background color to default
+        GUI.backgroundColor = Color.white;
+
         EditorGUILayout.EndScrollView();
 
         // 6) Save if user changed something
@@ -261,7 +317,11 @@ public class ItemsManagerEditor : EditorWindow
                 }
 
                 int newIndex = EditorGUI.Popup(dropdownRect, selectedIndex, options.ToArray());
-                if (newIndex != selectedIndex)
+                if (newIndex >= AvailableStateListeningActions.Length)
+                {
+                    action.predefinedAction = new StateListeningAction("Customized Action", action.customAction);
+                }
+                else if (newIndex != selectedIndex)
                 {
                     if (newIndex < AvailableStateListeningActions.Length)
                     {
@@ -348,7 +408,7 @@ public class ItemsManagerEditor : EditorWindow
 
     #endregion
 
-    #region Unchanged helper methods
+    #region Helper methods
 
     private void RefreshStateListeningItems()
     {
@@ -493,14 +553,63 @@ public class ItemsManagerEditor : EditorWindow
 
     private string GenerateActionObject(StateListenerAction action)
     {
-        if (action.predefinedAction.actionType.Equals("Sleep", StringComparison.OrdinalIgnoreCase))
+        if (action.predefinedAction.actionType != null && action.predefinedAction.actionType.Equals("Sleep", StringComparison.OrdinalIgnoreCase))
             return $"{{ type: \"sleep\", value: {action.predefinedAction.codeSnippet} }}";
 
         var code = string.IsNullOrEmpty(action.customAction)
             ? action.predefinedAction.codeSnippet
             : action.customAction;
-        code = code.Trim().Replace("\n", "\n            ");
+        if (code != null) code = code.Trim().Replace("\n", "\n            ");
         return $"{{ type: \"exec\", action: () => {{\n            {code}\n        }} }}";
+    }
+    
+    private string GenerateActionsObjectsForItem(GameObject item)
+    {
+        if (!stateListenersByItem.TryGetValue(item, out var listeners) || listeners.Count == 0)
+            return string.Empty;
+
+        var sb = new System.Text.StringBuilder();
+
+        // stateEnterActions
+        sb.AppendLine("const stateEnterActions = {");
+        foreach (var lst in listeners)
+        {
+            var acts = lst.onStateStartedActions;
+            if (acts.Count == 0) continue;
+            sb.AppendLine($"    {lst.stateID}: [");
+            foreach (var a in acts)
+                sb.AppendLine($"        {GenerateActionObject(a)},");
+            sb.AppendLine("    ],");
+        }
+        sb.AppendLine("};\n");
+
+        // duringStateActions
+        sb.AppendLine("const duringStateActions = {");
+        foreach (var lst in listeners)
+        {
+            var acts = lst.duringStateActions;
+            if (acts.Count == 0) continue;
+            sb.AppendLine($"    {lst.stateID}: [");
+            foreach (var a in acts)
+                sb.AppendLine($"        {GenerateActionObject(a)},");
+            sb.AppendLine("    ],");
+        }
+        sb.AppendLine("};\n");
+
+        // stateExitActions
+        sb.AppendLine("const stateExitActions = {");
+        foreach (var lst in listeners)
+        {
+            var acts = lst.onStateExitedActions;
+            if (acts.Count == 0) continue;
+            sb.AppendLine($"    {lst.stateID}: [");
+            foreach (var a in acts)
+                sb.AppendLine($"        {GenerateActionObject(a)},");
+            sb.AppendLine("    ],");
+        }
+        sb.AppendLine("};");
+
+        return sb.ToString();
     }
 
     private string GetSetTextValue(string content)
@@ -525,12 +634,19 @@ public class ItemsManagerEditor : EditorWindow
 
     private void SaveItemToAsset(GameObject item)
     {
+        if (!item) return;
+        if (stateListenersByItem.ContainsKey(item) == false)
+        {
+            Destroy(item);
+            return;
+        }
+        
         string scene = SceneManager.GetActiveScene().name;
         string folder = string.Format(ScriptFolderFormat, scene);
         if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
 
         var lines = new[] {
-            GenerateActionsObjects(),
+            GenerateActionsObjectsForItem(item),
             otherImplementationByItem.GetValueOrDefault(item, "")
         };
         string jsPath = Path.Combine(folder, item.name + ".js");
