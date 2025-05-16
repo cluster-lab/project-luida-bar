@@ -1,41 +1,42 @@
-function OnStateEnter() {
-  const STATE_ID = $.state.state_id;
-  const CONDITION = $.groupState.currentCondition;
+const stateEnterActions = {
+    0: [
+        { type: "exec", action: () => {
+            $.setStateCompat('this', 'exp_showItem', false);
+        } },
+    ],
+    5: [
+        { type: "exec", action: () => {
+            $.setStateCompat('this', 'exp_showItem', true);
+        } },
+    ],
+    10: [
+        { type: "exec", action: () => {
+            $.setStateCompat('this', 'exp_showItem', true);
+        } },
+    ],
+    12: [
+        { type: "exec", action: () => {
+            $.sendSignalCompat('this', 'exp_uploadCustomData');
+        } },
+    ],
+};
 
-  if (STATE_ID === 0) {
-    $.setStateCompat('this', 'exp_showItem', false);
-  }
-  if (STATE_ID === 5) {
-    $.setStateCompat('this', 'exp_showItem', true);
-  }
-  if (STATE_ID === 10) {
-    $.setStateCompat('this', 'exp_showItem', true);
-  }
-  if (STATE_ID === 12) {
-    $.sendSignalCompat('this', 'exp_uploadCustomData');
-  }
-}
+const duringStateActions = {
+};
 
-
-function DuringState(deltaTime) {
-  const STATE_ID = $.state.state_id;
-  const CONDITION = $.groupState.currentCondition;
-
-}
-
-
-function OnStateExit() {
-  const STATE_ID = $.state.state_id;
-  const CONDITION = $.groupState.currentCondition;
-
-  if (STATE_ID === 5) {
-    $.setStateCompat('this', 'exp_showItem', false);
-  }
-  if (STATE_ID === 10) {
-    $.setStateCompat('this', 'exp_showItem', false);
-    $.sendSignalCompat('this', 'exp_recordCustomData');
-  }
-}
-
-
+const stateExitActions = {
+    5: [
+        { type: "exec", action: () => {
+            $.setStateCompat('this', 'exp_showItem', false);
+        } },
+    ],
+    10: [
+        { type: "exec", action: () => {
+            $.setStateCompat('this', 'exp_showItem', false);
+        } },
+        { type: "exec", action: () => {
+            $.sendSignalCompat('this', 'exp_recordCustomData');
+        } },
+    ],
+};
 
