@@ -97,6 +97,11 @@ public class ItemsManagerEditor : EditorWindow
 
     public void OnGUI()
     {
+        // Remove button style
+        GUIStyle removeButtonStyle = new GUIStyle(GUI.skin.button);
+        removeButtonStyle.normal.textColor = Color.red;
+        removeButtonStyle.hover.textColor = Color.red;
+        
         // 1) Rebuild caches only when needed
         if (_needsRebuild)
         {
@@ -144,7 +149,7 @@ public class ItemsManagerEditor : EditorWindow
 
         // Header row
         EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("State Name | Item Name", GUILayout.Width(225));
+        EditorGUILayout.LabelField("State Name | Item Name", GUILayout.Width(215));
         bool isDarkColumn = true; // Start with dark for columns
         for (int i = 0; i < _cachedItems.Length; i++)
         {
@@ -153,7 +158,7 @@ public class ItemsManagerEditor : EditorWindow
             // Set column background color
             GUI.backgroundColor = isDarkColumn ? new Color(0.2f, 0.2f, 0.2f) : new Color(0.8f, 0.8f, 0.8f);
 
-            EditorGUILayout.BeginVertical("box", GUILayout.Width(250));
+            EditorGUILayout.BeginVertical("box", GUILayout.Width(240));
             // Reference field
             EditorGUILayout.LabelField(item.name, EditorStyles.boldLabel);
             EditorGUILayout.BeginHorizontal();
@@ -167,25 +172,33 @@ public class ItemsManagerEditor : EditorWindow
             }
 
             // Remove button
-            if (GUILayout.Button("Remove", GUILayout.Height(20)))
+            if (GUILayout.Button("Remove", removeButtonStyle, GUILayout.Height(20)))
             {
-                // Remove corresponding asset and JavaScript
-                string scene = SceneManager.GetActiveScene().name;
-                string folder = string.Format(ScriptFolderFormat, scene);
-                string jsPath = Path.Combine(folder, item.name + ".js");
-                string assetPath = Path.Combine(folder + "/StateListeners", item.name + ".asset");
+                if (EditorUtility.DisplayDialog(
+                        "Confirm Removal",
+                        $"Are you sure you want to remove {item.name} and its associated assets?",
+                        "Yes",
+                        "No"))
+                {
+                    // Remove corresponding asset and JavaScript
+                    string scene = SceneManager.GetActiveScene().name;
+                    string folder = string.Format(ScriptFolderFormat, scene);
+                    string jsPath = Path.Combine(folder, item.name + ".js");
+                    string assetPath = Path.Combine(folder + "/StateListeners", item.name + ".asset");
 
-                if (File.Exists(jsPath)) File.Delete(jsPath);
-                if (File.Exists(assetPath)) AssetDatabase.DeleteAsset(assetPath);
-                
-                // Remove GameObject
-                Undo.DestroyObjectImmediate(item);
+                    if (File.Exists(jsPath)) File.Delete(jsPath);
+                    if (File.Exists(assetPath)) AssetDatabase.DeleteAsset(assetPath);
+                    
+                    // Remove GameObject
+                    Undo.DestroyObjectImmediate(item);
 
-                AssetDatabase.Refresh();
-                _needsRebuild = true;
+                    AssetDatabase.Refresh();
+                    _needsRebuild = true;
+                }
             }
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndVertical();
+            GUILayout.Space(10);
 
             // Toggle column color for the next column
             isDarkColumn = !isDarkColumn;
@@ -228,11 +241,18 @@ public class ItemsManagerEditor : EditorWindow
                     DrawReorderableList(item, Array.IndexOf(_cachedStateNames, name), "DuringState", "During State");
                     DrawReorderableList(item, Array.IndexOf(_cachedStateNames, name), "OnStateExit", "On State End");
                     // Add Remove button
-                    if (GUILayout.Button("Remove", GUILayout.Height(20)))
+                    if (GUILayout.Button("Remove", removeButtonStyle, GUILayout.Height(20)))
                     {
-                        list.Remove(listener); // Remove the listener
-                        SaveItemToAsset(item); // Save changes to the asset
-                        _needsRebuild = true;  // Mark for rebuild
+                        if (EditorUtility.DisplayDialog(
+                                "Confirm Removal",
+                                $"Are you sure you want to remove the state listener of {item.name}?",
+                                "Yes",
+                                "No"))
+                        {
+                            list.Remove(listener); // Remove the listener
+                            SaveItemToAsset(item); // Save changes to the asset
+                            _needsRebuild = true;  // Mark for rebuild
+                        }
                     }
                 }
                 else
