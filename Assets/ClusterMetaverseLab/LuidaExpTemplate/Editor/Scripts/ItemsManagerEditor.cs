@@ -18,37 +18,63 @@ public class ItemsManagerEditor : EditorWindow
     private Dictionary<string, ReorderableList> _reorderableLists = new Dictionary<string, ReorderableList>();
 
     // ——— Existing fields ———
-    private static StateListeningAction[] AvailableStateListeningActions = {
+    private static StateListeningAction[] AvailableStateListeningActions =
+    {
         new StateListeningAction("Show item", "$.setStateCompat('this', 'exp_showItem', true);"),
         new StateListeningAction("Hide item", "$.setStateCompat('this', 'exp_showItem', false);"),
         new StateListeningAction("To next state", "$.sendSignalCompat('this', 'state_triggerTransition');"),
         new StateListeningAction("Record custom data", "$.sendSignalCompat('this', 'exp_recordCustomData');"),
         new StateListeningAction("Upload recorded data", "$.sendSignalCompat('this', 'exp_uploadCustomData');"),
-        new StateListeningAction("Set text", "$.subNode('Text').setText('xxx');"),
+        new StateListeningAction("Set text", "$.subNode('Text').setText('{text}');", new[] { "text" }),
         new StateListeningAction("Sleep", "0"),
+        new StateListeningAction("Send Haptics",
+            "$.state.player.send('haptics', {target: '{_target_}', frequency: {_frequency_}, amplitude: {_amplitude_}, duration: {_duration_}});",
+            new[] { "target", "frequency", "amplitude", "duration" }),
+        new StateListeningAction("Set position", "$.setPosition(new Vector3({_x_}, {_y_}, {_z_}))", new[] { "x", "y", "z" }),
+        new StateListeningAction("Add position", "$.setPosition($.getPosition().add(new Vector3({_x_}, {_y_}, {_z_})))",
+            new[] { "x", "y", "z" }),
+        new StateListeningAction("Set rotation",
+            "$.setRotation(new Quaternion().setFromEulerAngles(new Vector3({_x_}, {_y_}, {_z_})))", new[] { "x", "y", "z" }),
+        new StateListeningAction("Add rotation",
+            "$.setRotation($.getRotation().multiply(new Quaternion().setFromEulerAngles(new Vector3({_x_}, {_y_}, {_z_}))))",
+            new[] { "x", "y", "z" }),
     };
 
     private string newItemName = string.Empty;
     private GameObject referenceObject = null;
 
-    private const string PrefabPath               = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/StateListeningItem.prefab";
-    private const string ScriptFolderFormat       = "Assets/_Experiment_/Scripts/StateManagement/{0}";
-    private const string ScriptTemplatePath       = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/StateManagement/StateListeningItemTemplate.js";
-    private const string WrapperPrefabPath        = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
-    private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
+    private const string PrefabPath =
+        "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/StateListeningItem.prefab";
+
+    private const string ScriptFolderFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
+
+    private const string ScriptTemplatePath =
+        "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/StateManagement/StateListeningItemTemplate.js";
+
+    private const string WrapperPrefabPath =
+        "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
+
+    private const string ConditionManagerPrefabPath =
+        "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
 
     private List<GameObject> stateListeningItems = new List<GameObject>();
     private StateList stateList = null;
     private SerializedObject serializedStateList = null;
     private SerializedProperty statesProperty = null;
-    private Dictionary<GameObject, List<StateListener>> stateListenersByItem = new Dictionary<GameObject, List<StateListener>>();
+
+    private Dictionary<GameObject, List<StateListener>> stateListenersByItem =
+        new Dictionary<GameObject, List<StateListener>>();
+
     private Dictionary<GameObject, string> otherImplementationByItem = new Dictionary<GameObject, string>();
 
     private Vector2 scrollPosition;
     private Vector2 scrollPositionX;
     private Vector2 scrollPositionY;
     private int selectedActionIndex = 0;
-    private Dictionary<List<StateListenerAction>, bool> isAddingActionState = new Dictionary<List<StateListenerAction>, bool>();
+
+    private Dictionary<List<StateListenerAction>, bool> isAddingActionState =
+        new Dictionary<List<StateListenerAction>, bool>();
+
     private string setTextInput = string.Empty;
     private double sleepTimeInput = 0.0;
     private bool isSubscribed = false;
@@ -64,11 +90,11 @@ public class ItemsManagerEditor : EditorWindow
         _needsRebuild = true;
         // listen for hierarchy/project changes
         EditorApplication.hierarchyChanged += OnHierarchyChanged;
-        EditorApplication.projectChanged   += OnProjectChanged;
+        EditorApplication.projectChanged += OnProjectChanged;
         // subscribe once
         if (!isSubscribed)
         {
-            TabbedEditor.OnEditorClosed             += ApplyAssetsToScripts;
+            TabbedEditor.OnEditorClosed += ApplyAssetsToScripts;
             TabbedEditor.OnItemsManagerTabLostFocus += ApplyAssetsToScripts;
             isSubscribed = true;
         }
@@ -77,21 +103,21 @@ public class ItemsManagerEditor : EditorWindow
     public void OnDisable()
     {
         EditorApplication.hierarchyChanged -= OnHierarchyChanged;
-        EditorApplication.projectChanged   -= OnProjectChanged;
+        EditorApplication.projectChanged -= OnProjectChanged;
         ApplyAssetsToScripts();
         if (isSubscribed)
         {
-            TabbedEditor.OnEditorClosed             -= ApplyAssetsToScripts;
+            TabbedEditor.OnEditorClosed -= ApplyAssetsToScripts;
             TabbedEditor.OnItemsManagerTabLostFocus -= ApplyAssetsToScripts;
             isSubscribed = false;
         }
     }
 
     private void OnHierarchyChanged() => _needsRebuild = true;
-    private void OnProjectChanged()   => _needsRebuild = true;
+    private void OnProjectChanged() => _needsRebuild = true;
 
     public void OnLostFocus() => ApplyAssetsToScripts();
-    public void OnDestroy()   => Debug.Log("ItemsManagerEditor destroyed");
+    public void OnDestroy() => Debug.Log("ItemsManagerEditor destroyed");
 
     #endregion
 
@@ -101,7 +127,7 @@ public class ItemsManagerEditor : EditorWindow
         GUIStyle removeButtonStyle = new GUIStyle(GUI.skin.button);
         removeButtonStyle.normal.textColor = Color.red;
         removeButtonStyle.hover.textColor = Color.red;
-        
+
         // 1) Rebuild caches only when needed
         if (_needsRebuild)
         {
@@ -154,7 +180,7 @@ public class ItemsManagerEditor : EditorWindow
         for (int i = 0; i < _cachedItems.Length; i++)
         {
             var item = _cachedItems[i];
-            
+
             // Set column background color
             GUI.backgroundColor = isDarkColumn ? new Color(0.2f, 0.2f, 0.2f) : new Color(0.8f, 0.8f, 0.8f);
 
@@ -188,7 +214,7 @@ public class ItemsManagerEditor : EditorWindow
 
                     if (File.Exists(jsPath)) File.Delete(jsPath);
                     if (File.Exists(assetPath)) AssetDatabase.DeleteAsset(assetPath);
-                    
+
                     // Remove GameObject
                     Undo.DestroyObjectImmediate(item);
 
@@ -196,6 +222,7 @@ public class ItemsManagerEditor : EditorWindow
                     _needsRebuild = true;
                 }
             }
+
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndVertical();
             GUILayout.Space(10);
@@ -203,6 +230,7 @@ public class ItemsManagerEditor : EditorWindow
             // Toggle column color for the next column
             isDarkColumn = !isDarkColumn;
         }
+
         EditorGUILayout.EndHorizontal();
 
         bool isBlueRow = true; // Start with blue for rows
@@ -229,7 +257,7 @@ public class ItemsManagerEditor : EditorWindow
                 GUILayout.Space(5);
                 EditorGUILayout.BeginHorizontal("box", GUILayout.Width(240));
                 GUILayout.Space(20);
-			    EditorGUILayout.BeginVertical();
+                EditorGUILayout.BeginVertical();
                 GUILayout.Space(20);
 
                 stateListenersByItem.TryGetValue(item, out var list);
@@ -251,7 +279,7 @@ public class ItemsManagerEditor : EditorWindow
                         {
                             list.Remove(listener); // Remove the listener
                             SaveItemToAsset(item); // Save changes to the asset
-                            _needsRebuild = true;  // Mark for rebuild
+                            _needsRebuild = true; // Mark for rebuild
                         }
                     }
                 }
@@ -299,14 +327,18 @@ public class ItemsManagerEditor : EditorWindow
             if (!stateListenersByItem.TryGetValue(item, out var listeners)) continue;
             foreach (var listener in listeners)
             {
-                CreateReorderableList(item, listener.stateID, listener.onStateStartedActions, "On State Start", "OnStateStart");
-                CreateReorderableList(item, listener.stateID, listener.duringStateActions,    "During State",  "DuringState");
-                CreateReorderableList(item, listener.stateID, listener.onStateExitedActions,  "On State End",  "OnStateExit");
+                CreateReorderableList(item, listener.stateID, listener.onStateStartedActions, "On State Start",
+                    "OnStateStart");
+                CreateReorderableList(item, listener.stateID, listener.duringStateActions, "During State",
+                    "DuringState");
+                CreateReorderableList(item, listener.stateID, listener.onStateExitedActions, "On State End",
+                    "OnStateExit");
             }
         }
     }
 
-    private void CreateReorderableList(GameObject item, int stateID, List<StateListenerAction> actions, string header, string keySuffix)
+    private void CreateReorderableList(GameObject item, int stateID, List<StateListenerAction> actions, string header,
+        string keySuffix)
     {
         var key = $"{item.GetInstanceID()}_{stateID}_{keySuffix}";
         var rl = new ReorderableList(actions, typeof(StateListenerAction), true, true, true, true)
@@ -318,14 +350,10 @@ public class ItemsManagerEditor : EditorWindow
                 float lineHeight = EditorGUIUtility.singleLineHeight;
                 float spacing = EditorGUIUtility.standardVerticalSpacing;
 
+                // Dropdown for action type
                 Rect dropdownRect = new Rect(rect.x, rect.y, rect.width, lineHeight);
-                // Rect dropdownRect = new Rect(rect.x, rect.y + lineHeight + spacing, rect.width * 0.5f, lineHeight);
-                Rect buttonRect = new Rect(rect.x + dropdownRect.width + 4, rect.y + lineHeight + spacing, rect.width * 0.5f - 4, lineHeight);
-
-                // Action Type Dropdown
                 var options = AvailableStateListeningActions.Select(a => a.actionType).ToList();
                 options.Add("Customized Action");
-
                 int selectedIndex = options.Count - 1; // Default to "Customized Action"
                 int builtinIndex = AvailableStateListeningActions
                     .ToList()
@@ -354,6 +382,43 @@ public class ItemsManagerEditor : EditorWindow
                     }
                 }
 
+                // Display variable input fields
+                // Handle "Customized Action" and "Sleep" action separately
+                if (action.predefinedAction.actionType == "Customized Action")
+                {
+                    Rect textAreaRect = new Rect(rect.x, rect.y + lineHeight + spacing, rect.width, lineHeight * 3);
+                    action.customAction = EditorGUI.TextArea(textAreaRect, action.customAction);
+                }
+                else if (action.predefinedAction.actionType == "Sleep")
+                {
+                    Rect labelRect = new Rect(rect.x, rect.y + lineHeight + spacing, 100f, lineHeight);
+                    EditorGUI.LabelField(labelRect, "Sleep Time (s)");
+
+                    Rect fieldRect = new Rect(labelRect.xMax + 5, labelRect.y, rect.width - labelRect.width - 5,
+                        lineHeight);
+                    string value = action.predefinedAction.codeSnippet;
+                    value = EditorGUI.TextField(fieldRect, value);
+                    action.predefinedAction.codeSnippet = value;
+                }
+                else if (action.predefinedAction.variables != null && action.predefinedAction.variables.Length > 0)
+                {
+                    for (int i = 0; i < action.predefinedAction.variables.Length; i++)
+                    {
+                        string variableName = action.predefinedAction.variables[i];
+                        Rect labelRect = new Rect(rect.x, rect.y + (lineHeight + spacing) * (i + 1), 50, lineHeight);
+                        Rect fieldRect = new Rect(labelRect.xMax + 5, labelRect.y, rect.width - labelRect.width - 5,
+                            lineHeight);
+
+                        EditorGUI.LabelField(labelRect, variableName);
+                        string value = EditorGUI.TextField(fieldRect, GetVariableValue(action, variableName));
+                        SetVariableValue(ref action, variableName, value);
+                    }
+                }
+
+                // Update codeSnippet with variable values
+                action.predefinedAction.codeSnippet = ReplaceVariablesInSnippet(action);
+
+                /*
                 // Show custom input only for "Set text" or "Sleep" or "Customized action"
                 if (action.predefinedAction.actionType == "Set text")
                 {
@@ -384,6 +449,7 @@ public class ItemsManagerEditor : EditorWindow
                     Rect textAreaRect = new Rect(rect.x, rect.y + (lineHeight + spacing), rect.width, lineHeight * 2);
                     action.customAction = EditorGUI.TextArea(textAreaRect, action.customAction);
                 }
+                */
             },
             elementHeightCallback = index =>
             {
@@ -391,12 +457,15 @@ public class ItemsManagerEditor : EditorWindow
                 float lineHeight = EditorGUIUtility.singleLineHeight;
                 float spacing = EditorGUIUtility.standardVerticalSpacing;
                 float height = lineHeight + spacing; // Dropdown
+                
+                if (action.predefinedAction.actionType == "Customized Action")
+                    height += lineHeight * 3 + spacing;
 
-                if (action.predefinedAction.actionType == "Set text" || action.predefinedAction.actionType == "Sleep")
+                if (action.predefinedAction.actionType == "Sleep")
                     height += lineHeight + spacing;
 
-                if (action.predefinedAction.actionType == "Customized Action")
-                    height += lineHeight * 2 + spacing;
+                if (action.predefinedAction.variables != null && action.predefinedAction.variables.Length > 0)
+                    height += (lineHeight + spacing) * action.predefinedAction.variables.Length;
 
                 return height + 6f;
             }
@@ -479,7 +548,8 @@ public class ItemsManagerEditor : EditorWindow
 
         if (stateListenersByItem[item].Any(l => l.stateID == stateIndex))
         {
-            EditorUtility.DisplayDialog("Error", $"Listener for state {stateIndex} already exists on {item.name}.", "OK");
+            EditorUtility.DisplayDialog("Error", $"Listener for state {stateIndex} already exists on {item.name}.",
+                "OK");
             return;
         }
 
@@ -521,7 +591,8 @@ public class ItemsManagerEditor : EditorWindow
         return scripts.Count > 1 ? scripts[1] as JavaScriptAsset : null;
     }
 
-    private string GenerateStateFunction(string name, Func<StateListener, List<StateListenerAction>> sel, string extra = "")
+    private string GenerateStateFunction(string name, Func<StateListener, List<StateListenerAction>> sel,
+        string extra = "")
     {
         var sb = new System.Text.StringBuilder();
         sb.AppendLine($"function {name}({extra}) {{");
@@ -539,6 +610,7 @@ public class ItemsManagerEditor : EditorWindow
                 sb.AppendLine("  }");
             }
         }
+
         sb.AppendLine("}");
         return sb.ToString();
     }
@@ -547,8 +619,8 @@ public class ItemsManagerEditor : EditorWindow
     {
         return
             GenerateActionsObject(l => l.onStateStartedActions, "stateEnterActions") + "\n" +
-            GenerateActionsObject(l => l.duringStateActions,    "duringStateActions") + "\n" +
-            GenerateActionsObject(l => l.onStateExitedActions,  "stateExitActions");
+            GenerateActionsObject(l => l.duringStateActions, "duringStateActions") + "\n" +
+            GenerateActionsObject(l => l.onStateExitedActions, "stateExitActions");
     }
 
     private string GenerateActionsObject(Func<StateListener, List<StateListenerAction>> sel, string objName)
@@ -567,13 +639,15 @@ public class ItemsManagerEditor : EditorWindow
                 sb.AppendLine("    ],");
             }
         }
+
         sb.AppendLine("};");
         return sb.ToString();
     }
 
     private string GenerateActionObject(StateListenerAction action)
     {
-        if (action.predefinedAction.actionType != null && action.predefinedAction.actionType.Equals("Sleep", StringComparison.OrdinalIgnoreCase))
+        if (action.predefinedAction.actionType != null &&
+            action.predefinedAction.actionType.Equals("Sleep", StringComparison.OrdinalIgnoreCase))
             return $"{{ type: \"sleep\", value: {action.predefinedAction.codeSnippet} }}";
 
         var code = string.IsNullOrEmpty(action.customAction)
@@ -582,7 +656,7 @@ public class ItemsManagerEditor : EditorWindow
         if (code != null) code = code.Trim().Replace("\n", "\n            ");
         return $"{{ type: \"exec\", action: () => {{\n            {code}\n        }} }}";
     }
-    
+
     private string GenerateActionsObjectsForItem(GameObject item)
     {
         if (!stateListenersByItem.TryGetValue(item, out var listeners) || listeners.Count == 0)
@@ -601,6 +675,7 @@ public class ItemsManagerEditor : EditorWindow
                 sb.AppendLine($"        {GenerateActionObject(a)},");
             sb.AppendLine("    ],");
         }
+
         sb.AppendLine("};\n");
 
         // duringStateActions
@@ -614,6 +689,7 @@ public class ItemsManagerEditor : EditorWindow
                 sb.AppendLine($"        {GenerateActionObject(a)},");
             sb.AppendLine("    ],");
         }
+
         sb.AppendLine("};\n");
 
         // stateExitActions
@@ -627,6 +703,7 @@ public class ItemsManagerEditor : EditorWindow
                 sb.AppendLine($"        {GenerateActionObject(a)},");
             sb.AppendLine("    ],");
         }
+
         sb.AppendLine("};");
 
         return sb.ToString();
@@ -636,6 +713,41 @@ public class ItemsManagerEditor : EditorWindow
     {
         var m = Regex.Match(content, @"\.setText\(`([^`]*)`\)");
         return m.Success ? m.Groups[1].Value : string.Empty;
+    }
+    
+    private string GetVariableValue(StateListenerAction action, string variableName)
+    {
+        // Extract variable value from codeSnippet
+        var match = Regex.Match(action.predefinedAction.codeSnippet, $@"\{{_{variableName}_\}}:\s*([^,}}]+)");
+        return match.Success ? match.Groups[1].Value : "";
+    }
+
+    private void SetVariableValue(ref StateListenerAction action, string variableName, string value)
+    {
+        // Replace or insert variable value in codeSnippet
+        action.predefinedAction.codeSnippet = Regex.Replace(
+            action.predefinedAction.codeSnippet,
+            $@"\{{_{variableName}_\}}:\s*([^,}}]+)",
+            $"{{_{variableName}_}}: {value}"
+        );
+    }
+
+    private string ReplaceVariablesInSnippet(StateListenerAction wrapper)
+    {
+        // pull from the wrapper’s predefinedAction
+        string snippet = wrapper.predefinedAction.codeSnippet;
+        if (wrapper.predefinedAction.variables != null)
+        {
+            foreach (var variable in wrapper.predefinedAction.variables)
+            {
+                snippet = snippet.Replace(
+                    $"{{_{variable}_}}",
+                    GetVariableValue(wrapper, variable)
+                );
+            }
+        }
+
+        return snippet;
     }
 
     private void EnableAccessToConditions(GameObject item)
@@ -660,12 +772,13 @@ public class ItemsManagerEditor : EditorWindow
             Destroy(item);
             return;
         }
-        
+
         string scene = SceneManager.GetActiveScene().name;
         string folder = string.Format(ScriptFolderFormat, scene);
         if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
 
-        var lines = new[] {
+        var lines = new[]
+        {
             GenerateActionsObjectsForItem(item),
             otherImplementationByItem.GetValueOrDefault(item, "")
         };

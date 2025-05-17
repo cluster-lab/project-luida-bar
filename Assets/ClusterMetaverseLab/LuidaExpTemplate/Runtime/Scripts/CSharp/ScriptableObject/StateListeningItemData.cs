@@ -9,10 +9,12 @@ public struct StateListeningAction
 {
     public string actionType;
     public string codeSnippet;
-    public StateListeningAction(string _actionType, string _codeSnippet)
+    public string[] variables;
+    public StateListeningAction(string _actionType, string _codeSnippet, string[] _variables = null)
     {
         actionType = _actionType;
         codeSnippet = _codeSnippet;
+        variables = _variables ?? Array.Empty<string>();
     }
 }
 
