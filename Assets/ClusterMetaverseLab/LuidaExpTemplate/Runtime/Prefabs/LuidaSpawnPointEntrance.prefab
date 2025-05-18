@@ -69,7 +69,7 @@ MonoBehaviour:
   sourceCode: "$.onStart(() => {\r\n  $.state.inRoomIdfcs = [];\r\n})\r\n\r\n$.onUpdate(()
     => {\r\n    if ($.getStateCompat(\"this\", \"onJoined\", \"boolean\")) {\r\n       
     $.setStateCompat(\"this\", \"onJoined\", false);\r\n        const newPlayers
-    = $.getPlayersNear($.getPosition(), 1)\r\n            .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));\r\n       
+    = $.getPlayersNear($.getPosition(), Infinity)\r\n            .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));\r\n       
     if (newPlayers.length > 0) {\r\n            for (const newPlayer of newPlayers)
     {\r\n                $.state.inRoomIdfcs.push(newPlayer.idfc);\r\n               
     $.setPlayerScript(newPlayer);\r\n            }\r\n        }\r\n    }\r\n/*\r\n 
@@ -115,22 +115,22 @@ MonoBehaviour:
       integerValue: 0
       vector2Value: {x: 0, y: 0}
       vector3Value: {x: 0, y: 0, z: 0}
-  - target: 2
-    specifiedTargetItem: {fileID: 0}
-    key: exp_participantMoveSpeed
-    type: 2
+  - target: 1
+    specifiedTargetItem: {fileID: 600138420}
+    key: onJoined
+    type: 1
     value:
-      boolValue: 0
+      boolValue: 1
       floatValue: 1
       integerValue: 0
       vector2Value: {x: 0, y: 0}
       vector3Value: {x: 0, y: 0, z: 0}
   - target: 2
     specifiedTargetItem: {fileID: 0}
-    key: onJoined
-    type: 1
+    key: exp_participantMoveSpeed
+    type: 2
     value:
-      boolValue: 1
+      boolValue: 0
       floatValue: 1
       integerValue: 0
       vector2Value: {x: 0, y: 0}

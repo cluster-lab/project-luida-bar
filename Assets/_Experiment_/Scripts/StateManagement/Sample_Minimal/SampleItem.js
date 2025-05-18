@@ -24,6 +24,17 @@ const stateEnterActions = {
             $.sendSignalCompat('this', 'state_triggerTransition');
         } },
     ],
+    2: [
+        { type: "exec", action: () => {
+            if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0]; 
+             $.state.player.send('haptics', {target: "right", frequency: 0.1, amplitude: 0.5, duration: 3});
+        } },
+        { type: "sleep", value: 3 },
+        { type: "exec", action: () => {
+            if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0]; 
+             $.state.player.send('haptics', {target: "left", frequency: 0.1, amplitude: 1, duration: 3});
+        } },
+    ],
 };
 
 const duringStateActions = {

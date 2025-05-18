@@ -473,19 +473,24 @@ PrefabInstance:
         = 0;\r\n}\r\n\r\nfunction Start() {}\r\nfunction Update(deltaTime) {}\r\n\r\nconst
         stateEnterActions = {\r\n    0: [\r\n        { type: \"exec\", action: ()
         => {\n            $.setStateCompat('this', 'exp_showItem', true);\n       
-        } },\r\n        { type: \"sleep\", value: 3 },\r\n        { type: \"exec\",
+        } },\r\n        { type: \"sleep\", value: 2 },\r\n        { type: \"exec\",
         action: () => {\n            $.sendSignalCompat('this', 'state_triggerTransition');\n       
-        } },\r\n    ],\r\n    1: [\r\n        { type: \"sleep\", value: 3 },\r\n       
-        { type: \"exec\", action: () => {\n            $.setStateCompat('this', 'exp_showItem',
-        true);\n        } },\r\n        { type: \"exec\", action: () => {\n           
-        $.setPosition(new Vector3(1, 2, 3))\n        } },\r\n        { type: \"sleep\",
-        value: 3 },\r\n        { type: \"exec\", action: () => {\n            $.sendSignalCompat('this',
+        } },\r\n        { type: \"exec\", action: () => {\n            $.setPosition(new
+        Vector3(0, 1, 1))\n        } },\r\n    ],\r\n    1: [\r\n        { type:
+        \"sleep\", value: 2 },\r\n        { type: \"exec\", action: () => {\n           
+        $.setStateCompat('this', 'exp_showItem', true);\n        } },\r\n       
+        { type: \"exec\", action: () => {\n            $.setPosition(new Vector3(0,
+        2, 3))\n        } },\r\n        { type: \"sleep\", value: 2 },\r\n       
+        { type: \"exec\", action: () => {\n            $.sendSignalCompat('this',
         'state_triggerTransition');\n        } },\r\n    ],\r\n};\n\r\nconst duringStateActions
         = {\r\n};\n\r\nconst stateExitActions = {\r\n    0: [\r\n        { type:
         \"exec\", action: () => {\n            $.setStateCompat('this', 'exp_showItem',
-        false);\n        } },\r\n    ],\r\n    1: [\r\n        { type: \"exec\",
-        action: () => {\n            $.setStateCompat('this', 'exp_showItem', false);\n       
-        } },\r\n    ],\r\n};"
+        false);\n        } },\r\n        { type: \"exec\", action: () => {\n           
+        if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];
+        \n             $.state.player.send('haptics', {target: \"right\", frequency:
+        0.5, amplitude: 1, duration: 5});\n        } },\r\n    ],\r\n    1: [\r\n       
+        { type: \"exec\", action: () => {\n            $.setStateCompat('this', 'exp_showItem',
+        false);\n        } },\r\n    ],\r\n};"
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -1684,6 +1689,37 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 814595608}
     m_Modifications:
+    - target: {fileID: 600138419, guid: bebbd8fabd7b322468f1d18e8b32081c, type: 3}
+      propertyPath: sourceCode
+      value: "$.onStart(() => {\r\n  $.state.inRoomIdfcs = [];\r\n})\r\n\r\n$.onUpdate(()
+        => {\r\n    if ($.getStateCompat(\"this\", \"onJoined\", \"boolean\")) {\r\n       
+        $.setStateCompat(\"this\", \"onJoined\", false);\r\n        const newPlayers
+        = $.getPlayersNear($.getPosition(), Infinity)\r\n            .filter(p =>
+        !$.state.inRoomIdfcs.includes(p.idfc));\r\n        if (newPlayers.length
+        > 0) {\r\n            for (const newPlayer of newPlayers) {\r\n               
+        $.state.inRoomIdfcs.push(newPlayer.idfc);\r\n                $.setPlayerScript(newPlayer);\r\n           
+        }\r\n        }\r\n    }\r\n/*\r\n  if ($.getStateCompat(\"this\", \"exp_checkJoinEligibility\",
+        \"boolean\")) {\r\n    $.setStateCompat(\"this\", \"exp_checkJoinEligibility\",
+        false);\r\n\r\n    const newPlayers = $.getPlayersNear($.getPosition(), 1)\r\n     
+        .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));\r\n    \r\n    if (newPlayers.length
+        > 0) {\r\n      $.state.newPlayers = newPlayers;\r\n      $.log(newPlayers[0].idfc);\r\n\r\n     
+        const request = {\r\n        type: \"checkJoinEligibility\",\r\n        token:
+        token || \"\",\r\n        eID: expID || \"\",\r\n        idfcs: newPlayers.map(p
+        => p.idfc).join(\"|\")\r\n      };\r\n      $.callExternal(JSON.stringify(request),
+        \"joinEligibilityChecked\");\r\n    }\r\n  }\r\n*/\r\n})\r\n\r\n/*\r\n$.onExternalCallEnd((res,
+        meta, err) =>\r\n{\r\n  if (res == null) {\r\n    $.log(\"callExternal ERROR:
+        \" + err);\r\n    return;\r\n  }\r\n\r\n  if (meta === \"joinEligibilityChecked\")
+        {\r\n    const parsedRes = JSON.parse(res);\r\n    $.state.newPlayers.forEach(newPlayer
+        => {\r\n      if (parsedRes.ineligibleIdfcs.includes(newPlayer.idfc)) {\r\n       
+        // TODO: Show message about that this player is not eligible to join this
+        experiment, and teleport the player back to LUIDA bar world.\r\n      } else
+        {\r\n        newPlayer.setMoveSpeedRate(1);\r\n        $.state.inRoomIdfcs
+        = [ ...$.state.inRoomIdfcs, newPlayer.idfc ];\r\n        // TODO: Instead
+        of enabling move, teleport the player from the checking area to the task
+        area.\r\n      }\r\n    });\r\n    \r\n    $.state.newPlayers = [];\r\n   
+        $.log(\"Only users who have not joined this experiment before are allowed
+        to proceed to the experiment.\");\r\n  }\r\n});\r\n*/\r\n"
+      objectReference: {fileID: 0}
     - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
         type: 3}
       propertyPath: m_RootOrder

@@ -5,7 +5,7 @@ $.onStart(() => {
 $.onUpdate(() => {
     if ($.getStateCompat("this", "onJoined", "boolean")) {
         $.setStateCompat("this", "onJoined", false);
-        const newPlayers = $.getPlayersNear($.getPosition(), 1)
+        const newPlayers = $.getPlayersNear($.getPosition(), Infinity)
             .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));
         if (newPlayers.length > 0) {
             for (const newPlayer of newPlayers) {

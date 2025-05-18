@@ -125,4 +125,60 @@ MonoBehaviour:
       customAction: 
       _variableKeys: []
       _variableValuesList: []
+  - stateID: 2
+    onStateStartedActions:
+    - predefinedActionTemplate:
+        actionType: Send Haptics
+        codeSnippet: "if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(),
+          Infinity)[0]; \n $.state.player.send('haptics', {target: {_target_}, frequency:
+          {_frequency_}, amplitude: {_amplitude_}, duration: {_duration_}});"
+        variables:
+        - target
+        - frequency
+        - amplitude
+        - duration
+      customAction: 
+      _variableKeys:
+      - target
+      - frequency
+      - amplitude
+      - duration
+      _variableValuesList:
+      - '"right"'
+      - 0.1
+      - 0.5
+      - 3
+    - predefinedActionTemplate:
+        actionType: Sleep
+        codeSnippet: '{_seconds_}'
+        variables:
+        - seconds
+      customAction: 
+      _variableKeys:
+      - seconds
+      _variableValuesList:
+      - 3
+    - predefinedActionTemplate:
+        actionType: Send Haptics
+        codeSnippet: "if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(),
+          Infinity)[0]; \n $.state.player.send('haptics', {target: {_target_}, frequency:
+          {_frequency_}, amplitude: {_amplitude_}, duration: {_duration_}});"
+        variables:
+        - target
+        - frequency
+        - amplitude
+        - duration
+      customAction: 
+      _variableKeys:
+      - target
+      - frequency
+      - amplitude
+      - duration
+      _variableValuesList:
+      - '"left"'
+      - 0.1
+      - 1
+      - 3
+    duringStateActions: []
+    onStateExitedActions: []
   otherImplementation: 
