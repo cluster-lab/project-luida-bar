@@ -211,7 +211,9 @@ public class ItemsManagerEditor : EditorWindow
                 if (listener != null)
                 {
                     DrawReorderableList(item, stateID, "OnStateStart", "On State Start Actions");
+                    GUILayout.Space(5);
                     DrawReorderableList(item, stateID, "DuringState", "During State Actions");
+                    GUILayout.Space(5);
                     DrawReorderableList(item, stateID, "OnStateExit", "On State End Actions");
                     
                     GUILayout.Space(5);
