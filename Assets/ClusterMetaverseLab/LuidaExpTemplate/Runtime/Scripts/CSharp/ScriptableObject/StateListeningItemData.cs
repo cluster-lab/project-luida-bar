@@ -25,6 +25,10 @@ public class StateListenerAction: ISerializationCallbackReceiver
     public string customAction;
     public Dictionary<string, string> variableValues = new Dictionary<string, string>();
 
+    public bool isConditional;
+    public string conditionVariable;
+    public string conditionValue;
+    
 	[SerializeField]
     private List<string> _variableKeys = new List<string>();
     [SerializeField]
@@ -42,6 +46,9 @@ public class StateListenerAction: ISerializationCallbackReceiver
                 variableValues[varName] = GetDefaultValueForVariable(varName, template.actionType);
             }
         }
+        isConditional = false;
+        conditionVariable = null;
+        conditionValue = null;
     }
 
     public StateListenerAction()
@@ -49,6 +56,9 @@ public class StateListenerAction: ISerializationCallbackReceiver
         predefinedActionTemplate = default;
         customAction = "";
         variableValues = new Dictionary<string, string>();
+        isConditional = false;
+        conditionVariable = null;
+        conditionValue = null;
     }
 
     private string GetDefaultValueForVariable(string varName, string actionType) {
@@ -77,23 +87,49 @@ public class StateListenerAction: ISerializationCallbackReceiver
 
     public string GetActionContent()
     {
+		string baseSnippet;
 		if (predefinedActionTemplate.actionType == "Customized Action" || string.IsNullOrEmpty(predefinedActionTemplate.actionType))
         {
-            return customAction;
+            baseSnippet = customAction ?? "";
         }
-
-		string snippet = predefinedActionTemplate.codeSnippet; // Get template
-        if (predefinedActionTemplate.variables != null)
+        else
         {
-            foreach (var varName in predefinedActionTemplate.variables)
+    		baseSnippet = predefinedActionTemplate.codeSnippet; 
+            if (predefinedActionTemplate.variables != null)
             {
-                if (variableValues.TryGetValue(varName, out string value))
+                foreach (var varName in predefinedActionTemplate.variables)
                 {
-                    snippet = snippet.Replace($"{{_{varName}_}}", value);
+                    if (variableValues.TryGetValue(varName, out string value))
+                    {
+                        baseSnippet = baseSnippet.Replace($"{{_{varName}_}}", value);
+                    }
+                    else // Handle case where a variable might be missing from the dictionary
+                    {
+                        baseSnippet = baseSnippet.Replace($"{{_{varName}_}}", GetDefaultValueForVariable(varName, predefinedActionTemplate.actionType) ?? "");
+                    }
                 }
             }
         }
-        return snippet;
+
+        if (isConditional && !string.IsNullOrEmpty(conditionVariable) && conditionValue != null)
+        {
+            string jsConditionValue = $"'{conditionValue.Replace("'", "\\'")}'"; // Default to string literal
+
+            // Attempt to format as number or boolean if applicable for JS comparison
+            if (double.TryParse(conditionValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double numValue))
+            {
+                jsConditionValue = numValue.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            }
+            else if (bool.TryParse(conditionValue, out bool boolValue))
+            {
+                jsConditionValue = boolValue.ToString().ToLowerInvariant();
+            }
+            
+            // Indent the base snippet
+            string indentedBaseSnippet = string.Join("\n", baseSnippet.Split('\n').Select(line => $"  {line}"));
+            return $"if (CONDITION['{conditionVariable}'] === '{jsConditionValue}') {{\n{indentedBaseSnippet}\n}}";
+        }
+        return baseSnippet;
     }
 
 	public void OnBeforeSerialize()

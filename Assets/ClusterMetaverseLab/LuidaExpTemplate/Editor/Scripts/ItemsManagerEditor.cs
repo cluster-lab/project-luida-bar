@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using ClusterVR.CreatorKit.Item.Implements;
 
 public class ItemsManagerEditor : EditorWindow
@@ -55,9 +56,18 @@ public class ItemsManagerEditor : EditorWindow
     
     private Vector2 scrollPositionY;
     private Vector2 docScrollPositionY;
-    private Vector2 _horizontalScrollPosition; // For the new horizontal scroll view
+    private Vector2 _horizontalScrollPosition;
     private bool isSubscribed = false;
 
+    [Serializable]
+    private class EditorExperimentVariable
+    {
+        public string name;
+        public string[] values;
+    }
+    private List<EditorExperimentVariable> _cachedExperimentVariables = new List<EditorExperimentVariable>();
+    private string _experimentVariablesAssetPath;
+    
     #region Unity Callbacks
 
     public void OnEnable()
@@ -74,6 +84,7 @@ public class ItemsManagerEditor : EditorWindow
             isSubscribed = true;
         }
         RefreshStateList();
+        RefreshExperimentVariablesCache();
     }
 
     public void OnDisable()
@@ -103,6 +114,44 @@ public class ItemsManagerEditor : EditorWindow
         string listPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
         stateList = AssetDatabase.LoadAssetAtPath<StateList>(listPath);
     }
+    
+    private void RefreshExperimentVariablesCache()
+    {
+        _cachedExperimentVariables.Clear();
+        string sceneName = SceneManager.GetActiveScene().name;
+        _experimentVariablesAssetPath = $"Assets/_Experiment_/Settings/ExperimentVariables/{sceneName}.js";
+
+        if (!File.Exists(_experimentVariablesAssetPath))
+        {
+            // Debug.LogWarning($"Experiment variables JS file not found at: {_experimentVariablesAssetPath}");
+            return;
+        }
+
+        string jsContent = File.ReadAllText(_experimentVariablesAssetPath);
+
+        Action<string> parseAndAdd = (varType) =>
+        {
+            string pattern = $@"const {varType} = \[(.*?)\];";
+            Match match = Regex.Match(jsContent, pattern, RegexOptions.Singleline);
+            if (match.Success)
+            {
+                string arrayContent = match.Groups[1].Value;
+                var variableMatches = Regex.Matches(arrayContent, @"\{\s*name:\s*""([^""]*)"",\s*values:\s*\[([^\]]*)\][^}]*\}", RegexOptions.Singleline);
+                foreach (Match variableMatch in variableMatches)
+                {
+                    string name = variableMatch.Groups[1].Value;
+                    string valuesString = variableMatch.Groups[2].Value;
+                    string[] values = string.IsNullOrEmpty(valuesString)
+                        ? Array.Empty<string>()
+                        : valuesString.Split(',').Select(v => v.Trim().Trim('"')).Where(v => !string.IsNullOrEmpty(v)).ToArray();
+                    _cachedExperimentVariables.Add(new EditorExperimentVariable { name = name, values = values });
+                }
+            }
+        };
+
+        parseAndAdd("within_subjects_variables");
+        parseAndAdd("between_subjects_variables");
+    }
 
     public void OnGUI()
     {
@@ -115,6 +164,7 @@ public class ItemsManagerEditor : EditorWindow
         if (_needsRebuild)
         {
             RefreshStateList();
+            RefreshExperimentVariablesCache();
             RefreshStateListeningItems();
             _cachedStateNames = stateList != null && stateList.States != null
                 ? stateList.States.Select(s => s.StateName).ToArray()
@@ -347,6 +397,43 @@ public class ItemsManagerEditor : EditorWindow
         }
     }
 
+    private bool IsTrialRelatedState(int stateID)
+    {
+        if (stateList == null || stateList.States == null || stateList.States.Length == 0)
+        {
+            return false;
+        }
+
+        if (stateID < 0 || stateID >= stateList.States.Length)
+        {
+            return false;
+        }
+
+        int trialStartIndex = -1;
+        int trialRestIndex = -1;
+
+        for (int i = 0; i < stateList.States.Length; i++)
+        {
+            if (stateList.States[i].StateName.Equals("Trial - Start", StringComparison.OrdinalIgnoreCase))
+            {
+                trialStartIndex = i;
+            }
+            else if (stateList.States[i].StateName.Equals("Trial - Rest", StringComparison.OrdinalIgnoreCase))
+            {
+                trialRestIndex = i;
+            }
+        }
+        
+        if (trialStartIndex == -1 || trialRestIndex == -1)
+        {
+            return false;
+        }
+        if (trialStartIndex > trialRestIndex)
+        {
+            return false;
+        }
+        return stateID >= trialStartIndex && stateID <= trialRestIndex;
+    }
 
     #region ReorderableList Setup & Draw
 
@@ -361,22 +448,24 @@ public class ItemsManagerEditor : EditorWindow
             StateListeningItemData itemDataAsset = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(itemDataAssetPath);
             if (itemDataAsset == null)
             {
-                Debug.LogWarning($"StateListeningItemData asset not found for {item.name} at {itemDataAssetPath} during ReorderableList setup.");
+                // Debug.LogWarning($"StateListeningItemData asset not found for {item.name} at {itemDataAssetPath} during ReorderableList setup.");
                 continue;
             }
 
             foreach (var listener in listeners)
             {
-                CreateReorderableList(item, itemDataAsset, listener, listener.onStateStartedActions, "On State Start", "OnStateStart");
-                CreateReorderableList(item, itemDataAsset, listener, listener.duringStateActions, "During State", "DuringState");
-                CreateReorderableList(item, itemDataAsset, listener, listener.onStateExitedActions, "On State End", "OnStateExit");
+                CreateReorderableList(item, itemDataAsset, listener, listener.onStateStartedActions, "On State Start", "OnStateStart", listener.stateID);
+                CreateReorderableList(item, itemDataAsset, listener, listener.duringStateActions, "During State", "DuringState", listener.stateID);
+                CreateReorderableList(item, itemDataAsset, listener, listener.onStateExitedActions, "On State End", "OnStateExit", listener.stateID);
             }
         }
     }
 
-    private void CreateReorderableList(GameObject itemGO, StateListeningItemData itemDataAsset, StateListener listener, List<StateListenerAction> actions, string header, string keySuffix)
+    private void CreateReorderableList(GameObject itemGO, StateListeningItemData itemDataAsset, StateListener listener, List<StateListenerAction> actions, string header, string keySuffix, int stateIdForConditionalUI)
     {
         var key = $"{itemGO.GetInstanceID()}_{listener.stateID}_{keySuffix}";
+        bool isCurrentStateTrialRelated = IsTrialRelatedState(stateIdForConditionalUI);
+
         var rl = new ReorderableList(actions, typeof(StateListenerAction), true, true, true, true)
         {
             drawHeaderCallback = rect => EditorGUI.LabelField(rect, header, EditorStyles.boldLabel),
@@ -388,43 +477,149 @@ public class ItemsManagerEditor : EditorWindow
                 float lineHeight = EditorGUIUtility.singleLineHeight;
                 float spacing = EditorGUIUtility.standardVerticalSpacing;
                 float currentY = rect.y + spacing / 2;
+                float currentX = rect.x; // Start X position for drawing elements on the current line
+                float availableWidth = rect.width; // Total available width for the element
 
-                Rect dropdownRect = new Rect(rect.x, currentY, rect.width, lineHeight);
+                // Calculate width needed for the "If" button if it's shown
+                float ifButtonAndSpacingWidth = 0;
+                if (isCurrentStateTrialRelated)
+                {
+                    ifButtonAndSpacingWidth = 35 + spacing; // 35 for button, spacing for after
+                }
+
+                // Action Dropdown
+                // Adjust width to leave space for the "If" button if it's present on the right
+                float dropdownWidth = availableWidth - ifButtonAndSpacingWidth;
+                Rect dropdownRect = new Rect(currentX, currentY, dropdownWidth, lineHeight);
+                
                 var options = AvailableStateListeningActions.Select(a => a.actionType).ToList();
                 options.Insert(0, "Select Action");
                 options.Add("Customized Action");
 
-                int selectedIndex = 0;
-                if (!string.IsNullOrEmpty(action.predefinedActionTemplate.actionType))
-                {
+                int selectedIndex = 0; 
+                if (!string.IsNullOrEmpty(action.predefinedActionTemplate.actionType)) {
                     selectedIndex = (action.predefinedActionTemplate.actionType == "Customized Action")
-                        ? options.Count - 1
+                        ? options.Count -1
                         : AvailableStateListeningActions.ToList().FindIndex(a => a.actionType == action.predefinedActionTemplate.actionType) + 1;
+                    if (selectedIndex < 0) selectedIndex = 0; 
                 }
-
+                
                 int newIndex = EditorGUI.Popup(dropdownRect, selectedIndex, options.ToArray());
-                currentY += lineHeight + spacing;
+                
+                // Update currentX to position the "If" button next to the dropdown
+                currentX += dropdownWidth + spacing;
 
+                // "If" button for trial-related states (drawn after the dropdown)
+                if (isCurrentStateTrialRelated)
+                {
+                    Rect ifToggleRect = new Rect(currentX, currentY, 35, lineHeight); 
+                    bool newIsConditional = GUI.Toggle(ifToggleRect, action.isConditional, "If", GUI.skin.button);
+                    if (newIsConditional != action.isConditional)
+                    {
+                        Undo.RecordObject(itemDataAsset, "Toggle Conditional Action");
+                        action.isConditional = newIsConditional;
+                        if (!action.isConditional) 
+                        {
+                            action.conditionVariable = null;
+                            action.conditionValue = null;
+                        }
+                        EditorUtility.SetDirty(itemDataAsset);
+                    }
+                }
+                currentY += lineHeight + spacing; // Move to next line for subsequent elements
+
+                // Conditional UI (drawn below the first line, starting from rect.x for alignment)
+                if (isCurrentStateTrialRelated && action.isConditional)
+                {
+                    // Dropdown for CONDITION variables
+                    Rect varLabelRect = new Rect(rect.x + 15, currentY, EditorGUIUtility.labelWidth * 0.7f, lineHeight);
+                    Rect varDropdownRect = new Rect(varLabelRect.xMax, currentY, rect.width - varLabelRect.width - 15, lineHeight);
+                    EditorGUI.LabelField(varLabelRect, "Var Name");
+
+                    var conditionVarNames = new List<string> { "[Select Variable]" };
+                    if (_cachedExperimentVariables != null) // Guard against null
+                    {
+                        conditionVarNames.AddRange(_cachedExperimentVariables.Select(v => v.name).Distinct());
+                    }
+                    
+                    int selectedVarIndex = 0; 
+                    if (!string.IsNullOrEmpty(action.conditionVariable))
+                    {
+                        selectedVarIndex = conditionVarNames.IndexOf(action.conditionVariable);
+                        if (selectedVarIndex == -1) selectedVarIndex = 0; 
+                    }
+                    
+                    int newSelectedVarIndex = EditorGUI.Popup(varDropdownRect, selectedVarIndex, conditionVarNames.ToArray());
+                    currentY += lineHeight + spacing;
+
+                    if (newSelectedVarIndex != selectedVarIndex)
+                    {
+                        Undo.RecordObject(itemDataAsset, "Change Condition Variable");
+                        action.conditionVariable = (newSelectedVarIndex > 0) ? conditionVarNames[newSelectedVarIndex] : null;
+                        action.conditionValue = null; 
+                        EditorUtility.SetDirty(itemDataAsset);
+                    }
+
+                    // Dropdown for selected variable's values
+                    if (!string.IsNullOrEmpty(action.conditionVariable) && newSelectedVarIndex > 0)
+                    {
+                        EditorExperimentVariable selectedExpVar = _cachedExperimentVariables?.FirstOrDefault(v => v.name == action.conditionVariable);
+                        if (selectedExpVar != null && selectedExpVar.values != null && selectedExpVar.values.Length > 0)
+                        {
+                            Rect valLabelRect = new Rect(rect.x + 15, currentY, EditorGUIUtility.labelWidth * 0.7f, lineHeight);
+                            Rect valDropdownRect = new Rect(valLabelRect.xMax, currentY, rect.width - valLabelRect.width - 15, lineHeight);
+                            EditorGUI.LabelField(valLabelRect, "Is Value");
+
+                            var conditionValOptions = new List<string> { "[Select Value]" };
+                            conditionValOptions.AddRange(selectedExpVar.values);
+
+                            int selectedValIndex = 0; 
+                            if (action.conditionValue != null) 
+                            {
+                                selectedValIndex = conditionValOptions.IndexOf(action.conditionValue);
+                                if (selectedValIndex == -1) selectedValIndex = 0;
+                            }
+                            
+                            int newSelectedValIndex = EditorGUI.Popup(valDropdownRect, selectedValIndex, conditionValOptions.ToArray());
+                            currentY += lineHeight + spacing;
+
+                            if (newSelectedValIndex != selectedValIndex)
+                            {
+                                Undo.RecordObject(itemDataAsset, "Change Condition Value");
+                                action.conditionValue = (newSelectedValIndex > 0) ? conditionValOptions[newSelectedValIndex] : null;
+                                EditorUtility.SetDirty(itemDataAsset);
+                            }
+                        }
+                        else if (selectedExpVar != null) // Variable exists but has no values
+                        {
+                            Rect noValuesRect = new Rect(rect.x + 15, currentY, rect.width - 15, lineHeight);
+                            EditorGUI.HelpBox(noValuesRect, $"Variable '{action.conditionVariable}' has no defined values.", MessageType.Info);
+                            currentY += lineHeight + spacing;
+                        }
+                    }
+                }
+                
+                // Logic for changing action type (needs to happen after newIndex is determined but before variable/custom action fields)
                 if (newIndex != selectedIndex)
                 {
                     Undo.RecordObject(itemDataAsset, "Change Action Type");
-                    if (newIndex == 0)
+                    if (newIndex == 0) 
                     {
-                        action.predefinedActionTemplate = default;
+                        action.predefinedActionTemplate = default; 
                         action.customAction = "";
                         action.variableValues.Clear();
                     }
-                    else if (newIndex == options.Count - 1)
+                    else if (newIndex == options.Count - 1) 
                     {
                         action.predefinedActionTemplate = new StateListeningAction("Customized Action", "", null);
                         action.customAction = "// Your custom ClusterScript code here\n";
                         action.variableValues.Clear();
                     }
-                    else
+                    else 
                     {
                         action.predefinedActionTemplate = AvailableStateListeningActions[newIndex - 1];
-                        action.customAction = "";
-                        action.variableValues.Clear();
+                        action.customAction = ""; 
+                        action.variableValues.Clear(); 
                         if (action.predefinedActionTemplate.variables != null)
                         {
                             foreach (var varName in action.predefinedActionTemplate.variables)
@@ -436,6 +631,7 @@ public class ItemsManagerEditor : EditorWindow
                     EditorUtility.SetDirty(itemDataAsset);
                 }
                 
+                // MovableItem warning
                 bool requiresMovableItem = action.predefinedActionTemplate.actionType == "Set position" ||
                                            action.predefinedActionTemplate.actionType == "Add position" ||
                                            action.predefinedActionTemplate.actionType == "Set rotation" ||
@@ -447,11 +643,11 @@ public class ItemsManagerEditor : EditorWindow
                     currentY += lineHeight * 2 + spacing;
                 }
 
-
+                // Custom Action TextArea or Predefined Action Variables
                 if (action.predefinedActionTemplate.actionType == "Customized Action")
                 {
                     Rect textAreaRect = new Rect(rect.x + 15, currentY, rect.width - 15, lineHeight * 3);
-                    string newCustomAction = EditorGUI.TextArea(textAreaRect, action.customAction);
+                    string newCustomAction = EditorGUI.TextArea(textAreaRect, action.customAction ?? ""); 
                     if (newCustomAction != action.customAction)
                     {
                         Undo.RecordObject(itemDataAsset, "Edit Custom Action");
@@ -488,8 +684,25 @@ public class ItemsManagerEditor : EditorWindow
                 var action = actions[index];
                 float lineHeight = EditorGUIUtility.singleLineHeight;
                 float spacing = EditorGUIUtility.standardVerticalSpacing;
-                float height = lineHeight + spacing; // For the dropdown
+                float height = lineHeight + spacing; // For the action type dropdown (and "If" button on the same line)
 
+                if (isCurrentStateTrialRelated && action.isConditional)
+                {
+                    height += lineHeight + spacing; // For Condition Variable dropdown
+                    if (!string.IsNullOrEmpty(action.conditionVariable))
+                    {
+                        EditorExperimentVariable selectedExpVar = _cachedExperimentVariables?.FirstOrDefault(v => v.name == action.conditionVariable);
+                        if (selectedExpVar != null && selectedExpVar.values != null && selectedExpVar.values.Length > 0)
+                        {
+                            height += lineHeight + spacing; // For Condition Value dropdown
+                        }
+                        else if (selectedExpVar != null) // Variable exists but no values
+                        {
+                            height += lineHeight + spacing; // For "no values" HelpBox
+                        }
+                    }
+                }
+                
                 bool requiresMovableItem = action.predefinedActionTemplate.actionType == "Set position" ||
                                            action.predefinedActionTemplate.actionType == "Add position" ||
                                            action.predefinedActionTemplate.actionType == "Set rotation" ||
@@ -497,16 +710,16 @@ public class ItemsManagerEditor : EditorWindow
 
                 if (requiresMovableItem && itemGO.GetComponent<MovableItem>() == null)
                 {
-                     height += lineHeight * 2 + spacing; // For the HelpBox
+                     height += lineHeight * 2 + spacing; 
                 }
                 
                 if (action.predefinedActionTemplate.actionType == "Customized Action")
                 {
-                    height += lineHeight * 3 + spacing; // For TextArea
+                    height += lineHeight * 3 + spacing; 
                 }
                 else if (action.predefinedActionTemplate.variables != null)
                 {
-                    height += (lineHeight + spacing) * action.predefinedActionTemplate.variables.Length; // For variable fields
+                    height += (lineHeight + spacing) * action.predefinedActionTemplate.variables.Length; 
                 }
                 return height + spacing; // Extra bottom spacing
             }
@@ -515,13 +728,16 @@ public class ItemsManagerEditor : EditorWindow
         rl.onAddCallback = list =>
         {
             Undo.RecordObject(itemDataAsset, "Add Action");
-            actions.Add(new StateListenerAction());
+            actions.Add(new StateListenerAction()); 
             EditorUtility.SetDirty(itemDataAsset);
         };
         rl.onRemoveCallback = list =>
         {
             Undo.RecordObject(itemDataAsset, "Remove Action");
-            actions.RemoveAt(list.index);
+            if (list.index >= 0 && list.index < actions.Count) // Add bounds check for safety
+            {
+                actions.RemoveAt(list.index);
+            }
             EditorUtility.SetDirty(itemDataAsset);
         };
         rl.onReorderCallback = list =>
@@ -531,7 +747,7 @@ public class ItemsManagerEditor : EditorWindow
         };
         _reorderableLists[key] = rl;
     }
-
+    
     private void DrawReorderableList(GameObject item, int stateID, string keySuffix, string header)
     {
         var key = $"{item.GetInstanceID()}_{stateID}_{keySuffix}";
@@ -988,7 +1204,7 @@ public class ItemsManagerEditor : EditorWindow
     private void DrawDocumentation()
     {
         EditorGUILayout.BeginVertical("box", GUILayout.Width(380), GUILayout.ExpandHeight(true)); // Slightly wider for more text
-        EditorGUILayout.LabelField("Code Block Reference", EditorStyles.largeLabel);
+        EditorGUILayout.LabelField("Documentation for Customized Actions or Other Implementation", EditorStyles.largeLabel);
         EditorGUILayout.HelpBox("Guidance for predefined actions and custom JavaScript functions available in this item manager.", MessageType.None);
 
         EditorGUILayout.Space();
