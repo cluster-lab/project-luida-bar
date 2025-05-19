@@ -22,7 +22,7 @@ public class ItemsManagerEditor : EditorWindow
         new StateListeningAction("To next state", "$.sendSignalCompat('this', 'state_triggerTransition');"),
         new StateListeningAction("Record custom data", "$.sendSignalCompat('this', 'exp_recordCustomData');"),
         new StateListeningAction("Upload recorded data", "$.sendSignalCompat('this', 'exp_uploadCustomData');"),
-        new StateListeningAction("Set text", "$.subNode('Text').setText('{_text_}');", new[] { "text" }),
+        new StateListeningAction("Set text", "$.subNode('Text').setText(`{_text_}`);", new[] { "text" }),
         new StateListeningAction("Sleep", "{_seconds_}", new[] { "seconds" }),
         new StateListeningAction("Send Haptics",
             "if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0]; \n $.state.player.send('haptics', {target: {_target_}, frequency: {_frequency_}, amplitude: {_amplitude_}, duration: {_duration_}});",
@@ -46,19 +46,17 @@ public class ItemsManagerEditor : EditorWindow
         "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/StateManagement/StateListeningItemTemplate.js";
     private const string RequiredObjectsWrapperPrefabPath =
         "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
-    
+
     private List<GameObject> stateListeningItems = new List<GameObject>();
     private StateList stateList = null;
 
     private Dictionary<GameObject, List<StateListener>> stateListenersByItem =
         new Dictionary<GameObject, List<StateListener>>();
-    private Dictionary<GameObject, string> otherImplementationByItem = new Dictionary<GameObject, string>();
-
+    
     private Vector2 scrollPositionY;
+    private Vector2 docScrollPositionY;
+    private Vector2 _horizontalScrollPosition; // For the new horizontal scroll view
     private bool isSubscribed = false;
-
-    // [MenuItem("Window/Luida Editor/Items Manager")] // Uncomment to add to Unity menu
-    // public static void ShowWindow() => GetWindow<ItemsManagerEditor>("Items Manager");
 
     #region Unity Callbacks
 
@@ -67,7 +65,7 @@ public class ItemsManagerEditor : EditorWindow
         _needsRebuild = true;
         EditorApplication.hierarchyChanged += OnHierarchyChanged;
         EditorApplication.projectChanged += OnProjectChanged;
-        EditorApplication.playModeStateChanged += OnPlayModeStateChanged; 
+        EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
 
         if (!isSubscribed)
         {
@@ -82,7 +80,7 @@ public class ItemsManagerEditor : EditorWindow
     {
         EditorApplication.hierarchyChanged -= OnHierarchyChanged;
         EditorApplication.projectChanged -= OnProjectChanged;
-        EditorApplication.playModeStateChanged -= OnPlayModeStateChanged; 
+        EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
 
         // ApplyAssetsToScripts(); 
         if (isSubscribed)
@@ -125,7 +123,7 @@ public class ItemsManagerEditor : EditorWindow
             SetupReorderableLists();
             _needsRebuild = false;
         }
-        
+
         if (stateList == null)
         {
             EditorGUILayout.HelpBox("No StateList asset found for this scene. Create one or check path.", MessageType.Warning);
@@ -134,7 +132,7 @@ public class ItemsManagerEditor : EditorWindow
         }
         if (_cachedStateNames.Length == 0 && stateList != null)
         {
-             EditorGUILayout.HelpBox("StateList is loaded, but no states are defined in it.", MessageType.Info);
+            EditorGUILayout.HelpBox("StateList is loaded, but no states are defined in it.", MessageType.Info);
         }
 
         EditorGUI.BeginChangeCheck();
@@ -151,21 +149,30 @@ public class ItemsManagerEditor : EditorWindow
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.Space(10);
 
-        scrollPositionY = EditorGUILayout.BeginScrollView(scrollPositionY, false, true, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+        // Main horizontal layout for [Scrollable Content | Fixed Documentation]
+        EditorGUILayout.BeginHorizontal();
 
+        // --- SCROLLABLE CONTENT (Left Part, max width 1000px) ---
+        EditorGUILayout.BeginVertical(GUILayout.MaxWidth(1200f));
+
+        _horizontalScrollPosition = EditorGUILayout.BeginScrollView(_horizontalScrollPosition, false, false, GUILayout.ExpandWidth(true));
+
+        // Item names header (first row of the grid)
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("State Name | Item Name", EditorStyles.boldLabel, GUILayout.Width(215));
         bool isHeaderDarkColumn = true;
+        GUILayout.Space(5);
         for (int i = 0; i < _cachedItems.Length; i++)
         {
             var item = _cachedItems[i];
             if (item == null) continue; // Skip if item was destroyed
             GUI.backgroundColor = isHeaderDarkColumn ? new Color(0.3f, 0.3f, 0.3f) : new Color(0.7f, 0.7f, 0.7f);
 
-            EditorGUILayout.BeginVertical("box", GUILayout.Width(240));
-            EditorGUILayout.LabelField(item.name, EditorStyles.boldLabel);
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.ObjectField(item, typeof(GameObject), true); 
+            EditorGUILayout.BeginHorizontal("box", GUILayout.Width(240));
+            EditorGUILayout.LabelField(item.name, EditorStyles.boldLabel, GUILayout.Width(150));
+            EditorGUI.BeginDisabledGroup(true);
+            EditorGUILayout.ObjectField(item, typeof(GameObject), true);
+            EditorGUI.EndDisabledGroup();
 
             if (GUILayout.Button("X", removeButtonStyle, GUILayout.Width(25), GUILayout.Height(20)))
             {
@@ -176,13 +183,75 @@ public class ItemsManagerEditor : EditorWindow
                 }
             }
             EditorGUILayout.EndHorizontal();
-            EditorGUILayout.EndVertical();
             GUILayout.Space(10);
             isHeaderDarkColumn = !isHeaderDarkColumn;
         }
         EditorGUILayout.EndHorizontal();
-        GUI.backgroundColor = Color.white;
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
+        // Inner vertical scroll for the main content grid (states, actions, etc.)
+        // No ExpandWidth here, as outer scroll handles horizontal. ExpandHeight to fill vertical space.
+        scrollPositionY = EditorGUILayout.BeginScrollView(scrollPositionY, false, true, GUILayout.ExpandHeight(true));
+
+        // --- OTHER IMPLEMENTATION SECTION ---
+        EditorGUILayout.LabelField("Custom implementation not listening to any state", EditorStyles.largeLabel);
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.HelpBox("Implement ClusterScript callbacks (e.g., $.onInteract, $.onGrab, ...) or your custom functions here.", MessageType.Info);
+        EditorGUILayout.HelpBox("DON'T use $.onUpdate here! Implement `function Update(deltaTime) {...}` instead.", MessageType.Warning);
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal(); // Horizontal layout for "Other Implementation" columns
+        EditorGUILayout.LabelField("", GUILayout.Width(215)); // Spacer for the first column
+        GUILayout.Space(5);
+
+        bool isOtherImplCellDark = true;
+        foreach (var item in _cachedItems) // _cachedItems is populated in _needsRebuild block
+        {
+            if (item == null) continue;
+            Color cellBgColor = isOtherImplCellDark ? new Color(0.25f, 0.25f, 0.25f, 0.5f) : new Color(0.75f, 0.75f, 0.75f, 0.5f);
+            Rect cellRect = EditorGUILayout.BeginVertical("box", GUILayout.Width(240), GUILayout.MinHeight(100));
+            EditorGUI.DrawRect(cellRect, cellBgColor);
+
+            // Directly load and use the StateListeningItemData asset
+            string itemDataAssetPath = GetItemDataAssetPath(item);
+            var itemDataAsset = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(itemDataAssetPath);
+
+            if (itemDataAsset == null)
+            {
+                EditorGUILayout.HelpBox($"Asset not found for {item.name}. Cannot edit 'Other Implementation'.", MessageType.Error);
+                EditorGUILayout.EndVertical();
+                GUILayout.Space(10);
+                isOtherImplCellDark = !isOtherImplCellDark;
+                continue;
+            }
+
+            string currentOtherImpl = itemDataAsset.otherImplementation ?? string.Empty;
+
+            EditorGUI.BeginChangeCheck();
+            string newOtherImpl = EditorGUILayout.TextArea(currentOtherImpl, GUILayout.ExpandHeight(true), GUILayout.MinHeight(80));
+            if (EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(itemDataAsset, "Edit Other Implementation for " + item.name);
+                itemDataAsset.otherImplementation = newOtherImpl; // Directly modify the ScriptableObject
+                EditorUtility.SetDirty(itemDataAsset); // Mark asset dirty
+            }
+            EditorGUILayout.EndVertical();
+            GUILayout.Space(10);
+            isOtherImplCellDark = !isOtherImplCellDark;
+        }
+        EditorGUILayout.EndHorizontal();
+        GUI.backgroundColor = Color.white;
+        // --- END OF OTHER IMPLEMENTATION SECTION ---
+
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+
+        EditorGUILayout.LabelField("Pre-defined or customized actions listening to states", EditorStyles.largeLabel);
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.HelpBox("Select available actions to run when entering/during/exiting any state.\nYou can also write your custom scripts by selecting the 'Customized action' option.", MessageType.Info);
+        EditorGUILayout.HelpBox("DON'T implement any ClusterScript callbacks here.", MessageType.Warning);
+        EditorGUILayout.EndHorizontal();
+
+        GUI.backgroundColor = Color.white;
         bool isBlueRow = true;
         foreach (var stateName in _cachedStateNames)
         {
@@ -200,10 +269,10 @@ public class ItemsManagerEditor : EditorWindow
             bool isCellDarkColumn = true;
             foreach (var item in _cachedItems)
             {
-                if (item == null) continue; // Skip if item was destroyed
+                if (item == null) continue;
                 Color cellBgColor = isCellDarkColumn ? new Color(0.2f, 0.2f, 0.2f, 0.5f) : new Color(0.8f, 0.8f, 0.8f, 0.5f);
-                Rect cellRect = EditorGUILayout.BeginVertical("box", GUILayout.Width(240), GUILayout.MinHeight(100));
-                EditorGUI.DrawRect(cellRect, cellBgColor);
+                Rect cellRectInner = EditorGUILayout.BeginVertical("box", GUILayout.Width(240), GUILayout.MinHeight(100));
+                EditorGUI.DrawRect(cellRectInner, cellBgColor);
 
                 stateListenersByItem.TryGetValue(item, out var listenersList);
                 var listener = listenersList?.FirstOrDefault(l => l.stateID == stateID);
@@ -215,7 +284,7 @@ public class ItemsManagerEditor : EditorWindow
                     DrawReorderableList(item, stateID, "DuringState", "During State Actions");
                     GUILayout.Space(5);
                     DrawReorderableList(item, stateID, "OnStateExit", "On State End Actions");
-                    
+
                     GUILayout.Space(5);
                     if (GUILayout.Button("Remove Listener", removeButtonStyle, GUILayout.Height(20)))
                     {
@@ -231,15 +300,15 @@ public class ItemsManagerEditor : EditorWindow
                             if (itemDataAsset != null) {
                                 Undo.RecordObject(itemDataAsset, "Remove State Listener");
                             }
-                            
-                            if (listenersList != null) {
-                                listenersList.Remove(listener); 
-                            }
-                            
-                            SaveItemToAsset(item); 
 
-                            _needsRebuild = true; 
-                            GUIUtility.ExitGUI(); 
+                            if (listenersList != null) {
+                                listenersList.Remove(listener);
+                            }
+
+                            SaveItemToAsset(item);
+
+                            _needsRebuild = true;
+                            GUIUtility.ExitGUI();
                         }
                     }
                 }
@@ -251,7 +320,7 @@ public class ItemsManagerEditor : EditorWindow
                         GUIUtility.ExitGUI();
                     }
                 }
-                
+
                 EditorGUILayout.EndVertical();
                 GUILayout.Space(10);
                 isCellDarkColumn = !isCellDarkColumn;
@@ -260,13 +329,24 @@ public class ItemsManagerEditor : EditorWindow
             isBlueRow = !isBlueRow;
         }
         GUI.backgroundColor = Color.white;
-        EditorGUILayout.EndScrollView();
+
+        EditorGUILayout.EndScrollView(); // End inner vertical scroll (scrollPositionY)
+
+        EditorGUILayout.EndScrollView(); // End outer horizontal scroll (_horizontalScrollPosition)
+
+        EditorGUILayout.EndVertical(); // End scrollable part
+
+        // --- FIXED DOCUMENTATION PART ---
+        DrawDocumentation();
+
+        EditorGUILayout.EndHorizontal(); // End main container
 
         if (EditorGUI.EndChangeCheck())
         {
             // Changes are primarily saved via Undo/SetDirty and explicit save calls.
         }
     }
+
 
     #region ReorderableList Setup & Draw
 
@@ -276,7 +356,7 @@ public class ItemsManagerEditor : EditorWindow
         foreach (var item in stateListeningItems)
         {
             if (item == null || !stateListenersByItem.TryGetValue(item, out var listeners)) continue;
-            
+
             string itemDataAssetPath = GetItemDataAssetPath(item);
             StateListeningItemData itemDataAsset = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(itemDataAssetPath);
             if (itemDataAsset == null)
@@ -321,25 +401,26 @@ public class ItemsManagerEditor : EditorWindow
                         ? options.Count - 1
                         : AvailableStateListeningActions.ToList().FindIndex(a => a.actionType == action.predefinedActionTemplate.actionType) + 1;
                 }
-                
+
                 int newIndex = EditorGUI.Popup(dropdownRect, selectedIndex, options.ToArray());
                 currentY += lineHeight + spacing;
 
                 if (newIndex != selectedIndex)
                 {
                     Undo.RecordObject(itemDataAsset, "Change Action Type");
-                    if (newIndex == 0) 
+                    if (newIndex == 0)
                     {
                         action.predefinedActionTemplate = default;
                         action.customAction = "";
                         action.variableValues.Clear();
                     }
-                    else if (newIndex == options.Count - 1) 
+                    else if (newIndex == options.Count - 1)
                     {
                         action.predefinedActionTemplate = new StateListeningAction("Customized Action", "", null);
+                        action.customAction = "// Your custom ClusterScript code here\n";
                         action.variableValues.Clear();
                     }
-                    else 
+                    else
                     {
                         action.predefinedActionTemplate = AvailableStateListeningActions[newIndex - 1];
                         action.customAction = "";
@@ -355,21 +436,21 @@ public class ItemsManagerEditor : EditorWindow
                     EditorUtility.SetDirty(itemDataAsset);
                 }
                 
-                // Warning if MovableItem is necessary but does not exist
                 bool requiresMovableItem = action.predefinedActionTemplate.actionType == "Set position" ||
                                            action.predefinedActionTemplate.actionType == "Add position" ||
                                            action.predefinedActionTemplate.actionType == "Set rotation" ||
                                            action.predefinedActionTemplate.actionType == "Add rotation";
                 if (requiresMovableItem && itemGO.GetComponent<MovableItem>() == null)
                 {
-                    Rect warningRect = new Rect(rect.x, currentY, rect.width, lineHeight * 2); // Adjust height as needed
+                    Rect warningRect = new Rect(rect.x, currentY, rect.width, lineHeight * 2); 
                     EditorGUI.HelpBox(warningRect, $"Warning: '{action.predefinedActionTemplate.actionType}' requires a MovableItem component on '{itemGO.name}'.", MessageType.Warning);
                     currentY += lineHeight * 2 + spacing;
                 }
 
+
                 if (action.predefinedActionTemplate.actionType == "Customized Action")
                 {
-                    Rect textAreaRect = new Rect(rect.x, currentY, rect.width, lineHeight * 3);
+                    Rect textAreaRect = new Rect(rect.x + 15, currentY, rect.width - 15, lineHeight * 3);
                     string newCustomAction = EditorGUI.TextArea(textAreaRect, action.customAction);
                     if (newCustomAction != action.customAction)
                     {
@@ -383,9 +464,9 @@ public class ItemsManagerEditor : EditorWindow
                 {
                     foreach (string variableName in action.predefinedActionTemplate.variables)
                     {
-                        Rect labelRect = new Rect(rect.x, currentY, EditorGUIUtility.labelWidth * 0.6f, lineHeight);
-                        Rect fieldRect = new Rect(labelRect.xMax, currentY, rect.width - labelRect.width, lineHeight);
-                        
+                        Rect labelRect = new Rect(rect.x + 15, currentY, EditorGUIUtility.labelWidth * 0.6f, lineHeight);
+                        Rect fieldRect = new Rect(labelRect.xMax, currentY, rect.width - labelRect.width - 15, lineHeight);
+
                         EditorGUI.LabelField(labelRect, variableName);
                         action.variableValues.TryGetValue(variableName, out string currentValue);
                         currentValue ??= "";
@@ -407,17 +488,27 @@ public class ItemsManagerEditor : EditorWindow
                 var action = actions[index];
                 float lineHeight = EditorGUIUtility.singleLineHeight;
                 float spacing = EditorGUIUtility.standardVerticalSpacing;
-                float height = lineHeight + spacing;
+                float height = lineHeight + spacing; // For the dropdown
 
+                bool requiresMovableItem = action.predefinedActionTemplate.actionType == "Set position" ||
+                                           action.predefinedActionTemplate.actionType == "Add position" ||
+                                           action.predefinedActionTemplate.actionType == "Set rotation" ||
+                                           action.predefinedActionTemplate.actionType == "Add rotation";
+
+                if (requiresMovableItem && itemGO.GetComponent<MovableItem>() == null)
+                {
+                     height += lineHeight * 2 + spacing; // For the HelpBox
+                }
+                
                 if (action.predefinedActionTemplate.actionType == "Customized Action")
                 {
-                    height += lineHeight * 3 + spacing;
+                    height += lineHeight * 3 + spacing; // For TextArea
                 }
                 else if (action.predefinedActionTemplate.variables != null)
                 {
-                    height += (lineHeight + spacing) * action.predefinedActionTemplate.variables.Length;
+                    height += (lineHeight + spacing) * action.predefinedActionTemplate.variables.Length; // For variable fields
                 }
-                return height + spacing;
+                return height + spacing; // Extra bottom spacing
             }
         };
 
@@ -453,7 +544,7 @@ public class ItemsManagerEditor : EditorWindow
     #endregion
 
     #region Helper methods
-    
+
     private string GetItemDataAssetPath(GameObject item)
     {
         string sceneName = SceneManager.GetActiveScene().name;
@@ -463,8 +554,8 @@ public class ItemsManagerEditor : EditorWindow
 
     private void RefreshStateListeningItems()
     {
-        stateListeningItems.Clear(); // Clear before repopulating
-        var currentItemsInScene = new List<GameObject>(); // Temporary list to hold found items
+        stateListeningItems.Clear();
+        var currentItemsInScene = new List<GameObject>();
 
         var allSceneRootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
         List<GameObject> potentialItems = new List<GameObject>();
@@ -472,44 +563,42 @@ public class ItemsManagerEditor : EditorWindow
         {
             potentialItems.AddRange(rootGO.GetComponentsInChildren<Transform>(true).Select(t => t.gameObject));
         }
-        
+
         foreach (var obj in potentialItems.Distinct())
         {
             if (obj == null) continue;
             string prefabAssetPath = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj);
             if (prefabAssetPath == PrefabPath)
             {
-                 if (!currentItemsInScene.Contains(obj))
+                if (!currentItemsInScene.Contains(obj))
                     currentItemsInScene.Add(obj);
             }
         }
-        stateListeningItems = currentItemsInScene; // Assign validated items
+        stateListeningItems = currentItemsInScene;
 
-        // Clear dictionaries before repopulating based on current scene items
         stateListenersByItem.Clear();
-        otherImplementationByItem.Clear();
-
 
         string sceneName = SceneManager.GetActiveScene().name;
         string baseFolder = string.Format(ScriptFolderFormat, sceneName);
         string listenerDataFolder = Path.Combine(baseFolder, "StateListeners");
         Directory.CreateDirectory(listenerDataFolder);
 
-        foreach (var item in stateListeningItems) // Iterate only over currently valid items
+        foreach (var item in stateListeningItems)
         {
             if (item == null) continue;
             string assetPath = GetItemDataAssetPath(item);
             StateListeningItemData data = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(assetPath);
+            bool newAssetCreated = false;
             if (data == null)
             {
                 data = ScriptableObject.CreateInstance<StateListeningItemData>();
                 data.stateListeners = Array.Empty<StateListener>();
-                data.otherImplementation = string.Empty;
+                data.otherImplementation = "function Start() { }\nfunction Update(deltaTime) { }";
                 AssetDatabase.CreateAsset(data, assetPath);
                 AssetDatabase.SaveAssets();
+                newAssetCreated = true;
             }
             stateListenersByItem[item] = data.stateListeners != null ? data.stateListeners.ToList() : new List<StateListener>();
-            otherImplementationByItem[item] = data.otherImplementation ?? string.Empty;
         }
     }
 
@@ -526,7 +615,7 @@ public class ItemsManagerEditor : EditorWindow
             EditorUtility.DisplayDialog("Error", $"Listener for state ID {stateIndex} already exists on item '{item.name}'.", "OK");
             return;
         }
-        
+
         string itemDataAssetPath = GetItemDataAssetPath(item);
         var itemDataAsset = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(itemDataAssetPath);
         if (itemDataAsset == null)
@@ -536,18 +625,18 @@ public class ItemsManagerEditor : EditorWindow
         }
 
         Undo.RecordObject(itemDataAsset, "Add State Listener");
-        
+
         var newListener = new StateListener { stateID = stateIndex };
         stateListenersByItem[item].Add(newListener);
 
         List<StateListener> currentListeners = itemDataAsset.stateListeners != null ? itemDataAsset.stateListeners.ToList() : new List<StateListener>();
         currentListeners.Add(newListener);
         itemDataAsset.stateListeners = currentListeners.ToArray();
-        
+
         EditorUtility.SetDirty(itemDataAsset);
         _needsRebuild = true;
     }
-    
+
     private void RemoveStateListeningItem(GameObject item)
     {
         if (item == null) return;
@@ -560,6 +649,8 @@ public class ItemsManagerEditor : EditorWindow
         AssetDatabase.DeleteAsset(assetPath);
         Undo.DestroyObjectImmediate(item);
 
+        if (stateListenersByItem.ContainsKey(item)) stateListenersByItem.Remove(item);
+        
         AssetDatabase.Refresh();
         _needsRebuild = true;
     }
@@ -602,7 +693,7 @@ public class ItemsManagerEditor : EditorWindow
         }
         AssetDatabase.CopyAsset(ScriptTemplatePath, jsPath);
         AssetDatabase.Refresh();
-        
+
         ScriptableClusterScriptCombiner combiner = go.GetComponent<ScriptableClusterScriptCombiner>();
         if (combiner == null)
         {
@@ -617,25 +708,24 @@ public class ItemsManagerEditor : EditorWindow
             }
             else
             {
-                combiner.ReplaceScript(newScriptAsset, 1, null, 0, true); 
+                combiner.ReplaceScript(newScriptAsset, 1, null, 0, true);
                 EditorUtility.SetDirty(combiner);
                 EditorUtility.SetDirty(newScriptAsset);
             }
         }
-        
+
         string listenerDataFolder = Path.Combine(scriptFolder, "StateListeners");
         Directory.CreateDirectory(listenerDataFolder);
         string assetPath = Path.Combine(listenerDataFolder, newItemName + ".asset");
         StateListeningItemData data = ScriptableObject.CreateInstance<StateListeningItemData>();
         data.stateListeners = Array.Empty<StateListener>();
-        data.otherImplementation = string.Empty;
+        data.otherImplementation = "function Start() { }\nfunction Update(deltaTime) { }";
         AssetDatabase.CreateAsset(data, assetPath);
-        AssetDatabase.Refresh();
+        AssetDatabase.SaveAssets();
 
-        stateListeningItems.Add(go);
+        if (!stateListeningItems.Contains(go)) stateListeningItems.Add(go);
         stateListenersByItem[go] = data.stateListeners.ToList();
-        otherImplementationByItem[go] = data.otherImplementation;
-        
+
         _needsRebuild = true;
         newItemName = string.Empty;
     }
@@ -646,17 +736,20 @@ public class ItemsManagerEditor : EditorWindow
 
         if (action.predefinedActionTemplate.actionType == "Sleep")
         {
-            return $"{{ type: \"sleep\", value: {actionCode} }}";
+            bool isNumeric = double.TryParse(actionCode, out double sleepValue);
+            return $"{{ type: \"sleep\", value: {(isNumeric ? sleepValue.ToString(System.Globalization.CultureInfo.InvariantCulture) : "0")} }}";
         }
 
         actionCode = (actionCode ?? "").Trim().Replace("\n", "\n            ");
         return $"{{ type: \"exec\", action: () => {{\n            {actionCode}\n        }} }}";
     }
-    
+
     private string GenerateActionsObjectsForItem(GameObject item)
     {
-        if (item == null || !stateListenersByItem.TryGetValue(item, out var listeners) || listeners.Count == 0)
-            return string.Empty;
+        if (item == null) return string.Empty;
+
+        stateListenersByItem.TryGetValue(item, out var listeners);
+        listeners ??= new List<StateListener>();
 
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
@@ -677,76 +770,101 @@ public class ItemsManagerEditor : EditorWindow
 
     private void AppendActionsForType(System.Text.StringBuilder sb, List<StateListener> listeners, Func<StateListener, List<StateListenerAction>> actionSelector)
     {
+        bool hasAppendedAnyState = false;
         foreach (var listener in listeners)
         {
             var actions = actionSelector(listener);
-            if (actions.Count == 0) continue;
-            sb.AppendLine($"    {listener.stateID}: [");
-            foreach (var action in actions)
+            if (actions == null || actions.Count == 0) continue;
+
+            if (hasAppendedAnyState) sb.AppendLine(",");
+            sb.Append($"    {listener.stateID}: [\n");
+            for (int i = 0; i < actions.Count; i++)
             {
-                sb.AppendLine($"        {GenerateActionObject(action)},");
+                sb.Append($"        {GenerateActionObject(actions[i])}");
+                if (i < actions.Count - 1) sb.AppendLine(","); else sb.AppendLine();
             }
-            sb.AppendLine("    ],");
+            sb.Append("    ]");
+            hasAppendedAnyState = true;
         }
+        if (hasAppendedAnyState) sb.AppendLine();
     }
 
     private void SaveItemToAsset(GameObject item)
     {
         if (!item) return;
-        if (!stateListeningItems.Contains(item) && !stateListenersByItem.ContainsKey(item)) {
-            return;
-        }
+        // Ensure item is managed, or at least its asset might exist if it was just deleted from scene but data not yet fully cleaned
+        // However, the main loop SaveAllItemsToAssets filters for non-null items from stateListeningItems.
 
         string scene = SceneManager.GetActiveScene().name;
         string folder = string.Format(ScriptFolderFormat, scene);
         Directory.CreateDirectory(folder);
 
         string jsContentForItem = GenerateActionsObjectsForItem(item);
-        string otherImpl = otherImplementationByItem.GetValueOrDefault(item, "");
+        
+        string assetPath = GetItemDataAssetPath(item);
+        var data = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(assetPath);
+
+        string otherImplForJS = string.Empty;
+        if (data != null) {
+            otherImplForJS = data.otherImplementation ?? string.Empty; // Read directly from asset for JS
+        } else {
+            // This case should ideally not happen if RefreshStateListeningItems ensures assets exist.
+            // If an item is in stateListeningItems, its asset should have been loaded or created.
+            Debug.LogWarning($"StateListeningItemData asset not found for {item.name} at {assetPath} during JS generation. 'Other Implementation' will be empty in JS.");
+        }
         
         var lines = new List<string>();
         if (!string.IsNullOrWhiteSpace(jsContentForItem)) lines.Add(jsContentForItem);
-        if (!string.IsNullOrWhiteSpace(otherImpl)) lines.Add(otherImpl);
+        if (!string.IsNullOrWhiteSpace(otherImplForJS)) lines.Add(otherImplForJS);
 
         string jsPath = Path.Combine(folder, item.name + ".js");
         File.WriteAllText(jsPath, string.Join("\n\n", lines).Trim());
         AssetDatabase.ImportAsset(jsPath, ImportAssetOptions.ForceUpdate); 
 
-        string assetPath = GetItemDataAssetPath(item);
-        var data = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(assetPath);
+        // Asset data for 'otherImplementation' is modified directly in OnGUI and SetDirty.
+        // Here, we only need to handle stateListeners.
         if (data != null)
         {
-            if (stateListenersByItem.TryGetValue(item, out var currentListeners))
+            bool listenersChanged = false;
+            if (stateListenersByItem.TryGetValue(item, out var currentListenersInDict))
             {
-                data.stateListeners = currentListeners.ToArray();
+                var dataStateListeners = data.stateListeners ?? Array.Empty<StateListener>();
+                var currentListenersArray = currentListenersInDict?.ToArray() ?? Array.Empty<StateListener>();
+
+                if (!dataStateListeners.SequenceEqual(currentListenersArray))
+                {
+                    Undo.RecordObject(data, "Update State Listeners in Asset for " + item.name);
+                    data.stateListeners = currentListenersArray;
+                    listenersChanged = true;
+                }
             }
-            if (otherImplementationByItem.TryGetValue(item, out var currentOtherImpl))
-            {
-                data.otherImplementation = currentOtherImpl;
+            if (listenersChanged) {
+                EditorUtility.SetDirty(data);
             }
-            EditorUtility.SetDirty(data); 
+            // No explicit save of data.otherImplementation here as it's handled by OnGUI's direct modification.
         }
         else
         {
-            Debug.LogError($"StateListeningItemData asset not found for {item.name} at {assetPath} during SaveItemToAsset.");
+            // This was already logged above for JS generation.
+            // If data is null here, it means the asset is missing, which Refresh should handle.
+            // If item still exists but asset gone, _needsRebuild might be appropriate.
         }
     }
 
     private void SaveAllItemsToAssets()
     {
-        // Filter out null items that might have been destroyed
         var validItems = stateListeningItems.Where(item => item != null).ToList();
         foreach (var item in validItems)
         {
             SaveItemToAsset(item);
         }
-        AssetDatabase.SaveAssets(); 
+        AssetDatabase.SaveAssets();
     }
 
     private void ApplyAssetsToScripts()
     {
-        SaveAllItemsToAssets(); 
-        
+        SaveAllItemsToAssets();
+
         Type csCombinerType = Type.GetType("Assets.KaomoLab.CSCombiner.CSCombiner, Assembly-CSharp-Editor");
         if (csCombinerType != null)
         {
@@ -775,20 +893,16 @@ public class ItemsManagerEditor : EditorWindow
         GameObject[] rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
         foreach (GameObject obj in rootObjects)
         {
-            // Check if this root object is an instance of the RequiredObjectsWrapperPrefab
             if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == RequiredObjectsWrapperPrefabPath)
             {
-                // Search for ItemGroupHost component in its children (or on itself)
-                ItemGroupHost host = obj.GetComponentInChildren<ItemGroupHost>(true); // true to include inactive
+                ItemGroupHost host = obj.GetComponentInChildren<ItemGroupHost>(true);
                 if (host != null)
                 {
                     return host;
                 }
             }
         }
-        // Fallback: If not found in a wrapper, search all ItemGroupHosts in the scene.
-        // This might be less precise if there are multiple, but better than nothing.
-        var allHosts = FindObjectsOfType<ItemGroupHost>(true); // Find all instances, including inactive
+        var allHosts = FindObjectsOfType<ItemGroupHost>(true);
         if (allHosts.Length > 0)
         {
             if (allHosts.Length > 1)
@@ -808,8 +922,6 @@ public class ItemsManagerEditor : EditorWindow
         var itemGroupMember = item.GetComponent<ItemGroupMember>();
         if (itemGroupMember == null)
         {
-            // If LuidaStateListeningItem prefab is expected to always have ItemGroupMember,
-            // this might indicate a prefab setup issue.
             Debug.LogWarning($"ItemGroupMember component not found on the newly created item: {item.name}. Cannot link to ItemGroupHost.");
             return;
         }
@@ -818,13 +930,12 @@ public class ItemsManagerEditor : EditorWindow
         if (host != null)
         {
             SerializedObject serializedItemGroupMember = new SerializedObject(itemGroupMember);
-            SerializedProperty hostProperty = serializedItemGroupMember.FindProperty("host"); // "host" is the typical field name
+            SerializedProperty hostProperty = serializedItemGroupMember.FindProperty("host");
 
             if (hostProperty != null)
             {
                 hostProperty.objectReferenceValue = host;
                 serializedItemGroupMember.ApplyModifiedProperties();
-                // Debug.Log($"Successfully linked {item.name} (ItemGroupMember) to {host.gameObject.name} (ItemGroupHost)."); // Optional
             }
             else
             {
@@ -836,6 +947,138 @@ public class ItemsManagerEditor : EditorWindow
             Debug.LogWarning("ItemGroupHost not found in the scene (expected within a GameObject instantiated from '" + RequiredObjectsWrapperPrefabPath + "'). " +
                              $"{item.name} will not be able to access shared group states for conditions.");
         }
+    }
+
+    #endregion
+
+    #region Documentation
+    
+    private void DrawDocEntry(string actionName, string description, string parametersInfo = null, bool requiresMovableItem = false, string jsFunctionSignature = null)
+    {
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.Space(20); // Indent for sub-sections
+        EditorGUILayout.BeginVertical();
+
+        EditorGUILayout.LabelField(actionName, EditorStyles.boldLabel);
+        string helpText = description;
+
+        if (requiresMovableItem)
+        {
+            helpText += "\n(Requires `MovableItem` component on this item)";
+        }
+        if (!string.IsNullOrEmpty(parametersInfo) && parametersInfo != "None")
+        {
+            helpText += $"\nInput Fields (for predefined action): {parametersInfo}";
+        }
+        if (!string.IsNullOrEmpty(jsFunctionSignature))
+        {
+            helpText += ("\nEquivalent ClusterScript function: " + jsFunctionSignature);
+        }
+        else if (actionName == "Sleep") // Special handling for Sleep
+        {
+            helpText += "\nNo equivalent ClusterScript function. If necessary, try adding two Customized actions before and after a Sleep action.";
+        }
+        EditorGUILayout.HelpBox(helpText, MessageType.None);
+
+        EditorGUILayout.EndVertical();
+        EditorGUILayout.EndHorizontal();
+        GUILayout.Space(3);
+    }
+    
+    private void DrawDocumentation()
+    {
+        EditorGUILayout.BeginVertical("box", GUILayout.Width(380), GUILayout.ExpandHeight(true)); // Slightly wider for more text
+        EditorGUILayout.LabelField("Code Block Reference", EditorStyles.largeLabel);
+        EditorGUILayout.HelpBox("Guidance for predefined actions and custom JavaScript functions available in this item manager.", MessageType.None);
+
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("--------------- Variable: CONDITION ---------------", EditorStyles.boldLabel);
+        EditorGUILayout.HelpBox(
+            "⋅ Contains values from your configured experimental variables for the current trial.\n" +
+            "⋅ Use `CONDITION[\"your_variable_name\"]` in 'Customized Action' code blocks of trial-related states (e.g., Trial - Start).",
+            MessageType.Info);
+
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("--- Predefined Actions & Equivalent ClusterScript Functions ---", EditorStyles.boldLabel);
+        EditorGUILayout.HelpBox(
+            "Below are predefined actions selectable from dropdowns, and their equivalent ClusterScript functions you can use in 'Customized Action' code blocks. ",
+            MessageType.Info);
+
+        docScrollPositionY = EditorGUILayout.BeginScrollView(docScrollPositionY, false, true, GUILayout.ExpandHeight(true));
+
+        // Helper to generate JS function signature string from action.actionType and action.variables
+        Func<StateListeningAction, string> getJsSignature = (action) => {
+            if (action.actionType == "Sleep") return null; // Sleep is handled differently
+
+            // Sanitize actionType to a valid JS function name (PascalCase, no spaces)
+            string funcName = string.Concat(action.actionType.Split(' ').Select(word => char.ToUpper(word[0]) + word.Substring(1)));
+            
+            if (action.variables != null && action.variables.Length > 0)
+            {
+                return $"{funcName}({string.Join(", ", action.variables)})";
+            }
+            return $"{funcName}()";
+        };
+
+        // Helper to get parameter info string for UI fields
+        Func<StateListeningAction, string> getParamsInfoForUI = (action) => {
+            if (action.variables != null && action.variables.Length > 0)
+            {
+                return string.Join(", ", action.variables.Select(v => $"`{v}`"));
+            }
+            return "None";
+        };
+        
+        // Iterate through AvailableStateListeningActions, grouped by assumed category
+        // (You might want to add an explicit category field to StateListeningAction struct for more robust grouping)
+
+        EditorGUILayout.LabelField("Item Visibility", EditorStyles.boldLabel);
+        foreach(var action in AvailableStateListeningActions.Where(a => a.actionType == "Show item" || a.actionType == "Hide item"))
+        {
+            DrawDocEntry(action.actionType, 
+                         action.actionType == "Show item" ? "Makes the item visible." : "Makes the item invisible.",
+                         getParamsInfoForUI(action), false, getJsSignature(action));
+        }
+        
+        EditorGUILayout.LabelField("State Flow Control", EditorStyles.boldLabel);
+        foreach(var action in AvailableStateListeningActions.Where(a => a.actionType == "To next state"))
+        {
+            DrawDocEntry(action.actionType, "Triggers a transition to the next experiment state.",
+                         getParamsInfoForUI(action), false, getJsSignature(action));
+        }
+
+        EditorGUILayout.LabelField("Item Manipulation", EditorStyles.boldLabel);
+        foreach(var action in AvailableStateListeningActions.Where(a => new[] {"Set text", "Set position", "Add position", "Set rotation", "Add rotation"}.Contains(a.actionType)))
+        {
+            string desc = "";
+            bool needsMovable = false;
+            if (action.actionType == "Set text") desc = "Sets text on a child 'Text' sub-node.";
+            else if (action.actionType == "Set position") { desc = "Sets item's world position."; needsMovable = true; }
+            else if (action.actionType == "Add position") { desc = "Offsets item's world position."; needsMovable = true; }
+            else if (action.actionType == "Set rotation") { desc = "Sets item's world rotation (Euler degrees)."; needsMovable = true; }
+            else if (action.actionType == "Add rotation") { desc = "Adds to item's world rotation (Euler degrees)."; needsMovable = true; }
+            DrawDocEntry(action.actionType, desc, getParamsInfoForUI(action), needsMovable, getJsSignature(action));
+        }
+        
+        EditorGUILayout.LabelField("Data Logging", EditorStyles.boldLabel);
+        foreach(var action in AvailableStateListeningActions.Where(a => a.actionType == "Record custom data" || a.actionType == "Upload recorded data"))
+        {
+            DrawDocEntry(action.actionType, 
+                         action.actionType == "Record custom data" ? "Signals LUIDA's DataRecorder to log configured data." : "Signals LUIDA's DataRecorder to upload accumulated data.",
+                         getParamsInfoForUI(action), false, getJsSignature(action));
+        }
+
+        EditorGUILayout.LabelField("User Feedback & Utilities", EditorStyles.boldLabel);
+        foreach(var action in AvailableStateListeningActions.Where(a => a.actionType == "Send Haptics" || a.actionType == "Sleep"))
+        {
+            string desc = "";
+            if (action.actionType == "Send Haptics") desc = "Sends haptic feedback to the player. Target can be \"left\", \"right\", or null (for both hands). Duration is in seconds.";
+            else if (action.actionType == "Sleep") desc = "Pauses execution of subsequent actions in the current list (On State Start, During State, On State End) for the specified duration in seconds.";
+            DrawDocEntry(action.actionType, desc, getParamsInfoForUI(action), false, getJsSignature(action));
+        }
+    
+        EditorGUILayout.EndScrollView();
+        EditorGUILayout.EndVertical();
     }
 
     #endregion
