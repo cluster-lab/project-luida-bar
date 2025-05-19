@@ -5,10 +5,10 @@ To use this implement template, **please avoid directly cloning this repository.
 本実装テンプレートを使用される場合、**このレポジトリを直接cloneしないでください。**[Getting Started](#getting-started)セクションに従って本実装テンプレートのダウンロードと初期化を行ってください。チュートリアルもぜひ試してください。
 
 - [Main Features](#main-features)
-- [Getting Started](#getting-started)
+<!-- - [Getting Started](#getting-started) -->
 - [Tutorial (JA)](https://github.com/cluster-lab/project-luida-bar/blob/exp-template/Tutorial_JA.md)
-- [Tutorial (EN)](https://github.com/cluster-lab/project-luida-bar/blob/exp-template/Tutorial_EN.md)
-- [Documentation (under construction...)](#documentation-under-construction)
+- (Under construction) [Tutorial (EN)](https://github.com/cluster-lab/project-luida-bar/blob/exp-template/Tutorial_EN.md)
+<!-- - [Documentation (under construction...)](#documentation-under-construction) -->
 
 -----
 
@@ -33,8 +33,7 @@ You can still make your customization, including adding/removing/skipping/repeat
 本実装テンプレートは、ステートデザインパターンに従っています。デフォルトのステートとその遷移が用意されており、追加編集なしで使用可能です。
 ご自身でステートの追加・削除・スキップ・繰り返し・XX秒後に自動遷移などの設定もカスタマイズ可能です。
 
-![image](https://github.com/user-attachments/assets/d1538e21-4207-440f-a31c-37a976bddf08)
-
+![image](https://github.com/user-attachments/assets/b9eb15c4-23ae-4337-bcf6-a6cbed3d8785)
 
 #### Manage game objects that listen to state transitions and access experiment conditions
 This implementation template allows you to create game objects that can perform actions based on state transitions or access experimental conditions.
@@ -43,7 +42,7 @@ Using the provided settings screen, you can edit their behaviors through the GUI
 本実装テンプレートでは、ステートの遷移に応じた動作や、実験条件へのアクセスが可能なゲームオブジェクトを作成できます。
 提供された設定画面を使用して、GUI上で動作を簡単に編集することができ、またスクリプトを記述するための枠も用意されています。
 
-![image](https://github.com/user-attachments/assets/d1aca89f-eaff-44d4-8741-69280762fa8b)
+![image](https://github.com/user-attachments/assets/b786dfd7-9424-4357-a582-f10305aea948)
 
 #### Questionnaire generation
 You don't need to create game objects for each question or answer. Just register your questionnaire on LUIDA's web console, and paste its ID the designated field on the provided editor window in this implement template. Gameobjects for each question and answer will be automatically generated on cluster during the exact experiment session.
@@ -65,7 +64,7 @@ The collected data will be listed on LUIDA's web console for you to confirm and 
 ![image](https://github.com/user-attachments/assets/089340d0-dec0-487b-9be1-51b4cfceca2f)
 ![image](https://github.com/user-attachments/assets/0d997e6c-9c1b-456d-babc-cb8400a1ef86)
 
-
+<!--
 -----
 
 # Getting Started
@@ -220,3 +219,4 @@ The image below serves as an example:
 Just upload your world (https://docs.cluster.mu/creatorkit/world/upload-world/), simply enter it on cluster, and see if everything runs well!
 
 We recommend making use of cluster's test space feature for more effective tests: https://creator.cluster.mu/2024/05/24/testspace/
+-->
