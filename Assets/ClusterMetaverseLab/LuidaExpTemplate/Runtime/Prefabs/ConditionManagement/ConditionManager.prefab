@@ -89,7 +89,7 @@ MonoBehaviour:
     value:
       boolValue: 0
       floatValue: 0
-      integerValue: -1
+      integerValue: 0
       vector2Value: {x: 0, y: 0}
       vector3Value: {x: 0, y: 0, z: 0}
 --- !u!114 &4193501645939222088
@@ -124,7 +124,7 @@ MonoBehaviour:
               type: 3
               boolValue: 0
               floatValue: 0
-              integerValue: -1
+              integerValue: 0
               vector2Value: {x: 0, y: 0}
               vector3Value: {x: 0, y: 0, z: 0}
             sourceState:
@@ -183,7 +183,7 @@ MonoBehaviour:
               type: 3
               boolValue: 0
               floatValue: 0
-              integerValue: -1
+              integerValue: 0
               vector2Value: {x: 0, y: 0}
               vector3Value: {x: 0, y: 0, z: 0}
             sourceState:
@@ -225,47 +225,48 @@ MonoBehaviour:
   sourceCodeAsset: {fileID: 0}
   sourceCode: "$.onStart(() => {\r\n  initializeRandomBetweenSubjectsConditions();\r\n 
     reset();\r\n});\r\n\r\n$.onUpdate(() => {\r\n  if (\r\n    $.state.trialID !==
-    $.getStateCompat(\"global\", \"exp_trialID\", \"integer\")\r\n  ) {\r\n    $.state.trialID
-    = $.getStateCompat(\"global\", \"exp_trialID\", \"integer\");\r\n    if ($.state.trialID
-    >= $.state.trialCount) {\r\n      $.sendSignalCompat(\"this\", \"exp_resetTrials\");\r\n   
-    } else if ($.state.trialID <= -1) {\r\n      reset();\r\n    } else {\r\n     
-    let condition = { ...$.state.betweenSubjectsConditions };\r\n      for (let i
-    = 0; i < $.state.withinSubjectsVariableNames.length; i++) {\r\n        const
-    varName = $.state.withinSubjectsVariableNames[i];\r\n        const varValue =\r\n         
-    within_subjects_variables[i].values[\r\n            $.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]\r\n         
-    ];\r\n        condition[varName] = varValue;\r\n      }\r\n      $.groupState.currentCondition
-    = condition;\r\n\r\n      // Check if this is the last trial (if true, stop repeating
-    trials when next state transition is triggered)\r\n      if (\r\n        $.state.trialCount
-    > 0 &&\r\n        !$.state.isLast &&\r\n        $.state.trialID >= $.state.trialCount
-    - 1\r\n      ) {\r\n        $.state.isLast = true;\r\n        $.sendSignalCompat(\"this\",
-    \"exp_readyToLeaveTrials\");\r\n      }\r\n    }\r\n  }\r\n});\r\n\r\n$.onReceive((messageType,
+    $.getStateCompat(\"global\", \"exp_trialID\", \"integer\") &&\r\n      $.getStateCompat(\"global\",
+    \"exp_trialID\", \"integer\") >= 0\r\n  ) {\r\n    $.state.trialID = $.getStateCompat(\"global\",
+    \"exp_trialID\", \"integer\");\r\n    updateCondition();\r\n  }\r\n});\r\n\r\n$.onReceive((messageType,
     arg, sender) => {\r\n  switch (messageType) {\r\n    // case \"exp_questionnaire_answer\":\r\n   
     //     $.state.betweenSubjectsConditions = GetBetweenSubjectsCondition(arg);\r\n   
-    //     break;\r\n    default:\r\n      break;\r\n  }\r\n});\r\n\r\nfunction reset()
-    {\r\n  $.state.trialID = -1;\r\n  if (!$.state.betweenSubjectsConditions)\r\n   
-    $.state.betweenSubjectsConditions = {};\r\n  $.state.withinSubjectsVariableNames
-    = [];\r\n  $.state.withinSubjectsConditionIndicesByTrial = [];\r\n  $.state.trialCount
-    = 1;\r\n  $.groupState.currentCondition = {\r\n    ...$.state.betweenSubjectsConditions,\r\n 
-    };\r\n  try {\r\n    initializeWithinSubjectsConditions(\r\n      within_subjects_variables,\r\n     
-    trialsCountForEachUniqueCondition\r\n    );\r\n  } catch (error) {\r\n    $.log(error);\r\n   
-    $.log(\"Within-subjects variables are not defined.\");\r\n  }\r\n}\r\n\r\nfunction
-    initializeRandomBetweenSubjectsConditions() {\r\n  let betweenSubjectsCondition
-    = {};\r\n  try {\r\n    between_subjects_variables.forEach((v) => {\r\n     
-    if (v.isRandom && !betweenSubjectsCondition[v.name]) {\r\n        betweenSubjectsCondition[v.name]
-    =\r\n          v.values[Math.floor(Math.random() * v.values.length)];\r\n     
-    }\r\n    });\r\n  } catch (e) {\r\n    $.log(\"Between-subjects variables are
-    not defined.\");\r\n  }\r\n  $.state.betweenSubjectsConditions = betweenSubjectsCondition;\r\n}\r\n\r\nfunction
-    initializeWithinSubjectsConditions(variables, repeatsPerCond = 1) {\r\n  variables
-    = [...variables.sort((a, b) => a.isRandom - b.isRandom)];\r\n  const varNames
-    = variables.map((v) => v.name);\r\n\r\n  let indicesPerVar = variables.map((v)
-    =>\r\n    Array.from({ length: v.values.length }, (_, i) => i)\r\n  );\r\n  let
-    condIndicesList = indicesPerVar\r\n    .reduce(\r\n      (acc, array) => {\r\n       
-    return acc.flatMap((accItem) =>\r\n          array.map((arrayItem) => [...accItem,
-    arrayItem])\r\n        );\r\n      },\r\n      [[]]\r\n    )\r\n    .flatMap((condIndices)
-    =>\r\n      Array.from({ length: repeatsPerCond }, () => condIndices)\r\n   
-    );\r\n\r\n  let shufflePartitionSize = 0;\r\n  for (let i = 0; i < variables.length;
-    i++) {\r\n    if (variables[i].isRandom) {\r\n      shufflePartitionSize =\r\n       
-    shufflePartitionSize === 0\r\n          ? variables[i].values.length\r\n         
+    //     break;\r\n    default:\r\n      break;\r\n  }\r\n});\r\n\r\nfunction updateCondition()
+    {\r\n  if ($.state.trialID >= $.state.trialCount) {\r\n    $.sendSignalCompat(\"this\",
+    \"exp_resetTrials\");\r\n  } else if ($.state.trialID <= -1) {\r\n    reset();\r\n 
+    } else {\r\n    let condition = { ...$.state.betweenSubjectsConditions };\r\n   
+    for (let i = 0; i < $.state.withinSubjectsVariableNames.length; i++) {\r\n     
+    const varName = $.state.withinSubjectsVariableNames[i];\r\n      const varValue
+    =\r\n          within_subjects_variables[i].values[\r\n              $.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]\r\n             
+    ];\r\n      condition[varName] = varValue;\r\n    }\r\n    $.groupState.currentCondition
+    = condition;\r\n\r\n    // Check if this is the last trial (if true, stop repeating
+    trials when next state transition is triggered)\r\n    if (\r\n        $.state.trialCount
+    > 0 &&\r\n        !$.state.isLast &&\r\n        $.state.trialID >= $.state.trialCount
+    - 1\r\n    ) {\r\n      $.state.isLast = true;\r\n      $.sendSignalCompat(\"this\",
+    \"exp_readyToLeaveTrials\");\r\n    }\r\n  }\r\n}\r\n\r\nfunction reset() {\r\n 
+    $.state.trialID = 0;\r\n  if (!$.state.betweenSubjectsConditions)\r\n    $.state.betweenSubjectsConditions
+    = {};\r\n  $.state.withinSubjectsVariableNames = [];\r\n  $.state.withinSubjectsConditionIndicesByTrial
+    = [];\r\n  $.state.trialCount = 1;\r\n  $.groupState.currentCondition = {\r\n   
+    ...$.state.betweenSubjectsConditions,\r\n  };\r\n  try {\r\n    initializeWithinSubjectsConditions(\r\n     
+    within_subjects_variables,\r\n      trialsCountForEachUniqueCondition\r\n   
+    );\r\n  } catch (error) {\r\n    $.log(error);\r\n    $.log(\"Within-subjects
+    variables are not defined.\");\r\n    initializeWithinSubjectsConditions([],
+    1);\r\n  }\r\n  updateCondition();\r\n}\r\n\r\nfunction initializeRandomBetweenSubjectsConditions()
+    {\r\n  let betweenSubjectsCondition = {};\r\n  try {\r\n    between_subjects_variables.forEach((v)
+    => {\r\n      if (v.isRandom && !betweenSubjectsCondition[v.name]) {\r\n       
+    betweenSubjectsCondition[v.name] =\r\n          v.values[Math.floor(Math.random()
+    * v.values.length)];\r\n      }\r\n    });\r\n  } catch (e) {\r\n    $.log(\"Between-subjects
+    variables are not defined.\");\r\n  }\r\n  $.state.betweenSubjectsConditions
+    = betweenSubjectsCondition;\r\n}\r\n\r\nfunction initializeWithinSubjectsConditions(variables,
+    repeatsPerCond = 1) {\r\n  variables = [...variables.sort((a, b) => a.isRandom
+    - b.isRandom)];\r\n  const varNames = variables.map((v) => v.name);\r\n\r\n 
+    let indicesPerVar = variables.map((v) =>\r\n    Array.from({ length: v.values.length
+    }, (_, i) => i)\r\n  );\r\n  let condIndicesList = indicesPerVar\r\n    .reduce(\r\n     
+    (acc, array) => {\r\n        return acc.flatMap((accItem) =>\r\n          array.map((arrayItem)
+    => [...accItem, arrayItem])\r\n        );\r\n      },\r\n      [[]]\r\n    )\r\n   
+    .flatMap((condIndices) =>\r\n      Array.from({ length: repeatsPerCond }, ()
+    => condIndices)\r\n    );\r\n\r\n  let shufflePartitionSize = 0;\r\n  for (let
+    i = 0; i < variables.length; i++) {\r\n    if (variables[i].isRandom) {\r\n     
+    shufflePartitionSize =\r\n        shufflePartitionSize === 0\r\n          ? variables[i].values.length\r\n         
     : shufflePartitionSize * variables[i].values.length;\r\n    }\r\n  }\r\n  shufflePartitionSize
     *= repeatsPerCond;\r\n\r\n  if (shufflePartitionSize > 0) {\r\n    const result
     = [...condIndicesList]; // Copy the array to avoid mutating the original\r\n   

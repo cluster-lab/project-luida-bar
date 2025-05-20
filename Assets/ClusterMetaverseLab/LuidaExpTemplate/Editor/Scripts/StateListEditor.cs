@@ -16,7 +16,6 @@ public class StateListEditor : EditorWindow
     private SerializedProperty statesProperty;
     private string statePrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/State.prefab";
     private string trialRestStatePrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/Trial - Rest State.prefab";
-    private string prepareStatePrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/Preparation State.prefab";
     private const string RequiredObjectsWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
     private const string stateListTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/StateList/Template.asset";
     private const string stateManagementScriptFolderPathFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
@@ -26,7 +25,7 @@ public class StateListEditor : EditorWindow
     private const string WorldItemRefListObjectName = "WorldItemRefList";
 
     // Fixed states that must not be moved.
-    private readonly string[] FixedStateNames = new string[] { "Preparation", "Trial - Start", "Trial - Rest", "End" };
+    private readonly string[] FixedStateNames = new string[] { "Trial - Start", "Trial - Rest", "End" };
     private Vector2 scrollPos;
     private string sceneName;
 
@@ -127,8 +126,7 @@ public class StateListEditor : EditorWindow
         EditorGUILayout.LabelField("Edit States", EditorStyles.largeLabel);
         serializedStateList.Update();
 
-        int preparationIndex = Array.FindIndex(stateList.States, s => s.StateName == "Preparation");
-        int trialTaskIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Start");
+        int trialStartIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Start");
         int trialRestIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Rest");
         int endIndex = Array.FindIndex(stateList.States, s => s.StateName == "End");
 
@@ -157,44 +155,20 @@ public class StateListEditor : EditorWindow
                 }
             }
         }
-
-        // Check transitions to 'Preparation' - REVISED
-        bool preparationTransitionFound = false;
-        if (preparationIndex >= 0)
-        {
-            for (int k = 0; k < stateList.States.Length; k++)
-            {
-                if (k == preparationIndex) continue;
-
-                if (k < stateList.States.Length - 1 && stateList.States[k + 1].StateName == "Preparation")
-                {
-                    preparationTransitionFound = true;
-                    break;
-                }
-                if (stateList.States[k].IsRepeated && stateList.States[k].RepeatDestStateName == "Preparation")
-                {
-                    preparationTransitionFound = true;
-                    break;
-                }
-            }
-        }
         
         for (int i = 0; i < statesProperty.arraySize; i++)
         {
-            if (i == 0 && preparationIndex != 0) // Show this label only if "Preparation" is not the very first state
+            if (i == 0)
             {
                 EditorGUILayout.LabelField("States Before Trials", EditorStyles.largeLabel);
             }
             
-            if (i == preparationIndex && preparationIndex >= 0)
+            if (i == trialStartIndex && trialStartIndex >= 0)
             {
-                if (!preparationTransitionFound)
-                    EditorGUILayout.HelpBox("No state appears to transition back to 'Preparation' (either as next state or via repeat). Ensure 'Preparation' is reachable if needed.", MessageType.Warning);
-
                 if (GUILayout.Button("Add State Before Trials", GUILayout.Width(EditorGUIUtility.currentViewWidth * 0.3f - 10f)))
                 {
                     GUI.FocusControl(null);
-                    int newStateIndex = preparationIndex;
+                    int newStateIndex = trialStartIndex;
                     statesProperty.InsertArrayElementAtIndex(newStateIndex);
                     InitializeStateDefaults(newStateIndex);
                     // No need to apply here, will be applied after loop
@@ -205,8 +179,7 @@ public class StateListEditor : EditorWindow
                     serializedStateList.ApplyModifiedProperties(); 
                     stateList = (StateList)serializedStateList.targetObject; // Re-fetch if direct modifications were made to asset
                     // Recalculate indices as they might have shifted
-                    preparationIndex = Array.FindIndex(stateList.States, s => s.StateName == "Preparation");
-                    trialTaskIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Start");
+                    trialStartIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Start");
                     trialRestIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Rest");
                     endIndex = Array.FindIndex(stateList.States, s => s.StateName == "End");
                     break; 
@@ -224,7 +197,7 @@ public class StateListEditor : EditorWindow
                 EditorGUILayout.LabelField("States After Trials", EditorStyles.largeLabel);
             }
 
-            if (trialTaskIndex != -1 && trialRestIndex != -1 && i == trialRestIndex)
+            if (trialStartIndex != -1 && trialRestIndex != -1 && i == trialRestIndex)
             {
                 if (GUILayout.Button("Add State During Trials", GUILayout.Width(EditorGUIUtility.currentViewWidth * 0.3f - 10f)))
                 {
@@ -237,8 +210,7 @@ public class StateListEditor : EditorWindow
                     stateOrderChanged = true;
                     serializedStateList.ApplyModifiedProperties();
                     stateList = (StateList)serializedStateList.targetObject;
-                    preparationIndex = Array.FindIndex(stateList.States, s => s.StateName == "Preparation");
-                    trialTaskIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Start");
+                    trialStartIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Start");
                     trialRestIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Rest");
                     endIndex = Array.FindIndex(stateList.States, s => s.StateName == "End");
                     break;
@@ -258,8 +230,7 @@ public class StateListEditor : EditorWindow
                     stateOrderChanged = true;
                     serializedStateList.ApplyModifiedProperties();
                     stateList = (StateList)serializedStateList.targetObject;
-                    preparationIndex = Array.FindIndex(stateList.States, s => s.StateName == "Preparation");
-                    trialTaskIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Start");
+                    trialStartIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Start");
                     trialRestIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Rest");
                     endIndex = Array.FindIndex(stateList.States, s => s.StateName == "End");
                     break;
@@ -273,7 +244,7 @@ public class StateListEditor : EditorWindow
                 DrawDarkLabel("The 'End' state should always be the last state.");
             }
 
-            bool isHighlight = (preparationIndex >= 0 && i >= preparationIndex && trialRestIndex >=0 && i <= trialRestIndex) || (endIndex >=0 && i == endIndex) ;
+            bool isHighlight = (trialStartIndex >= 0 && i >= trialStartIndex && trialRestIndex >= 0 && i <= trialRestIndex) || (endIndex >=0 && i == endIndex) ;
             
             Color originalBackgroundColor = GUI.backgroundColor;
             Color originalContentColor = GUI.contentColor;
@@ -545,8 +516,7 @@ public class StateListEditor : EditorWindow
                 if (stateTransform == null) 
                 {
                     GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(
-                        currentStateData.StateName == "Preparation" ? prepareStatePrefabPath :
-                        (currentStateData.StateName == "Trial - Rest" ? trialRestStatePrefabPath : statePrefabPath)
+                        currentStateData.StateName == "Trial - Rest" ? trialRestStatePrefabPath : statePrefabPath
                     );
                     if (prefab != null)
                     {
@@ -1299,8 +1269,7 @@ public class StateListEditor : EditorWindow
         }
 
         string stateName = stateList.States[index].StateName; // Now this should be correct
-        string prefabToUsePath = (stateName == "Preparation") ? prepareStatePrefabPath :
-                            (stateName == "Trial - Rest") ? trialRestStatePrefabPath : statePrefabPath;
+        string prefabToUsePath = (stateName == "Trial - Rest") ? trialRestStatePrefabPath : statePrefabPath;
         
         GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabToUsePath);
         if (prefab == null)

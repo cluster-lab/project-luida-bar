@@ -5,35 +5,11 @@ $.onStart(() => {
 
 $.onUpdate(() => {
   if (
-    $.state.trialID !== $.getStateCompat("global", "exp_trialID", "integer")
+    $.state.trialID !== $.getStateCompat("global", "exp_trialID", "integer") &&
+      $.getStateCompat("global", "exp_trialID", "integer") >= 0
   ) {
     $.state.trialID = $.getStateCompat("global", "exp_trialID", "integer");
-    if ($.state.trialID >= $.state.trialCount) {
-      $.sendSignalCompat("this", "exp_resetTrials");
-    } else if ($.state.trialID <= -1) {
-      reset();
-    } else {
-      let condition = { ...$.state.betweenSubjectsConditions };
-      for (let i = 0; i < $.state.withinSubjectsVariableNames.length; i++) {
-        const varName = $.state.withinSubjectsVariableNames[i];
-        const varValue =
-          within_subjects_variables[i].values[
-            $.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]
-          ];
-        condition[varName] = varValue;
-      }
-      $.groupState.currentCondition = condition;
-
-      // Check if this is the last trial (if true, stop repeating trials when next state transition is triggered)
-      if (
-        $.state.trialCount > 0 &&
-        !$.state.isLast &&
-        $.state.trialID >= $.state.trialCount - 1
-      ) {
-        $.state.isLast = true;
-        $.sendSignalCompat("this", "exp_readyToLeaveTrials");
-      }
-    }
+    updateCondition();
   }
 });
 
@@ -47,8 +23,37 @@ $.onReceive((messageType, arg, sender) => {
   }
 });
 
+function updateCondition() {
+  if ($.state.trialID >= $.state.trialCount) {
+    $.sendSignalCompat("this", "exp_resetTrials");
+  } else if ($.state.trialID <= -1) {
+    reset();
+  } else {
+    let condition = { ...$.state.betweenSubjectsConditions };
+    for (let i = 0; i < $.state.withinSubjectsVariableNames.length; i++) {
+      const varName = $.state.withinSubjectsVariableNames[i];
+      const varValue =
+          within_subjects_variables[i].values[
+              $.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]
+              ];
+      condition[varName] = varValue;
+    }
+    $.groupState.currentCondition = condition;
+
+    // Check if this is the last trial (if true, stop repeating trials when next state transition is triggered)
+    if (
+        $.state.trialCount > 0 &&
+        !$.state.isLast &&
+        $.state.trialID >= $.state.trialCount - 1
+    ) {
+      $.state.isLast = true;
+      $.sendSignalCompat("this", "exp_readyToLeaveTrials");
+    }
+  }
+}
+
 function reset() {
-  $.state.trialID = -1;
+  $.state.trialID = 0;
   if (!$.state.betweenSubjectsConditions)
     $.state.betweenSubjectsConditions = {};
   $.state.withinSubjectsVariableNames = [];
@@ -65,7 +70,9 @@ function reset() {
   } catch (error) {
     $.log(error);
     $.log("Within-subjects variables are not defined.");
+    initializeWithinSubjectsConditions([], 1);
   }
+  updateCondition();
 }
 
 function initializeRandomBetweenSubjectsConditions() {

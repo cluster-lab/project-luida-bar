@@ -1008,8 +1008,11 @@ public class ItemsManagerEditor : EditorWindow
     private void SaveItemToAsset(GameObject item)
     {
         if (!item) return;
-        // Ensure item is managed, or at least its asset might exist if it was just deleted from scene but data not yet fully cleaned
-        // However, the main loop SaveAllItemsToAssets filters for non-null items from stateListeningItems.
+
+		if (stateListenersByItem.TryGetValue(item, out var listenersList))
+        {
+            int removedCount = listenersList.RemoveAll(listener => listener.stateID == -1);
+        }
 
         string scene = SceneManager.GetActiveScene().name;
         string folder = string.Format(ScriptFolderFormat, scene);
