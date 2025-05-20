@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ClusterVR.CreatorKit.Item.Implements;
+using ClusterVR.CreatorKit.World.Implements.TextView;
 
 public class ItemsManagerEditor : EditorWindow
 {
@@ -603,28 +604,48 @@ public class ItemsManagerEditor : EditorWindow
                 if (newIndex != selectedIndex)
                 {
                     Undo.RecordObject(itemDataAsset, "Change Action Type");
-                    if (newIndex == 0) 
+                    if (newIndex == 0)
                     {
-                        action.predefinedActionTemplate = default; 
+                        action.predefinedActionTemplate = default;
                         action.customAction = "";
                         action.variableValues.Clear();
                     }
-                    else if (newIndex == options.Count - 1) 
+                    else if (newIndex == options.Count - 1)
                     {
                         action.predefinedActionTemplate = new StateListeningAction("Customized Action", "", null);
                         action.customAction = "// Your custom ClusterScript code here\n";
                         action.variableValues.Clear();
                     }
-                    else 
+                    else
                     {
                         action.predefinedActionTemplate = AvailableStateListeningActions[newIndex - 1];
-                        action.customAction = ""; 
-                        action.variableValues.Clear(); 
+                        action.customAction = "";
+                        action.variableValues.Clear();
                         if (action.predefinedActionTemplate.variables != null)
                         {
                             foreach (var varName in action.predefinedActionTemplate.variables)
                             {
                                 action.variableValues[varName] = new StateListenerAction(action.predefinedActionTemplate).variableValues[varName];
+                            }
+                        }
+                        
+                        // --- Ensure Text child and TextView for 'Set text' action ---
+                        if (action.predefinedActionTemplate.actionType == "Set text")
+                        {
+                            var textChild = itemGO.transform.Find("Text");
+                            if (textChild == null)
+                            {
+                                var newTextGO = new GameObject("Text");
+                                newTextGO.transform.SetParent(itemGO.transform, false);
+                                newTextGO.AddComponent<TextView>();
+                                Undo.RegisterCreatedObjectUndo(newTextGO, "Create Text child with TextView");
+                            }
+                            else
+                            {
+                                if (textChild.GetComponent<TextView>() == null)
+                                {
+                                    Undo.AddComponent<TextView>(textChild.gameObject);
+                                }
                             }
                         }
                     }
@@ -728,7 +749,7 @@ public class ItemsManagerEditor : EditorWindow
         rl.onAddCallback = list =>
         {
             Undo.RecordObject(itemDataAsset, "Add Action");
-            actions.Add(new StateListenerAction()); 
+            actions.Add(new StateListenerAction());
             EditorUtility.SetDirty(itemDataAsset);
         };
         rl.onRemoveCallback = list =>
