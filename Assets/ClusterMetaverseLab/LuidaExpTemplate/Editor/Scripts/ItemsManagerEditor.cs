@@ -16,6 +16,15 @@ public class ItemsManagerEditor : EditorWindow
     private string[] _cachedStateNames = Array.Empty<string>();
     private GameObject[] _cachedItems = Array.Empty<GameObject>();
     private Dictionary<string, ReorderableList> _reorderableLists = new Dictionary<string, ReorderableList>();
+    private const string defaultOtherImplementation = @"function Start() { }
+function Update(deltaTime) { }
+$.onCollide((collision) => { });
+$.onGrab((isGrab, isLeftHand, player) => { });
+$.onInteract((player) => { });
+$.onUse((isDown, player) => { });
+$.onPhysicsUpdate((deltaTime) => { });
+$.onReceive((messageType, arg, sender) => { });
+";
 
     private static StateListeningAction[] AvailableStateListeningActions =
     {
@@ -246,13 +255,13 @@ public class ItemsManagerEditor : EditorWindow
 
         // --- OTHER IMPLEMENTATION SECTION ---
         EditorGUILayout.LabelField("Custom implementation not listening to any state", EditorStyles.largeLabel);
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.HelpBox("Implement ClusterScript callbacks (e.g., $.onInteract, $.onGrab, ...) or your custom functions here.", MessageType.Info);
-        EditorGUILayout.HelpBox("DON'T use $.onUpdate here! Implement `function Update(deltaTime) {...}` instead.", MessageType.Warning);
-        EditorGUILayout.EndHorizontal();
-
         EditorGUILayout.BeginHorizontal(); // Horizontal layout for "Other Implementation" columns
-        EditorGUILayout.LabelField("", GUILayout.Width(215)); // Spacer for the first column
+
+        EditorGUILayout.BeginVertical(GUILayout.Width(215));
+        EditorGUILayout.HelpBox("Implement ClusterScript callbacks (e.g., $.onInteract, $.onGrab, ...) or your custom functions here.", MessageType.Info);
+        EditorGUILayout.HelpBox("DON'T use $.onUpdate here! Implement function Update instead.", MessageType.Warning);
+        EditorGUILayout.EndVertical();
+        // EditorGUILayout.LabelField("", GUILayout.Width(215)); // Spacer for the first column
         GUILayout.Space(5);
 
         bool isOtherImplCellDark = true;
@@ -260,7 +269,7 @@ public class ItemsManagerEditor : EditorWindow
         {
             if (item == null) continue;
             Color cellBgColor = isOtherImplCellDark ? new Color(0.25f, 0.25f, 0.25f, 0.5f) : new Color(0.75f, 0.75f, 0.75f, 0.5f);
-            Rect cellRect = EditorGUILayout.BeginVertical("box", GUILayout.Width(240), GUILayout.MinHeight(100));
+            Rect cellRect = EditorGUILayout.BeginVertical("box", GUILayout.Width(240), GUILayout.MinHeight(75));
             EditorGUI.DrawRect(cellRect, cellBgColor);
 
             // Directly load and use the StateListeningItemData asset
@@ -279,7 +288,7 @@ public class ItemsManagerEditor : EditorWindow
             string currentOtherImpl = itemDataAsset.otherImplementation ?? string.Empty;
 
             EditorGUI.BeginChangeCheck();
-            string newOtherImpl = EditorGUILayout.TextArea(currentOtherImpl, GUILayout.ExpandHeight(true), GUILayout.MinHeight(80));
+            string newOtherImpl = EditorGUILayout.TextArea(currentOtherImpl, GUILayout.Width(235), GUILayout.MaxHeight(75));
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(itemDataAsset, "Edit Other Implementation for " + item.name);
@@ -298,8 +307,8 @@ public class ItemsManagerEditor : EditorWindow
 
         EditorGUILayout.LabelField("Pre-defined or customized actions listening to states", EditorStyles.largeLabel);
         EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.HelpBox("Select available actions to run when entering/during/exiting any state.\nYou can also write your custom scripts by selecting the 'Customized action' option.", MessageType.Info);
-        EditorGUILayout.HelpBox("DON'T implement any ClusterScript callbacks here.", MessageType.Warning);
+        EditorGUILayout.HelpBox("Select available actions to run when entering/during/exiting any state. You can also write your custom scripts by selecting the 'Customized action' option.", MessageType.Info);
+        // EditorGUILayout.HelpBox("DON'T implement any ClusterScript callbacks here.", MessageType.Warning);
         EditorGUILayout.EndHorizontal();
 
         GUI.backgroundColor = Color.white;
@@ -322,7 +331,7 @@ public class ItemsManagerEditor : EditorWindow
             {
                 if (item == null) continue;
                 Color cellBgColor = isCellDarkColumn ? new Color(0.2f, 0.2f, 0.2f, 0.5f) : new Color(0.8f, 0.8f, 0.8f, 0.5f);
-                Rect cellRectInner = EditorGUILayout.BeginVertical("box", GUILayout.Width(240), GUILayout.MinHeight(100));
+                Rect cellRectInner = EditorGUILayout.BeginVertical("box", GUILayout.Width(240), GUILayout.MinHeight(50));
                 EditorGUI.DrawRect(cellRectInner, cellBgColor);
 
                 stateListenersByItem.TryGetValue(item, out var listenersList);
@@ -830,7 +839,7 @@ public class ItemsManagerEditor : EditorWindow
             {
                 data = ScriptableObject.CreateInstance<StateListeningItemData>();
                 data.stateListeners = Array.Empty<StateListener>();
-                data.otherImplementation = "function Start() { }\nfunction Update(deltaTime) { }";
+                data.otherImplementation = defaultOtherImplementation;
                 AssetDatabase.CreateAsset(data, assetPath);
                 AssetDatabase.SaveAssets();
                 newAssetCreated = true;
@@ -956,7 +965,7 @@ public class ItemsManagerEditor : EditorWindow
         string assetPath = Path.Combine(listenerDataFolder, newItemName + ".asset");
         StateListeningItemData data = ScriptableObject.CreateInstance<StateListeningItemData>();
         data.stateListeners = Array.Empty<StateListener>();
-        data.otherImplementation = "function Start() { }\nfunction Update(deltaTime) { }";
+        data.otherImplementation = defaultOtherImplementation;
         AssetDatabase.CreateAsset(data, assetPath);
         AssetDatabase.SaveAssets();
 
