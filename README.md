@@ -4,8 +4,8 @@ To use this implement template, **please avoid directly cloning this repository.
 
 本実装テンプレートを使用される場合、**このレポジトリを直接cloneしないでください。**[Getting Started](#getting-started)セクションに従って本実装テンプレートのダウンロードと初期化を行ってください。チュートリアルもぜひ試してください。
 
-- [Main Features](#main-features)
 <!-- - [Getting Started](#getting-started) -->
+- [Main Features](#main-features)
 - [Tutorial (JA)](https://github.com/cluster-lab/project-luida-bar/blob/exp-template/Tutorial_JA.md)
 - (Under construction) [Tutorial (EN)](https://github.com/cluster-lab/project-luida-bar/blob/exp-template/Tutorial_EN.md)
 <!-- - [Documentation (under construction...)](#documentation-under-construction) -->
@@ -42,7 +42,12 @@ Using the provided settings screen, you can edit their behaviors through the GUI
 本実装テンプレートでは、ステートの遷移に応じた動作や、実験条件へのアクセスが可能なゲームオブジェクトを作成できます。
 提供された設定画面を使用して、GUI上で動作を簡単に編集することができ、またスクリプトを記述するための枠も用意されています。
 
-![states-and-objects](https://github.com/user-attachments/assets/3411b3a8-988b-4462-a013-c719dc024117)
+<table>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/3411b3a8-988b-4462-a013-c719dc024117" alt="Image 1" width="600"/></td>
+    <td><img src="https://github.com/user-attachments/assets/d0cbfe0c-b678-4201-a65f-01178ea17c9f" alt="Image 2" width="600"/></td>
+  </tr>
+</table>
 
 ### Questionnaire generation
 You don't need to create game objects for each question or answer. Just register your questionnaire on LUIDA's web console, and paste its ID the designated field on the provided editor window in this implement template. Gameobjects for each question and answer will be automatically generated on cluster during the exact experiment session.
