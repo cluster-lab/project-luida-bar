@@ -1049,8 +1049,7 @@ public class ItemsManagerEditor : EditorWindow
         Directory.CreateDirectory(folder);
 
         string jsContentForItem = GenerateActionsObjectsForItem(item);
-        Debug.Log($"SaveItemToAsset for {item.name} - jsContentForItem: {jsContentForItem}");
-        
+
         string assetPath = GetItemDataAssetPath(item);
         var data = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(assetPath);
 
@@ -1104,7 +1103,6 @@ public class ItemsManagerEditor : EditorWindow
     private void SaveAllItemsToAssets()
     {
         var validItems = stateListeningItems.Where(item => item != null).ToList();
-        Debug.Log("SaveAllItemsToAssets " + validItems.Count + " " + DateTime.Now.Ticks);
         foreach (var item in validItems)
         {
             SaveItemToAsset(item);

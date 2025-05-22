@@ -5,7 +5,8 @@ using UnityEngine;
 public class StateList : ScriptableObject
 {
     [Serializable]
-    public struct State {
+    public struct State
+    {
         public string StateName;
         public string DestStateName;
         public bool HasExitTime;
@@ -13,6 +14,7 @@ public class StateList : ScriptableObject
         public bool IsRepeated;
         public string RepeatDestStateName;
         public int RepeatCount;
+        public int qID;
     }
 
     public State[] States;
