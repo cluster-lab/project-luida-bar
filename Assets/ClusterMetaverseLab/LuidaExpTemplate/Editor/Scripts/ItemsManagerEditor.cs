@@ -16,14 +16,14 @@ public class ItemsManagerEditor : EditorWindow
     private string[] _cachedStateNames = Array.Empty<string>();
     private GameObject[] _cachedItems = Array.Empty<GameObject>();
     private Dictionary<string, ReorderableList> _reorderableLists = new Dictionary<string, ReorderableList>();
-    private const string defaultOtherImplementation = @"function Start() { }
-function Update(deltaTime) { }
-$.onCollide((collision) => { });
-$.onGrab((isGrab, isLeftHand, player) => { });
-$.onInteract((player) => { });
-$.onUse((isDown, player) => { });
-$.onPhysicsUpdate((deltaTime) => { });
-$.onReceive((messageType, arg, sender) => { });
+    private const string defaultOtherImplementation = @"// function Start() { }
+// function Update(deltaTime) { }
+// $.onCollide((collision) => { });
+// $.onGrab((isGrab, isLeftHand, player) => { });
+// $.onInteract((player) => { });
+// $.onUse((isDown, player) => { });
+// $.onPhysicsUpdate((deltaTime) => { });
+// $.onReceive((messageType, arg, sender) => { });
 ";
 
     private static StateListeningAction[] AvailableStateListeningActions =
@@ -77,7 +77,7 @@ $.onReceive((messageType, arg, sender) => { });
     }
     private List<EditorExperimentVariable> _cachedExperimentVariables = new List<EditorExperimentVariable>();
     private string _experimentVariablesAssetPath;
-    
+
     #region Unity Callbacks
 
     public void OnEnable()
@@ -90,6 +90,7 @@ $.onReceive((messageType, arg, sender) => { });
         if (!isSubscribed)
         {
             TabbedEditor.OnEditorClosed += ApplyAssetsToScripts;
+            TabbedEditor.OnEditorClosed += OnDisable;
             TabbedEditor.OnItemsManagerTabLostFocus += ApplyAssetsToScripts;
             isSubscribed = true;
         }
@@ -103,10 +104,10 @@ $.onReceive((messageType, arg, sender) => { });
         EditorApplication.projectChanged -= OnProjectChanged;
         EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
 
-        // ApplyAssetsToScripts(); 
         if (isSubscribed)
         {
             TabbedEditor.OnEditorClosed -= ApplyAssetsToScripts;
+            TabbedEditor.OnEditorClosed -= OnDisable;
             TabbedEditor.OnItemsManagerTabLostFocus -= ApplyAssetsToScripts;
             isSubscribed = false;
         }
@@ -114,7 +115,6 @@ $.onReceive((messageType, arg, sender) => { });
 
     private void OnHierarchyChanged() => _needsRebuild = true;
     private void OnProjectChanged() => _needsRebuild = true;
-    public void OnLostFocus() => ApplyAssetsToScripts();
 
     #endregion
 
@@ -1049,6 +1049,7 @@ $.onReceive((messageType, arg, sender) => { });
         Directory.CreateDirectory(folder);
 
         string jsContentForItem = GenerateActionsObjectsForItem(item);
+        Debug.Log($"SaveItemToAsset for {item.name} - jsContentForItem: {jsContentForItem}");
         
         string assetPath = GetItemDataAssetPath(item);
         var data = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(assetPath);
@@ -1103,6 +1104,7 @@ $.onReceive((messageType, arg, sender) => { });
     private void SaveAllItemsToAssets()
     {
         var validItems = stateListeningItems.Where(item => item != null).ToList();
+        Debug.Log("SaveAllItemsToAssets " + validItems.Count + " " + DateTime.Now.Ticks);
         foreach (var item in validItems)
         {
             SaveItemToAsset(item);
@@ -1129,6 +1131,9 @@ $.onReceive((messageType, arg, sender) => { });
     {
         if (state == PlayModeStateChange.ExitingEditMode)
         {
+            var luidaWindow = Resources.FindObjectsOfTypeAll<TabbedEditor>().FirstOrDefault();
+            if (luidaWindow != null) luidaWindow.Close();
+            RefreshStateListeningItems();
             ApplyAssetsToScripts();
         }
     }
