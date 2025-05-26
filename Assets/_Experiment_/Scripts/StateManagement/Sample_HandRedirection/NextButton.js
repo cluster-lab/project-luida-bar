@@ -1,48 +1,55 @@
-function OnStateEnter() {
-  const STATE_ID = $.state.state_id;
-  const CONDITION = $.groupState.currentCondition;
+const stateEnterActions = {
+    0: [
+        { type: "exec", action: () => {
+            $.setStateCompat('this', 'exp_showItem', true);
+        } },
+    ],
+    2: [
+        { type: "exec", action: () => {
+            $.setStateCompat('this', 'exp_showItem', true);
+        } },
+        { type: "exec", action: () => {
+            $.subNode('Text').setText(`開始`);
+        } },
+    ],
+    7: [
+        { type: "exec", action: () => {
+            $.setStateCompat('this', 'exp_showItem', true);
+        } },
+    ],
+    12: [
+        { type: "exec", action: () => {
+            $.setStateCompat('this', 'exp_showItem', true);
+        } },
+        { type: "exec", action: () => {
+            $.subNode('Text').setText(`次へ`);
+        } },
+    ],
+};
 
-  if (STATE_ID === 0) {
-    $.setStateCompat('this', 'exp_showItem', true);
-  }
-  if (STATE_ID === 2) {
-    $.setStateCompat('this', 'exp_showItem', true);
-    $.subNode('Text').setText(`開始`);
-  }
-  if (STATE_ID === 7) {
-    $.setStateCompat('this', 'exp_showItem', true);
-  }
-  if (STATE_ID === 12) {
-    $.setStateCompat('this', 'exp_showItem', true);
-    $.subNode('Text').setText(`次へ`);
-  }
-}
+const duringStateActions = {
+};
 
-
-function DuringState(deltaTime) {
-  const STATE_ID = $.state.state_id;
-  const CONDITION = $.groupState.currentCondition;
-
-}
-
-
-function OnStateExit() {
-  const STATE_ID = $.state.state_id;
-  const CONDITION = $.groupState.currentCondition;
-
-  if (STATE_ID === 0) {
-    $.setStateCompat('this', 'exp_showItem', false);
-  }
-  if (STATE_ID === 2) {
-    $.setStateCompat('this', 'exp_showItem', false);
-  }
-  if (STATE_ID === 7) {
-    $.setStateCompat('this', 'exp_showItem', false);
-  }
-  if (STATE_ID === 12) {
-    $.setStateCompat('this', 'exp_showItem', false);
-  }
-}
-
-
+const stateExitActions = {
+    0: [
+        { type: "exec", action: () => {
+            $.setStateCompat('this', 'exp_showItem', false);
+        } },
+    ],
+    2: [
+        { type: "exec", action: () => {
+            $.setStateCompat('this', 'exp_showItem', false);
+        } },
+    ],
+    7: [
+        { type: "exec", action: () => {
+            $.setStateCompat('this', 'exp_showItem', false);
+        } },
+    ],
+    12: [
+        { type: "exec", action: () => {
+            $.setStateCompat('this', 'exp_showItem', false);
+        } },
+    ],
+};
 

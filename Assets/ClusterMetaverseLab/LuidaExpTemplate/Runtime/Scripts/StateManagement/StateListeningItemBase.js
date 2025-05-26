@@ -42,12 +42,86 @@ function ToNextState() {
     $.sendSignalCompat("this", "state_triggerTransition");
 }
 
+function SetText(text) {
+    try {
+      $.subNode("Text").setText(`${text}`);
+    } catch (e) {
+      $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node exists and has setText method.`);
+    }
+}
+
+function SetPosition(x, y, z) {
+    try {
+        $.setPosition(new Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));
+    } catch (e) {
+        $.log(`Error in SetPosition: ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);
+    }
+}
+
+function AddPosition(x, y, z) {
+    try {
+        const currentPos = $.getPosition();
+        $.setPosition(currentPos.add(new Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));
+    } catch (e) {
+        $.log(`Error in AddPosition: ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);
+    }
+}
+
+function SetRotation(x, y, z) {
+    try {
+        $.setRotation(new Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));
+    } catch (e) {
+        $.log(`Error in SetRotation: ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);
+    }
+}
+
+function AddRotation(x, y, z) {
+    try {
+        const currentRot = $.getRotation();
+        const offsetRot = new Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));
+        $.setRotation(currentRot.multiply(offsetRot));
+    } catch (e) {
+        $.log(`Error in AddRotation: ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);
+    }
+}
+
 function RecordCustomData() {
     $.sendSignalCompat("this", "exp_recordCustomData");
 }
 
 function UploadRecordedData() {
     $.sendSignalCompat("this", "exp_uploadCustomData");
+}
+
+function SendHaptics(target, frequency, amplitude, duration) {
+    try {
+        if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];
+        if ($.state.player) {
+            let hapticsTarget = target;
+            if (typeof target === 'string') {
+                const lowerTarget = target.toLowerCase();
+                if (lowerTarget === 'null' || lowerTarget === 'undefined' || lowerTarget === "") {
+                    hapticsTarget = null; // Use JS null for "both" or unspecified
+                } else if (lowerTarget === '"left"' || lowerTarget === "'left'") {
+                    hapticsTarget = "left";
+                } else if (lowerTarget === '"right"' || lowerTarget === "'right'") {
+                     hapticsTarget = "right";
+                }
+                // else assume target is already "left", "right", or a valid direct value.
+            }
+
+            $.state.player.send("haptics", {
+                target: hapticsTarget,
+                frequency: parseFloat(frequency),
+                amplitude: parseFloat(amplitude),
+                duration: parseFloat(duration) // Duration in seconds
+            });
+        } else {
+            $.log("SendHaptics: No player found nearby.");
+        }
+    } catch (e) {
+        $.log(`Error in SendHaptics: ${e}`);
+    }
 }
 
 function OnStateEnter(deltaTime) {

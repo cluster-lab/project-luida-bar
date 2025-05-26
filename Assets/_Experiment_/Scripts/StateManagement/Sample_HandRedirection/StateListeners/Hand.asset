@@ -33,16 +33,18 @@ MonoBehaviour:
       customAction: 
       showCustomActionFoldout: 0
     - predefinedAction:
-        actionType: 
-        codeSnippet: 
+        actionType: Customized Action
+        codeSnippet: if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(),
+          Infinity)[0];
       customAction: if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(),
         Infinity)[0];
       showCustomActionFoldout: 1
     onStateStartedFoldout: 1
     duringStateActions:
     - predefinedAction:
-        actionType: 
-        codeSnippet: 
+        actionType: Customized Action
+        codeSnippet: "// \u30D0\u30FC\u30C1\u30E3\u30EB\u30CF\u30F3\u30C9\u306E\u5EA7\u6A19
+          = \u5B9F\u969B\u306E\u53F3\u624B\u306E\u5EA7\u6A19\n$.setPosition($.state.player.getHumanoidBonePosition(HumanoidBone.RightHand));\n$.setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand));"
       customAction: "// \u30D0\u30FC\u30C1\u30E3\u30EB\u30CF\u30F3\u30C9\u306E\u5EA7\u6A19
         = \u5B9F\u969B\u306E\u53F3\u624B\u306E\u5EA7\u6A19\n$.setPosition($.state.player.getHumanoidBonePosition(HumanoidBone.RightHand));\n$.setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand));"
       showCustomActionFoldout: 1
@@ -52,8 +54,11 @@ MonoBehaviour:
   - stateID: 4
     onStateStartedActions:
     - predefinedAction:
-        actionType: 
-        codeSnippet: 
+        actionType: Customized Action
+        codeSnippet: "// \u539F\u70B9\u306E\u5EA7\u6A19\u3092\u8A08\u7B97\u3059\u308B\n$.state.originPos
+          = $.state.player\n  .getHumanoidBonePosition(HumanoidBone.Head).clone()\n 
+          .add(new Vector3(0, -0.3, 0.3));\n\n// \u7DF4\u7FD2\u7528\u306E\u30B2\u30A4\u30F3\u3092\u6C7A\u3081\u308B\nif
+          (!$.state.practiceID) $.state.practiceID = 0;\n$.state.gain = practiceGains[$.state.practiceID];"
       customAction: "// \u539F\u70B9\u306E\u5EA7\u6A19\u3092\u8A08\u7B97\u3059\u308B\n$.state.originPos
         = $.state.player\n  .getHumanoidBonePosition(HumanoidBone.Head).clone()\n 
         .add(new Vector3(0, -0.3, 0.3));\n\n// \u7DF4\u7FD2\u7528\u306E\u30B2\u30A4\u30F3\u3092\u6C7A\u3081\u308B\nif
@@ -62,8 +67,12 @@ MonoBehaviour:
     onStateStartedFoldout: 1
     duringStateActions:
     - predefinedAction:
-        actionType: 
-        codeSnippet: 
+        actionType: Customized Action
+        codeSnippet: "// \u30D0\u30FC\u30C1\u30E3\u30EB\u30CF\u30F3\u30C9\u306E\u5EA7\u6A19
+          = \u539F\u70B9\u306E\u5EA7\u6A19 + \u30B2\u30A4\u30F3\xD7(\u5B9F\u969B\u306E\u53F3\u624B\u306E\u5EA7\u6A19
+          - \u539F\u70B9\u306E\u5EA7\u6A19)\nlet displacement = $.state.player\n 
+          .getHumanoidBonePosition(HumanoidBone.RightHand).clone()\n  .sub($.state.originPos);\n$.setPosition(\n 
+          $.state.originPos.clone()\n    .add(displacement.multiplyScalar($.state.gain))\n);\n$.setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand));"
       customAction: "// \u30D0\u30FC\u30C1\u30E3\u30EB\u30CF\u30F3\u30C9\u306E\u5EA7\u6A19
         = \u539F\u70B9\u306E\u5EA7\u6A19 + \u30B2\u30A4\u30F3\xD7(\u5B9F\u969B\u306E\u53F3\u624B\u306E\u5EA7\u6A19
         - \u539F\u70B9\u306E\u5EA7\u6A19)\nlet displacement = $.state.player\n  .getHumanoidBonePosition(HumanoidBone.RightHand).clone()\n 
@@ -78,8 +87,8 @@ MonoBehaviour:
       customAction: 
       showCustomActionFoldout: 0
     - predefinedAction:
-        actionType: 
-        codeSnippet: 
+        actionType: Customized Action
+        codeSnippet: $.state.practiceID += 1;
       customAction: $.state.practiceID += 1;
       showCustomActionFoldout: 1
     onStateExitedFoldout: 1
@@ -93,8 +102,9 @@ MonoBehaviour:
     onStateStartedFoldout: 1
     duringStateActions:
     - predefinedAction:
-        actionType: 
-        codeSnippet: 
+        actionType: Customized Action
+        codeSnippet: "// \u30D0\u30FC\u30C1\u30E3\u30EB\u30CF\u30F3\u30C9\u306E\u5EA7\u6A19
+          = \u5B9F\u969B\u306E\u53F3\u624B\u306E\u5EA7\u6A19\n$.setPosition($.state.player.getHumanoidBonePosition(HumanoidBone.RightHand));\n$.setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand));"
       customAction: "// \u30D0\u30FC\u30C1\u30E3\u30EB\u30CF\u30F3\u30C9\u306E\u5EA7\u6A19
         = \u5B9F\u969B\u306E\u53F3\u624B\u306E\u5EA7\u6A19\n$.setPosition($.state.player.getHumanoidBonePosition(HumanoidBone.RightHand));\n$.setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand));"
       showCustomActionFoldout: 1
@@ -104,8 +114,10 @@ MonoBehaviour:
   - stateID: 9
     onStateStartedActions:
     - predefinedAction:
-        actionType: 
-        codeSnippet: 
+        actionType: Customized Action
+        codeSnippet: "// \u539F\u70B9\u306E\u5EA7\u6A19\u3092\u8A08\u7B97\u3059\u308B\n$.state.originPos
+          = $.state.player\n  .getHumanoidBonePosition(HumanoidBone.Head).clone()\n 
+          .add(new Vector3(0, -0.3, 0.3));"
       customAction: "// \u539F\u70B9\u306E\u5EA7\u6A19\u3092\u8A08\u7B97\u3059\u308B\n$.state.originPos
         = $.state.player\n  .getHumanoidBonePosition(HumanoidBone.Head).clone()\n 
         .add(new Vector3(0, -0.3, 0.3));"
@@ -113,8 +125,13 @@ MonoBehaviour:
     onStateStartedFoldout: 1
     duringStateActions:
     - predefinedAction:
-        actionType: 
-        codeSnippet: 
+        actionType: Customized Action
+        codeSnippet: "// \u30D0\u30FC\u30C1\u30E3\u30EB\u30CF\u30F3\u30C9\u306E\u5EA7\u6A19
+          = \u539F\u70B9\u306E\u5EA7\u6A19 + \u30B2\u30A4\u30F3\xD7(\u5B9F\u969B\u306E\u53F3\u624B\u306E\u5EA7\u6A19
+          - \u539F\u70B9\u306E\u5EA7\u6A19)\n// \u30B2\u30A4\u30F3\u306F\u8A66\u884C\u3054\u3068\u306E\u5B9F\u9A13\u6761\u4EF6\u306E\u5024\u3092\u4F7F\u3046\nlet
+          displacement = $.state.player\n  .getHumanoidBonePosition(HumanoidBone.RightHand).clone()\n 
+          .sub($.state.originPos);\n$.setPosition(\n  $.state.originPos.clone()\n   
+          .add(displacement.multiplyScalar(CONDITION[\"gain\"]))\n);\n$.setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand));"
       customAction: "// \u30D0\u30FC\u30C1\u30E3\u30EB\u30CF\u30F3\u30C9\u306E\u5EA7\u6A19
         = \u539F\u70B9\u306E\u5EA7\u6A19 + \u30B2\u30A4\u30F3\xD7(\u5B9F\u969B\u306E\u53F3\u624B\u306E\u5EA7\u6A19
         - \u539F\u70B9\u306E\u5EA7\u6A19)\n// \u30B2\u30A4\u30F3\u306F\u8A66\u884C\u3054\u3068\u306E\u5B9F\u9A13\u6761\u4EF6\u306E\u5024\u3092\u4F7F\u3046\nlet

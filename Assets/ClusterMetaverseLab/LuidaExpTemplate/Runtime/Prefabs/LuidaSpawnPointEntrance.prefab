@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 600138418}
   - component: {fileID: 600138417}
   - component: {fileID: 600138421}
+  - component: {fileID: 5205918416252962942}
   m_Layer: 0
   m_Name: OnParticipantJoin
   m_TagString: Untagged
@@ -65,16 +66,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "// Deprecated\r\n\r\n/*\r\n$.onStart(() => {\r\n  $.state.inRoomIdfcs
-    = [];\r\n  $.state.newPlayers = [];\r\n})\r\n\r\n$.onUpdate(() => {\r\n  if ($.getStateCompat(\"this\",
-    \"exp_checkJoinEligibility\", \"boolean\")) {\r\n    $.setStateCompat(\"this\",
-    \"exp_checkJoinEligibility\", false);\r\n\r\n    const newPlayers = $.getPlayersNear($.getPosition(),
-    1)\r\n      .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));\r\n    \r\n   
-    if (newPlayers.length > 0) {\r\n      $.state.newPlayers = newPlayers;\r\n     
+  sourceCode: "$.onStart(() => {\r\n  $.state.inRoomIdfcs = [];\r\n})\r\n\r\n$.onUpdate(()
+    => {\r\n    if ($.getStateCompat(\"this\", \"onJoined\", \"boolean\")) {\r\n       
+    $.setStateCompat(\"this\", \"onJoined\", false);\r\n        const newPlayers
+    = $.getPlayersNear($.getPosition(), Infinity)\r\n            .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));\r\n       
+    if (newPlayers.length > 0) {\r\n            for (const newPlayer of newPlayers)
+    {\r\n                $.state.inRoomIdfcs.push(newPlayer.idfc);\r\n               
+    $.setPlayerScript(newPlayer);\r\n            }\r\n        }\r\n    }\r\n/*\r\n 
+    if ($.getStateCompat(\"this\", \"exp_checkJoinEligibility\", \"boolean\")) {\r\n   
+    $.setStateCompat(\"this\", \"exp_checkJoinEligibility\", false);\r\n\r\n    const
+    newPlayers = $.getPlayersNear($.getPosition(), 1)\r\n      .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));\r\n   
+    \r\n    if (newPlayers.length > 0) {\r\n      $.state.newPlayers = newPlayers;\r\n     
     $.log(newPlayers[0].idfc);\r\n\r\n      const request = {\r\n        type: \"checkJoinEligibility\",\r\n       
     token: token || \"\",\r\n        eID: expID || \"\",\r\n        idfcs: newPlayers.map(p
     => p.idfc).join(\"|\")\r\n      };\r\n      $.callExternal(JSON.stringify(request),
-    \"joinEligibilityChecked\");\r\n    }\r\n  }\r\n})\r\n\r\n$.onExternalCallEnd((res,
+    \"joinEligibilityChecked\");\r\n    }\r\n  }\r\n*/\r\n})\r\n\r\n/*\r\n$.onExternalCallEnd((res,
     meta, err) =>\r\n{\r\n  if (res == null) {\r\n    $.log(\"callExternal ERROR:
     \" + err);\r\n    return;\r\n  }\r\n\r\n  if (meta === \"joinEligibilityChecked\")
     {\r\n    const parsedRes = JSON.parse(res);\r\n    $.state.newPlayers.forEach(newPlayer
@@ -106,6 +112,16 @@ MonoBehaviour:
     value:
       boolValue: 1
       floatValue: 0
+      integerValue: 0
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+  - target: 1
+    specifiedTargetItem: {fileID: 600138420}
+    key: onJoined
+    type: 1
+    value:
+      boolValue: 1
+      floatValue: 1
       integerValue: 0
       vector2Value: {x: 0, y: 0}
       vector3Value: {x: 0, y: 0, z: 0}
@@ -152,6 +168,21 @@ MonoBehaviour:
   playerScripts: []
   clusterScriptMD5s: []
   playerScriptMD5s: []
+--- !u!114 &5205918416252962942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600138415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acb59730322447a7a13c40b87493e196, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourceCodeAsset: {fileID: 5022602860645237092, guid: 82685120614308444add0dc2b678572e,
+    type: 3}
+  sourceCode: 
 --- !u!1001 &6096864659548760471
 PrefabInstance:
   m_ObjectHideFlags: 0

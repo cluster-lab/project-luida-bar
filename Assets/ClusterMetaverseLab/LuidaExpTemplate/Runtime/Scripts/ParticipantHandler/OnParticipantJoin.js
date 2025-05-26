@@ -1,12 +1,20 @@
-// Deprecated
-
-/*
 $.onStart(() => {
   $.state.inRoomIdfcs = [];
-  $.state.newPlayers = [];
 })
 
 $.onUpdate(() => {
+    if ($.getStateCompat("this", "onJoined", "boolean")) {
+        $.setStateCompat("this", "onJoined", false);
+        const newPlayers = $.getPlayersNear($.getPosition(), Infinity)
+            .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));
+        if (newPlayers.length > 0) {
+            for (const newPlayer of newPlayers) {
+                $.state.inRoomIdfcs.push(newPlayer.idfc);
+                $.setPlayerScript(newPlayer);
+            }
+        }
+    }
+/*
   if ($.getStateCompat("this", "exp_checkJoinEligibility", "boolean")) {
     $.setStateCompat("this", "exp_checkJoinEligibility", false);
 
@@ -26,8 +34,10 @@ $.onUpdate(() => {
       $.callExternal(JSON.stringify(request), "joinEligibilityChecked");
     }
   }
+*/
 })
 
+/*
 $.onExternalCallEnd((res, meta, err) =>
 {
   if (res == null) {

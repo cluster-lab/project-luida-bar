@@ -4,17 +4,17 @@ To use this implement template, **please avoid directly cloning this repository.
 
 本実装テンプレートを使用される場合、**このレポジトリを直接cloneしないでください。**[Getting Started](#getting-started)セクションに従って本実装テンプレートのダウンロードと初期化を行ってください。チュートリアルもぜひ試してください。
 
+<!-- - [Getting Started](#getting-started) -->
 - [Main Features](#main-features)
-- [Getting Started](#getting-started)
 - [Tutorial (JA)](https://github.com/cluster-lab/project-luida-bar/blob/exp-template/Tutorial_JA.md)
-- [Tutorial (EN)](https://github.com/cluster-lab/project-luida-bar/blob/exp-template/Tutorial_EN.md)
-- [Documentation (under construction...)](#documentation-under-construction)
+- (Under construction) [Tutorial (EN)](https://github.com/cluster-lab/project-luida-bar/blob/exp-template/Tutorial_EN.md)
+<!-- - [Documentation (under construction...)](#documentation-under-construction) -->
 
 -----
 
 # Main Features
 
-#### Experimental variables & trials management
+### Experimental variables & trials management
 This implement template automatically determine number of trials & condition of each trial by registered within/between-subject variables. You can complete the setup within the provided editor window.
 
 We also provided a template script to implement decision of the experimental conditions from between-subject variables.
@@ -24,34 +24,40 @@ We also provided a template script to implement decision of the experimental con
 
 また、参加者間変数から実験条件を決定するためのスクリプトのテンプレートも提供しています。
 
-![image](https://github.com/user-attachments/assets/3c2994f4-5bc3-40a7-9812-29f4999d59d6)
+![variable-settings](https://github.com/user-attachments/assets/1cf257e1-71f7-49de-95a9-d38e3661b655)
 
-#### State management
+### State management
 This implement template follows a State design pattern. We have prepared default states and their transitions for you to use without additional edition.
 You can still make your customization, including adding/removing/skipping/repeating a state or enable auto transition in xx seconds.
 
 本実装テンプレートは、ステートデザインパターンに従っています。デフォルトのステートとその遷移が用意されており、追加編集なしで使用可能です。
 ご自身でステートの追加・削除・スキップ・繰り返し・XX秒後に自動遷移などの設定もカスタマイズ可能です。
 
-![image](https://github.com/user-attachments/assets/d1538e21-4207-440f-a31c-37a976bddf08)
+![state-transition](https://github.com/user-attachments/assets/050dee88-c603-407c-b60f-1b1b59d52840)
 
-
-#### Manage game objects that listen to state transitions and access experiment conditions
+### Manage game objects that listen to state transitions and access experiment conditions
 This implementation template allows you to create game objects that can perform actions based on state transitions or access experimental conditions.
 Using the provided settings screen, you can edit their behaviors through the GUI, and spaces for writing scripts are also available.
 
 本実装テンプレートでは、ステートの遷移に応じた動作や、実験条件へのアクセスが可能なゲームオブジェクトを作成できます。
 提供された設定画面を使用して、GUI上で動作を簡単に編集することができ、またスクリプトを記述するための枠も用意されています。
 
-![image](https://github.com/user-attachments/assets/d1aca89f-eaff-44d4-8741-69280762fa8b)
+<table>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/3411b3a8-988b-4462-a013-c719dc024117" alt="Image 1" width="600"/></td>
+    <td><img src="https://github.com/user-attachments/assets/d0cbfe0c-b678-4201-a65f-01178ea17c9f" alt="Image 2" width="600"/></td>
+  </tr>
+</table>
 
-#### Questionnaire generation
+### Questionnaire generation
 You don't need to create game objects for each question or answer. Just register your questionnaire on LUIDA's web console, and paste its ID the designated field on the provided editor window in this implement template. Gameobjects for each question and answer will be automatically generated on cluster during the exact experiment session.
 
 質問紙の質問や回答ごとにゲームオブジェクトを作成する必要はありません。
 LUIDA専用のウェブコンソールに質問紙内容を登録し、そのIDを本実装テンプレートに提供された設定画面の指定フィールドに貼り付けるだけで、cluster上の実験実施中に自動的にゲームオブジェクトが生成されます。
 
-#### Data recording
+![questionnaire-registration](https://github.com/user-attachments/assets/c3522829-31c6-44c1-a248-38c472acbd2d)
+
+### Data recording
 During the exact experiment session, Cluster continuously records players' positions, poses, actions, to name a few. These data will be formatted and display on the web console.
 
 Meanwhile, you can also setup recorders for customized data inside this template in advance.
@@ -65,7 +71,7 @@ The collected data will be listed on LUIDA's web console for you to confirm and 
 ![image](https://github.com/user-attachments/assets/089340d0-dec0-487b-9be1-51b4cfceca2f)
 ![image](https://github.com/user-attachments/assets/0d997e6c-9c1b-456d-babc-cb8400a1ef86)
 
-
+<!--
 -----
 
 # Getting Started
@@ -220,3 +226,4 @@ The image below serves as an example:
 Just upload your world (https://docs.cluster.mu/creatorkit/world/upload-world/), simply enter it on cluster, and see if everything runs well!
 
 We recommend making use of cluster's test space feature for more effective tests: https://creator.cluster.mu/2024/05/24/testspace/
+-->

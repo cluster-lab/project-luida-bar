@@ -28,8 +28,11 @@ MonoBehaviour:
   - stateID: 3
     onStateStartedActions:
     - predefinedAction:
-        actionType: 
-        codeSnippet: 
+        actionType: Customized Action
+        codeSnippet: "// \u53C2\u52A0\u8005\u306E\u624B\u524D\u306B\u914D\u7F6E\u3059\u308B\nif
+          (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\nlet
+          position = $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new
+          Vector3(0, -0.3, 0.3));\n$.setPosition(position);"
       customAction: "// \u53C2\u52A0\u8005\u306E\u624B\u524D\u306B\u914D\u7F6E\u3059\u308B\nif
         (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\nlet
         position = $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new
@@ -53,8 +56,11 @@ MonoBehaviour:
   - stateID: 8
     onStateStartedActions:
     - predefinedAction:
-        actionType: 
-        codeSnippet: 
+        actionType: Customized Action
+        codeSnippet: "// \u53C2\u52A0\u8005\u306E\u624B\u524D\u306B\u914D\u7F6E\u3059\u308B\nif
+          (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\nlet
+          position = $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new
+          Vector3(0, -0.3, 0.3));\n$.setPosition(position);"
       customAction: "// \u53C2\u52A0\u8005\u306E\u624B\u524D\u306B\u914D\u7F6E\u3059\u308B\nif
         (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\nlet
         position = $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new

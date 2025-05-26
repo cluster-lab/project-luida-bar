@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using ClusterVR.CreatorKit.Item;
 using ClusterVR.CreatorKit.Item.Implements;
 
@@ -15,7 +16,6 @@ public class StateListEditor : EditorWindow
     private SerializedProperty statesProperty;
     private string statePrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/State.prefab";
     private string trialRestStatePrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/Trial - Rest State.prefab";
-    private string prepareStatePrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/Preparation State.prefab";
     private const string RequiredObjectsWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
     private const string stateListTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/StateList/Template.asset";
     private const string stateManagementScriptFolderPathFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
@@ -25,8 +25,7 @@ public class StateListEditor : EditorWindow
     private const string WorldItemRefListObjectName = "WorldItemRefList";
 
     // Fixed states that must not be moved.
-    // Now, the fixed trial states are "Trial - Start" and "Trial - Rest".
-    private readonly string[] FixedStateNames = new string[] { "Preparation", "Trial - Start", "Trial - Rest", "End" };
+    private readonly string[] FixedStateNames = new string[] { "Trial - Start", "Trial - Rest", "End" };
     private Vector2 scrollPos;
     private string sceneName;
 
@@ -34,8 +33,16 @@ public class StateListEditor : EditorWindow
     {
         sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         LoadStateList();
-        previousStates = new StateList.State[stateList.States.Length];
-        Array.Copy(stateList.States, previousStates, stateList.States.Length);
+        if (stateList != null && stateList.States != null) // Ensure stateList and States are not null
+        {
+            previousStates = new StateList.State[stateList.States.Length];
+            Array.Copy(stateList.States, previousStates, stateList.States.Length);
+        }
+        else if (stateList != null) // stateList exists but States is null
+        {
+            previousStates = new StateList.State[0]; // Initialize to empty array
+        }
+        // If stateList is null, previousStates will remain null and handled by LoadStateList logic
     }
 
     private void LoadStateList()
@@ -47,14 +54,22 @@ public class StateListEditor : EditorWindow
         if (stateList == null)
         {
             string newAssetPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
+            Directory.CreateDirectory(Path.GetDirectoryName(newAssetPath)); // Ensure directory exists
             AssetDatabase.CopyAsset(stateListTemplatePath, newAssetPath);
             AssetDatabase.Refresh();
             stateList = AssetDatabase.LoadAssetAtPath<StateList>(newAssetPath);
         }
-        else
+
+        if (stateList != null)
         {
             serializedStateList = new SerializedObject(stateList);
             statesProperty = serializedStateList.FindProperty("States");
+            if (stateList.States == null)
+            {
+                stateList.States = new StateList.State[0];
+                EditorUtility.SetDirty(stateList);
+                serializedStateList.Update(); // Update serialized object if we changed the underlying asset
+            }
         }
     }
 
@@ -65,6 +80,11 @@ public class StateListEditor : EditorWindow
         if (stateList == null || sceneName != UnityEngine.SceneManagement.SceneManager.GetActiveScene().name)
         {
             LoadStateList();
+            if (stateList != null && stateList.States != null && (previousStates == null || previousStates.Length != stateList.States.Length))
+            {
+                previousStates = new StateList.State[stateList.States.Length];
+                Array.Copy(stateList.States, previousStates, stateList.States.Length);
+            }
         }
 
         if (stateList == null)
@@ -73,11 +93,19 @@ public class StateListEditor : EditorWindow
             if (template != null)
             {
                 string newAssetPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
+                Directory.CreateDirectory(Path.GetDirectoryName(newAssetPath)); // Ensure directory exists
                 AssetDatabase.CopyAsset(stateListTemplatePath, newAssetPath);
                 AssetDatabase.Refresh();
                 stateList = AssetDatabase.LoadAssetAtPath<StateList>(newAssetPath);
                 if (stateList != null)
+                {
                     EditorGUILayout.HelpBox($"StateList created at {newAssetPath}.", MessageType.Info);
+                    serializedStateList = new SerializedObject(stateList);
+                    statesProperty = serializedStateList.FindProperty("States");
+                    if (stateList.States == null) stateList.States = new StateList.State[0];
+                    previousStates = new StateList.State[stateList.States.Length];
+                    Array.Copy(stateList.States, previousStates, stateList.States.Length);
+                }
                 else
                     EditorGUILayout.HelpBox($"Failed to create StateList at {newAssetPath}.", MessageType.Error);
             }
@@ -95,24 +123,31 @@ public class StateListEditor : EditorWindow
             statesProperty = serializedStateList.FindProperty("States");
         }
 
-        EditorGUILayout.LabelField("Edit States", EditorStyles.boldLabel);
         serializedStateList.Update();
 
-        // Find special state indexes
-        int preparationIndex = Array.FindIndex(stateList.States, s => s.StateName == "Preparation");
-        int trialTaskIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Start");
+        int trialStartIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Start");
         int trialRestIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Rest");
         int endIndex = Array.FindIndex(stateList.States, s => s.StateName == "End");
 
         bool stateOrderChanged = false;
 
-        // Check transitions to 'End'
+        // Check transitions to 'End' - REVISED
         bool endTransitionFound = false;
         if (endIndex >= 0)
         {
-            for (int idx = 0; idx < stateList.States.Length; idx++)
+            for (int k = 0; k < stateList.States.Length; k++)
             {
-                if (idx != endIndex && stateList.States[idx].DestStateName == "End")
+                if (stateList.States[k].StateName == "End") continue;
+
+                if (k < stateList.States.Length - 1)
+                {
+                    if (stateList.States[k + 1].StateName == "End")
+                    {
+                        endTransitionFound = true;
+                        break;
+                    }
+                }
+                else if (k == stateList.States.Length - 1)
                 {
                     endTransitionFound = true;
                     break;
@@ -120,480 +155,434 @@ public class StateListEditor : EditorWindow
             }
         }
 
-        // Check transitions to 'Preparation'
-        bool preparationTransitionFound = false;
-        if (preparationIndex >= 0)
-        {
-            for (int idx = 0; idx < stateList.States.Length; idx++)
-            {
-                if (idx != preparationIndex && stateList.States[idx].DestStateName == "Preparation")
-                {
-                    preparationTransitionFound = true;
-                    break;
-                }
-            }
-        }
-
-        // Loop over all states
         for (int i = 0; i < statesProperty.arraySize; i++)
         {
-            // --- Above 'Preparation' state ---
-            if (i == preparationIndex && preparationIndex >= 0)
+            if (i == 0)
             {
-                GUILayout.Space(10);
-                if (!preparationTransitionFound)
-                    EditorGUILayout.HelpBox("No state (except 'Preparation' itself) is transitioning to the 'Preparation' state!", MessageType.Warning);
-
-                if (GUILayout.Button("Add State"))
+                var boldLargeLabel = new GUIStyle(EditorStyles.largeLabel)
                 {
-                    GUI.FocusControl(null);
-                    int newStateIndex = preparationIndex - 1;
-                    statesProperty.InsertArrayElementAtIndex(newStateIndex);
-                    // Initialize or copy defaults for the new state...
-                    serializedStateList.ApplyModifiedProperties();
-                    
-                    // Now insert the new GameObject incrementally:
-                    InsertStateGameObjectAtIndex(newStateIndex);
-                    
-                    // And update the state_id for all states that come after the inserted one:
-                    UpdateStateIDsFromIndex(newStateIndex + 1);
-                    
-                    stateOrderChanged = true;
-                    break;
-                }
-                EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-                EditorGUILayout.LabelField("These states are for trials. Their order is fixed, and the repetition is controlled by set variables.");
+                    fontStyle = FontStyle.Bold,
+                    normal = { textColor = Color.white } // Set font color to white
+                };
+                EditorGUILayout.LabelField("States Before Trials", boldLargeLabel);
             }
 
-            // --- (Optional) Horizontal separator after 'Trial - Rest' ---
-            if (trialRestIndex >= 0 && i == trialRestIndex + 1)
-                EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-
-            // --- Add Button between "Trial - Start" and "Trial - Rest" ---
-            // When i reaches "Trial - Rest", insert an "Add Trial State" button.
-            if (trialTaskIndex != -1 && trialRestIndex != -1 && i == trialRestIndex)
+            if (i == trialStartIndex && trialStartIndex >= 0)
             {
-                GUILayout.Space(10);
-                if (GUILayout.Button("Add Trial State"))
+                if (GUILayout.Button("Add State Before Trials", GUILayout.Width(EditorGUIUtility.currentViewWidth * 0.3f - 10f)))
                 {
                     GUI.FocusControl(null);
-                    int newTrialStateIndex = i;
-                    // Insert the new trial state into the serialized state list
+                    int newStateIndex = trialStartIndex;
+                    statesProperty.InsertArrayElementAtIndex(newStateIndex);
+                    InitializeStateDefaults(newStateIndex);
+                    // No need to apply here, will be applied after loop
+                    InsertStateGameObjectAtIndex(newStateIndex); // This uses stateList.States, so apply needs to happen before or it needs serializedProp
+                    UpdateStateIDsFromIndex(newStateIndex + 1);
+                    stateOrderChanged = true;
+                    // Applying immediately after insertion ensures subsequent logic in the loop (like auto-dest) uses updated data
+                    serializedStateList.ApplyModifiedProperties();
+                    stateList = (StateList)serializedStateList.targetObject; // Re-fetch if direct modifications were made to asset
+                    // Recalculate indices as they might have shifted
+                    trialStartIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Start");
+                    trialRestIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Rest");
+                    endIndex = Array.FindIndex(stateList.States, s => s.StateName == "End");
+                    break;
+                }
+                GUILayout.Space(20);
+                EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+                DrawDarkLabel("Trial-related States", true);
+                DrawDarkLabel("Automatically repeat " + CalculateTrialCountForCurrentScene().ToString() + " times from 'Trial - Start' to 'Trial - Rest' (repetition time calculated from your configuration for within-subject variables)");
+            }
+
+            if (trialRestIndex >= 0 && i == trialRestIndex + 1)
+            {
+                EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+                GUILayout.Space(20);
+                var boldLargeLabel = new GUIStyle(EditorStyles.largeLabel)
+                {
+                    fontStyle = FontStyle.Bold,
+                    normal = { textColor = Color.white } // Set font color to white
+                };
+                EditorGUILayout.LabelField("States After Trials", boldLargeLabel);
+            }
+
+            if (trialStartIndex != -1 && trialRestIndex != -1 && i == trialRestIndex)
+            {
+                if (GUILayout.Button("Add State During Trials", GUILayout.Width(EditorGUIUtility.currentViewWidth * 0.3f - 10f)))
+                {
+                    GUI.FocusControl(null);
+                    int newTrialStateIndex = trialRestIndex;
                     statesProperty.InsertArrayElementAtIndex(newTrialStateIndex);
                     InitializeTrialStateDefaults(newTrialStateIndex);
-                    serializedStateList.ApplyModifiedProperties();
-
-                    // Incrementally insert the new trial state's GameObject at the proper position:
                     InsertTrialStateGameObjectAtIndex(newTrialStateIndex);
-
-                    // Update the state_id values for all subsequent states
                     UpdateStateIDsFromIndex(newTrialStateIndex + 1);
-
                     stateOrderChanged = true;
+                    serializedStateList.ApplyModifiedProperties();
+                    stateList = (StateList)serializedStateList.targetObject;
+                    trialStartIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Start");
+                    trialRestIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Rest");
+                    endIndex = Array.FindIndex(stateList.States, s => s.StateName == "End");
                     break;
                 }
             }
 
-            // --- Above 'End' state ---
             if (i == endIndex && endIndex >= 0)
             {
-                GUILayout.Space(10);
-                if (GUILayout.Button("Add State"))
+                if (GUILayout.Button("Add State After Trials", GUILayout.Width(EditorGUIUtility.currentViewWidth * 0.3f - 10f)))
                 {
                     GUI.FocusControl(null);
-                    int newStateIndex = endIndex - 1;
+                    int newStateIndex = endIndex;
                     statesProperty.InsertArrayElementAtIndex(newStateIndex);
-                    // Initialize or copy defaults for the new state...
-                    serializedStateList.ApplyModifiedProperties();
-                    
-                    // Now insert the new GameObject incrementally:
+                    InitializeStateDefaults(newStateIndex);
                     InsertStateGameObjectAtIndex(newStateIndex);
-                    
-                    // And update the state_id for all states that come after the inserted one:
                     UpdateStateIDsFromIndex(newStateIndex + 1);
-                    
                     stateOrderChanged = true;
+                    serializedStateList.ApplyModifiedProperties();
+                    stateList = (StateList)serializedStateList.targetObject;
+                    trialStartIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Start");
+                    trialRestIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Rest");
+                    endIndex = Array.FindIndex(stateList.States, s => s.StateName == "End");
                     break;
                 }
 
-                if (!endTransitionFound)
-                    EditorGUILayout.HelpBox("No state (except 'End' itself) is transitioning to the 'End' state!", MessageType.Warning);
+                if (!endTransitionFound && stateList.States.Length > 1) // Don't show if "End" is the only state or no states
+                    EditorGUILayout.HelpBox("No state appears to lead to the 'End' state. Ensure the experiment can conclude.", MessageType.Warning);
 
+                GUILayout.Space(20);
                 EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-                EditorGUILayout.LabelField("The 'End' state should always be the last state.");
+                DrawDarkLabel("The 'End' state should always be the last state.");
             }
 
-            // --- Display state fields ---
+            bool isHighlight = (trialStartIndex >= 0 && i >= trialStartIndex && trialRestIndex >= 0 && i <= trialRestIndex) || (endIndex >= 0 && i == endIndex);
+
+            Color originalBackgroundColor = GUI.backgroundColor;
+            Color originalContentColor = GUI.contentColor;
+
+            if (isHighlight)
+            {
+                GUI.backgroundColor = new Color(0.2f, 0.2f, 0.2f, 1f);
+                GUI.contentColor = Color.white;
+            }
+
+            EditorGUILayout.BeginVertical(GUI.skin.box);
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.BeginVertical();
+
+            GUILayout.Space(20);
+            EditorGUILayout.BeginVertical(GUILayout.Width(60));
             EditorGUILayout.LabelField("State ID", GUILayout.Width(60));
             EditorGUILayout.LabelField(i.ToString(), GUILayout.Width(60));
             EditorGUILayout.EndVertical();
-            EditorGUILayout.BeginVertical();
 
-            SerializedProperty state = statesProperty.GetArrayElementAtIndex(i);
-            SerializedProperty stateName = state.FindPropertyRelative("StateName");
-            SerializedProperty destStateName = state.FindPropertyRelative("DestStateName");
-            SerializedProperty hasExitTime = state.FindPropertyRelative("HasExitTime");
-            SerializedProperty exitTime = state.FindPropertyRelative("ExitTime");
-            SerializedProperty isRepeated = state.FindPropertyRelative("IsRepeated");
-            SerializedProperty repeatDestStateName = state.FindPropertyRelative("RepeatDestStateName");
-            SerializedProperty repeatCount = state.FindPropertyRelative("RepeatCount");
+            SerializedProperty stateProp = statesProperty.GetArrayElementAtIndex(i);
+            SerializedProperty stateNameProp = stateProp.FindPropertyRelative("StateName");
+            SerializedProperty destStateNameProp = stateProp.FindPropertyRelative("DestStateName");
+            string currentActualStateName = stateNameProp.stringValue;
+            bool isCurrentFixedState = Array.IndexOf(FixedStateNames, currentActualStateName) > -1;
+            bool isCurrentEndState = (currentActualStateName == "End");
 
+            EditorGUILayout.BeginVertical(GUILayout.Width(150));
             EditorGUILayout.LabelField("State name:");
-            bool isFixedState = Array.IndexOf(FixedStateNames, stateName.stringValue) > -1;
-            EditorGUI.BeginDisabledGroup(isFixedState);
-            EditorGUILayout.PropertyField(stateName, GUIContent.none, GUILayout.Width(150));
-            if (string.IsNullOrEmpty(stateName.stringValue))
-                stateName.stringValue = "State";
+            EditorGUI.BeginDisabledGroup(isCurrentFixedState);
+            EditorGUILayout.PropertyField(stateNameProp, GUIContent.none, GUILayout.Width(150));
+            if (string.IsNullOrEmpty(stateNameProp.stringValue))
+                stateNameProp.stringValue = "State" + i;
             EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndVertical();
 
-            string[] allStateNames = Array.ConvertAll(stateList.States, s => s.StateName);
-            bool isEndState = (endIndex >= 0 && i == endIndex);
-
-            // --- Determine allowed moves ---
-            bool canMoveUp = true;
-            bool canMoveDown = true;
-            // Constraint for states before 'Preparation'
-            if (preparationIndex >= 0)
+            // --- Auto-set and Display Transition Destination ---
+            string autoCalculatedDestName = "";
+            if (!isCurrentEndState)
             {
-                if (i < preparationIndex)
+                if (i < statesProperty.arraySize - 1)
                 {
-                    if (i + 1 >= preparationIndex)
-                        canMoveDown = false;
-                }
-            }
-            // Constraint for the End state remains.
-            if (endIndex >= 0)
-            {
-                if (i + 1 >= endIndex)
-                    canMoveDown = false;
-                if (i == endIndex)
-                {
-                    canMoveUp = false;
-                    canMoveDown = false;
-                }
-            }
-            // For extra trial states (those not fixed and whose names start with "Trial - "),
-            // do not allow moving them beyond the fixed "Trial - Start" (up) or "Trial - Rest" (down)
-            if (!isFixedState && stateName.stringValue.StartsWith("Trial - "))
-            {
-                if (trialTaskIndex != -1 && i - 1 == trialTaskIndex)
-                    canMoveUp = false;
-                if (trialRestIndex != -1 && i + 1 == trialRestIndex)
-                    canMoveDown = false;
-            }
-
-            // --- Filter allowed destination states ---
-            string[] allowedDestinations = allStateNames;
-            if (preparationIndex >= 0 && i < preparationIndex)
-            {
-                int length = Math.Min(preparationIndex + 1, stateList.States.Length);
-                allowedDestinations = new string[length];
-                Array.Copy(allStateNames, allowedDestinations, length);
-            }
-            if (trialRestIndex >= 0 && i > trialRestIndex)
-            {
-                if (trialRestIndex + 1 < stateList.States.Length)
-                {
-                    int length = stateList.States.Length - (trialRestIndex + 1);
-                    allowedDestinations = new string[length];
-                    Array.Copy(allStateNames, trialRestIndex + 1, allowedDestinations, 0, length);
+                    SerializedProperty nextStateInList = statesProperty.GetArrayElementAtIndex(i + 1);
+                    autoCalculatedDestName = nextStateInList.FindPropertyRelative("StateName").stringValue;
                 }
                 else
                 {
-                    allowedDestinations = new string[0];
-                }
-            }
-
-            int destStateIndex = -1;
-            if (allowedDestinations.Length > 0)
-                destStateIndex = Array.IndexOf(allowedDestinations, destStateName.stringValue);
-
-            EditorGUI.BeginDisabledGroup(isEndState);
-            #region Transition Destination State
-            EditorGUILayout.BeginVertical();
-            EditorGUILayout.LabelField("Transit destination state");
-            EditorGUI.BeginDisabledGroup(isFixedState);
-            destStateIndex = EditorGUILayout.Popup(destStateIndex, allowedDestinations, GUILayout.Width(150));
-            EditorGUI.EndDisabledGroup();
-            if (destStateIndex >= 0 && allowedDestinations.Length > 0)
-                destStateName.stringValue = allowedDestinations[destStateIndex];
-            else if (allowedDestinations.Length == 0)
-                destStateName.stringValue = "";
-            EditorGUILayout.EndVertical();
-            #endregion
-
-            #region Move state
-            EditorGUILayout.BeginVertical();
-            EditorGUILayout.LabelField("Move state to:");
-            EditorGUILayout.BeginHorizontal();
-            EditorGUI.BeginDisabledGroup(isFixedState || !canMoveUp);
-            if (GUILayout.Button("Up", GUILayout.Width(50)))
-            {
-                GUI.FocusControl(null);
-                if (i > 0)
-                {
-                    statesProperty.MoveArrayElement(i, i - 1);
-                    stateOrderChanged = true;
-                }
-            }
-            EditorGUI.EndDisabledGroup();
-            EditorGUI.BeginDisabledGroup(isFixedState || !canMoveDown);
-            if (GUILayout.Button("Down", GUILayout.Width(50)))
-            {
-                GUI.FocusControl(null);
-                if (i < statesProperty.arraySize - 1)
-                {
-                    statesProperty.MoveArrayElement(i, i + 1);
-                    stateOrderChanged = true;
-                }
-            }
-            EditorGUI.EndDisabledGroup();
-            EditorGUI.BeginDisabledGroup(isFixedState || isEndState);
-            if (GUILayout.Button("Remove", GUILayout.Width(60)))
-            {
-                GUI.FocusControl(null);
-                statesProperty.DeleteArrayElementAtIndex(i);
-                serializedStateList.ApplyModifiedProperties();
-
-                // Check if the state being removed is immediately before a fixed state.
-                // (For example, if it's right before "Preparation" or, in the trial states, right before "Trial - Rest".)
-                bool removeGameObjectIncrementally = false;
-                if (preparationIndex >= 0 && i == preparationIndex - 1)
-                {
-                    removeGameObjectIncrementally = true;
-                }
-                if (trialRestIndex >= 0 && i == trialRestIndex - 1)
-                {
-                    removeGameObjectIncrementally = true;
-                }
-                
-                // If we are in one of those special cases, remove the corresponding GameObject from the scene.
-                if (removeGameObjectIncrementally)
-                {
-                    GameObject statesContainer = FindOrCreateStatesContainer();
-                    Transform childToRemove = FindChildByStateID(statesContainer.transform, i);
-                    if (childToRemove != null)
+                    string endStateNameInList = "";
+                    int endStateIndexInProperty = -1;
+                    for (int j = 0; j < statesProperty.arraySize; ++j)
                     {
-                        DestroyImmediate(childToRemove.gameObject);
+                        if (statesProperty.GetArrayElementAtIndex(j).FindPropertyRelative("StateName").stringValue == "End")
+                        {
+                            endStateNameInList = "End";
+                            endStateIndexInProperty = j;
+                            break;
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(endStateNameInList) && i != endStateIndexInProperty)
+                    {
+                        autoCalculatedDestName = endStateNameInList;
+                    }
+                    else
+                    {
+                        autoCalculatedDestName = string.Empty;
                     }
                 }
-                
-                // Update the state_id values for all GameObjects after the removed one.
-                UpdateStateIDsFromIndex(i);
-                stateOrderChanged = true;
             }
+
+            if (destStateNameProp.stringValue != autoCalculatedDestName)
+            {
+                destStateNameProp.stringValue = autoCalculatedDestName;
+            }
+
+            /*
+            EditorGUILayout.BeginVertical(GUILayout.Width(150));
+            EditorGUILayout.LabelField("Transit destination state:");
+            EditorGUI.BeginDisabledGroup(true); 
+            EditorGUILayout.LabelField(destStateNameProp.stringValue, GUILayout.Width(146));
+            EditorGUI.EndDisabledGroup();
+            EditorGUILayout.EndVertical();
+            */
+
+            EditorGUILayout.BeginVertical(GUILayout.MinWidth(250), GUILayout.MaxWidth(250));
+            EditorGUILayout.LabelField("Move state to:");
+            EditorGUILayout.BeginHorizontal();
+            bool canMoveUp = i > 0 && !isCurrentFixedState;
+            // Prevent moving a state past "End" if "End" is supposed to be last, or into fixed blocks.
+            // More detailed logic might be needed if strict ordering around fixed blocks is enforced.
+            bool canMoveDown = i < statesProperty.arraySize - 1 && !isCurrentFixedState;
+
+            EditorGUI.BeginDisabledGroup(!canMoveUp);
+            if (GUILayout.Button("Up", GUILayout.Width(50))) { statesProperty.MoveArrayElement(i, i - 1); stateOrderChanged = true; break; }
+            EditorGUI.EndDisabledGroup();
+            EditorGUI.BeginDisabledGroup(!canMoveDown);
+            if (GUILayout.Button("Down", GUILayout.Width(50))) { statesProperty.MoveArrayElement(i, i + 1); stateOrderChanged = true; break; }
+            EditorGUI.EndDisabledGroup();
+            EditorGUI.BeginDisabledGroup(isCurrentFixedState); // FixedStateNames includes "End"
+            if (GUILayout.Button("Remove", GUILayout.Width(60))) { statesProperty.DeleteArrayElementAtIndex(i); stateOrderChanged = true; break; }
             EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndVertical();
-            #endregion
 
-            #region Exit time
-            EditorGUILayout.BeginVertical();
-            EditorGUILayout.LabelField("Has Exit Time", GUILayout.Width(100));
-            hasExitTime.boolValue = EditorGUILayout.Toggle(hasExitTime.boolValue, GUILayout.Width(100));
-            EditorGUILayout.EndVertical();
-            EditorGUILayout.BeginVertical();
+            EditorGUILayout.BeginVertical(GUILayout.MinWidth(180), GUILayout.MaxWidth(250));
+            SerializedProperty hasExitTime = stateProp.FindPropertyRelative("HasExitTime");
+            SerializedProperty exitTime = stateProp.FindPropertyRelative("ExitTime");
+
+            hasExitTime.boolValue = EditorGUILayout.ToggleLeft("Has Exit Time", hasExitTime.boolValue);
             if (hasExitTime.boolValue)
             {
-                EditorGUILayout.LabelField("Exit Time", GUILayout.Width(100));
-                exitTime.floatValue = EditorGUILayout.FloatField(exitTime.floatValue, GUILayout.Width(60));
+                EditorGUI.indentLevel++;
+                exitTime.floatValue = EditorGUILayout.FloatField("Exit Time", Mathf.Max(0, exitTime.floatValue));
+                EditorGUI.indentLevel--;
             }
-            EditorGUILayout.EndVertical();
-            #endregion
 
-            #region Repeating
-            EditorGUILayout.BeginVertical();
-            EditorGUILayout.LabelField("Is Repeated", GUILayout.Width(80));
-            EditorGUI.BeginDisabledGroup(isFixedState || isEndState);
-            isRepeated.boolValue = EditorGUILayout.Toggle(isRepeated.boolValue, GUILayout.Width(100));
-            if (isRepeated.boolValue)
-            {
-                EditorGUILayout.EndVertical();
-                EditorGUILayout.BeginVertical();
-                EditorGUILayout.LabelField("Repeat destination state");
-                string[] repeatAllowed = allStateNames;
-                int repeatStateIndex = Array.FindIndex(stateList.States, s => s.StateName == repeatDestStateName.stringValue);
-                repeatStateIndex = EditorGUILayout.Popup(repeatStateIndex, repeatAllowed, GUILayout.Width(150));
-                if (repeatStateIndex >= 0)
-                    repeatDestStateName.stringValue = repeatAllowed[repeatStateIndex];
-                EditorGUILayout.EndVertical();
-                EditorGUILayout.BeginVertical();
-                EditorGUILayout.LabelField("Repeat Count", GUILayout.Width(80));
-                repeatCount.intValue = EditorGUILayout.IntField(Math.Max(repeatCount.intValue, 1), GUILayout.Width(60));
-            }
-            EditorGUI.EndDisabledGroup();
-            EditorGUILayout.EndVertical();
-            #endregion
+            SerializedProperty isRepeated = stateProp.FindPropertyRelative("IsRepeated");
+            SerializedProperty repeatDestName = stateProp.FindPropertyRelative("RepeatDestStateName");
+            SerializedProperty repeatCount = stateProp.FindPropertyRelative("RepeatCount");
 
-            #region Questionnaire Form
-            EditorGUILayout.BeginVertical();
-            string stateNameStringValue = stateName.stringValue;
-            // Check if a questionnaire already exists for this state
-            if (HasEnabledFormInstance(GameObject.Find(stateNameStringValue)))
-            {
-                // Display existing questionnaire row
-                DisplayQuestionnaireRow(stateNameStringValue, i);
-            }
-            else
-            {
-                // Display "Add Questionnaire" button
-                EditorGUILayout.LabelField("Questionnaire", GUILayout.Width(100));
-                if (GUILayout.Button("Add Questionnaire", GUILayout.Width(150)))
-                    AddOrEnableQuestionnaireForm(i, stateNameStringValue);
-            }
-            EditorGUILayout.EndVertical();
-            #endregion
+            bool isTrialRelated = (trialStartIndex >= 0 && trialRestIndex >= 0 && i >= trialStartIndex && i <= trialRestIndex);
+            bool isTrialRest = (currentActualStateName == "Trial - Rest");
 
-            EditorGUILayout.EndHorizontal();
-            GUILayout.Space(10);
-            EditorGUI.EndDisabledGroup(); // End disabling for End state
-
-            if (GUI.changed)
+            if (!isTrialRelated)
             {
-                if (!EditorGUIUtility.editingTextField)
-                    GUI.FocusControl(null);
-                GameObject transition = GameObject.Find(stateName.stringValue)?.transform.Find("Transition")?.gameObject;
-                if (transition != null)
+                // --- Show repetition settings only for non-trial-related states ---
+                EditorGUI.BeginDisabledGroup(isCurrentFixedState || isCurrentEndState);
+                isRepeated.boolValue = EditorGUILayout.ToggleLeft("Is Repeated", isRepeated.boolValue);
+                EditorGUI.EndDisabledGroup();
+
+                if (isRepeated.boolValue)
                 {
-                    int dIndex = Array.FindIndex(stateList.States, s => s.StateName == destStateName.stringValue);
-                    UpdateTransitionDestStateId(transition, dIndex, stateName.stringValue == "Trial - Rest");
-                    UpdateTransitionExitTime(transition, hasExitTime.boolValue, exitTime.floatValue);
-                    int repeatDestId = Array.FindIndex(stateList.States, s => s.StateName == repeatDestStateName.stringValue);
-                    UpdateRepeatedTransition(transition, Math.Max(0, repeatDestId), isRepeated.boolValue ? repeatCount.intValue : 1);
-                    UpdateTransitionCurrentStateId(transition, i);
+                    EditorGUI.indentLevel++;
+                    string[] allStateNamesForRepeat = new string[statesProperty.arraySize];
+                    for (int k = 0; k < statesProperty.arraySize; ++k)
+                        allStateNamesForRepeat[k] = statesProperty.GetArrayElementAtIndex(k).FindPropertyRelative("StateName").stringValue;
+
+                    int repIndex = Array.IndexOf(allStateNamesForRepeat, repeatDestName.stringValue);
+                    repIndex = EditorGUILayout.Popup("Repeat Destination", repIndex, allStateNamesForRepeat);
+                    if (repIndex >= 0)
+                    {
+                        repeatDestName.stringValue = allStateNamesForRepeat[repIndex];
+                    }
+                    else
+                    {
+                        repeatDestName.stringValue = string.Empty;
+                    }
+
+                    repeatCount.intValue = EditorGUILayout.IntField("Repeat Count", Math.Max(1, repeatCount.intValue));
+                    EditorGUI.indentLevel--;
                 }
             }
+            EditorGUILayout.EndVertical();
+
+            GUILayout.Space(50);
+
+
+            EditorGUILayout.BeginVertical(GUILayout.MinWidth(180));
+            string stateNameValFromProp = stateNameProp.stringValue;
+            GameObject sceneObj = GameObject.Find(stateNameValFromProp);
+            if (HasEnabledFormInstance(sceneObj))
+                DisplayQuestionnaireRow(stateNameValFromProp, i);
+            else
+            {
+                EditorGUILayout.LabelField("Questionnaire", GUILayout.Width(100));
+                if (GUILayout.Button("Add Questionnaire", GUILayout.Width(150)))
+                    AddOrEnableQuestionnaireForm(i, stateNameValFromProp);
+            }
+            EditorGUILayout.EndVertical();
+
+            EditorGUILayout.EndHorizontal();
+            GUILayout.Space(20);
+            EditorGUILayout.EndVertical();
+
+            GUI.backgroundColor = originalBackgroundColor;
+            GUI.contentColor = originalContentColor;
+
+            if (GUI.changed && !EditorGUIUtility.editingTextField)
+                GUI.FocusControl(null);
         }
 
         serializedStateList.ApplyModifiedProperties();
 
-        // --- NEW: Update "Trial - Start" transition destination ---
-        // Every time trial states are edited, set the "Trial - Start" state's destination to the state immediately following it.
-        int updatedTrialTaskIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Start");
-        if (updatedTrialTaskIndex != -1 && updatedTrialTaskIndex + 1 < stateList.States.Length)
-            stateList.States[updatedTrialTaskIndex].DestStateName = stateList.States[updatedTrialTaskIndex + 1].StateName;
+        // The specific auto-management for "Trial - Start" and "Trial - Rest" destinations
+        // is now handled by the general auto-destination logic within the loop.
+        // So, those specific blocks are removed.
 
-        UpdateSceneObjects();
-        if (stateOrderChanged)
+        bool contentChanged = stateOrderChanged;
+        if (!contentChanged && previousStates != null && stateList.States.Length == previousStates.Length)
+        {
+            for (int k = 0; k < stateList.States.Length; k++)
+            {
+                if (!stateList.States[k].Equals(previousStates[k]))
+                {
+                    contentChanged = true;
+                    break;
+                }
+            }
+        }
+        else if (previousStates == null && stateList.States != null && stateList.States.Length > 0)
+        { // Initial creation
+            contentChanged = true;
+        }
+        else if (previousStates != null && stateList.States != null && stateList.States.Length != previousStates.Length)
+        {
+            contentChanged = true;
+        }
+
+
+        if (contentChanged)
+        {
+            UpdateSceneObjects();
             UpdateStateListeningItemsAfterReorder();
+            if (stateList.States != null)
+            {
+                previousStates = new StateList.State[stateList.States.Length];
+                Array.Copy(stateList.States, previousStates, stateList.States.Length);
+            }
+            else
+            {
+                previousStates = new StateList.State[0];
+            }
+        }
 
         EditorGUILayout.EndScrollView();
     }
 
-    private void CopyStateFields(int sourceIndex, int targetIndex)
-    {
-        SerializedProperty source = statesProperty.GetArrayElementAtIndex(sourceIndex);
-        SerializedProperty target = statesProperty.GetArrayElementAtIndex(targetIndex);
-        target.FindPropertyRelative("StateName").stringValue = "State " + targetIndex;
-        target.FindPropertyRelative("DestStateName").stringValue = source.FindPropertyRelative("DestStateName").stringValue;
-        target.FindPropertyRelative("HasExitTime").boolValue = source.FindPropertyRelative("HasExitTime").boolValue;
-        target.FindPropertyRelative("ExitTime").floatValue = source.FindPropertyRelative("ExitTime").floatValue;
-        target.FindPropertyRelative("IsRepeated").boolValue = source.FindPropertyRelative("IsRepeated").boolValue;
-        target.FindPropertyRelative("RepeatDestStateName").stringValue = source.FindPropertyRelative("RepeatDestStateName").stringValue;
-        target.FindPropertyRelative("RepeatCount").intValue = source.FindPropertyRelative("RepeatCount").intValue;
-    }
 
     private void InitializeStateDefaults(int index)
     {
         SerializedProperty target = statesProperty.GetArrayElementAtIndex(index);
-        target.FindPropertyRelative("StateName").stringValue = "State " + index;
-        target.FindPropertyRelative("DestStateName").stringValue = "";
+        target.FindPropertyRelative("StateName").stringValue = "NewState" + index;
+        target.FindPropertyRelative("DestStateName").stringValue = ""; // Will be auto-set by GUI logic
         target.FindPropertyRelative("HasExitTime").boolValue = false;
         target.FindPropertyRelative("ExitTime").floatValue = 0f;
         target.FindPropertyRelative("IsRepeated").boolValue = false;
         target.FindPropertyRelative("RepeatDestStateName").stringValue = "";
         target.FindPropertyRelative("RepeatCount").intValue = 1;
+        target.FindPropertyRelative("qID").intValue = 0;
     }
 
-    // For extra trial states, initialize the default name as "Trial - "
     private void InitializeTrialStateDefaults(int index)
     {
         SerializedProperty target = statesProperty.GetArrayElementAtIndex(index);
-        target.FindPropertyRelative("StateName").stringValue = "Trial - " + index;
-        target.FindPropertyRelative("DestStateName").stringValue = "";
+        target.FindPropertyRelative("StateName").stringValue = "NewTrialState" + index;
+        target.FindPropertyRelative("DestStateName").stringValue = ""; // Will be auto-set by GUI logic
         target.FindPropertyRelative("HasExitTime").boolValue = false;
         target.FindPropertyRelative("ExitTime").floatValue = 0f;
         target.FindPropertyRelative("IsRepeated").boolValue = false;
         target.FindPropertyRelative("RepeatDestStateName").stringValue = "";
         target.FindPropertyRelative("RepeatCount").intValue = 1;
+        target.FindPropertyRelative("qID").intValue = 0;
     }
 
     private void UpdateSceneObjects()
     {
-        GameObject[] rootObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
-        GameObject statesObject = null;
-        GameObject requiredObjectsWrapper = null;
+        if (stateList == null || stateList.States == null) return;
 
-        foreach (GameObject obj in rootObjects)
+        // 1) Find or create the "States" container
+        var statesObjectContainer = FindOrCreateStatesContainer();
+        if (statesObjectContainer == null)
         {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == RequiredObjectsWrapperPrefabPath)
-            {
-                requiredObjectsWrapper = obj;
-                for (int i = 0; i < obj.transform.childCount; i++)
-                {
-                    Transform child = obj.transform.GetChild(i);
-                    if (child.gameObject.name == "States")
-                    {
-                        statesObject = child.gameObject;
-                        break;
-                    }
-                }
-            }
-        }
-        if (statesObject == null && requiredObjectsWrapper != null)
-        {
-            statesObject = new GameObject("States");
-            statesObject.transform.SetParent(requiredObjectsWrapper.transform, false);
+            Debug.LogError("Could not find or create 'States' container object.");
+            return;
         }
 
-        // Instead of using transform.Find(name) (which can return duplicates), always find the child by its state ID.
+        // 2) Remove all existing state GameObjects
+        for (int i = statesObjectContainer.transform.childCount - 1; i >= 0; i--)
+        {
+            DestroyImmediate(statesObjectContainer.transform.GetChild(i).gameObject);
+        }
+
+        // 3) Regenerate each state and re‐add questionnaires as needed
         for (int i = 0; i < stateList.States.Length; i++)
         {
-            string stateName = stateList.States[i].StateName;
-            if (string.IsNullOrEmpty(stateName))
-                stateName = "State";
-            Transform stateTransform = FindChildByStateID(statesObject.transform, i);
-            if (stateTransform == null)
-            {
-                // Not found by stateID, so instantiate a new child.
-                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(
-                    stateName == "Preparation"
-                      ? prepareStatePrefabPath
-                      : ( stateName == "Trial - Rest"
-                        ? trialRestStatePrefabPath
-                        : statePrefabPath
-                    ));
-                if (prefab != null)
-                {
-                    GameObject newChild = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
-                    newChild.name = stateName;
-                    newChild.transform.SetParent(statesObject.transform);
-                    stateTransform = newChild.transform;
-                }
-            }
-            else
-            {
-                // Always update the name to the current state name.
-                stateTransform.name = stateName;
-            }
-            if (stateTransform.GetSiblingIndex() != i)
-                stateTransform.SetSiblingIndex(i);
+            StateList.State currentStateData = stateList.States[i];
+            string expectedName = string.IsNullOrEmpty(currentStateData.StateName) ? $"State{i}" : currentStateData.StateName;
 
-            GameObject transition = stateTransform.Find("Transition")?.gameObject;
-            if (transition != null)
+            string prefabPath = (currentStateData.StateName == "Trial - Rest")
+                ? trialRestStatePrefabPath
+                : statePrefabPath;
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+            if (prefab == null)
             {
-                UpdateTransitionCurrentStateId(transition, i);
-                int destStateId = Array.FindIndex(stateList.States, s => s.StateName == stateList.States[i].DestStateName);
-                UpdateTransitionDestStateId(transition, destStateId, stateList.States[i].StateName == "Trial - Rest");
+                Debug.LogError($"Prefab not found for state: {expectedName}");
+                continue;
             }
-        }
 
-        for (int i = statesObject.transform.childCount - 1; i >= stateList.States.Length; i--)
-        {
-            DestroyImmediate(statesObject.transform.GetChild(i).gameObject);
+            GameObject newChild = (GameObject)PrefabUtility.InstantiatePrefab(prefab, statesObjectContainer.transform);
+            newChild.name = expectedName;
+            newChild.transform.SetSiblingIndex(i);
+
+            // ── Transition setup ──
+            GameObject transitionObj = newChild.transform.Find("Transition")?.gameObject;
+            if (transitionObj != null)
+            {
+                UpdateTransitionCurrentStateId(transitionObj, i);
+
+                int destStateId = Array.FindIndex(
+                    stateList.States,
+                    s => s.StateName == currentStateData.DestStateName
+                );
+                UpdateTransitionDestStateId(
+                    transitionObj,
+                    destStateId,
+                    currentStateData.StateName == "Trial - Rest"
+                );
+
+                UpdateTransitionExitTime(
+                    transitionObj,
+                    currentStateData.HasExitTime,
+                    currentStateData.ExitTime
+                );
+
+                int repeatDestId = Array.FindIndex(
+                    stateList.States,
+                    s => s.StateName == currentStateData.RepeatDestStateName
+                );
+                UpdateRepeatedTransition(
+                    transitionObj,
+                    Mathf.Max(0, repeatDestId),
+                    currentStateData.IsRepeated ? currentStateData.RepeatCount : 1
+                );
+            }
+
+            // ── Questionnaire re‐spawn ──
+            if (currentStateData.qID > 0)
+            {
+                AddOrEnableQuestionnaireForm(i, expectedName);
+            }
         }
     }
 
@@ -604,21 +593,24 @@ public class StateListEditor : EditorWindow
             GameObject transition = child.Find("Transition")?.gameObject;
             if (transition != null)
             {
-                Component stateIdSettingComp = transition.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
-                if (stateIdSettingComp != null)
+                var itemLogic = transition.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
+                if (itemLogic != null)
                 {
-                    SerializedObject serializedComp = new SerializedObject(stateIdSettingComp);
-                    SerializedProperty specificProperty = serializedComp.FindProperty("logic.statements");
-                    if (specificProperty != null && specificProperty.isArray && specificProperty.arraySize > 0)
+                    SerializedObject serializedComp = new SerializedObject(itemLogic);
+                    SerializedProperty statementsProp = serializedComp.FindProperty("logic.statements");
+                    if (statementsProp != null && statementsProp.isArray)
                     {
-                        for (int i = 0; i < specificProperty.arraySize; i++)
+                        for (int i = 0; i < statementsProp.arraySize; i++)
                         {
-                            SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
+                            SerializedProperty statement = statementsProp.GetArrayElementAtIndex(i);
+                            SerializedProperty targetKey = statement.FindPropertyRelative("singleStatement.targetState.key");
                             if (targetKey != null && targetKey.stringValue == "state_id")
                             {
-                                SerializedProperty stateIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
-                                if (stateIdProp != null && stateIdProp.intValue == stateID)
+                                SerializedProperty valueProp = statement.FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
+                                if (valueProp != null && valueProp.intValue == stateID)
+                                {
                                     return child;
+                                }
                             }
                         }
                     }
@@ -637,6 +629,7 @@ public class StateListEditor : EditorWindow
             SerializedProperty specificProperty = serializedComp.FindProperty("logic.statements");
             if (specificProperty != null && specificProperty.isArray && specificProperty.arraySize > 0)
             {
+                bool found = false;
                 for (int i = 0; i < specificProperty.arraySize; i++)
                 {
                     SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
@@ -645,19 +638,18 @@ public class StateListEditor : EditorWindow
                         SerializedProperty stateIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
                         if (stateIdProp != null)
                         {
-                            stateIdProp.intValue = stateId;
-                            serializedComp.ApplyModifiedProperties();
+                            if (stateIdProp.intValue != stateId)
+                            {
+                                stateIdProp.intValue = stateId;
+                                serializedComp.ApplyModifiedProperties();
+                            }
+                            found = true;
                             break;
-                        }
-                        else
-                        {
-                            Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.value.constant.integerValue");
                         }
                     }
                 }
+                // if (!found) Debug.LogWarning($"'state_id' key not found in ItemLogic on {transition.transform.parent.name}/Transition");
             }
-            else
-                Debug.LogWarning("Property not found: logic.statements");
         }
     }
 
@@ -681,50 +673,85 @@ public class StateListEditor : EditorWindow
             SerializedProperty specificProperty = serializedTransitionSettingLogic.FindProperty("logic.statements");
             if (specificProperty != null && specificProperty.isArray && specificProperty.arraySize > 0)
             {
+                bool foundTarget = false;
                 for (int i = 0; i < specificProperty.arraySize; i++)
                 {
                     SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
                     if (targetKey != null && targetKey.stringValue == "state_currentID")
                     {
+                        foundTarget = true;
                         SerializedProperty transitDestStateIdProp = isTrialRestState
                             ? specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.operatorExpression.operands.Array.data[1].value.constant.integerValue")
                             : specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
+
                         if (transitDestStateIdProp != null)
                         {
-                            transitDestStateIdProp.intValue = destStateId;
-                            serializedTransitionSettingLogic.ApplyModifiedProperties();
+                            if (transitDestStateIdProp.intValue != destStateId)
+                            {
+                                transitDestStateIdProp.intValue = destStateId;
+                                serializedTransitionSettingLogic.ApplyModifiedPropertiesWithoutUndo();
+                            }
+                        }
+                        else
+                        {
+                            // Debug.LogWarning($"Transition destination ID property not found for {transition.transform.parent.name}, isTrialRestState: {isTrialRestState}");
                         }
 
                         if (isTrialRestState)
                         {
                             SerializedProperty trialTaskStateIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.operatorExpression.operands.Array.data[2].value.constant.integerValue");
+                            int trialStartIndex = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Start");
                             if (trialTaskStateIdProp != null)
                             {
-                                trialTaskStateIdProp.intValue = Array.FindIndex(stateList.States, s => s.StateName == "Trial - Start");
-                                serializedTransitionSettingLogic.ApplyModifiedProperties();
+                                if (trialTaskStateIdProp.intValue != trialStartIndex)
+                                {
+                                    trialTaskStateIdProp.intValue = trialStartIndex;
+                                    serializedTransitionSettingLogic.ApplyModifiedPropertiesWithoutUndo();
+                                }
+                            }
+                            else
+                            {
+                                // Debug.LogWarning($"Trial Start ID property not found for Trial - Rest state: {transition.transform.parent.name}");
                             }
                         }
+                        break;
                     }
                 }
+                // if (!foundTarget) Debug.LogWarning($"'state_currentID' target key not found in GlobalLogic (state_triggerTransition) on {transition.transform.parent.name}");
             }
-            else
-                Debug.LogWarning("Property not found: logic.statements");
         }
     }
 
     private void UpdateTransitionExitTime(GameObject transition, bool hasExitTime, float exitTime)
     {
         var itemTimers = transition.GetComponents<ClusterVR.CreatorKit.Operation.Implements.ItemTimer>();
+        bool found = false;
         foreach (var itemTimer in itemTimers)
         {
             SerializedObject serializedComp = new SerializedObject(itemTimer);
             var keyProp = serializedComp.FindProperty("key.key");
+
             if (keyProp != null && (keyProp.stringValue == "state_enter" || keyProp.stringValue == "state_enter(disabled)"))
             {
-                keyProp.stringValue = hasExitTime ? "state_enter" : "state_enter(disabled)";
+                found = true;
+                string newKey = hasExitTime ? "state_enter" : "state_enter(disabled)";
+                bool changed = false;
+                if (keyProp.stringValue != newKey)
+                {
+                    keyProp.stringValue = newKey;
+                    changed = true;
+                }
+
                 var delayTimeProp = serializedComp.FindProperty("delayTimeSeconds");
-                delayTimeProp.floatValue = exitTime;
-                serializedComp.ApplyModifiedProperties();
+                if (delayTimeProp != null && delayTimeProp.floatValue != exitTime)
+                {
+                    delayTimeProp.floatValue = exitTime;
+                    changed = true;
+                }
+                if (changed)
+                {
+                    serializedComp.ApplyModifiedProperties();
+                }
                 break;
             }
         }
@@ -733,184 +760,298 @@ public class StateListEditor : EditorWindow
     private void UpdateRepeatedTransition(GameObject transition, int repeatDestStateId = 0, int repeatCount = 1)
     {
         var globalLogics = transition.GetComponents<ClusterVR.CreatorKit.Operation.Implements.GlobalLogic>();
-        Component transitionSettingLogic = null;
+        Component repeatTransitionLogic = null;
         foreach (var globalLogic in globalLogics)
         {
             SerializedObject serializedComp = new SerializedObject(globalLogic);
             var keyProp = serializedComp.FindProperty("globalGimmickKey.key.key");
             if (keyProp != null && keyProp.stringValue == "state_triggerTransitionToRepeat")
             {
-                transitionSettingLogic = globalLogic;
+                repeatTransitionLogic = globalLogic;
                 break;
             }
         }
-        if (transitionSettingLogic != null)
+
+        if (repeatTransitionLogic != null)
         {
-            SerializedObject serializedTransitionSettingLogic = new SerializedObject(transitionSettingLogic);
-            SerializedProperty specificProperty = serializedTransitionSettingLogic.FindProperty("logic.statements");
-            if (specificProperty != null && specificProperty.isArray && specificProperty.arraySize > 0)
+            SerializedObject serializedRepeatLogic = new SerializedObject(repeatTransitionLogic);
+            SerializedProperty statementsProp = serializedRepeatLogic.FindProperty("logic.statements");
+            if (statementsProp != null && statementsProp.isArray && statementsProp.arraySize > 0)
             {
-                for (int i = 0; i < specificProperty.arraySize; i++)
+                for (int i = 0; i < statementsProp.arraySize; i++)
                 {
-                    SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
+                    SerializedProperty targetKey = statementsProp.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
                     if (targetKey != null && targetKey.stringValue == "state_currentID")
                     {
-                        SerializedProperty transitDestStateIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
-                        if (transitDestStateIdProp != null)
+                        SerializedProperty destIdProp = statementsProp.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
+                        if (destIdProp != null && destIdProp.intValue != repeatDestStateId)
                         {
-                            transitDestStateIdProp.intValue = repeatDestStateId;
-                            serializedTransitionSettingLogic.ApplyModifiedProperties();
-                            break;
+                            destIdProp.intValue = repeatDestStateId;
+                            serializedRepeatLogic.ApplyModifiedProperties();
                         }
-                        else
-                            Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.value.constant.integerValue");
+                        break;
                     }
                 }
             }
-            else
-                Debug.LogWarning("Property not found: logic.statements");
         }
 
-        var stateIdSettingComp = transition.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
-        if (stateIdSettingComp != null)
+        var itemLogicComp = transition.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
+        if (itemLogicComp != null)
         {
-            SerializedObject serializedComp = new SerializedObject(stateIdSettingComp);
-            SerializedProperty specificProperty = serializedComp.FindProperty("logic.statements");
-            if (specificProperty != null && specificProperty.isArray && specificProperty.arraySize > 0)
+            SerializedObject serializedItemLogic = new SerializedObject(itemLogicComp);
+            SerializedProperty statementsProp = serializedItemLogic.FindProperty("logic.statements");
+            if (statementsProp != null && statementsProp.isArray && statementsProp.arraySize > 0)
             {
-                for (int i = 0; i < specificProperty.arraySize; i++)
+                for (int i = 0; i < statementsProp.arraySize; i++)
                 {
-                    SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
+                    SerializedProperty targetKey = statementsProp.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
                     if (targetKey != null && targetKey.stringValue == "state_repeatCountMax")
                     {
-                        SerializedProperty repeatCountMaxProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
-                        if (repeatCountMaxProp != null)
+                        SerializedProperty countProp = statementsProp.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
+                        if (countProp != null && countProp.intValue != repeatCount)
                         {
-                            repeatCountMaxProp.intValue = repeatCount;
-                            serializedComp.ApplyModifiedProperties();
-                            break;
+                            countProp.intValue = repeatCount;
+                            serializedItemLogic.ApplyModifiedProperties();
                         }
-                        else
-                            Debug.LogWarning("Property not found: logic.statements.singleStatement.expression.value.constant.integerValue");
+                        break;
                     }
                 }
             }
-            else
-                Debug.LogWarning("Property not found: logic.statements");
         }
     }
 
     private void UpdateStateListeningItemsAfterReorder()
     {
-        if (stateList == null || previousStates == null) return;
-        Dictionary<int, int> stateIdMap = new Dictionary<int, int>();
-        for (int i = 0; i < previousStates.Length; i++)
+        if (stateList == null || stateList.States == null)
         {
-            string stateName = previousStates[i].StateName;
-            int newStateIndex = Array.FindIndex(stateList.States, s => s.StateName == stateName);
-            stateIdMap.Add(i, newStateIndex);
+            if (stateList != null && stateList.States == null) stateList.States = new StateList.State[0]; // Ensure not null
+            else return; // stateList itself is null
         }
-        // (State listening items update code remains unchanged)
-        sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        string listenersFolderPath = string.Format(stateManagementScriptFolderPathFormat, sceneName) + "/StateListeners";
-        if (Directory.Exists(listenersFolderPath))
+        if (previousStates == null)
+        { // Initialize previousStates if it's null but states exist
+            previousStates = new StateList.State[stateList.States.Length];
+            Array.Copy(stateList.States, previousStates, stateList.States.Length);
+        }
+
+
+        var nameToNewIndexMap = new Dictionary<string, int>();
+        for (int i = 0; i < stateList.States.Length; i++)
         {
-            string[] assetFiles = Directory.GetFiles(listenersFolderPath, "*.asset");
-            foreach (string assetFile in assetFiles)
+            if (!string.IsNullOrEmpty(stateList.States[i].StateName))
             {
-                StateListeningItemData stateListeningItemData = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(assetFile);
-                if (stateListeningItemData != null)
+                nameToNewIndexMap[stateList.States[i].StateName] = i;
+            }
+        }
+
+        sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        string listenersFolder = string.Format(stateManagementScriptFolderPathFormat, sceneName) + "/StateListeners";
+
+        if (!Directory.Exists(listenersFolder))
+        {
+            return;
+        }
+
+        string[] assetFiles = Directory.GetFiles(listenersFolder, "*.asset", SearchOption.AllDirectories);
+        bool anyDataDirtied = false;
+
+        foreach (var assetFile in assetFiles)
+        {
+            var data = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(assetFile);
+            if (data == null || data.stateListeners == null) continue;
+
+            bool currentDataDirty = false;
+
+            for (int listenerIndex = 0; listenerIndex < data.stateListeners.Length; listenerIndex++)
+            {
+                StateListener listener = data.stateListeners[listenerIndex];
+                string oldStateName = null;
+                if (listener.stateID >= 0 && listener.stateID < previousStates.Length) // Use previousStates length
                 {
-                    bool updated = false;
-                    var updatedListeners = new List<StateListener>();
-                    foreach (StateListener listener in stateListeningItemData.stateListeners)
+                    // Ensure previousStates[listener.stateID] itself is not null if it's an array of classes
+                    if (listener.stateID < previousStates.Length && !string.IsNullOrEmpty(previousStates[listener.stateID].StateName))
                     {
-                        if (stateIdMap.ContainsKey(listener.stateID))
+                        oldStateName = previousStates[listener.stateID].StateName;
+                    }
+                    else if (listener.stateID != -1)
+                    { // If stateID was valid but couldn't get name from previous
+                        // This might happen if previousStates wasn't perfectly synced or had null entries.
+                        // Try to find the state by ID in the *current* list and use its name as a fallback for "old name".
+                        // This is a bit of a recovery attempt.
+                        if (listener.stateID < stateList.States.Length)
                         {
-                            listener.stateID = stateIdMap[listener.stateID];
-                            updated = true;
-                            if (listener.stateID >= 0)
-                                updatedListeners.Add(listener);
-                        }
-                        else
-                        {
-                            updatedListeners.Add(listener);
+                            // oldStateName = stateList.States[listener.stateID].StateName; // This is risky, might map to wrong new ID
+                            // Let's rather log a warning or set to -1 if oldStateName is indeterminable from previousStates
                         }
                     }
-                    stateListeningItemData.stateListeners = updatedListeners.ToArray();
-                    if (updated)
-                        EditorUtility.SetDirty(stateListeningItemData);
                 }
-                
-                var itemName = assetFile.Replace(listenersFolderPath, "").Replace("\\", "").Replace(".asset", "");
-                string scriptPath = string.Format("Assets/_Experiment_/Scripts/StateManagement/{0}/{1}.js", sceneName, itemName);
-                string newScriptContent = "";
-                newScriptContent += GenerateOnStateEnterFunction(stateListeningItemData.stateListeners) + "\n";
-                newScriptContent += GenerateDuringStateFunction(stateListeningItemData.stateListeners) + "\n";
-                newScriptContent += GenerateOnStateExitFunction(stateListeningItemData.stateListeners) + "\n";
-                newScriptContent += stateListeningItemData.otherImplementation + "\n";
-                File.WriteAllText(scriptPath, newScriptContent);
+
+
+                if (!string.IsNullOrEmpty(oldStateName))
+                {
+                    if (nameToNewIndexMap.TryGetValue(oldStateName, out var newIndex))
+                    {
+                        if (listener.stateID != newIndex)
+                        {
+                            listener.stateID = newIndex;
+                            currentDataDirty = true;
+                        }
+                    }
+                    else
+                    {
+                        if (listener.stateID != -1)
+                        {
+                            // Debug.LogWarning($"State '{oldStateName}' for listener in '{assetFile}' no longer exists. Setting listener stateID to -1.");
+                            listener.stateID = -1;
+                            currentDataDirty = true;
+                        }
+                    }
+                }
+                else if (listener.stateID != -1 && listener.stateID < previousStates.Length)
+                {
+                    // Old state ID was valid but name was empty or state was null in previousStates.
+                    // This indicates an issue with previousStates or the listener's old ID.
+                    // Debug.LogWarning($"Could not determine old state name for listener (old ID: {listener.stateID}) in '{assetFile}'. State name might have been empty or state removed. Setting listener stateID to -1.");
+                    listener.stateID = -1;
+                    currentDataDirty = true;
+                }
+                else if (listener.stateID >= previousStates.Length && listener.stateID != -1)
+                {
+                    // Old state ID was out of bounds for previousStates, clearly an issue or a new listener for a state just added.
+                    // If it's a new listener, it shouldn't have an oldStateName.
+                    // If it's an old listener with an invalid ID, mark it.
+                    // This case is complex; for simplicity, if it's out of bounds and not -1, assume it's problematic.
+                    // Debug.LogWarning($"Listener stateID {listener.stateID} in '{assetFile}' was out of bounds for previous state list. Setting to -1.");
+                    listener.stateID = -1;
+                    currentDataDirty = true;
+                }
+
+                data.stateListeners[listenerIndex] = listener;
+            }
+
+            if (currentDataDirty)
+            {
+                EditorUtility.SetDirty(data);
+                anyDataDirtied = true;
+                string itemName = Path.GetFileNameWithoutExtension(assetFile);
+                // Ensure the directory for the .js script exists.
+                string scriptDir = Path.GetDirectoryName(assetFile); // Assumes .js is beside .asset
+                if (!Directory.Exists(scriptDir)) Directory.CreateDirectory(scriptDir);
+                string scriptPath = Path.Combine(scriptDir, itemName + ".js");
+
+
+                var sb = new StringBuilder();
+                sb.AppendLine(GenerateOnStateEnterFunction(data.stateListeners));
+                sb.AppendLine(GenerateDuringStateFunction(data.stateListeners));
+                sb.AppendLine(GenerateOnStateExitFunction(data.stateListeners));
+                sb.AppendLine(data.otherImplementation ?? string.Empty); // Ensure otherImplementation is not null
+
+                File.WriteAllText(scriptPath, sb.ToString());
             }
         }
 
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
-        Array.Copy(stateList.States, previousStates, stateList.States.Length);
+        if (anyDataDirtied)
+        {
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
     }
 
-    // Adds or enables a Questionnaire instance and sets its qID.
-    // qID is updated when the user changes the text field.
-    private void AddOrEnableQuestionnaireForm(int stateId, string stateName)
+    private void AddOrEnableQuestionnaireForm(int stateId, string stateNameInAsset)
     {
-        GameObject stateObject = GameObject.Find(stateName)?.gameObject;
-        if (stateObject != null)
+        GameObject stateObjectInScene = FindStateObject(stateNameInAsset);
+        if (stateObjectInScene != null)
         {
-            GameObject objects = stateObject.transform.Find("Objects")?.gameObject;
-            if (!objects)
+            Transform objectsContainer = stateObjectInScene.transform.Find("Objects");
+            if (objectsContainer == null)
             {
-                objects = new GameObject("Objects");
-                objects.transform.SetParent(stateObject.transform, false);
+                GameObject newObjectsContainer = new GameObject("Objects");
+                newObjectsContainer.transform.SetParent(stateObjectInScene.transform, false);
+                objectsContainer = newObjectsContainer.transform;
             }
-            GameObject existingInstance = objects.transform.Cast<Transform>()
+
+            GameObject existingInstance = objectsContainer.Cast<Transform>()
                 .FirstOrDefault(child => PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == formPrefabPath)?.gameObject;
-            if (existingInstance != null && !existingInstance.activeSelf)
+
+            // Get the qID value from the State scriptable object asset
+            int qIDToSet = 0;
+            if (stateId >= 0 && stateId < stateList.States.Length)
             {
-                existingInstance.SetActive(true);
-                GameObject formController = existingInstance.transform.Find("FormController")?.gameObject;
-                UpdateQID(formController, -1);
-                CopyWorldItemReferenceListToFormController(formController);
-                Debug.Log($"Questionnaire in {stateName} re-enabled with qID {stateId}");
+                qIDToSet = stateList.States[stateId].qID > 0 ? stateList.States[stateId].qID : 0;
             }
-            else if (!existingInstance)
+
+            if (existingInstance != null)
+            {
+                if (!existingInstance.activeSelf)
+                {
+                    existingInstance.SetActive(true);
+                }
+                GameObject formController = existingInstance.transform.Find("FormController")?.gameObject;
+                UpdateQID(formController, qIDToSet);
+                // If the script needs to be re-applied or ensured on existing instances:
+                if (formController != null)
+                {
+                    var identifiersAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(identifiersAssetPath);
+                    if (identifiersAsset != null)
+                    {
+                        ScriptableClusterScriptCombiner combiner = formController.GetComponent<ScriptableClusterScriptCombiner>();
+                        if (combiner != null)
+                        {
+                            combiner.ReplaceScript(identifiersAsset, 0, null, 0, true);
+                            EditorUtility.SetDirty(combiner);
+                        }
+                    }
+                }
+                Debug.Log($"Questionnaire in {stateNameInAsset} ensured active with qID {qIDToSet}");
+            }
+            else
             {
                 GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(formPrefabPath);
                 if (prefab != null)
                 {
-                    GameObject newFormInstance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
-                    newFormInstance.transform.SetParent(objects.transform);
+                    GameObject newFormInstance = (GameObject)PrefabUtility.InstantiatePrefab(prefab, objectsContainer);
                     newFormInstance.name = prefab.name;
                     GameObject formController = newFormInstance.transform.Find("FormController")?.gameObject;
                     if (formController != null)
                     {
-                        var identifiersAsset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(identifiersAssetPath);
-                        ScriptableClusterScriptCombiner combiner = formController.GetComponent<ScriptableClusterScriptCombiner>();
-                        combiner.ReplaceScript(identifiersAsset, 0, null, 0, true);
-                        EditorUtility.SetDirty(combiner);
-                        EditorUtility.SetDirty(identifiersAsset);
-                        AssetDatabase.SaveAssets();
-                        UpdateQID(formController, -1);
+                        var identifiersAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(identifiersAssetPath);
+                        if (identifiersAsset != null)
+                        {
+                            ScriptableClusterScriptCombiner combiner = formController.GetComponent<ScriptableClusterScriptCombiner>();
+                            if (combiner != null)
+                            {
+                                combiner.ReplaceScript(identifiersAsset, 0, null, 0, true);
+                                EditorUtility.SetDirty(combiner);
+                            }
+                            else
+                            {
+                                Debug.LogWarning($"ScriptableClusterScriptCombiner not found on FormController of {newFormInstance.name}");
+                            }
+                        }
+                        else
+                        {
+                            Debug.LogWarning($"Identifiers asset not found at {identifiersAssetPath}");
+                        }
+
+                        UpdateQID(formController, qIDToSet);
                         CopyWorldItemReferenceListToFormController(formController);
-                        Debug.Log($"Questionnaire added to {stateName} with qID {stateId}");
+                        Debug.Log($"Questionnaire added to {stateNameInAsset} with qID {qIDToSet}");
                     }
                 }
             }
         }
+        else
+        {
+            Debug.LogWarning($"State GameObject '{stateNameInAsset}' not found in scene. Cannot add questionnaire.");
+        }
     }
 
-    // Get the FormController game object inside the Questionnaire prefab.
-    private GameObject GetFormController(GameObject stateObject)
+    private GameObject GetFormController(GameObject stateObjectInScene)
     {
-        foreach (Transform child in stateObject.transform)
+        if (stateObjectInScene == null) return null;
+        Transform objectsContainer = stateObjectInScene.transform.Find("Objects");
+        if (objectsContainer == null) return null;
+
+        foreach (Transform child in objectsContainer)
         {
             if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == formPrefabPath)
                 return child.Find("FormController")?.gameObject;
@@ -918,25 +1059,24 @@ public class StateListEditor : EditorWindow
         return null;
     }
 
-    // Get the current qID value from the FormController.
     private int GetCurrentQID(GameObject formController)
     {
         if (formController == null) return -1;
-        Component itemLogic = formController.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
+        var itemLogic = formController.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
         if (itemLogic != null)
         {
             SerializedObject serializedComp = new SerializedObject(itemLogic);
-            SerializedProperty specificProperty = serializedComp.FindProperty("logic.statements");
-            if (specificProperty != null && specificProperty.isArray)
+            SerializedProperty statementsProp = serializedComp.FindProperty("logic.statements");
+            if (statementsProp != null && statementsProp.isArray)
             {
-                for (int i = 0; i < specificProperty.arraySize; i++)
+                for (int i = 0; i < statementsProp.arraySize; i++)
                 {
-                    SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
+                    SerializedProperty targetKey = statementsProp.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
                     if (targetKey != null && targetKey.stringValue == "qID")
                     {
-                        SerializedProperty qIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
-                        if (qIdProp != null)
-                            return qIdProp.intValue;
+                        SerializedProperty qIdValueProp = statementsProp.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
+                        if (qIdValueProp != null)
+                            return qIdValueProp.intValue;
                     }
                 }
             }
@@ -944,67 +1084,106 @@ public class StateListEditor : EditorWindow
         return -1;
     }
 
-    // Update the qID value in the FormController.
-    // This method is now invoked only when the user directly inputs a new value.
     private void UpdateQID(GameObject formController, int qID)
     {
-        Component itemLogic = formController.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
+        if (formController == null) return;
+        var itemLogic = formController.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
         if (itemLogic != null)
         {
             SerializedObject serializedComp = new SerializedObject(itemLogic);
-            SerializedProperty specificProperty = serializedComp.FindProperty("logic.statements");
-            if (specificProperty != null && specificProperty.isArray)
+            SerializedProperty statementsProp = serializedComp.FindProperty("logic.statements");
+            bool qIdUpdated = false;
+            if (statementsProp != null && statementsProp.isArray)
             {
-                for (int i = 0; i < specificProperty.arraySize; i++)
+                for (int i = 0; i < statementsProp.arraySize; i++)
                 {
-                    SerializedProperty targetKey = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
+                    SerializedProperty targetKey = statementsProp.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
                     if (targetKey != null && targetKey.stringValue == "qID")
                     {
-                        SerializedProperty qIdProp = specificProperty.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
-                        if (qIdProp != null)
+                        SerializedProperty qIdValueProp = statementsProp.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
+                        if (qIdValueProp != null)
                         {
-                            qIdProp.intValue = qID;
-                            serializedComp.ApplyModifiedProperties();
+                            if (qIdValueProp.intValue != qID)
+                            {
+                                qIdValueProp.intValue = qID;
+                                qIdUpdated = true;
+                            }
                             break;
                         }
                     }
                 }
             }
+            if (qIdUpdated)
+            {
+                serializedComp.ApplyModifiedProperties();
+            }
         }
     }
 
-    // Displays a row for the existing questionnaire object if present.
-    private void DisplayQuestionnaireRow(string stateName, int stateId)
+    private void DisplayQuestionnaireRow(string stateNameInAsset, int stateIdInAsset)
     {
-        GameObject stateObject = GameObject.Find(stateName);
-        if (stateObject != null && HasEnabledFormInstance(stateObject))
+        GameObject stateObjectInScene = FindStateObject(stateNameInAsset);
+        if (stateObjectInScene != null && HasEnabledFormInstance(stateObjectInScene))
         {
-            GameObject formController = GetFormController(stateObject.transform.Find("Objects").gameObject);
-            int currentQID = GetCurrentQID(formController);
+            GameObject formController = GetFormController(stateObjectInScene);
+
+            // Always get qID from the asset, not from the formController
+            int assetQID = (stateList != null && stateIdInAsset >= 0 && stateIdInAsset < stateList.States.Length)
+                ? stateList.States[stateIdInAsset].qID
+                : -1;
+
             EditorGUILayout.BeginVertical("box");
             EditorGUILayout.LabelField("Questionnaire", GUILayout.Width(100));
             EditorGUILayout.BeginHorizontal();
-            GameObject questionnaireObject = formController.transform.parent.gameObject;
-            EditorGUILayout.ObjectField(questionnaireObject, typeof(GameObject), true, GUILayout.Width(60));
-            GUILayout.Space(10);
+
+            GameObject questionnaireObject = formController?.transform.parent.gameObject;
+
+            EditorGUILayout.BeginVertical();
+            EditorGUILayout.BeginHorizontal();
+            EditorGUI.BeginDisabledGroup(true);
+            EditorGUILayout.ObjectField(questionnaireObject, typeof(GameObject), true, GUILayout.Width(100));
+            EditorGUI.EndDisabledGroup();
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("qID", GUILayout.Width(20));
-            int newQID = EditorGUILayout.IntField(currentQID, GUILayout.Width(30));
-            if (newQID != currentQID)
+
+            int newQID = EditorGUILayout.IntField(assetQID, GUILayout.Width(30));
+            if (newQID != assetQID && formController != null)
+            {
+                // Update only this state's qID in the asset and the corresponding formController
+                stateList.States[stateIdInAsset].qID = newQID;
+                EditorUtility.SetDirty(stateList);
+                if (serializedStateList != null)
+                    serializedStateList.ApplyModifiedProperties();
+
                 UpdateQID(formController, newQID);
+            }
+
             GUILayout.Space(10);
-            if (GUILayout.Button("x", GUILayout.Width(20)))
-                RemoveFormInstance(stateObject, formController);
+            if (GUILayout.Button("Remove", GUILayout.Width(70)))
+            {
+                // Set qID to zero and update asset
+                stateList.States[stateIdInAsset].qID = 0;
+                EditorUtility.SetDirty(stateList);
+                if (serializedStateList != null)
+                    serializedStateList.ApplyModifiedProperties();
+
+                // Remove the form instance GameObject
+                RemoveFormInstance(stateObjectInScene, formController);
+            }
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndVertical();
         }
     }
 
-    // Check if a valid and enabled Questionnaire instance exists in the state's Objects.
-    private bool HasEnabledFormInstance(GameObject stateObject)
+    private bool HasEnabledFormInstance(GameObject stateObjectInScene)
     {
-        if (!stateObject) return false;
-        Transform objects = stateObject.transform.Find("Objects");
-        if (!objects) return false;
+        if (stateObjectInScene == null) return false;
+        Transform objects = stateObjectInScene.transform.Find("Objects");
+        if (objects == null) return false;
         foreach (Transform child in objects)
         {
             if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == formPrefabPath && child.gameObject.activeSelf)
@@ -1013,14 +1192,37 @@ public class StateListEditor : EditorWindow
         return false;
     }
 
-    // Remove the Questionnaire instance from the scene by disabling it.
-    private void RemoveFormInstance(GameObject stateObject, GameObject formController)
+    private void RemoveFormInstance(GameObject stateObjectInScene, GameObject formController)
     {
         if (formController != null)
         {
             GameObject formInstance = formController.transform.parent.gameObject;
-            DestroyImmediate(formInstance);
-            Debug.Log($"Questionnaire in {stateObject.name} removed.");
+            if (formInstance != null)
+            {
+                Undo.DestroyObjectImmediate(formInstance);
+                Debug.Log($"Questionnaire in {stateObjectInScene.name} removed.");
+            }
+        }
+        else
+        {
+            Transform objects = stateObjectInScene.transform.Find("Objects");
+            if (objects != null)
+            {
+                Transform formToDestroy = null;
+                foreach (Transform child in objects)
+                {
+                    if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == formPrefabPath)
+                    {
+                        formToDestroy = child;
+                        break;
+                    }
+                }
+                if (formToDestroy != null)
+                {
+                    Undo.DestroyObjectImmediate(formToDestroy.gameObject);
+                    Debug.Log($"Questionnaire in {stateObjectInScene.name} removed (fallback).");
+                }
+            }
         }
     }
 
@@ -1028,29 +1230,44 @@ public class StateListEditor : EditorWindow
     {
         if (formController == null)
         {
-            Debug.LogError("FormController not found.");
+            Debug.LogError("FormController not found for CopyWorldItemReferenceListToFormController.");
             return;
         }
         GameObject expTemplateInstance = FindRequiredObjectsWrapperInstance();
         if (expTemplateInstance != null)
         {
-            GameObject worldItemRefList = expTemplateInstance.transform.Find(WorldItemRefListObjectName).gameObject;
-            if (worldItemRefList != null)
+            Transform worldItemRefListTransform = expTemplateInstance.transform.Find(WorldItemRefListObjectName);
+            if (worldItemRefListTransform != null)
             {
-                var worldItemRefComponent = worldItemRefList.GetComponent<ClusterVR.CreatorKit.Item.Implements.WorldItemReferenceList>();
-                if (worldItemRefComponent != null)
+                var worldItemRefComponentSource = worldItemRefListTransform.GetComponent<WorldItemReferenceList>();
+                if (worldItemRefComponentSource != null)
                 {
-                    UnityEditorInternal.ComponentUtility.CopyComponent(worldItemRefComponent);
-                    UnityEditorInternal.ComponentUtility.PasteComponentAsNew(formController);
+                    var existingRefList = formController.GetComponent<WorldItemReferenceList>();
+                    if (existingRefList != null)
+                    {
+                        DestroyImmediate(existingRefList, true);
+                    }
+
+                    if (UnityEditorInternal.ComponentUtility.CopyComponent(worldItemRefComponentSource))
+                    {
+                        if (!UnityEditorInternal.ComponentUtility.PasteComponentAsNew(formController))
+                        {
+                            Debug.LogError("Failed to paste WorldItemReferenceList component to FormController.");
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("Failed to copy WorldItemReferenceList component.");
+                    }
                 }
                 else
-                    Debug.LogError("WorldItemReferenceList component not found.");
+                    Debug.LogError($"'{WorldItemRefListObjectName}' does not have a WorldItemReferenceList component.");
             }
             else
-                Debug.LogError("WorldItemRefList object not found in the scene.");
+                Debug.LogError($"'{WorldItemRefListObjectName}' object not found under ExpTemplateRequiredObjects.");
         }
         else
-            Debug.LogError("ExpTemplateRequiredObjects prefab not found.");
+            Debug.LogError("ExpTemplateRequiredObjects prefab instance not found in the scene.");
     }
 
     private GameObject FindRequiredObjectsWrapperInstance()
@@ -1058,73 +1275,46 @@ public class StateListEditor : EditorWindow
         GameObject[] rootObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
         foreach (GameObject obj in rootObjects)
         {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == RequiredObjectsWrapperPrefabPath)
+            string prefabPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(obj));
+            if (prefabPath == RequiredObjectsWrapperPrefabPath)
                 return obj;
         }
         return null;
     }
-    
-    private void UpdateQuestionnaireFormsAfterReorder(Dictionary<int, int> stateIdMap)
-    {
-        // qID is only updated via direct text field input.
-        GameObject statesObject = GameObject.Find("States");
-        if (statesObject != null)
-        {
-            foreach (Transform stateTransform in statesObject.transform)
-            {
-                GameObject stateObject = stateTransform.gameObject;
-                if (HasEnabledFormInstance(stateObject))
-                {
-                    // Do nothing—qID is only updated via the text field input.
-                }
-            }
-        }
 
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
-
-        // Fix: Reallocate previousStates if necessary.
-        if (previousStates.Length != stateList.States.Length)
-        {
-            previousStates = new StateList.State[stateList.States.Length];
-        }
-        Array.Copy(stateList.States, previousStates, stateList.States.Length);
-    }
-    
-    private List<GameObject> RetrieveStateListeningItems()
-    {
-        List<GameObject> stateListeningItems = new List<GameObject>();
-        GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
-        foreach (GameObject obj in allObjects)
-        {
-            if (PrefabUtility.GetCorrespondingObjectFromSource(obj) != null)
-            {
-                string sourcePrefabPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(obj));
-                if (sourcePrefabPath == stateListeningItemPrefabPath)
-                    stateListeningItems.Add(obj);
-            }
-        }
-        return stateListeningItems;
-    }
-    
     private string GenerateStateFunction(StateListener[] listeners, string functionName, Func<StateListener, List<StateListenerAction>> actionSelector, string extraParameters = "")
     {
-        var content = $"function {functionName}({extraParameters}) {{\n";
-        content += "  const STATE_ID = $.state.state_id;\n";
-        content += "  const CONDITION = $.groupState.currentCondition;\n\n";
-        foreach (var listenerData in listeners)
+        var sb = new StringBuilder();
+        sb.AppendLine($"function {functionName}({extraParameters}) {{");
+        sb.AppendLine("  const STATE_ID = $.state.state_id;");
+        sb.AppendLine("  const CONDITION = $.groupState.currentCondition;");
+        sb.AppendLine("");
+
+        var groupedListeners = listeners
+            .Where(l => l != null && l.stateID >= 0) // Added null check for listener itself
+            .GroupBy(l => l.stateID);
+
+        foreach (var group in groupedListeners)
         {
-            var actions = actionSelector(listenerData);
-            if (actions.Count > 0)
+            sb.AppendLine($"  if (STATE_ID === {group.Key}) {{");
+            foreach (var listenerData in group)
             {
-                content += $"  if (STATE_ID === {listenerData.stateID}) {{\n";
-                foreach (var action in actions)
-                    content += $"    {action.GetActionContent()}\n";
-                content += "  }\n";
+                if (listenerData == null) continue; // Defensive check
+                var actions = actionSelector(listenerData);
+                if (actions != null)
+                { // Ensure actions list is not null
+                    foreach (var action in actions)
+                    {
+                        if (action != null) // Ensure action is not null
+                            sb.AppendLine($"    {action.GetActionContent()}");
+                    }
+                }
             }
+            sb.AppendLine("  }");
         }
-        content += "}\n\n";
-        return content;
+        sb.AppendLine("}");
+        sb.AppendLine("");
+        return sb.ToString();
     }
 
     private string GenerateOnStateEnterFunction(StateListener[] listeners)
@@ -1144,97 +1334,180 @@ public class StateListEditor : EditorWindow
 
     private void InsertStateGameObjectAtIndex(int index)
     {
-        // Find or create the "States" parent object
+        // This function is called after statesProperty.InsertArrayElementAtIndex & InitializeStateDefaults
+        // but *before* ApplyModifiedProperties in the button action.
+        // To get the correct stateName, we should use the statesProperty.
+        serializedStateList.ApplyModifiedProperties(); // Apply first to ensure stateList is up-to-date for name retrieval
+        stateList = (StateList)serializedStateList.targetObject; // Refresh local stateList
+
         GameObject statesContainer = FindOrCreateStatesContainer();
-        // Determine the correct prefab for the new state
-        string stateName = stateList.States[index].StateName;
-        string prefabPath = (stateName == "Preparation")
-                                ? prepareStatePrefabPath
-                                : (stateName == "Trial - Rest")
-                                    ? trialRestStatePrefabPath
-                                    : statePrefabPath;
-        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
-        if (prefab == null)
+        if (statesContainer == null || stateList == null || stateList.States == null || index < 0 || index >= stateList.States.Length)
         {
-            Debug.LogError("Prefab not found at " + prefabPath);
+            Debug.LogError("Cannot insert state GameObject due to invalid input or missing container.");
             return;
         }
-        // Instantiate the prefab
-        GameObject newState = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
-        newState.name = stateName;
-        newState.transform.SetParent(statesContainer.transform, false);
-        // Immediately insert at the correct index:
-        newState.transform.SetSiblingIndex(index);
-        
-        // Update its transition state_id immediately:
-        GameObject transition = newState.transform.Find("Transition")?.gameObject;
+
+        string stateName = stateList.States[index].StateName; // Now this should be correct
+        string prefabToUsePath = (stateName == "Trial - Rest") ? trialRestStatePrefabPath : statePrefabPath;
+
+        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabToUsePath);
+        if (prefab == null)
+        {
+            Debug.LogError($"Prefab not found at {prefabToUsePath} for state {stateName}");
+            return;
+        }
+
+        GameObject newStateGO = (GameObject)PrefabUtility.InstantiatePrefab(prefab, statesContainer.transform);
+        newStateGO.name = stateName;
+        newStateGO.transform.SetSiblingIndex(index);
+
+        GameObject transition = newStateGO.transform.Find("Transition")?.gameObject;
         if (transition != null)
             UpdateTransitionCurrentStateId(transition, index);
     }
 
     private void UpdateStateIDsFromIndex(int startIndex)
     {
-        // Assume the "States" container is already available
         GameObject statesContainer = FindOrCreateStatesContainer();
+        if (statesContainer == null) return;
+
         for (int i = startIndex; i < statesContainer.transform.childCount; i++)
         {
-            Transform child = statesContainer.transform.GetChild(i);
-            GameObject transition = child.Find("Transition")?.gameObject;
-            if (transition != null)
+            if (i < stateList.States.Length)
             {
-                UpdateTransitionCurrentStateId(transition, i);
+                Transform child = statesContainer.transform.GetChild(i);
+                GameObject transition = child.Find("Transition")?.gameObject;
+                if (transition != null)
+                {
+                    UpdateTransitionCurrentStateId(transition, i);
+                }
             }
         }
     }
 
-    // Helper that finds (or creates) the "States" GameObject under the required wrapper
     private GameObject FindOrCreateStatesContainer()
     {
-        GameObject[] rootObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
-        GameObject statesObject = null;
-        GameObject requiredObjectsWrapper = null;
-        foreach (GameObject obj in rootObjects)
+        GameObject requiredObjectsWrapper = FindRequiredObjectsWrapperInstance();
+        if (requiredObjectsWrapper == null)
         {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == RequiredObjectsWrapperPrefabPath)
+            // Attempt to create the wrapper if it's missing
+            GameObject wrapperPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(RequiredObjectsWrapperPrefabPath);
+            if (wrapperPrefab != null)
             {
-                requiredObjectsWrapper = obj;
-                statesObject = obj.transform.Find("States")?.gameObject;
-                break;
+                requiredObjectsWrapper = (GameObject)PrefabUtility.InstantiatePrefab(wrapperPrefab);
+                requiredObjectsWrapper.name = wrapperPrefab.name; // Remove "(Clone)"
+                Undo.RegisterCreatedObjectUndo(requiredObjectsWrapper, "Create Required Objects Wrapper");
+                Debug.Log("RequiredObjectsWrapper prefab instance created as it was not found.");
+            }
+            else
+            {
+                Debug.LogError($"RequiredObjectsWrapper prefab not found at {RequiredObjectsWrapperPrefabPath}. Cannot create 'States' container.");
+                return null;
             }
         }
-        if (statesObject == null && requiredObjectsWrapper != null)
+
+        Transform statesObjectTransform = requiredObjectsWrapper.transform.Find("States");
+        if (statesObjectTransform == null)
         {
-            statesObject = new GameObject("States");
+            GameObject statesObject = new GameObject("States");
+            Undo.RegisterCreatedObjectUndo(statesObject, "Create States Container");
             statesObject.transform.SetParent(requiredObjectsWrapper.transform, false);
+            return statesObject;
         }
-        return statesObject;
+        return statesObjectTransform.gameObject;
     }
 
     private void InsertTrialStateGameObjectAtIndex(int index)
     {
-        // Find or create the "States" container
+        serializedStateList.ApplyModifiedProperties();
+        stateList = (StateList)serializedStateList.targetObject;
+
         GameObject statesContainer = FindOrCreateStatesContainer();
-        // Get the state name (for a trial state, InitializeTrialStateDefaults will have set it to something like "Trial - X")
-        string stateName = stateList.States[index].StateName;
-        // For trial states, use the default state prefab (unless you have a separate one for trials)
-        string prefabPath = statePrefabPath;  // Change this if you have a different prefab for trial states.
-        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
-        if (prefab == null)
+        if (statesContainer == null || stateList == null || stateList.States == null || index < 0 || index >= stateList.States.Length)
         {
-            Debug.LogError("Trial State prefab not found at " + prefabPath);
+            Debug.LogError("Cannot insert trial state GameObject due to invalid input or missing container.");
             return;
         }
-        // Instantiate the prefab and set its name
-        GameObject newTrialState = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
-        newTrialState.name = stateName;
-        // Set its parent immediately
-        newTrialState.transform.SetParent(statesContainer.transform, false);
-        // Insert at the desired index
-        newTrialState.transform.SetSiblingIndex(index);
-        
-        // Update the state_id on its Transition component
-        GameObject transition = newTrialState.transform.Find("Transition")?.gameObject;
+
+        string stateName = stateList.States[index].StateName;
+        string prefabToUsePath = statePrefabPath;
+
+        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabToUsePath);
+        if (prefab == null)
+        {
+            Debug.LogError($"Trial State prefab not found at {prefabToUsePath} for state {stateName}");
+            return;
+        }
+
+        GameObject newTrialStateGO = (GameObject)PrefabUtility.InstantiatePrefab(prefab, statesContainer.transform);
+        newTrialStateGO.name = stateName;
+        newTrialStateGO.transform.SetSiblingIndex(index);
+
+        GameObject transition = newTrialStateGO.transform.Find("Transition")?.gameObject;
         if (transition != null)
             UpdateTransitionCurrentStateId(transition, index);
+    }
+
+    private void DrawDarkLabel(string text, bool isLarge = false)
+    {
+        var rect = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight * (isLarge ? 1.2f : 1f));
+        EditorGUI.DrawRect(rect, new Color(0.15f, 0.15f, 0.15f, 1f));
+
+        Color originalContent = GUI.contentColor;
+        GUI.contentColor = Color.white;
+
+        var style = isLarge ? new GUIStyle(EditorStyles.largeLabel) : new GUIStyle(EditorStyles.wordWrappedMiniLabel);
+        style.normal.textColor = Color.white; // Ensure text color is white for large labels too
+        style.fontStyle = FontStyle.Bold; // Make it bold
+
+        var labelRect = new Rect(rect.x + 4, rect.y, rect.width - 8, rect.height); // Added padding
+        EditorGUI.LabelField(labelRect, text, style);
+
+        GUI.contentColor = originalContent;
+    }
+
+    private int CalculateTrialCountForCurrentScene()
+    {
+        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        string jsPath = $"Assets/_Experiment_/Settings/ExperimentVariables/{sceneName}.js";
+        var jsAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(jsPath);
+        int trialsCountForEachUniqueCondition = 1;
+        int product = 1;
+
+        if (jsAsset != null && !string.IsNullOrEmpty(jsAsset.text))
+        {
+            // Parse trialsCountForEachUniqueCondition
+            var match = System.Text.RegularExpressions.Regex.Match(jsAsset.text, @"const trialsCountForEachUniqueCondition = (\d+);");
+            if (match.Success)
+                trialsCountForEachUniqueCondition = int.Parse(match.Groups[1].Value);
+
+            // Parse within_subjects_variables
+            var pattern = @"const within_subjects_variables = \[(.*?)\];";
+            var matchVars = System.Text.RegularExpressions.Regex.Match(jsAsset.text, pattern, System.Text.RegularExpressions.RegexOptions.Singleline);
+            if (matchVars.Success)
+            {
+                var arrayContent = matchVars.Groups[1].Value;
+                var variableMatches = System.Text.RegularExpressions.Regex.Matches(arrayContent, @"\{(.*?)\}", System.Text.RegularExpressions.RegexOptions.Singleline);
+                foreach (System.Text.RegularExpressions.Match variableMatch in variableMatches)
+                {
+                    string variableContent = variableMatch.Groups[1].Value;
+                    string valuesString = System.Text.RegularExpressions.Regex.Match(variableContent, @"values: \[(.*?)\]").Groups[1].Value;
+                    string[] values = valuesString.Split(',').Select(v => v.Trim().Trim('"')).Where(v => !string.IsNullOrEmpty(v)).ToArray();
+                    if (values.Length > 0)
+                        product *= values.Length;
+                }
+            }
+        }
+        return trialsCountForEachUniqueCondition * product;
+    }
+    
+    private GameObject FindStateObject(string stateName)
+    {
+        var wrapper = FindRequiredObjectsWrapperInstance();
+        if (wrapper == null) return null;
+        var statesContainer = wrapper.transform.Find("States");
+        if (statesContainer == null) return null;
+        var stateTransform = statesContainer.Find(stateName);
+        return stateTransform?.gameObject;
     }
 }
