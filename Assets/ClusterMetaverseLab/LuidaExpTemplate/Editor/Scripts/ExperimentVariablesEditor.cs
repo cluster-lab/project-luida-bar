@@ -34,6 +34,7 @@ public class ExperimentVariablesEditor : EditorWindow
             if (GUILayout.Button("Create New Variables Asset"))
             {
                 RetrieveOrCreateVariablesAsset();
+                ApplyVariableUpdates();
             }
         }
         else
