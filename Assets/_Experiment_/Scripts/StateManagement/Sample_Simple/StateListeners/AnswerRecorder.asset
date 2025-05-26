@@ -10,74 +10,55 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: acb8c4c8a0a4dc6418e2f4d59454f5e3, type: 3}
-  m_Name: SampleItem
+  m_Name: AnswerRecorder
   m_EditorClassIdentifier: 
   stateListeners:
-  - stateID: 0
-    onStateStartedActions:
-    - predefinedActionTemplate:
-        actionType: Show item
-        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
-        variables: []
-      customAction: 
-      isConditional: 0
-      conditionVariable: 
-      conditionValue: 
-      _variableKeys: []
-      _variableValuesList: []
-    - predefinedActionTemplate:
-        actionType: Set position
-        codeSnippet: $.setPosition(new Vector3({_x_}, {_y_}, {_z_}))
-        variables:
-        - x
-        - y
-        - z
-      customAction: 
-      isConditional: 0
-      conditionVariable: 
-      conditionValue: 
-      _variableKeys:
-      - x
-      - y
-      - z
-      _variableValuesList:
-      - 0
-      - 1
-      - 1
-    duringStateActions: []
-    onStateExitedActions: []
-  - stateID: 1
-    onStateStartedActions:
-    - predefinedActionTemplate:
-        actionType: Set position
-        codeSnippet: $.setPosition(new Vector3({_x_}, {_y_}, {_z_}))
-        variables:
-        - x
-        - y
-        - z
-      customAction: 
-      isConditional: 0
-      conditionVariable: 
-      conditionValue: 
-      _variableKeys:
-      - x
-      - y
-      - z
-      _variableValuesList:
-      - 0
-      - 2
-      - 2
-    duringStateActions: []
-    onStateExitedActions: []
   - stateID: 2
     onStateStartedActions:
     - predefinedActionTemplate:
         actionType: Customized Action
         codeSnippet: 
         variables: []
-      customAction: '$.log(CONDITION[''within'']);
+      customAction: '$.state.isAnswering = true;
 
-        $.log(CONDITION[''between'']);'
+        $.state.answerTime = 0;'
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys: []
+      _variableValuesList: []
+    duringStateActions: []
+    onStateExitedActions:
+    - predefinedActionTemplate:
+        actionType: Customized Action
+        codeSnippet: 
+        variables: []
+      customAction: '$.state.isAnswering = false;
+
+        $.setStateCompat("owner",
+        "answerTime", $.state.answerTime);'
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys: []
+      _variableValuesList: []
+    - predefinedActionTemplate:
+        actionType: Record custom data
+        codeSnippet: $.sendSignalCompat('this', 'exp_recordCustomData');
+        variables: []
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys: []
+      _variableValuesList: []
+  - stateID: 4
+    onStateStartedActions:
+    - predefinedActionTemplate:
+        actionType: Upload recorded data
+        codeSnippet: $.sendSignalCompat('this', 'exp_uploadCustomData');
+        variables: []
+      customAction: 
       isConditional: 0
       conditionVariable: 
       conditionValue: 
@@ -85,4 +66,5 @@ MonoBehaviour:
       _variableValuesList: []
     duringStateActions: []
     onStateExitedActions: []
-  otherImplementation: 
+  otherImplementation: "function Update(deltaTime) {\n  if ($.state.isAnswering)
+    $.state.answerTime += deltaTime;\n}"

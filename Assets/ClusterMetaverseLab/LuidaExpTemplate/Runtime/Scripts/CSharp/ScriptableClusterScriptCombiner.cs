@@ -50,6 +50,13 @@ public class ScriptableClusterScriptCombiner : CSCombiner
         if (combineNow) Combine();
     }
 
+    public void ClearScripts(bool combineNow = false) {
+        this.SetClusterScripts(new List<JavaScriptAsset>());
+        this.SetPlayerScripts(new List<JavaScriptAsset>());
+
+        if (combineNow) Combine();
+    }
+
     public void CombineScripts() {
         Combine();
     }

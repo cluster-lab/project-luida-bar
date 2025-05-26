@@ -691,20 +691,39 @@ public class ItemsManagerEditor : EditorWindow
                     foreach (string variableName in action.predefinedActionTemplate.variables)
                     {
                         Rect labelRect = new Rect(rect.x + 15, currentY, EditorGUIUtility.labelWidth * 0.6f, lineHeight);
-                        Rect fieldRect = new Rect(labelRect.xMax, currentY, rect.width - labelRect.width - 15, lineHeight);
-
                         EditorGUI.LabelField(labelRect, variableName);
+
                         action.variableValues.TryGetValue(variableName, out string currentValue);
                         currentValue ??= "";
 
-                        string newValue = EditorGUI.TextField(fieldRect, currentValue);
-                        if (newValue != currentValue)
+                        if (action.predefinedActionTemplate.actionType == "Set text" && variableName == "text")
                         {
-                            Undo.RecordObject(itemDataAsset, "Edit Variable " + variableName);
-                            action.variableValues[variableName] = newValue;
-                            EditorUtility.SetDirty(itemDataAsset);
+                            EditorGUI.LabelField(new Rect(rect.x + 15, currentY, rect.width - 15, lineHeight), variableName);
+                            currentY += lineHeight + spacing;
+
+                            float textAreaHeight = lineHeight * 3;
+                            Rect textAreaRect = new Rect(rect.x + 15, currentY, rect.width - 15, textAreaHeight);
+                            string newValue = EditorGUI.TextArea(textAreaRect, currentValue);
+                            if (newValue != currentValue)
+                            {
+                                Undo.RecordObject(itemDataAsset, "Edit Variable " + variableName);
+                                action.variableValues[variableName] = newValue;
+                                EditorUtility.SetDirty(itemDataAsset);
+                            }
+                            currentY += textAreaHeight + spacing;
                         }
-                        currentY += lineHeight + spacing;
+                        else
+                        {
+                            Rect fieldRect = new Rect(labelRect.xMax, currentY, rect.width - labelRect.width - 15, lineHeight);
+                            string newValue = EditorGUI.TextField(fieldRect, currentValue);
+                            if (newValue != currentValue)
+                            {
+                                Undo.RecordObject(itemDataAsset, "Edit Variable " + variableName);
+                                action.variableValues[variableName] = newValue;
+                                EditorUtility.SetDirty(itemDataAsset);
+                            }
+                            currentY += lineHeight + spacing;
+                        }
                     }
                 }
             },
@@ -749,7 +768,19 @@ public class ItemsManagerEditor : EditorWindow
                 }
                 else if (action.predefinedActionTemplate.variables != null)
                 {
-                    height += (lineHeight + spacing) * action.predefinedActionTemplate.variables.Length; 
+                    foreach (string variableName in action.predefinedActionTemplate.variables)
+                    {
+                        if (action.predefinedActionTemplate.actionType == "Set text" && variableName == "text")
+                        {
+                            // Add height for label and textarea
+                            height += lineHeight + spacing; // label
+                            height += lineHeight * 3 + spacing; // textarea
+                        }
+                        else
+                        {
+                            height += lineHeight + spacing;
+                        }
+                    }
                 }
                 return height + spacing; // Extra bottom spacing
             }

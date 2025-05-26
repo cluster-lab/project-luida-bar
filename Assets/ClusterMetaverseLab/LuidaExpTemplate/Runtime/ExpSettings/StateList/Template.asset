@@ -14,33 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   States:
   - StateName: Start
-    DestStateName: Questionnaire (pre-exp)
+    DestStateName: Intro
     HasExitTime: 0
-    ExitTime: 0
+    ExitTime: 3
     IsRepeated: 0
     RepeatDestStateName: Start
     RepeatCount: 1
-  - StateName: Questionnaire (pre-exp)
-    DestStateName: Instruction
-    HasExitTime: 0
-    ExitTime: 0
-    IsRepeated: 0
-    RepeatDestStateName: Start
-    RepeatCount: 1
-  - StateName: Instruction
-    DestStateName: Preparation
-    HasExitTime: 0
-    ExitTime: 0
-    IsRepeated: 0
-    RepeatDestStateName: Practice - Start
-    RepeatCount: 1
-  - StateName: Preparation
+    qID: 0
+  - StateName: Intro
     DestStateName: Trial - Start
     HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
     RepeatDestStateName: 
     RepeatCount: 1
+    qID: 0
   - StateName: Trial - Start
     DestStateName: Trial - Rest
     HasExitTime: 0
@@ -48,24 +36,28 @@ MonoBehaviour:
     IsRepeated: 0
     RepeatDestStateName: 
     RepeatCount: 1
+    qID: 0
   - StateName: Trial - Rest
-    DestStateName: Questionnaire (post-exp)
+    DestStateName: Outro
     HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
-    RepeatDestStateName: Trial - Start
+    RepeatDestStateName: Trial - Task
     RepeatCount: 1
-  - StateName: Questionnaire (post-exp)
+    qID: 0
+  - StateName: Outro
     DestStateName: End
     HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
     RepeatDestStateName: 
     RepeatCount: 1
+    qID: 0
   - StateName: End
-    DestStateName: End
+    DestStateName: 
     HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
     RepeatDestStateName: 
     RepeatCount: 1
+    qID: 0

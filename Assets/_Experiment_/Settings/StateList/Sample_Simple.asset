@@ -10,44 +10,49 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 903632a1e1d0d4e27be675b7680dc266, type: 3}
-  m_Name: Sample_Minimal
+  m_Name: Sample_Simple
   m_EditorClassIdentifier: 
   States:
   - StateName: Start
-    DestStateName: Instruction
+    DestStateName: Intro
     HasExitTime: 1
-    ExitTime: 2
+    ExitTime: 1
     IsRepeated: 0
     RepeatDestStateName: Start
     RepeatCount: 1
-  - StateName: Instruction
+    qID: 0
+  - StateName: Intro
     DestStateName: Trial - Start
     HasExitTime: 1
-    ExitTime: 2
-    IsRepeated: 0
-    RepeatDestStateName: Practice - Start
-    RepeatCount: 1
-  - StateName: Trial - Start
-    DestStateName: Trial - Rest
-    HasExitTime: 1
-    ExitTime: 2
+    ExitTime: 5
     IsRepeated: 0
     RepeatDestStateName: 
     RepeatCount: 1
-  - StateName: Trial - Rest
-    DestStateName: Questionnaire (post-exp)
-    HasExitTime: 1
-    ExitTime: 2
-    IsRepeated: 0
-    RepeatDestStateName: Trial - Start
-    RepeatCount: 1
-  - StateName: Questionnaire (post-exp)
-    DestStateName: End
+    qID: 0
+  - StateName: Trial - Start
+    DestStateName: Trial - Rest
     HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
     RepeatDestStateName: 
     RepeatCount: 1
+    qID: 0
+  - StateName: Trial - Rest
+    DestStateName: Outro
+    HasExitTime: 1
+    ExitTime: 3
+    IsRepeated: 0
+    RepeatDestStateName: Trial - Start
+    RepeatCount: 1
+    qID: 0
+  - StateName: Outro
+    DestStateName: End
+    HasExitTime: 1
+    ExitTime: 5
+    IsRepeated: 0
+    RepeatDestStateName: 
+    RepeatCount: 1
+    qID: 0
   - StateName: End
     DestStateName: 
     HasExitTime: 0
@@ -55,3 +60,4 @@ MonoBehaviour:
     IsRepeated: 0
     RepeatDestStateName: 
     RepeatCount: 1
+    qID: 0

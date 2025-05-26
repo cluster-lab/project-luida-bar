@@ -1,0 +1,3430 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!29 &1
+OcclusionCullingSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_OcclusionBakeSettings:
+    smallestOccluder: 5
+    smallestHole: 0.25
+    backfaceThreshold: 100
+  m_SceneGUID: 00000000000000000000000000000000
+  m_OcclusionCullingData: {fileID: 0}
+--- !u!104 &2
+RenderSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 9
+  m_Fog: 0
+  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_FogMode: 3
+  m_FogDensity: 0.01
+  m_LinearFogStart: 0
+  m_LinearFogEnd: 300
+  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
+  m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
+  m_AmbientIntensity: 1
+  m_AmbientMode: 0
+  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
+  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_HaloStrength: 0.5
+  m_FlareStrength: 1
+  m_FlareFadeSpeed: 3
+  m_HaloTexture: {fileID: 0}
+  m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
+  m_DefaultReflectionMode: 0
+  m_DefaultReflectionResolution: 128
+  m_ReflectionBounces: 1
+  m_ReflectionIntensity: 1
+  m_CustomReflection: {fileID: 0}
+  m_Sun: {fileID: 0}
+  m_IndirectSpecularColor: {r: 0.17412685, g: 0.21774654, b: 0.2999423, a: 1}
+  m_UseRadianceAmbientProbe: 0
+--- !u!157 &3
+LightmapSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 12
+  m_GIWorkflowMode: 1
+  m_GISettings:
+    serializedVersion: 2
+    m_BounceScale: 1
+    m_IndirectOutputScale: 1
+    m_AlbedoBoost: 1
+    m_EnvironmentLightingMode: 0
+    m_EnableBakedLightmaps: 1
+    m_EnableRealtimeLightmaps: 0
+  m_LightmapEditorSettings:
+    serializedVersion: 12
+    m_Resolution: 2
+    m_BakeResolution: 40
+    m_AtlasSize: 1024
+    m_AO: 0
+    m_AOMaxDistance: 1
+    m_CompAOExponent: 1
+    m_CompAOExponentDirect: 0
+    m_ExtractAmbientOcclusion: 0
+    m_Padding: 2
+    m_LightmapParameters: {fileID: 0}
+    m_LightmapsBakeMode: 1
+    m_TextureCompression: 1
+    m_FinalGather: 0
+    m_FinalGatherFiltering: 1
+    m_FinalGatherRayCount: 256
+    m_ReflectionCompression: 2
+    m_MixedBakeMode: 2
+    m_BakeBackend: 1
+    m_PVRSampling: 1
+    m_PVRDirectSampleCount: 32
+    m_PVRSampleCount: 512
+    m_PVRBounces: 2
+    m_PVREnvironmentSampleCount: 256
+    m_PVREnvironmentReferencePointCount: 2048
+    m_PVRFilteringMode: 1
+    m_PVRDenoiserTypeDirect: 1
+    m_PVRDenoiserTypeIndirect: 1
+    m_PVRDenoiserTypeAO: 1
+    m_PVRFilterTypeDirect: 0
+    m_PVRFilterTypeIndirect: 0
+    m_PVRFilterTypeAO: 0
+    m_PVREnvironmentMIS: 1
+    m_PVRCulling: 1
+    m_PVRFilteringGaussRadiusDirect: 1
+    m_PVRFilteringGaussRadiusIndirect: 5
+    m_PVRFilteringGaussRadiusAO: 2
+    m_PVRFilteringAtrousPositionSigmaDirect: 0.5
+    m_PVRFilteringAtrousPositionSigmaIndirect: 2
+    m_PVRFilteringAtrousPositionSigmaAO: 1
+    m_ExportTrainingData: 0
+    m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
+  m_LightingDataAsset: {fileID: 0}
+  m_LightingSettings: {fileID: 0}
+--- !u!196 &4
+NavMeshSettings:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_BuildSettings:
+    serializedVersion: 2
+    agentTypeID: 0
+    agentRadius: 0.5
+    agentHeight: 2
+    agentSlope: 45
+    agentClimb: 0.4
+    ledgeDropHeight: 0
+    maxJumpAcrossDistance: 0
+    minRegionArea: 2
+    manualCellSize: 0
+    cellSize: 0.16666667
+    manualTileSize: 0
+    tileSize: 256
+    accuratePlacement: 0
+    maxJobWorkers: 0
+    preserveTilesOutsideBounds: 0
+    debug:
+      m_Flags: 0
+  m_NavMeshData: {fileID: 0}
+--- !u!1 &31239172
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 31239173}
+  - component: {fileID: 31239174}
+  m_Layer: 0
+  m_Name: DirectionalLight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &31239173
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 31239172}
+  m_LocalRotation: {x: 0.5880184, y: -0.20533462, z: 0.15755877, w: 0.7663207}
+  m_LocalPosition: {x: 0, y: 10, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 876203314}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 75, y: -30.000002, z: 0}
+--- !u!108 &31239174
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 31239172}
+  m_Enabled: 1
+  serializedVersion: 10
+  m_Type: 1
+  m_Shape: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 1
+  m_Range: 10
+  m_SpotAngle: 30
+  m_InnerSpotAngle: 21.802082
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+    m_CullingMatrixOverride:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    m_UseCullingMatrixOverride: 0
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingLayerMask: 1
+  m_Lightmapping: 4
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+--- !u!1001 &55793350
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1498417634}
+    m_Modifications:
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1033989870613135740, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: key.key
+      value: state_enter
+      objectReference: {fileID: 0}
+    - target: {fileID: 1033989870613135740, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1414860490831393443, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[1].value.constant.integerValue
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1414860490831393443, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[2].value.constant.integerValue
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2832236690738518313, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_Name
+      value: Trial - Rest
+      objectReference: {fileID: 0}
+    - target: {fileID: 5561156735572448556, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6425654970097300135, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
+      value: 2
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e1774295c75ae6d44a372c9862cfe6ab, type: 3}
+--- !u!4 &55793351 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+    type: 3}
+  m_PrefabInstance: {fileID: 55793350}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &59568358 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
+    type: 3}
+  m_PrefabInstance: {fileID: 6096864659607230834}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &145205342
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 145205343}
+  - component: {fileID: 145205344}
+  m_Layer: 0
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &145205343
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 145205342}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1363852476}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &145205344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 145205342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 661c45a344104837b0ee4901951c608c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textMesh: {fileID: 0}
+  text: 
+  size: 0.1
+  textAnchor: 4
+  textAlignment: 0
+  color: {r: 0, g: 0, b: 0, a: 1}
+--- !u!1 &204078433
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 204078434}
+  - component: {fileID: 204078437}
+  - component: {fileID: 204078436}
+  - component: {fileID: 204078435}
+  m_Layer: 14
+  m_Name: Sphere
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &204078434
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 204078433}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 1989516160}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &204078435
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 204078433}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &204078436
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 204078433}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 082685e221b5a2f42bf334019c99af96, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &204078437
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 204078433}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &399034523
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 399034524}
+  - component: {fileID: 399034527}
+  - component: {fileID: 399034526}
+  - component: {fileID: 399034525}
+  m_Layer: 0
+  m_Name: Quad
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &399034524
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 399034523}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 5, y: 2.5, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1363852476}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &399034525
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 399034523}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &399034526
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 399034523}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 0e028c7d7604f7e40818164664f0f854, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &399034527
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 399034523}
+  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &505037899
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[1]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 5b59bd3dd312648cbaf12a91fa64f171,
+        type: 3}
+    - target: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_Name
+      value: AnswerRecorder
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: sourceCode
+      value: "let timer = 0;\nlet CONDITION;\n\n$.onStart(() => {\n    $.state.last_state_id
+        = 0;\n    $.state.state_id = 0;\n    $.state.stateEnterActionID = -1;\n   
+        $.state.stateExitActionID = -1;\n    $.state.duringStateActionID = -1;\n   
+        Start();\n})\n\n$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\",
+        \"state_exit\", \"boolean\")) {\n        $.state.stateExitActionID = 0;\n       
+        $.state.last_state_id = $.state.state_id;\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\n    }\n    if ($.state.stateExitActionID >= 0) OnStateExit(deltaTime);\n\n   
+        if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\n       
+        $.setStateCompat(\"this\", \"state_enter\", false);\n        $.state.state_id
+        = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
+        $.state.stateEnterActionID = 0;\n        $.state.duringStateActionID = 0;\n   
+        }\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\n\n   
+        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\n\n    Update(deltaTime);\n})\n\nfunction
+        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
+        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
+        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
+        SetText(text) {\n    try {\n      $.subNode(\"Text\").setText(`${text}`);\n   
+        } catch (e) {\n      $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
+        exists and has setText method.`);\n    }\n}\n\nfunction SetPosition(x, y,
+        z) {\n    try {\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)));\n    } catch (e) {\n        $.log(`Error in SetPosition:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
+        }\n}\n\nfunction AddPosition(x, y, z) {\n    try {\n        const currentPos
+        = $.getPosition();\n        $.setPosition(currentPos.add(new Vector3(parseFloat(x),
+        parseFloat(y), parseFloat(z))));\n    } catch (e) {\n        $.log(`Error
+        in AddPosition: ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
+        }\n}\n\nfunction SetRotation(x, y, z) {\n    try {\n        $.setRotation(new
+        Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z))));\n    } catch (e) {\n        $.log(`Error in SetRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\n   
+        }\n}\n\nfunction AddRotation(x, y, z) {\n    try {\n        const currentRot
+        = $.getRotation();\n        const offsetRot = new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\n        $.setRotation(currentRot.multiply(offsetRot));\n   
+        } catch (e) {\n        $.log(`Error in AddRotation: ${e}. Ensure MovableItem
+        is present and x,y,z are valid numbers (Euler degrees).`);\n    }\n}\n\nfunction
+        RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
+        UploadRecordedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
+        SendHaptics(target, frequency, amplitude, duration) {\n    try {\n       
+        if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\n       
+        if ($.state.player) {\n            let hapticsTarget = target;\n           
+        if (typeof target === 'string') {\n                const lowerTarget = target.toLowerCase();\n               
+        if (lowerTarget === 'null' || lowerTarget === 'undefined' || lowerTarget
+        === \"\") {\n                    hapticsTarget = null; // Use JS null for
+        \"both\" or unspecified\n                } else if (lowerTarget === '\"left\"'
+        || lowerTarget === \"'left'\") {\n                    hapticsTarget = \"left\";\n               
+        } else if (lowerTarget === '\"right\"' || lowerTarget === \"'right'\") {\n                    
+        hapticsTarget = \"right\";\n                }\n                // else assume
+        target is already \"left\", \"right\", or a valid direct value.\n           
+        }\n\n            $.state.player.send(\"haptics\", {\n                target:
+        hapticsTarget,\n                frequency: parseFloat(frequency),\n               
+        amplitude: parseFloat(amplitude),\n                duration: parseFloat(duration)
+        // Duration in seconds\n            });\n        } else {\n            $.log(\"SendHaptics:
+        No player found nearby.\");\n        }\n    } catch (e) {\n        $.log(`Error
+        in SendHaptics: ${e}`);\n    }\n}\n\nfunction OnStateEnter(deltaTime) {\n   
+        CONDITION = $.groupState.currentCondition;\n    if (!stateEnterActions[$.state.state_id]
+        || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
+        return;\n    \n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
+        && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !==
+        \"sleep\") {\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\n       
+        $.state.stateEnterActionID += 1;\n    }\n\n    if ($.state.stateEnterActionID
+        >= stateEnterActions[$.state.state_id].length) {\n        $.state.stateEnterActionID
+        = -1;\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
+        === \"sleep\") {\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
+        {\n            $.state.stateEnterActionID += 1;\n            timer = 0;\n       
+        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
+        OnStateExit(deltaTime) {\n    if (!stateExitActions[$.state.last_state_id]
+        || $.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
+        return;\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
+        && stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        !== \"sleep\") {\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\n       
+        $.state.stateExitActionID += 1;\n    }\n\n    if ($.state.stateExitActionID
+        >= stateExitActions[$.state.last_state_id].length) {\n        $.state.stateExitActionID
+        = -1;\n        $.state.last_state_id = $.state.state_id;\n    } else if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        === \"sleep\") {\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
+        {\n            $.state.stateExitActionID += 1;\n            timer = 0;\n           
+        if ($.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
+        {\n                $.state.stateExitActionID = -1;\n            }\n       
+        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
+        DuringState(deltaTime) {\n    if (!duringStateActions[$.state.state_id] ||
+        !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\n   
+        \n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
+        {\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
+        === \"sleep\") {\n            $.state.duringStateActionID += 1;\n       
+        } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\n           
+        $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
+        = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
+        stateEnterActions = {\n    2: [\n        { type: \"exec\", action: () =>
+        {\n            $.state.isAnswering = true;\n            $.state.answerTime
+        = 0;\n        } }\n    ],\n    4: [\n        { type: \"exec\", action: ()
+        => {\n            $.sendSignalCompat('this', 'exp_uploadCustomData');\n       
+        } }\n    ]\n};\n\nconst duringStateActions = {\n};\n\nconst stateExitActions
+        = {\n    2: [\n        { type: \"exec\", action: () => {\n            $.state.isAnswering
+        = false;\n            $.setStateCompat(\"owner\", \"answerTime\", $.state.answerTime);\n       
+        } },\n        { type: \"exec\", action: () => {\n            $.sendSignalCompat('this',
+        'exp_recordCustomData');\n        } }\n    ]\n};\n\n\nfunction Update(deltaTime)
+        {\n  if ($.state.isAnswering) $.state.answerTime += deltaTime;\n}"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758608954925073686, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: host
+      value: 
+      objectReference: {fileID: 7533049804749356259}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: de40e14777f5f4d3190981c4f4b1cddf, type: 3}
+--- !u!1001 &657678130
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1498417634}
+    m_Modifications:
+    - target: {fileID: 3594218895443089411, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_Name
+      value: End
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
+--- !u!4 &657678131 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 657678130}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &729611499
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[1]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 22f7f14b3a1ca489d98120f0a6afb204,
+        type: 3}
+    - target: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_Name
+      value: TextInBlueMaterial
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: sourceCode
+      value: "let timer = 0;\nlet CONDITION;\n\n$.onStart(() => {\n    $.state.last_state_id
+        = 0;\n    $.state.state_id = 0;\n    $.state.stateEnterActionID = -1;\n   
+        $.state.stateExitActionID = -1;\n    $.state.duringStateActionID = -1;\n   
+        Start();\n})\n\n$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\",
+        \"state_exit\", \"boolean\")) {\n        $.state.stateExitActionID = 0;\n       
+        $.state.last_state_id = $.state.state_id;\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\n    }\n    if ($.state.stateExitActionID >= 0) OnStateExit(deltaTime);\n\n   
+        if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\n       
+        $.setStateCompat(\"this\", \"state_enter\", false);\n        $.state.state_id
+        = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
+        $.state.stateEnterActionID = 0;\n        $.state.duringStateActionID = 0;\n   
+        }\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\n\n   
+        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\n\n    Update(deltaTime);\n})\n\nfunction
+        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
+        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
+        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
+        SetText(text) {\n    try {\n      $.subNode(\"Text\").setText(`${text}`);\n   
+        } catch (e) {\n      $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
+        exists and has setText method.`);\n    }\n}\n\nfunction SetPosition(x, y,
+        z) {\n    try {\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)));\n    } catch (e) {\n        $.log(`Error in SetPosition:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
+        }\n}\n\nfunction AddPosition(x, y, z) {\n    try {\n        const currentPos
+        = $.getPosition();\n        $.setPosition(currentPos.add(new Vector3(parseFloat(x),
+        parseFloat(y), parseFloat(z))));\n    } catch (e) {\n        $.log(`Error
+        in AddPosition: ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
+        }\n}\n\nfunction SetRotation(x, y, z) {\n    try {\n        $.setRotation(new
+        Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z))));\n    } catch (e) {\n        $.log(`Error in SetRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\n   
+        }\n}\n\nfunction AddRotation(x, y, z) {\n    try {\n        const currentRot
+        = $.getRotation();\n        const offsetRot = new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\n        $.setRotation(currentRot.multiply(offsetRot));\n   
+        } catch (e) {\n        $.log(`Error in AddRotation: ${e}. Ensure MovableItem
+        is present and x,y,z are valid numbers (Euler degrees).`);\n    }\n}\n\nfunction
+        RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
+        UploadRecordedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
+        SendHaptics(target, frequency, amplitude, duration) {\n    try {\n       
+        if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\n       
+        if ($.state.player) {\n            let hapticsTarget = target;\n           
+        if (typeof target === 'string') {\n                const lowerTarget = target.toLowerCase();\n               
+        if (lowerTarget === 'null' || lowerTarget === 'undefined' || lowerTarget
+        === \"\") {\n                    hapticsTarget = null; // Use JS null for
+        \"both\" or unspecified\n                } else if (lowerTarget === '\"left\"'
+        || lowerTarget === \"'left'\") {\n                    hapticsTarget = \"left\";\n               
+        } else if (lowerTarget === '\"right\"' || lowerTarget === \"'right'\") {\n                    
+        hapticsTarget = \"right\";\n                }\n                // else assume
+        target is already \"left\", \"right\", or a valid direct value.\n           
+        }\n\n            $.state.player.send(\"haptics\", {\n                target:
+        hapticsTarget,\n                frequency: parseFloat(frequency),\n               
+        amplitude: parseFloat(amplitude),\n                duration: parseFloat(duration)
+        // Duration in seconds\n            });\n        } else {\n            $.log(\"SendHaptics:
+        No player found nearby.\");\n        }\n    } catch (e) {\n        $.log(`Error
+        in SendHaptics: ${e}`);\n    }\n}\n\nfunction OnStateEnter(deltaTime) {\n   
+        CONDITION = $.groupState.currentCondition;\n    if (!stateEnterActions[$.state.state_id]
+        || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
+        return;\n    \n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
+        && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !==
+        \"sleep\") {\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\n       
+        $.state.stateEnterActionID += 1;\n    }\n\n    if ($.state.stateEnterActionID
+        >= stateEnterActions[$.state.state_id].length) {\n        $.state.stateEnterActionID
+        = -1;\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
+        === \"sleep\") {\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
+        {\n            $.state.stateEnterActionID += 1;\n            timer = 0;\n       
+        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
+        OnStateExit(deltaTime) {\n    if (!stateExitActions[$.state.last_state_id]
+        || $.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
+        return;\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
+        && stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        !== \"sleep\") {\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\n       
+        $.state.stateExitActionID += 1;\n    }\n\n    if ($.state.stateExitActionID
+        >= stateExitActions[$.state.last_state_id].length) {\n        $.state.stateExitActionID
+        = -1;\n        $.state.last_state_id = $.state.state_id;\n    } else if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        === \"sleep\") {\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
+        {\n            $.state.stateExitActionID += 1;\n            timer = 0;\n           
+        if ($.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
+        {\n                $.state.stateExitActionID = -1;\n            }\n       
+        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
+        DuringState(deltaTime) {\n    if (!duringStateActions[$.state.state_id] ||
+        !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\n   
+        \n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
+        {\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
+        === \"sleep\") {\n            $.state.duringStateActionID += 1;\n       
+        } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\n           
+        $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
+        = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
+        stateEnterActions = {\n    2: [\n        { type: \"exec\", action: () =>
+        {\n            if (CONDITION['material'] === 'B') {\n              $.setStateCompat('this',
+        'exp_showItem', true);\n            }\n        } },\n        { type: \"exec\",
+        action: () => {\n            if (CONDITION['material'] === 'R') {\n             
+        $.setStateCompat('this', 'exp_showItem', false);\n            }\n       
+        } },\n        { type: \"exec\", action: () => {\n            if (CONDITION['text']
+        === 'R') {\n              $.subNode('Text').setText(`Red`);\n           
+        }\n        } },\n        { type: \"exec\", action: () => {\n            if
+        (CONDITION['text'] === 'B') {\n              $.subNode('Text').setText(`Blue`);\n           
+        }\n        } }\n    ]\n};\n\nconst duringStateActions = {\n};\n\nconst stateExitActions
+        = {\n    2: [\n        { type: \"exec\", action: () => {\n            $.setStateCompat('this',
+        'exp_showItem', false);\n        } }\n    ]\n};\n\n\n// function Start()
+        { }\n// function Update(deltaTime) { }\n// $.onCollide((collision) => { });\n//
+        $.onGrab((isGrab, isLeftHand, player) => { });\n// $.onInteract((player)
+        => { });\n// $.onUse((isDown, player) => { });\n// $.onPhysicsUpdate((deltaTime)
+        => { });\n// $.onReceive((messageType, arg, sender) => { });"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758608954925073686, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: host
+      value: 
+      objectReference: {fileID: 7533049804749356259}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: de40e14777f5f4d3190981c4f4b1cddf, type: 3}
+--- !u!4 &729611500 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+    type: 3}
+  m_PrefabInstance: {fileID: 729611499}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &787405256
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 787405257}
+  m_Layer: 0
+  m_Name: StaticObjects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &787405257
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 787405256}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 828225984}
+  m_Father: {fileID: 2029845015}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &814595607
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 814595608}
+  m_Layer: 0
+  m_Name: SpawnPoints
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &814595608
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 814595607}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 59568358}
+  m_Father: {fileID: 1752504905}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &828225983
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 828225984}
+  - component: {fileID: 828225986}
+  - component: {fileID: 828225985}
+  m_Layer: 0
+  m_Name: Plane
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &828225984
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 828225983}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 787405257}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &828225985
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 828225983}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 8cdafa240bf0d43ff9d217a125c4c929, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &828225986
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 828225983}
+  m_Mesh: {fileID: 4300000, guid: f9f571ff5f7df4b8e97c0b5cc019d9ef, type: 3}
+--- !u!1 &863915409
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 863915410}
+  - component: {fileID: 863915411}
+  m_Layer: 0
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &863915410
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 863915409}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 729611500}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &863915411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 863915409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 661c45a344104837b0ee4901951c608c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textMesh: {fileID: 0}
+  text: Blue
+  size: 0.2
+  textAnchor: 4
+  textAlignment: 1
+  color: {r: 0, g: 0, b: 1, a: 1}
+--- !u!1 &876203313
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 876203314}
+  m_Layer: 0
+  m_Name: Lightings
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &876203314
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 876203313}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 31239173}
+  m_Father: {fileID: 2029845015}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &997367276
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 997367277}
+  - component: {fileID: 997367278}
+  m_Layer: 0
+  m_Name: PlaneCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &997367277
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 997367276}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1604143552}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &997367278
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 997367276}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 10, y: 0.1, z: 10}
+  m_Center: {x: 0, y: -0.05, z: 0}
+--- !u!1001 &1194583187
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1498417634}
+    m_Modifications:
+    - target: {fileID: 3594218895443089411, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_Name
+      value: Trial - Start
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
+--- !u!4 &1194583188 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1194583187}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1201199157
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1498417634}
+    m_Modifications:
+    - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_Name
+      value: Start
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: key.key
+      value: state_enter
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
+--- !u!4 &1201199158 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1201199157}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1340568290 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
+    type: 3}
+  m_PrefabInstance: {fileID: 1363852475}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1360729547
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[1]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 59d7a3b3131e54fe88ca3b9eca49167e,
+        type: 3}
+    - target: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_Name
+      value: TextInRedMaterial
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: sourceCode
+      value: "let timer = 0;\nlet CONDITION;\n\n$.onStart(() => {\n    $.state.last_state_id
+        = 0;\n    $.state.state_id = 0;\n    $.state.stateEnterActionID = -1;\n   
+        $.state.stateExitActionID = -1;\n    $.state.duringStateActionID = -1;\n   
+        Start();\n})\n\n$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\",
+        \"state_exit\", \"boolean\")) {\n        $.state.stateExitActionID = 0;\n       
+        $.state.last_state_id = $.state.state_id;\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\n    }\n    if ($.state.stateExitActionID >= 0) OnStateExit(deltaTime);\n\n   
+        if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\n       
+        $.setStateCompat(\"this\", \"state_enter\", false);\n        $.state.state_id
+        = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
+        $.state.stateEnterActionID = 0;\n        $.state.duringStateActionID = 0;\n   
+        }\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\n\n   
+        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\n\n    Update(deltaTime);\n})\n\nfunction
+        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
+        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
+        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
+        SetText(text) {\n    try {\n      $.subNode(\"Text\").setText(`${text}`);\n   
+        } catch (e) {\n      $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
+        exists and has setText method.`);\n    }\n}\n\nfunction SetPosition(x, y,
+        z) {\n    try {\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)));\n    } catch (e) {\n        $.log(`Error in SetPosition:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
+        }\n}\n\nfunction AddPosition(x, y, z) {\n    try {\n        const currentPos
+        = $.getPosition();\n        $.setPosition(currentPos.add(new Vector3(parseFloat(x),
+        parseFloat(y), parseFloat(z))));\n    } catch (e) {\n        $.log(`Error
+        in AddPosition: ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
+        }\n}\n\nfunction SetRotation(x, y, z) {\n    try {\n        $.setRotation(new
+        Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z))));\n    } catch (e) {\n        $.log(`Error in SetRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\n   
+        }\n}\n\nfunction AddRotation(x, y, z) {\n    try {\n        const currentRot
+        = $.getRotation();\n        const offsetRot = new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\n        $.setRotation(currentRot.multiply(offsetRot));\n   
+        } catch (e) {\n        $.log(`Error in AddRotation: ${e}. Ensure MovableItem
+        is present and x,y,z are valid numbers (Euler degrees).`);\n    }\n}\n\nfunction
+        RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
+        UploadRecordedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
+        SendHaptics(target, frequency, amplitude, duration) {\n    try {\n       
+        if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\n       
+        if ($.state.player) {\n            let hapticsTarget = target;\n           
+        if (typeof target === 'string') {\n                const lowerTarget = target.toLowerCase();\n               
+        if (lowerTarget === 'null' || lowerTarget === 'undefined' || lowerTarget
+        === \"\") {\n                    hapticsTarget = null; // Use JS null for
+        \"both\" or unspecified\n                } else if (lowerTarget === '\"left\"'
+        || lowerTarget === \"'left'\") {\n                    hapticsTarget = \"left\";\n               
+        } else if (lowerTarget === '\"right\"' || lowerTarget === \"'right'\") {\n                    
+        hapticsTarget = \"right\";\n                }\n                // else assume
+        target is already \"left\", \"right\", or a valid direct value.\n           
+        }\n\n            $.state.player.send(\"haptics\", {\n                target:
+        hapticsTarget,\n                frequency: parseFloat(frequency),\n               
+        amplitude: parseFloat(amplitude),\n                duration: parseFloat(duration)
+        // Duration in seconds\n            });\n        } else {\n            $.log(\"SendHaptics:
+        No player found nearby.\");\n        }\n    } catch (e) {\n        $.log(`Error
+        in SendHaptics: ${e}`);\n    }\n}\n\nfunction OnStateEnter(deltaTime) {\n   
+        CONDITION = $.groupState.currentCondition;\n    if (!stateEnterActions[$.state.state_id]
+        || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
+        return;\n    \n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
+        && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !==
+        \"sleep\") {\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\n       
+        $.state.stateEnterActionID += 1;\n    }\n\n    if ($.state.stateEnterActionID
+        >= stateEnterActions[$.state.state_id].length) {\n        $.state.stateEnterActionID
+        = -1;\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
+        === \"sleep\") {\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
+        {\n            $.state.stateEnterActionID += 1;\n            timer = 0;\n       
+        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
+        OnStateExit(deltaTime) {\n    if (!stateExitActions[$.state.last_state_id]
+        || $.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
+        return;\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
+        && stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        !== \"sleep\") {\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\n       
+        $.state.stateExitActionID += 1;\n    }\n\n    if ($.state.stateExitActionID
+        >= stateExitActions[$.state.last_state_id].length) {\n        $.state.stateExitActionID
+        = -1;\n        $.state.last_state_id = $.state.state_id;\n    } else if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        === \"sleep\") {\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
+        {\n            $.state.stateExitActionID += 1;\n            timer = 0;\n           
+        if ($.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
+        {\n                $.state.stateExitActionID = -1;\n            }\n       
+        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
+        DuringState(deltaTime) {\n    if (!duringStateActions[$.state.state_id] ||
+        !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\n   
+        \n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
+        {\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
+        === \"sleep\") {\n            $.state.duringStateActionID += 1;\n       
+        } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\n           
+        $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
+        = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
+        stateEnterActions = {\n    2: [\n        { type: \"exec\", action: () =>
+        {\n            if (CONDITION['material'] === 'R') {\n              $.setStateCompat('this',
+        'exp_showItem', true);\n            }\n        } },\n        { type: \"exec\",
+        action: () => {\n            if (CONDITION['material'] === 'B') {\n             
+        $.setStateCompat('this', 'exp_showItem', false);\n            }\n       
+        } },\n        { type: \"exec\", action: () => {\n            if (CONDITION['text']
+        === 'R') {\n              $.subNode('Text').setText(`Red`);\n           
+        }\n        } },\n        { type: \"exec\", action: () => {\n            if
+        (CONDITION['text'] === 'B') {\n              $.subNode('Text').setText(`Blue`);\n           
+        }\n        } }\n    ]\n};\n\nconst duringStateActions = {\n};\n\nconst stateExitActions
+        = {\n    2: [\n        { type: \"exec\", action: () => {\n            $.setStateCompat('this',
+        'exp_showItem', false);\n        } }\n    ]\n};\n\n\n// function Start()
+        { }\n// function Update(deltaTime) { }\n// $.onCollide((collision) => { });\n//
+        $.onGrab((isGrab, isLeftHand, player) => { });\n// $.onInteract((player)
+        => { });\n// $.onUse((isDown, player) => { });\n// $.onPhysicsUpdate((deltaTime)
+        => { });\n// $.onReceive((messageType, arg, sender) => { });"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758608954925073686, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: host
+      value: 
+      objectReference: {fileID: 7533049804749356259}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: de40e14777f5f4d3190981c4f4b1cddf, type: 3}
+--- !u!4 &1360729548 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+    type: 3}
+  m_PrefabInstance: {fileID: 1360729547}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1363852475
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[1]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 9c027d508eccf4c4b8382ce79404f377,
+        type: 3}
+    - target: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_Name
+      value: Instruction
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: sourceCode
+      value: "let timer = 0;\nlet CONDITION;\n\n$.onStart(() => {\n    $.state.last_state_id
+        = 0;\n    $.state.state_id = 0;\n    $.state.stateEnterActionID = -1;\n   
+        $.state.stateExitActionID = -1;\n    $.state.duringStateActionID = -1;\n   
+        Start();\n})\n\n$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\",
+        \"state_exit\", \"boolean\")) {\n        $.state.stateExitActionID = 0;\n       
+        $.state.last_state_id = $.state.state_id;\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\n    }\n    if ($.state.stateExitActionID >= 0) OnStateExit(deltaTime);\n\n   
+        if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\n       
+        $.setStateCompat(\"this\", \"state_enter\", false);\n        $.state.state_id
+        = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
+        $.state.stateEnterActionID = 0;\n        $.state.duringStateActionID = 0;\n   
+        }\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\n\n   
+        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\n\n    Update(deltaTime);\n})\n\nfunction
+        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
+        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
+        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
+        SetText(text) {\n    try {\n      $.subNode(\"Text\").setText(`${text}`);\n   
+        } catch (e) {\n      $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
+        exists and has setText method.`);\n    }\n}\n\nfunction SetPosition(x, y,
+        z) {\n    try {\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)));\n    } catch (e) {\n        $.log(`Error in SetPosition:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
+        }\n}\n\nfunction AddPosition(x, y, z) {\n    try {\n        const currentPos
+        = $.getPosition();\n        $.setPosition(currentPos.add(new Vector3(parseFloat(x),
+        parseFloat(y), parseFloat(z))));\n    } catch (e) {\n        $.log(`Error
+        in AddPosition: ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
+        }\n}\n\nfunction SetRotation(x, y, z) {\n    try {\n        $.setRotation(new
+        Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z))));\n    } catch (e) {\n        $.log(`Error in SetRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\n   
+        }\n}\n\nfunction AddRotation(x, y, z) {\n    try {\n        const currentRot
+        = $.getRotation();\n        const offsetRot = new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\n        $.setRotation(currentRot.multiply(offsetRot));\n   
+        } catch (e) {\n        $.log(`Error in AddRotation: ${e}. Ensure MovableItem
+        is present and x,y,z are valid numbers (Euler degrees).`);\n    }\n}\n\nfunction
+        RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
+        UploadRecordedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
+        SendHaptics(target, frequency, amplitude, duration) {\n    try {\n       
+        if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\n       
+        if ($.state.player) {\n            let hapticsTarget = target;\n           
+        if (typeof target === 'string') {\n                const lowerTarget = target.toLowerCase();\n               
+        if (lowerTarget === 'null' || lowerTarget === 'undefined' || lowerTarget
+        === \"\") {\n                    hapticsTarget = null; // Use JS null for
+        \"both\" or unspecified\n                } else if (lowerTarget === '\"left\"'
+        || lowerTarget === \"'left'\") {\n                    hapticsTarget = \"left\";\n               
+        } else if (lowerTarget === '\"right\"' || lowerTarget === \"'right'\") {\n                    
+        hapticsTarget = \"right\";\n                }\n                // else assume
+        target is already \"left\", \"right\", or a valid direct value.\n           
+        }\n\n            $.state.player.send(\"haptics\", {\n                target:
+        hapticsTarget,\n                frequency: parseFloat(frequency),\n               
+        amplitude: parseFloat(amplitude),\n                duration: parseFloat(duration)
+        // Duration in seconds\n            });\n        } else {\n            $.log(\"SendHaptics:
+        No player found nearby.\");\n        }\n    } catch (e) {\n        $.log(`Error
+        in SendHaptics: ${e}`);\n    }\n}\n\nfunction OnStateEnter(deltaTime) {\n   
+        CONDITION = $.groupState.currentCondition;\n    if (!stateEnterActions[$.state.state_id]
+        || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
+        return;\n    \n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
+        && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !==
+        \"sleep\") {\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\n       
+        $.state.stateEnterActionID += 1;\n    }\n\n    if ($.state.stateEnterActionID
+        >= stateEnterActions[$.state.state_id].length) {\n        $.state.stateEnterActionID
+        = -1;\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
+        === \"sleep\") {\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
+        {\n            $.state.stateEnterActionID += 1;\n            timer = 0;\n       
+        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
+        OnStateExit(deltaTime) {\n    if (!stateExitActions[$.state.last_state_id]
+        || $.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
+        return;\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
+        && stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        !== \"sleep\") {\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\n       
+        $.state.stateExitActionID += 1;\n    }\n\n    if ($.state.stateExitActionID
+        >= stateExitActions[$.state.last_state_id].length) {\n        $.state.stateExitActionID
+        = -1;\n        $.state.last_state_id = $.state.state_id;\n    } else if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        === \"sleep\") {\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
+        {\n            $.state.stateExitActionID += 1;\n            timer = 0;\n           
+        if ($.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
+        {\n                $.state.stateExitActionID = -1;\n            }\n       
+        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
+        DuringState(deltaTime) {\n    if (!duringStateActions[$.state.state_id] ||
+        !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\n   
+        \n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
+        {\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
+        === \"sleep\") {\n            $.state.duringStateActionID += 1;\n       
+        } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\n           
+        $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
+        = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
+        stateEnterActions = {\n    1: [\n        { type: \"exec\", action: () =>
+        {\n            $.setStateCompat('this', 'exp_showItem', true);\n        }
+        },\n        { type: \"exec\", action: () => {\n            $.setPosition(new
+        Vector3(0, 2, 2))\n        } },\n        { type: \"exec\", action: () =>
+        {\n            $.subNode('Text').setText(`Trials start in 5 seconds.\n           
+        \n            In each trial, you\u2019ll see a text written\n           
+        \"Red\" or \"Blue\" in red or blue font,\n            which may not necessarily
+        match the word.\n            You will be asked to click the sphere matching\n           
+        either the font color or the word's meaning.`);\n        } }\n    ],\n   
+        2: [\n        { type: \"exec\", action: () => {\n            if (CONDITION['request']
+        === 'material') {\n              $.subNode('Text').setText(`Click the sphere
+        that matches the font color`);\n            }\n        } },\n        { type:
+        \"exec\", action: () => {\n            if (CONDITION['request'] === 'text')
+        {\n              $.subNode('Text').setText(`Click the sphere that matches
+        the word\u2019s meaning`);\n            }\n        } },\n        { type:
+        \"exec\", action: () => {\n            $.setPosition(new Vector3(0, 2, 1.5))\n       
+        } }\n    ],\n    3: [\n        { type: \"exec\", action: () => {\n           
+        $.subNode('Text').setText(`Take a rest for 3 seconds`);\n        } }\n   
+        ],\n    4: [\n        { type: \"exec\", action: () => {\n            $.subNode('Text').setText(`Well
+        done!`);\n        } }\n    ]\n};\n\nconst duringStateActions = {\n};\n\nconst
+        stateExitActions = {\n};\n\n\n// function Start() { }\n// function Update(deltaTime)
+        { }\n// $.onCollide((collision) => { });\n// $.onGrab((isGrab, isLeftHand,
+        player) => { });\n// $.onInteract((player) => { });\n// $.onUse((isDown,
+        player) => { });\n// $.onPhysicsUpdate((deltaTime) => { });\n// $.onReceive((messageType,
+        arg, sender) => { });"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758608954925073686, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: host
+      value: 
+      objectReference: {fileID: 7533049804749356259}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: de40e14777f5f4d3190981c4f4b1cddf, type: 3}
+--- !u!4 &1363852476 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+    type: 3}
+  m_PrefabInstance: {fileID: 1363852475}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1363852488 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
+    type: 3}
+  m_PrefabInstance: {fileID: 1363852475}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1340568290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1363852489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1340568290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 557c1287071b147459bb6f001560c6e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 1363852488}
+  rb: {fileID: 1363852490}
+--- !u!54 &1363852490
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1340568290}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!1001 &1434940726
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1752504905}
+    m_Modifications:
+    - target: {fileID: 1091242992622558, guid: 7d071927c08ddb64ab3a3959ffa1281b, type: 3}
+      propertyPath: m_Name
+      value: DespawnHeight
+      objectReference: {fileID: 0}
+    - target: {fileID: 4515277542911952, guid: 7d071927c08ddb64ab3a3959ffa1281b, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4515277542911952, guid: 7d071927c08ddb64ab3a3959ffa1281b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4515277542911952, guid: 7d071927c08ddb64ab3a3959ffa1281b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4515277542911952, guid: 7d071927c08ddb64ab3a3959ffa1281b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4515277542911952, guid: 7d071927c08ddb64ab3a3959ffa1281b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4515277542911952, guid: 7d071927c08ddb64ab3a3959ffa1281b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4515277542911952, guid: 7d071927c08ddb64ab3a3959ffa1281b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4515277542911952, guid: 7d071927c08ddb64ab3a3959ffa1281b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4515277542911952, guid: 7d071927c08ddb64ab3a3959ffa1281b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4515277542911952, guid: 7d071927c08ddb64ab3a3959ffa1281b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4515277542911952, guid: 7d071927c08ddb64ab3a3959ffa1281b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7d071927c08ddb64ab3a3959ffa1281b, type: 3}
+--- !u!4 &1434940727 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4515277542911952, guid: 7d071927c08ddb64ab3a3959ffa1281b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1434940726}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1495044026
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1498417634}
+    m_Modifications:
+    - target: {fileID: 3594218895443089411, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_Name
+      value: Outro
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: key.key
+      value: state_enter
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
+--- !u!4 &1495044027 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1495044026}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1498417633
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1498417634}
+  m_Layer: 0
+  m_Name: States
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1498417634
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1498417633}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1201199158}
+  - {fileID: 2059729289}
+  - {fileID: 1194583188}
+  - {fileID: 55793351}
+  - {fileID: 1495044027}
+  - {fileID: 657678131}
+  m_Father: {fileID: 7533049804749356260}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1604143551
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1604143552}
+  m_Layer: 0
+  m_Name: Colliders
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1604143552
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1604143551}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 997367277}
+  m_Father: {fileID: 2029845015}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1631668738
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[1]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: f8d1193f1c9ed4fe09b49f4b65a520ed,
+        type: 3}
+    - target: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_Name
+      value: AnswerRed
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: sourceCode
+      value: "let timer = 0;\nlet CONDITION;\n\n$.onStart(() => {\n    $.state.last_state_id
+        = 0;\n    $.state.state_id = 0;\n    $.state.stateEnterActionID = -1;\n   
+        $.state.stateExitActionID = -1;\n    $.state.duringStateActionID = -1;\n   
+        Start();\n})\n\n$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\",
+        \"state_exit\", \"boolean\")) {\n        $.state.stateExitActionID = 0;\n       
+        $.state.last_state_id = $.state.state_id;\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\n    }\n    if ($.state.stateExitActionID >= 0) OnStateExit(deltaTime);\n\n   
+        if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\n       
+        $.setStateCompat(\"this\", \"state_enter\", false);\n        $.state.state_id
+        = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
+        $.state.stateEnterActionID = 0;\n        $.state.duringStateActionID = 0;\n   
+        }\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\n\n   
+        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\n\n    Update(deltaTime);\n})\n\nfunction
+        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
+        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
+        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
+        SetText(text) {\n    try {\n      $.subNode(\"Text\").setText(`${text}`);\n   
+        } catch (e) {\n      $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
+        exists and has setText method.`);\n    }\n}\n\nfunction SetPosition(x, y,
+        z) {\n    try {\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)));\n    } catch (e) {\n        $.log(`Error in SetPosition:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
+        }\n}\n\nfunction AddPosition(x, y, z) {\n    try {\n        const currentPos
+        = $.getPosition();\n        $.setPosition(currentPos.add(new Vector3(parseFloat(x),
+        parseFloat(y), parseFloat(z))));\n    } catch (e) {\n        $.log(`Error
+        in AddPosition: ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
+        }\n}\n\nfunction SetRotation(x, y, z) {\n    try {\n        $.setRotation(new
+        Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z))));\n    } catch (e) {\n        $.log(`Error in SetRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\n   
+        }\n}\n\nfunction AddRotation(x, y, z) {\n    try {\n        const currentRot
+        = $.getRotation();\n        const offsetRot = new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\n        $.setRotation(currentRot.multiply(offsetRot));\n   
+        } catch (e) {\n        $.log(`Error in AddRotation: ${e}. Ensure MovableItem
+        is present and x,y,z are valid numbers (Euler degrees).`);\n    }\n}\n\nfunction
+        RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
+        UploadRecordedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
+        SendHaptics(target, frequency, amplitude, duration) {\n    try {\n       
+        if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\n       
+        if ($.state.player) {\n            let hapticsTarget = target;\n           
+        if (typeof target === 'string') {\n                const lowerTarget = target.toLowerCase();\n               
+        if (lowerTarget === 'null' || lowerTarget === 'undefined' || lowerTarget
+        === \"\") {\n                    hapticsTarget = null; // Use JS null for
+        \"both\" or unspecified\n                } else if (lowerTarget === '\"left\"'
+        || lowerTarget === \"'left'\") {\n                    hapticsTarget = \"left\";\n               
+        } else if (lowerTarget === '\"right\"' || lowerTarget === \"'right'\") {\n                    
+        hapticsTarget = \"right\";\n                }\n                // else assume
+        target is already \"left\", \"right\", or a valid direct value.\n           
+        }\n\n            $.state.player.send(\"haptics\", {\n                target:
+        hapticsTarget,\n                frequency: parseFloat(frequency),\n               
+        amplitude: parseFloat(amplitude),\n                duration: parseFloat(duration)
+        // Duration in seconds\n            });\n        } else {\n            $.log(\"SendHaptics:
+        No player found nearby.\");\n        }\n    } catch (e) {\n        $.log(`Error
+        in SendHaptics: ${e}`);\n    }\n}\n\nfunction OnStateEnter(deltaTime) {\n   
+        CONDITION = $.groupState.currentCondition;\n    if (!stateEnterActions[$.state.state_id]
+        || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
+        return;\n    \n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
+        && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !==
+        \"sleep\") {\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\n       
+        $.state.stateEnterActionID += 1;\n    }\n\n    if ($.state.stateEnterActionID
+        >= stateEnterActions[$.state.state_id].length) {\n        $.state.stateEnterActionID
+        = -1;\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
+        === \"sleep\") {\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
+        {\n            $.state.stateEnterActionID += 1;\n            timer = 0;\n       
+        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
+        OnStateExit(deltaTime) {\n    if (!stateExitActions[$.state.last_state_id]
+        || $.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
+        return;\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
+        && stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        !== \"sleep\") {\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\n       
+        $.state.stateExitActionID += 1;\n    }\n\n    if ($.state.stateExitActionID
+        >= stateExitActions[$.state.last_state_id].length) {\n        $.state.stateExitActionID
+        = -1;\n        $.state.last_state_id = $.state.state_id;\n    } else if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        === \"sleep\") {\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
+        {\n            $.state.stateExitActionID += 1;\n            timer = 0;\n           
+        if ($.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
+        {\n                $.state.stateExitActionID = -1;\n            }\n       
+        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
+        DuringState(deltaTime) {\n    if (!duringStateActions[$.state.state_id] ||
+        !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\n   
+        \n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
+        {\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
+        === \"sleep\") {\n            $.state.duringStateActionID += 1;\n       
+        } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\n           
+        $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
+        = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
+        stateEnterActions = {\n    2: [\n        { type: \"exec\", action: () =>
+        {\n            $.setStateCompat('this', 'exp_showItem', true);\n        }
+        }\n    ]\n};\n\nconst duringStateActions = {\n};\n\nconst stateExitActions
+        = {\n    2: [\n        { type: \"exec\", action: () => {\n            $.setStateCompat('this',
+        'exp_showItem', false);\n        } }\n    ]\n};\n\n\n// function Start()
+        { }\n// function Update(deltaTime) { }\n// $.onCollide((collision) => { });\n//
+        $.onGrab((isGrab, isLeftHand, player) => { });\n// $.onInteract((player)
+        => { });\n// $.onUse((isDown, player) => { });\n// $.onPhysicsUpdate((deltaTime)
+        => { });\n// $.onReceive((messageType, arg, sender) => { });"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758608954925073686, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: host
+      value: 
+      objectReference: {fileID: 7533049804749356259}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: de40e14777f5f4d3190981c4f4b1cddf, type: 3}
+--- !u!4 &1631668739 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+    type: 3}
+  m_PrefabInstance: {fileID: 1631668738}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1631668740 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
+    type: 3}
+  m_PrefabInstance: {fileID: 1631668738}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1631668741 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
+    type: 3}
+  m_PrefabInstance: {fileID: 1631668738}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1631668740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1631668742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1631668740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 0
+      key: nextState
+    item: {fileID: 1631668741}
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 2
+          key: state_triggerTransition
+          parameterType: 0
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 1
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &1631668743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1631668740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d108e96ac8383914584b02f9d6b0afea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  copiedComponent: {fileID: 1631668742}
+  target: 3
+  key: nextState
+  item: {fileID: 1631668741}
+--- !u!114 &1631668744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1631668740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2872ae1873cd4546a4cf7dae626612b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 1631668741}
+  triggers:
+  - target: 4
+    specifiedTargetItem: {fileID: 0}
+    key: isAnswerRed
+    type: 1
+    value:
+      boolValue: 1
+      floatValue: 0
+      integerValue: 0
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+  - target: 0
+    specifiedTargetItem: {fileID: 0}
+    key: nextState
+    type: 0
+    value:
+      boolValue: 1
+      floatValue: 0
+      integerValue: 0
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+--- !u!1 &1752504904
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1752504905}
+  m_Layer: 0
+  m_Name: System
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1752504905
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1752504904}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1434940727}
+  - {fileID: 814595608}
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1857772243
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1857772244}
+  - component: {fileID: 1857772247}
+  - component: {fileID: 1857772246}
+  - component: {fileID: 1857772245}
+  m_Layer: 14
+  m_Name: Sphere
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1857772244
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1857772243}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 1631668739}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &1857772245
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1857772243}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &1857772246
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1857772243}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: d97bf7c7b782da6489b9df1c5d847043, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1857772247
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1857772243}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &1989516159
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[1]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: e709135e7b055469ebfa3c341f3c959f,
+        type: 3}
+    - target: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_Name
+      value: AnswerBlue
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: sourceCode
+      value: "let timer = 0;\nlet CONDITION;\n\n$.onStart(() => {\n    $.state.last_state_id
+        = 0;\n    $.state.state_id = 0;\n    $.state.stateEnterActionID = -1;\n   
+        $.state.stateExitActionID = -1;\n    $.state.duringStateActionID = -1;\n   
+        Start();\n})\n\n$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\",
+        \"state_exit\", \"boolean\")) {\n        $.state.stateExitActionID = 0;\n       
+        $.state.last_state_id = $.state.state_id;\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\n    }\n    if ($.state.stateExitActionID >= 0) OnStateExit(deltaTime);\n\n   
+        if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\n       
+        $.setStateCompat(\"this\", \"state_enter\", false);\n        $.state.state_id
+        = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
+        $.state.stateEnterActionID = 0;\n        $.state.duringStateActionID = 0;\n   
+        }\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\n\n   
+        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\n\n    Update(deltaTime);\n})\n\nfunction
+        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
+        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
+        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
+        SetText(text) {\n    try {\n      $.subNode(\"Text\").setText(`${text}`);\n   
+        } catch (e) {\n      $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
+        exists and has setText method.`);\n    }\n}\n\nfunction SetPosition(x, y,
+        z) {\n    try {\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)));\n    } catch (e) {\n        $.log(`Error in SetPosition:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
+        }\n}\n\nfunction AddPosition(x, y, z) {\n    try {\n        const currentPos
+        = $.getPosition();\n        $.setPosition(currentPos.add(new Vector3(parseFloat(x),
+        parseFloat(y), parseFloat(z))));\n    } catch (e) {\n        $.log(`Error
+        in AddPosition: ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
+        }\n}\n\nfunction SetRotation(x, y, z) {\n    try {\n        $.setRotation(new
+        Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z))));\n    } catch (e) {\n        $.log(`Error in SetRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\n   
+        }\n}\n\nfunction AddRotation(x, y, z) {\n    try {\n        const currentRot
+        = $.getRotation();\n        const offsetRot = new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\n        $.setRotation(currentRot.multiply(offsetRot));\n   
+        } catch (e) {\n        $.log(`Error in AddRotation: ${e}. Ensure MovableItem
+        is present and x,y,z are valid numbers (Euler degrees).`);\n    }\n}\n\nfunction
+        RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
+        UploadRecordedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
+        SendHaptics(target, frequency, amplitude, duration) {\n    try {\n       
+        if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\n       
+        if ($.state.player) {\n            let hapticsTarget = target;\n           
+        if (typeof target === 'string') {\n                const lowerTarget = target.toLowerCase();\n               
+        if (lowerTarget === 'null' || lowerTarget === 'undefined' || lowerTarget
+        === \"\") {\n                    hapticsTarget = null; // Use JS null for
+        \"both\" or unspecified\n                } else if (lowerTarget === '\"left\"'
+        || lowerTarget === \"'left'\") {\n                    hapticsTarget = \"left\";\n               
+        } else if (lowerTarget === '\"right\"' || lowerTarget === \"'right'\") {\n                    
+        hapticsTarget = \"right\";\n                }\n                // else assume
+        target is already \"left\", \"right\", or a valid direct value.\n           
+        }\n\n            $.state.player.send(\"haptics\", {\n                target:
+        hapticsTarget,\n                frequency: parseFloat(frequency),\n               
+        amplitude: parseFloat(amplitude),\n                duration: parseFloat(duration)
+        // Duration in seconds\n            });\n        } else {\n            $.log(\"SendHaptics:
+        No player found nearby.\");\n        }\n    } catch (e) {\n        $.log(`Error
+        in SendHaptics: ${e}`);\n    }\n}\n\nfunction OnStateEnter(deltaTime) {\n   
+        CONDITION = $.groupState.currentCondition;\n    if (!stateEnterActions[$.state.state_id]
+        || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
+        return;\n    \n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
+        && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !==
+        \"sleep\") {\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\n       
+        $.state.stateEnterActionID += 1;\n    }\n\n    if ($.state.stateEnterActionID
+        >= stateEnterActions[$.state.state_id].length) {\n        $.state.stateEnterActionID
+        = -1;\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
+        === \"sleep\") {\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
+        {\n            $.state.stateEnterActionID += 1;\n            timer = 0;\n       
+        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
+        OnStateExit(deltaTime) {\n    if (!stateExitActions[$.state.last_state_id]
+        || $.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
+        return;\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
+        && stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        !== \"sleep\") {\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\n       
+        $.state.stateExitActionID += 1;\n    }\n\n    if ($.state.stateExitActionID
+        >= stateExitActions[$.state.last_state_id].length) {\n        $.state.stateExitActionID
+        = -1;\n        $.state.last_state_id = $.state.state_id;\n    } else if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        === \"sleep\") {\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
+        {\n            $.state.stateExitActionID += 1;\n            timer = 0;\n           
+        if ($.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
+        {\n                $.state.stateExitActionID = -1;\n            }\n       
+        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
+        DuringState(deltaTime) {\n    if (!duringStateActions[$.state.state_id] ||
+        !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\n   
+        \n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
+        {\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
+        === \"sleep\") {\n            $.state.duringStateActionID += 1;\n       
+        } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\n           
+        $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
+        = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
+        stateEnterActions = {\n    2: [\n        { type: \"exec\", action: () =>
+        {\n            $.setStateCompat('this', 'exp_showItem', true);\n        }
+        }\n    ]\n};\n\nconst duringStateActions = {\n};\n\nconst stateExitActions
+        = {\n    2: [\n        { type: \"exec\", action: () => {\n            $.setStateCompat('this',
+        'exp_showItem', false);\n        } }\n    ]\n};\n\n\n// function Start()
+        { }\n// function Update(deltaTime) { }\n// $.onCollide((collision) => { });\n//
+        $.onGrab((isGrab, isLeftHand, player) => { });\n// $.onInteract((player)
+        => { });\n// $.onUse((isDown, player) => { });\n// $.onPhysicsUpdate((deltaTime)
+        => { });\n// $.onReceive((messageType, arg, sender) => { });"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758608954925073686, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: host
+      value: 
+      objectReference: {fileID: 7533049804749356259}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: de40e14777f5f4d3190981c4f4b1cddf, type: 3}
+--- !u!4 &1989516160 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+    type: 3}
+  m_PrefabInstance: {fileID: 1989516159}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1989516161 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
+    type: 3}
+  m_PrefabInstance: {fileID: 1989516159}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1989516162 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
+    type: 3}
+  m_PrefabInstance: {fileID: 1989516159}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1989516161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1989516163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1989516161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 0
+      key: nextState
+    item: {fileID: 1989516162}
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 2
+          key: state_triggerTransition
+          parameterType: 0
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 1
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &1989516164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1989516161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d108e96ac8383914584b02f9d6b0afea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  copiedComponent: {fileID: 1989516163}
+  target: 3
+  key: nextState
+  item: {fileID: 1989516162}
+--- !u!114 &1989516165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1989516161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2872ae1873cd4546a4cf7dae626612b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 1989516162}
+  triggers:
+  - target: 4
+    specifiedTargetItem: {fileID: 0}
+    key: isAnswerRed
+    type: 1
+    value:
+      boolValue: 0
+      floatValue: 0
+      integerValue: 0
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+  - target: 0
+    specifiedTargetItem: {fileID: 0}
+    key: nextState
+    type: 0
+    value:
+      boolValue: 1
+      floatValue: 0
+      integerValue: 0
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+--- !u!1 &2029845014
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2029845015}
+  m_Layer: 0
+  m_Name: Environment
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2029845015
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2029845014}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 876203314}
+  - {fileID: 787405257}
+  - {fileID: 1604143552}
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &2059729288
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1498417634}
+    m_Modifications:
+    - target: {fileID: 3594218895443089411, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_Name
+      value: Intro
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: key.key
+      value: state_enter
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
+--- !u!4 &2059729289 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 2059729288}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2141814059
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2141814060}
+  - component: {fileID: 2141814061}
+  m_Layer: 0
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2141814060
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2141814059}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1360729548}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2141814061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2141814059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 661c45a344104837b0ee4901951c608c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textMesh: {fileID: 0}
+  text: Red
+  size: 0.2
+  textAnchor: 4
+  textAlignment: 1
+  color: {r: 1, g: 0, b: 0, a: 1}
+--- !u!1001 &6096864659607230834
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 814595608}
+    m_Modifications:
+    - target: {fileID: 600138419, guid: bebbd8fabd7b322468f1d18e8b32081c, type: 3}
+      propertyPath: sourceCode
+      value: "$.onStart(() => {\n  $.state.inRoomIdfcs = [];\n})\n\n$.onUpdate(()
+        => {\n    if ($.getStateCompat(\"this\", \"onJoined\", \"boolean\")) {\n       
+        $.setStateCompat(\"this\", \"onJoined\", false);\n        const newPlayers
+        = $.getPlayersNear($.getPosition(), Infinity)\n            .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));\n       
+        if (newPlayers.length > 0) {\n            for (const newPlayer of newPlayers)
+        {\n                $.state.inRoomIdfcs.push(newPlayer.idfc);\n               
+        $.setPlayerScript(newPlayer);\n            }\n        }\n    }\n/*\n  if
+        ($.getStateCompat(\"this\", \"exp_checkJoinEligibility\", \"boolean\")) {\n   
+        $.setStateCompat(\"this\", \"exp_checkJoinEligibility\", false);\n\n    const
+        newPlayers = $.getPlayersNear($.getPosition(), 1)\n      .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));\n   
+        \n    if (newPlayers.length > 0) {\n      $.state.newPlayers = newPlayers;\n     
+        $.log(newPlayers[0].idfc);\n\n      const request = {\n        type: \"checkJoinEligibility\",\n       
+        token: token || \"\",\n        eID: expID || \"\",\n        idfcs: newPlayers.map(p
+        => p.idfc).join(\"|\")\n      };\n      $.callExternal(JSON.stringify(request),
+        \"joinEligibilityChecked\");\n    }\n  }\n*/\n})\n\n/*\n$.onExternalCallEnd((res,
+        meta, err) =>\n{\n  if (res == null) {\n    $.log(\"callExternal ERROR: \"
+        + err);\n    return;\n  }\n\n  if (meta === \"joinEligibilityChecked\") {\n   
+        const parsedRes = JSON.parse(res);\n    $.state.newPlayers.forEach(newPlayer
+        => {\n      if (parsedRes.ineligibleIdfcs.includes(newPlayer.idfc)) {\n       
+        // TODO: Show message about that this player is not eligible to join this
+        experiment, and teleport the player back to LUIDA bar world.\n      } else
+        {\n        newPlayer.setMoveSpeedRate(1);\n        $.state.inRoomIdfcs =
+        [ ...$.state.inRoomIdfcs, newPlayer.idfc ];\n        // TODO: Instead of
+        enabling move, teleport the player from the checking area to the task area.\n     
+        }\n    });\n    \n    $.state.newPlayers = [];\n    $.log(\"Only users who
+        have not joined this experiment before are allowed to proceed to the experiment.\");\n 
+        }\n});\n*/\n"
+      objectReference: {fileID: 0}
+    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6095851746729471975, guid: bebbd8fabd7b322468f1d18e8b32081c,
+        type: 3}
+      propertyPath: m_Name
+      value: SpawnPointEntrance
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: bebbd8fabd7b322468f1d18e8b32081c, type: 3}
+--- !u!1001 &7533049804749356258
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 908684358854966727, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: m_Name
+      value: ExpTemplateRequiredObjects
+      objectReference: {fileID: 0}
+    - target: {fileID: 2948447358681182120, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: clusterScripts.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2948447358681182120, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[0]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 473fcbe28772e4709ae98067220b282b,
+        type: 3}
+    - target: {fileID: 2948447358681182120, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[1]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 8821fb654779949b38c61e01b3dae4b5,
+        type: 3}
+    - target: {fileID: 2948447358681182120, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[2]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 8821fb654779949b38c61e01b3dae4b5,
+        type: 3}
+    - target: {fileID: 2963938157378484328, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: sourceCode
+      value: "const trialsCountForEachUniqueCondition = 1;\nconst within_subjects_variables
+        = [\n    { name: \"request\", values: [\"material\", \"text\"], isRandom:
+        false },\n    { name: \"material\", values: [\"R\", \"B\"], isRandom: true
+        },\n    { name: \"text\", values: [\"R\", \"B\"], isRandom: true },\n];\nconst
+        between_subjects_variables = [\n    { name: \"lang\", values: [\"en\", \"ja\"],
+        isRandom: true },\n];\n\r\n$.onStart(() => {\n  initializeRandomBetweenSubjectsConditions();\n 
+        reset();\n});\n\n$.onUpdate(() => {\n  if (\n    $.state.trialID !== $.getStateCompat(\"global\",
+        \"exp_trialID\", \"integer\") &&\n      $.getStateCompat(\"global\", \"exp_trialID\",
+        \"integer\") >= 0\n  ) {\n    $.state.trialID = $.getStateCompat(\"global\",
+        \"exp_trialID\", \"integer\");\n    updateCondition();\n  }\n});\n\n$.onReceive((messageType,
+        arg, sender) => {\n  switch (messageType) {\n    // case \"exp_questionnaire_answer\":\n   
+        //     $.state.betweenSubjectsConditions = GetBetweenSubjectsCondition(arg);\n   
+        //     break;\n    default:\n      break;\n  }\n});\n\nfunction updateCondition()
+        {\n  if ($.state.trialID >= $.state.trialCount) {\n    $.sendSignalCompat(\"this\",
+        \"exp_resetTrials\");\n  } else if ($.state.trialID <= -1) {\n    reset();\n 
+        } else {\n    let condition = { ...$.state.betweenSubjectsConditions };\n   
+        for (let i = 0; i < $.state.withinSubjectsVariableNames.length; i++) {\n     
+        const varName = $.state.withinSubjectsVariableNames[i];\n      const varValue
+        =\n          within_subjects_variables[i].values[\n              $.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]\n             
+        ];\n      condition[varName] = varValue;\n    }\n    $.groupState.currentCondition
+        = condition;\n\n    // Check if this is the last trial (if true, stop repeating
+        trials when next state transition is triggered)\n    if (\n        $.state.trialCount
+        > 0 &&\n        !$.state.isLast &&\n        $.state.trialID >= $.state.trialCount
+        - 1\n    ) {\n      $.state.isLast = true;\n      $.sendSignalCompat(\"this\",
+        \"exp_readyToLeaveTrials\");\n    }\n  }\n}\n\nfunction reset() {\n  $.state.trialID
+        = 0;\n  if (!$.state.betweenSubjectsConditions)\n    $.state.betweenSubjectsConditions
+        = {};\n  $.state.withinSubjectsVariableNames = [];\n  $.state.withinSubjectsConditionIndicesByTrial
+        = [];\n  $.state.trialCount = 1;\n  $.groupState.currentCondition = {\n   
+        ...$.state.betweenSubjectsConditions,\n  };\n  try {\n    initializeWithinSubjectsConditions(\n     
+        within_subjects_variables,\n      trialsCountForEachUniqueCondition\n   
+        );\n  } catch (error) {\n    $.log(error);\n    $.log(\"Within-subjects variables
+        are not defined.\");\n    initializeWithinSubjectsConditions([], 1);\n  }\n 
+        updateCondition();\n}\n\nfunction initializeRandomBetweenSubjectsConditions()
+        {\n  let betweenSubjectsCondition = {};\n  try {\n    between_subjects_variables.forEach((v)
+        => {\n      if (v.isRandom && !betweenSubjectsCondition[v.name]) {\n       
+        betweenSubjectsCondition[v.name] =\n          v.values[Math.floor(Math.random()
+        * v.values.length)];\n      }\n    });\n  } catch (e) {\n    $.log(\"Between-subjects
+        variables are not defined.\");\n  }\n  $.state.betweenSubjectsConditions
+        = betweenSubjectsCondition;\n}\n\nfunction initializeWithinSubjectsConditions(variables,
+        repeatsPerCond = 1) {\n  variables = [...variables.sort((a, b) => a.isRandom
+        - b.isRandom)];\n  const varNames = variables.map((v) => v.name);\n\n  let
+        indicesPerVar = variables.map((v) =>\n    Array.from({ length: v.values.length
+        }, (_, i) => i)\n  );\n  let condIndicesList = indicesPerVar\n    .reduce(\n     
+        (acc, array) => {\n        return acc.flatMap((accItem) =>\n          array.map((arrayItem)
+        => [...accItem, arrayItem])\n        );\n      },\n      [[]]\n    )\n   
+        .flatMap((condIndices) =>\n      Array.from({ length: repeatsPerCond }, ()
+        => condIndices)\n    );\n\n  let shufflePartitionSize = 0;\n  for (let i
+        = 0; i < variables.length; i++) {\n    if (variables[i].isRandom) {\n     
+        shufflePartitionSize =\n        shufflePartitionSize === 0\n          ? variables[i].values.length\n         
+        : shufflePartitionSize * variables[i].values.length;\n    }\n  }\n  shufflePartitionSize
+        *= repeatsPerCond;\n\n  if (shufflePartitionSize > 0) {\n    const result
+        = [...condIndicesList]; // Copy the array to avoid mutating the original\n   
+        for (let i = 0; i < condIndicesList.length; i += shufflePartitionSize) {\n     
+        let partition = result.slice(i, i + shufflePartitionSize);\n      partition
+        = shuffleArray(partition);\n      result.splice(i, shufflePartitionSize,
+        ...partition);\n    }\n    condIndicesList = result;\n  }\n\n  $.state.withinSubjectsVariableNames
+        = varNames;\n  $.state.withinSubjectsConditionIndicesByTrial = condIndicesList;\n 
+        $.state.trialCount = condIndicesList.length;\n}\n\nfunction shuffleArray(array)
+        {\n  for (let i = array.length - 1; i > 0; i--) {\n    const j = Math.floor(Math.random()
+        * (i + 1));\n    [array[i], array[j]] = [array[j], array[i]];\n  }\n  return
+        array;\n}\n"
+      objectReference: {fileID: 0}
+    - target: {fileID: 2966719835339860264, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2966719835339860266, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: sourceCode
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\nconst uploadInterval
+        = 1;\nconst dataLengthPerUpload = 15;\n\n$.onStart(() => {\n    $.state.customData
+        = {};\n    $.state.uploadIndex = 0;\n    $.state.elapsedTime = 0;\n    $.state.dataLength
+        = 0;\n    $.state.isUploading = false;\n})\n\n$.onUpdate((deltaTime) => {\n   
+        if ($.getStateCompat(\"this\", \"exp_recordCustomData\", \"boolean\")) {\n       
+        $.setStateCompat(\"this\", \"exp_recordCustomData\", false);\n        recordData();\n   
+        }\n    if ($.getStateCompat(\"this\", \"exp_uploadCustomData\", \"boolean\"))
+        {\n        if ($.state.uploadIndex === 0) {\n            uploadDataInit();\n           
+        $.setStateCompat(\"this\", \"exp_uploadCustomData\", false);\n        }\n   
+        }\n    if ($.state.isUploading) {\n        $.state.elapsedTime = $.state.elapsedTime
+        + deltaTime;\n        if ($.state.elapsedTime >= uploadInterval && $.state.uploadIndex
+        < Math.ceil($.state.dataLength / dataLengthPerUpload)) {\n            $.state.elapsedTime
+        = 0;\n            uploadDataStep();\n        }\n    }\n})\n\nfunction recordData
+        () {\n    $.state.customData = calculateData();\n}\n\nfunction uploadDataInit()
+        {\n    $.state.uploadIndex = 0;\n    $.state.elapsedTime = 0;\n    $.state.isUploading
+        = true;\n    let firstFileName = Object.keys($.state.customData)[0];\n   
+        if (firstFileName) {\n        $.state.dataLength = $.state.customData[firstFileName].length;\n   
+        }\n}\n\nfunction uploadDataStep() {\n    $.log($.state.uploadIndex);\n   
+        if ($.state.uploadIndex < Math.ceil($.state.dataLength / dataLengthPerUpload))
+        {\n        const slicedData = Object.fromEntries(\n            Object.entries($.state.customData).map(([key,
+        value]) => [\n                key,\n                value.slice($.state.uploadIndex
+        * dataLengthPerUpload, ($.state.uploadIndex + 1) * dataLengthPerUpload)\n           
+        ])\n        );\n        let request = {\n            type: \"uploadCustomData\",\n           
+        token: token || \"\",\n            data: slicedData,\n            eID: expID
+        || \"\",\n            pID: $.getPlayersNear($.getPosition().clone(), Infinity)[0].idfc
+        || \"\" // TODO: retrieve idfc through cluster Player Script\n        };\n       
+        $.log(request);\n        $.callExternal(JSON.stringify(request), \"customDataUploaded\");\n       
+        $.state.uploadIndex = $.state.uploadIndex + 1;\n\n        if ($.state.uploadIndex
+        >= Math.ceil($.state.dataLength / dataLengthPerUpload)) {\n            $.state.uploadIndex
+        = 0;\n            $.state.isUploading = false;\n        }\n    }\n}\n\n$.onExternalCallEnd((res,
+        meta, err) =>\n{\n    if (res == null) {\n        $.log(\"callExternal ERROR:
+        \" + err);\n        return;\n    }\n\n    if (meta === \"customDataUploaded\")
+        {\n        $.log(\"Response after customDataUploaded called: \" + JSON.stringify(res));\n   
+        }\n});\r\nfunction calculateData () {\n  let returnData = $.state.customData;\n 
+        const CONDITION = $.groupState.currentCondition;\n\n  function saveData_SelectionAnswer()
+        {\nreturn {\n  mat: CONDITION['material'],\n  txt: CONDITION['text'],\n 
+        ans: $.getStateCompat(\"global\", \"isAnswerRed\", \"boolean\") ? \"R\" :
+        \"B\",\n  time: $.getStateCompat(\"owner\", \"answerTime\", \"float\")\n};\n   
+        return {};\n  }\n  const newRecord_SelectionAnswer = saveData_SelectionAnswer();\n 
+        if (\"SelectionAnswer\" in returnData && Array.isArray(returnData[\"SelectionAnswer\"]))
+        {\n    returnData[\"SelectionAnswer\"].push(newRecord_SelectionAnswer);\n 
+        } else {\n    returnData[\"SelectionAnswer\"] = [newRecord_SelectionAnswer];\n 
+        }\n\n  return returnData;\n}\n"
+      objectReference: {fileID: 0}
+    - target: {fileID: 6888872806784858143, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[0]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: c22e594b3eff3364c8217424a55e9588,
+        type: 3}
+    - target: {fileID: 6888872806784858143, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[2]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: dd429a8924fff40bb9852c46572dc072,
+        type: 3}
+    - target: {fileID: 8428161057630051971, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428161057630051971, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428161057630051971, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428161057630051971, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428161057630051971, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428161057630051971, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428161057630051971, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428161057630051971, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428161057630051971, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428161057630051971, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428161057630051971, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c429a845517c96a419988cd638c846f1, type: 3}
+--- !u!114 &7533049804749356259 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7022389377809828575, guid: c429a845517c96a419988cd638c846f1,
+    type: 3}
+  m_PrefabInstance: {fileID: 7533049804749356258}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6487efbf7339493cb3e1fa581f53b763, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &7533049804749356260 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8428161057630051971, guid: c429a845517c96a419988cd638c846f1,
+    type: 3}
+  m_PrefabInstance: {fileID: 7533049804749356258}
+  m_PrefabAsset: {fileID: 0}
