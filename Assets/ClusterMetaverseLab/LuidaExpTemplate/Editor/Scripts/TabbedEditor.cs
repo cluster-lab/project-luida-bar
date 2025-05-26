@@ -92,11 +92,8 @@ public class TabbedEditor : EditorWindow
             // detect switching away from the ItemsManager tab:
             if (newTab != currentTab)
             {
-                if (currentTab == 3)
-                {
-                    Debug.Log("TabbedEditor tab switched from ItemsManager to " + newTab);
-                    OnItemsManagerTabLostFocus?.Invoke();
-                }
+                Debug.Log("TabbedEditor tab switched from " + currentTab + " to " + newTab);
+                OnItemsManagerTabLostFocus?.Invoke();
                 currentTab = newTab;
             }
 

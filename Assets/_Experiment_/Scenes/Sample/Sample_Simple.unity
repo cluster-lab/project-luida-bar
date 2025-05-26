@@ -1803,12 +1803,14 @@ PrefabInstance:
         } }\n    ],\n    3: [\n        { type: \"exec\", action: () => {\n           
         $.subNode('Text').setText(`Take a rest for 3 seconds`);\n        } }\n   
         ],\n    4: [\n        { type: \"exec\", action: () => {\n            $.subNode('Text').setText(`Well
-        done!`);\n        } }\n    ]\n};\n\nconst duringStateActions = {\n};\n\nconst
-        stateExitActions = {\n};\n\n\n// function Start() { }\n// function Update(deltaTime)
-        { }\n// $.onCollide((collision) => { });\n// $.onGrab((isGrab, isLeftHand,
-        player) => { });\n// $.onInteract((player) => { });\n// $.onUse((isDown,
-        player) => { });\n// $.onPhysicsUpdate((deltaTime) => { });\n// $.onReceive((messageType,
-        arg, sender) => { });"
+        done! Thanks for your participation.\n            You can leave this room
+        now.`);\n        } }\n    ]\n};\n\nconst duringStateActions = {\n};\n\nconst
+        stateExitActions = {\n    4: [\n        { type: \"exec\", action: () => {\n           
+        $.setStateCompat('this', 'exp_showItem', false);\n        } }\n    ]\n};\n\n\n//
+        function Start() { }\n// function Update(deltaTime) { }\n// $.onCollide((collision)
+        => { });\n// $.onGrab((isGrab, isLeftHand, player) => { });\n// $.onInteract((player)
+        => { });\n// $.onUse((isDown, player) => { });\n// $.onPhysicsUpdate((deltaTime)
+        => { });\n// $.onReceive((messageType, arg, sender) => { });"
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -2357,7 +2359,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
 --- !u!114 &1631668742
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -2804,7 +2806,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
 --- !u!114 &1989516163
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}

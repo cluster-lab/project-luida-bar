@@ -8,6 +8,7 @@ public class ExpIdentifierEditor
     private string expID = "";
     private string token = "";
     private string filePath;
+    private bool isSubscribed = false;
 
     public void OnEnable()
     {
@@ -18,6 +19,25 @@ public class ExpIdentifierEditor
         if (File.Exists(filePath))
         {
             LoadExpIdentifiers();
+        }
+
+        if (!isSubscribed)
+        {
+            TabbedEditor.OnEditorClosed += SaveExpIdentifiers;
+            TabbedEditor.OnEditorClosed += OnDisable;
+            TabbedEditor.OnItemsManagerTabLostFocus += SaveExpIdentifiers;
+            isSubscribed = true;
+        }
+    }
+
+    public void OnDisable()
+    {
+        if (isSubscribed)
+        {
+            TabbedEditor.OnEditorClosed -= SaveExpIdentifiers;
+            TabbedEditor.OnEditorClosed -= OnDisable;
+            TabbedEditor.OnItemsManagerTabLostFocus -= SaveExpIdentifiers;
+            isSubscribed = false;
         }
     }
 

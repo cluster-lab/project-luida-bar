@@ -12,6 +12,9 @@ public class ExperimentVariablesEditor : EditorWindow
 {
     private JavaScriptAsset variablesAsset;
     private JavaScriptAsset betweenSubjectsConditionSetterAsset;
+    private JavaScriptAsset conditionManagerScript;
+    private string conditionManagerScriptPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/ConditionManagement/ConditionManager.js";
+
 
     private ExperimentVariable[] withinSubjectsVariables;
     private ExperimentVariable[] betweenSubjectsVariables;
@@ -19,10 +22,29 @@ public class ExperimentVariablesEditor : EditorWindow
 
     private string variablesAssetPath;
     private string betweenSubjectsConditionSetterPath;
+    private bool isSubscribed = false;
 
     public void OnEnable()
     {
         RetrieveJavaScriptAsset();
+        if (!isSubscribed)
+        {
+            TabbedEditor.OnEditorClosed += ApplyVariableUpdates;
+            TabbedEditor.OnEditorClosed += OnDisable;
+            TabbedEditor.OnItemsManagerTabLostFocus += ApplyVariableUpdates;
+            isSubscribed = true;
+        }
+    }
+
+    public void OnDisable()
+    {
+        if (isSubscribed)
+        {
+            TabbedEditor.OnEditorClosed -= ApplyVariableUpdates;
+            TabbedEditor.OnEditorClosed -= OnDisable;
+            TabbedEditor.OnItemsManagerTabLostFocus -= ApplyVariableUpdates;
+            isSubscribed = false;
+        }
     }
 
     public void OnGUI()
@@ -195,6 +217,8 @@ public class ExperimentVariablesEditor : EditorWindow
         {
             ParseJavaScriptAsset(variablesAsset.text);
         }
+
+        conditionManagerScript = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(conditionManagerScriptPath);
     }
 
     private void RetrieveOrCreateVariablesAsset()
@@ -293,20 +317,20 @@ public class ExperimentVariablesEditor : EditorWindow
 
     private void ApplyVariableUpdates()
     {
-        // Existing code to generate JavaScript
         GenerateJavaScript();
-
-        // Update ScriptableClusterScriptCombiner for main JavaScript asset
-        UpdateScriptableClusterScriptCombiner(variablesAsset);
-
-        // Update ScriptableClusterScriptCombiner for betweenSubjectsConditionSetterAsset
         if (betweenSubjectsConditionSetterAsset != null)
         {
-            UpdateScriptableClusterScriptCombiner(betweenSubjectsConditionSetterAsset, false);
+            UpdateScriptableClusterScriptCombiner(new JavaScriptAsset[] { betweenSubjectsConditionSetterAsset, variablesAsset }, false);
         }
+        else
+        {
+            UpdateScriptableClusterScriptCombiner(new JavaScriptAsset[] { variablesAsset });
+        }
+
+        Debug.Log($"Experiment variables saved to {variablesAssetPath}");
     }
 
-    private void UpdateScriptableClusterScriptCombiner(JavaScriptAsset scriptAsset, bool prepend = true)
+    private void UpdateScriptableClusterScriptCombiner(JavaScriptAsset[] scriptAssets, bool prepend = true)
     {
         GameObject conditionManager = GameObject.Find("ConditionManager");
         if (conditionManager != null)
@@ -314,6 +338,13 @@ public class ExperimentVariablesEditor : EditorWindow
             var scriptCombiner = conditionManager.GetComponent<ScriptableClusterScriptCombiner>();
             if (scriptCombiner != null)
             {
+                scriptCombiner.ClearScripts();
+                for (int i = 0; i < scriptAssets.Length; i++)
+                {
+                    scriptCombiner.AppendScript(scriptAssets[i], null, false);
+                }
+                scriptCombiner.AppendScript(conditionManagerScript, null, true);
+/*
                 int existingScriptIndex = scriptCombiner.GetClusterScripts().IndexOf(scriptAsset);
                 if (existingScriptIndex != -1)
                 {
@@ -330,7 +361,7 @@ public class ExperimentVariablesEditor : EditorWindow
                         scriptCombiner.AppendScript(scriptAsset, null, true);
                     }
                 }
-
+*/
                 EditorUtility.SetDirty(scriptCombiner);
                 EditorSceneManager.MarkSceneDirty(conditionManager.scene);
             }
