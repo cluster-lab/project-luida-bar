@@ -12,9 +12,11 @@ $.onUpdate((deltaTime) => {
 
         // Reintroduced callExternal to get questions
         const questionnaireID = $.getStateCompat("this", "qID", "integer");
-        if (questionnaireID !== -1) {
+        if (questionnaireID > 0) {
             let request = { type: "questions", token: token || "", eID: expID || "", qID: questionnaireID, startIndex: 0 };
             $.callExternal(JSON.stringify(request), "getQuestions");
+        } else {
+            $.log("No questionnaire ID (qID) provided or it is invalid.");
         }
     }
 
