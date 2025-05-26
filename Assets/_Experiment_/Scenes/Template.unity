@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17412737, g: 0.21774727, b: 0.29994345, a: 1}
+  m_IndirectSpecularColor: {r: 0.17412685, g: 0.21774654, b: 0.2999423, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -223,7 +223,7 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 6096864659607230834}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &394115451
+--- !u!1001 &420922766
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -233,17 +233,17 @@ PrefabInstance:
     - target: {fileID: 3594218895443089411, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_Name
-      value: Questionnaire (pre-exp)
+      value: Trial - Start
       objectReference: {fileID: 0}
     - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
@@ -253,7 +253,7 @@ PrefabInstance:
     - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
@@ -278,17 +278,17 @@ PrefabInstance:
     - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
@@ -307,11 +307,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
---- !u!4 &394115452 stripped
+--- !u!4 &420922767 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
     type: 3}
-  m_PrefabInstance: {fileID: 394115451}
+  m_PrefabInstance: {fileID: 420922766}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &787405256
 GameObject:
@@ -492,92 +492,52 @@ Transform:
   m_Father: {fileID: 2029845015}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &900798248
-PrefabInstance:
+--- !u!1 &997367276
+GameObject:
   m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 1498417634}
-    m_Modifications:
-    - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_Name
-      value: Start
-      objectReference: {fileID: 0}
-    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: delayTimeSeconds
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
---- !u!4 &900798249 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-    type: 3}
-  m_PrefabInstance: {fileID: 900798248}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &979959082
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 997367277}
+  - component: {fileID: 997367278}
+  m_Layer: 0
+  m_Name: PlaneCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &997367277
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 997367276}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1604143552}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &997367278
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 997367276}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 10, y: 0.1, z: 10}
+  m_Center: {x: 0, y: -0.05, z: 0}
+--- !u!1001 &1206647647
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -587,7 +547,7 @@ PrefabInstance:
     - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
         type: 3}
@@ -642,12 +602,12 @@ PrefabInstance:
     - target: {fileID: 1414860490831393443, guid: e1774295c75ae6d44a372c9862cfe6ab,
         type: 3}
       propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[1].value.constant.integerValue
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1414860490831393443, guid: e1774295c75ae6d44a372c9862cfe6ab,
         type: 3}
       propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[2].value.constant.integerValue
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2832236690738518313, guid: e1774295c75ae6d44a372c9862cfe6ab,
         type: 3}
@@ -657,66 +617,111 @@ PrefabInstance:
     - target: {fileID: 5561156735572448556, guid: e1774295c75ae6d44a372c9862cfe6ab,
         type: 3}
       propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6425654970097300135, guid: e1774295c75ae6d44a372c9862cfe6ab,
         type: 3}
       propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e1774295c75ae6d44a372c9862cfe6ab, type: 3}
---- !u!4 &979959083 stripped
+--- !u!4 &1206647648 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
     type: 3}
-  m_PrefabInstance: {fileID: 979959082}
+  m_PrefabInstance: {fileID: 1206647647}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &997367276
-GameObject:
+--- !u!1001 &1413186983
+PrefabInstance:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 997367277}
-  - component: {fileID: 997367278}
-  m_Layer: 0
-  m_Name: PlaneCollider
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
---- !u!4 &997367277
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 997367276}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1604143552}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &997367278
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 997367276}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 10, y: 0.1, z: 10}
-  m_Center: {x: 0, y: -0.05, z: 0}
+  m_Modification:
+    m_TransformParent: {fileID: 1498417634}
+    m_Modifications:
+    - target: {fileID: 3594218895443089411, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_Name
+      value: Outro
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
+--- !u!4 &1413186984 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1413186983}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1434940726
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -808,14 +813,12 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 900798249}
-  - {fileID: 394115452}
-  - {fileID: 1786874029}
-  - {fileID: 2116179451}
-  - {fileID: 1811489519}
-  - {fileID: 979959083}
-  - {fileID: 1994153336}
-  - {fileID: 2007784528}
+  - {fileID: 1999457117}
+  - {fileID: 2134110113}
+  - {fileID: 420922767}
+  - {fileID: 1206647648}
+  - {fileID: 1413186984}
+  - {fileID: 1687181927}
   m_Father: {fileID: 7533049804749356260}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -851,6 +854,96 @@ Transform:
   m_Father: {fileID: 2029845015}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1687181926
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1498417634}
+    m_Modifications:
+    - target: {fileID: 3594218895443089411, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_Name
+      value: End
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
+--- !u!4 &1687181927 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1687181926}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1752504904
 GameObject:
   m_ObjectHideFlags: 0
@@ -884,37 +977,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1786874028
+--- !u!1001 &1999457116
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 1498417634}
     m_Modifications:
-    - target: {fileID: 3594218895443089411, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_Name
-      value: Instruction
+      value: Start
       objectReference: {fileID: 0}
-    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
-      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
+      propertyPath: delayTimeSeconds
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: delayTimeSeconds
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
@@ -939,17 +1022,17 @@ PrefabInstance:
     - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
@@ -968,281 +1051,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
---- !u!4 &1786874029 stripped
+--- !u!4 &1999457117 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
     type: 3}
-  m_PrefabInstance: {fileID: 1786874028}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &1811489518
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 1498417634}
-    m_Modifications:
-    - target: {fileID: 3594218895443089411, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_Name
-      value: Trial - Start
-      objectReference: {fileID: 0}
-    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: delayTimeSeconds
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
---- !u!4 &1811489519 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-    type: 3}
-  m_PrefabInstance: {fileID: 1811489518}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &1994153335
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 1498417634}
-    m_Modifications:
-    - target: {fileID: 3594218895443089411, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_Name
-      value: Questionnaire (post-exp)
-      objectReference: {fileID: 0}
-    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: delayTimeSeconds
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
---- !u!4 &1994153336 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-    type: 3}
-  m_PrefabInstance: {fileID: 1994153335}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &2007784527
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 1498417634}
-    m_Modifications:
-    - target: {fileID: 3594218895443089411, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_Name
-      value: End
-      objectReference: {fileID: 0}
-    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: delayTimeSeconds
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
---- !u!4 &2007784528 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
-    type: 3}
-  m_PrefabInstance: {fileID: 2007784527}
+  m_PrefabInstance: {fileID: 1999457116}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &2029845014
 GameObject:
@@ -1278,90 +1091,95 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &2116179450
+--- !u!1001 &2134110112
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 1498417634}
     m_Modifications:
-    - target: {fileID: 799929462120469585, guid: e89894a7a319c8f438005772f1e5dd9b,
+    - target: {fileID: 3594218895443089411, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_Name
+      value: Intro
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 1236189295069208893, guid: e89894a7a319c8f438005772f1e5dd9b,
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 1236189295069208893, guid: e89894a7a319c8f438005772f1e5dd9b,
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1236189295069208893, guid: e89894a7a319c8f438005772f1e5dd9b,
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1236189295069208893, guid: e89894a7a319c8f438005772f1e5dd9b,
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1236189295069208893, guid: e89894a7a319c8f438005772f1e5dd9b,
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 1236189295069208893, guid: e89894a7a319c8f438005772f1e5dd9b,
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1236189295069208893, guid: e89894a7a319c8f438005772f1e5dd9b,
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1236189295069208893, guid: e89894a7a319c8f438005772f1e5dd9b,
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1236189295069208893, guid: e89894a7a319c8f438005772f1e5dd9b,
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1236189295069208893, guid: e89894a7a319c8f438005772f1e5dd9b,
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1236189295069208893, guid: e89894a7a319c8f438005772f1e5dd9b,
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4608681907427622875, guid: e89894a7a319c8f438005772f1e5dd9b,
-        type: 3}
-      propertyPath: m_Name
-      value: Preparation
-      objectReference: {fileID: 0}
-    - target: {fileID: 6167188291698504670, guid: e89894a7a319c8f438005772f1e5dd9b,
-        type: 3}
-      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
-      value: 3
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: e89894a7a319c8f438005772f1e5dd9b, type: 3}
---- !u!4 &2116179451 stripped
+  m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
+--- !u!4 &2134110113 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 1236189295069208893, guid: e89894a7a319c8f438005772f1e5dd9b,
+  m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
     type: 3}
-  m_PrefabInstance: {fileID: 2116179450}
+  m_PrefabInstance: {fileID: 2134110112}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6096864659607230834
 PrefabInstance:
@@ -1370,6 +1188,36 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 814595608}
     m_Modifications:
+    - target: {fileID: 600138419, guid: bebbd8fabd7b322468f1d18e8b32081c, type: 3}
+      propertyPath: sourceCode
+      value: "$.onStart(() => {\n  $.state.inRoomIdfcs = [];\n})\n\n$.onUpdate(()
+        => {\n    if ($.getStateCompat(\"this\", \"onJoined\", \"boolean\")) {\n       
+        $.setStateCompat(\"this\", \"onJoined\", false);\n        const newPlayers
+        = $.getPlayersNear($.getPosition(), Infinity)\n            .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));\n       
+        if (newPlayers.length > 0) {\n            for (const newPlayer of newPlayers)
+        {\n                $.state.inRoomIdfcs.push(newPlayer.idfc);\n               
+        $.setPlayerScript(newPlayer);\n            }\n        }\n    }\n/*\n  if
+        ($.getStateCompat(\"this\", \"exp_checkJoinEligibility\", \"boolean\")) {\n   
+        $.setStateCompat(\"this\", \"exp_checkJoinEligibility\", false);\n\n    const
+        newPlayers = $.getPlayersNear($.getPosition(), 1)\n      .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));\n   
+        \n    if (newPlayers.length > 0) {\n      $.state.newPlayers = newPlayers;\n     
+        $.log(newPlayers[0].idfc);\n\n      const request = {\n        type: \"checkJoinEligibility\",\n       
+        token: token || \"\",\n        eID: expID || \"\",\n        idfcs: newPlayers.map(p
+        => p.idfc).join(\"|\")\n      };\n      $.callExternal(JSON.stringify(request),
+        \"joinEligibilityChecked\");\n    }\n  }\n*/\n})\n\n/*\n$.onExternalCallEnd((res,
+        meta, err) =>\n{\n  if (res == null) {\n    $.log(\"callExternal ERROR: \"
+        + err);\n    return;\n  }\n\n  if (meta === \"joinEligibilityChecked\") {\n   
+        const parsedRes = JSON.parse(res);\n    $.state.newPlayers.forEach(newPlayer
+        => {\n      if (parsedRes.ineligibleIdfcs.includes(newPlayer.idfc)) {\n       
+        // TODO: Show message about that this player is not eligible to join this
+        experiment, and teleport the player back to LUIDA bar world.\n      } else
+        {\n        newPlayer.setMoveSpeedRate(1);\n        $.state.inRoomIdfcs =
+        [ ...$.state.inRoomIdfcs, newPlayer.idfc ];\n        // TODO: Instead of
+        enabling move, teleport the player from the checking area to the task area.\n     
+        }\n    });\n    \n    $.state.newPlayers = [];\n    $.log(\"Only users who
+        have not joined this experiment before are allowed to proceed to the experiment.\");\n 
+        }\n});\n*/\n"
+      objectReference: {fileID: 0}
     - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
         type: 3}
       propertyPath: m_RootOrder
@@ -1444,67 +1292,84 @@ PrefabInstance:
       propertyPath: m_Name
       value: ExpTemplateRequiredObjects
       objectReference: {fileID: 0}
+    - target: {fileID: 2948447358681182120, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: clusterScripts.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2948447358681182120, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[0]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 822a9ade440fd0240b248ea45f583af3,
+        type: 3}
+    - target: {fileID: 2948447358681182120, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[1]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 8821fb654779949b38c61e01b3dae4b5,
+        type: 3}
     - target: {fileID: 2963938157378484328, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: sourceCode
-      value: "$.onStart(() => {\r\n  initializeRandomBetweenSubjectsConditions();\r\n 
-        reset();\r\n});\r\n\r\n$.onUpdate(() => {\r\n  if (\r\n    $.state.trialID
-        !== $.getStateCompat(\"global\", \"exp_trialID\", \"integer\")\r\n  ) {\r\n   
-        $.state.trialID = $.getStateCompat(\"global\", \"exp_trialID\", \"integer\");\r\n   
-        if ($.state.trialID >= $.state.trialCount) {\r\n      $.sendSignalCompat(\"this\",
-        \"exp_resetTrials\");\r\n    } else if ($.state.trialID <= -1) {\r\n     
-        reset();\r\n    } else {\r\n      let condition = { ...$.state.betweenSubjectsConditions
-        };\r\n      for (let i = 0; i < $.state.withinSubjectsVariableNames.length;
-        i++) {\r\n        const varName = $.state.withinSubjectsVariableNames[i];\r\n       
-        const varValue =\r\n          within_subjects_variables[i].values[\r\n           
-        $.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]\r\n         
-        ];\r\n        condition[varName] = varValue;\r\n      }\r\n      $.groupState.currentCondition
-        = condition;\r\n\r\n      // Check if this is the last trial (if true, stop
-        repeating trials when next state transition is triggered)\r\n      if (\r\n       
-        $.state.trialCount > 0 &&\r\n        !$.state.isLast &&\r\n        $.state.trialID
-        >= $.state.trialCount - 1\r\n      ) {\r\n        $.state.isLast = true;\r\n       
-        $.sendSignalCompat(\"this\", \"exp_readyToLeaveTrials\");\r\n      }\r\n   
-        }\r\n  }\r\n});\r\n\r\n$.onReceive((messageType, arg, sender) => {\r\n  switch
-        (messageType) {\r\n    // case \"exp_questionnaire_answer\":\r\n    //    
-        $.state.betweenSubjectsConditions = GetBetweenSubjectsCondition(arg);\r\n   
-        //     break;\r\n    default:\r\n      break;\r\n  }\r\n});\r\n\r\nfunction
-        reset() {\r\n  $.state.trialID = -1;\r\n  if (!$.state.betweenSubjectsConditions)\r\n   
-        $.state.betweenSubjectsConditions = {};\r\n  $.state.withinSubjectsVariableNames
-        = [];\r\n  $.state.withinSubjectsConditionIndicesByTrial = [];\r\n  $.state.trialCount
-        = 1;\r\n  $.groupState.currentCondition = {\r\n    ...$.state.betweenSubjectsConditions,\r\n 
-        };\r\n  try {\r\n    initializeWithinSubjectsConditions(\r\n      within_subjects_variables,\r\n     
-        trialsCountForEachUniqueCondition\r\n    );\r\n  } catch (error) {\r\n   
-        $.log(error);\r\n    $.log(\"Within-subjects variables are not defined.\");\r\n 
-        }\r\n}\r\n\r\nfunction initializeRandomBetweenSubjectsConditions() {\r\n 
-        let betweenSubjectsCondition = {};\r\n  try {\r\n    between_subjects_variables.forEach((v)
-        => {\r\n      if (v.isRandom && !betweenSubjectsCondition[v.name]) {\r\n       
-        betweenSubjectsCondition[v.name] =\r\n          v.values[Math.floor(Math.random()
-        * v.values.length)];\r\n      }\r\n    });\r\n  } catch (e) {\r\n    $.log(\"Between-subjects
-        variables are not defined.\");\r\n  }\r\n  $.state.betweenSubjectsConditions
-        = betweenSubjectsCondition;\r\n}\r\n\r\nfunction initializeWithinSubjectsConditions(variables,
-        repeatsPerCond = 1) {\r\n  variables = [...variables.sort((a, b) => a.isRandom
-        - b.isRandom)];\r\n  const varNames = variables.map((v) => v.name);\r\n\r\n 
-        let indicesPerVar = variables.map((v) =>\r\n    Array.from({ length: v.values.length
-        }, (_, i) => i)\r\n  );\r\n  let condIndicesList = indicesPerVar\r\n    .reduce(\r\n     
-        (acc, array) => {\r\n        return acc.flatMap((accItem) =>\r\n         
-        array.map((arrayItem) => [...accItem, arrayItem])\r\n        );\r\n     
-        },\r\n      [[]]\r\n    )\r\n    .flatMap((condIndices) =>\r\n      Array.from({
-        length: repeatsPerCond }, () => condIndices)\r\n    );\r\n\r\n  let shufflePartitionSize
-        = 0;\r\n  for (let i = 0; i < variables.length; i++) {\r\n    if (variables[i].isRandom)
-        {\r\n      shufflePartitionSize =\r\n        shufflePartitionSize === 0\r\n         
-        ? variables[i].values.length\r\n          : shufflePartitionSize * variables[i].values.length;\r\n   
-        }\r\n  }\r\n  shufflePartitionSize *= repeatsPerCond;\r\n\r\n  if (shufflePartitionSize
-        > 0) {\r\n    const result = [...condIndicesList]; // Copy the array to avoid
-        mutating the original\r\n    for (let i = 0; i < condIndicesList.length;
-        i += shufflePartitionSize) {\r\n      let partition = result.slice(i, i +
-        shufflePartitionSize);\r\n      partition = shuffleArray(partition);\r\n     
-        result.splice(i, shufflePartitionSize, ...partition);\r\n    }\r\n    condIndicesList
-        = result;\r\n  }\r\n\r\n  $.state.withinSubjectsVariableNames = varNames;\r\n 
-        $.state.withinSubjectsConditionIndicesByTrial = condIndicesList;\r\n  $.state.trialCount
-        = condIndicesList.length;\r\n}\r\n\r\nfunction shuffleArray(array) {\r\n 
-        for (let i = array.length - 1; i > 0; i--) {\r\n    const j = Math.floor(Math.random()
-        * (i + 1));\r\n    [array[i], array[j]] = [array[j], array[i]];\r\n  }\r\n 
-        return array;\r\n}\r\n"
+      value: "const trialsCountForEachUniqueCondition = 1;\nconst within_subjects_variables
+        = [\n];\nconst between_subjects_variables = [\n];\n\r\n$.onStart(() => {\n 
+        initializeRandomBetweenSubjectsConditions();\n  reset();\n});\n\n$.onUpdate(()
+        => {\n  if (\n    $.state.trialID !== $.getStateCompat(\"global\", \"exp_trialID\",
+        \"integer\") &&\n      $.getStateCompat(\"global\", \"exp_trialID\", \"integer\")
+        >= 0\n  ) {\n    $.state.trialID = $.getStateCompat(\"global\", \"exp_trialID\",
+        \"integer\");\n    updateCondition();\n  }\n});\n\n$.onReceive((messageType,
+        arg, sender) => {\n  switch (messageType) {\n    // case \"exp_questionnaire_answer\":\n   
+        //     $.state.betweenSubjectsConditions = GetBetweenSubjectsCondition(arg);\n   
+        //     break;\n    default:\n      break;\n  }\n});\n\nfunction updateCondition()
+        {\n  if ($.state.trialID >= $.state.trialCount) {\n    $.sendSignalCompat(\"this\",
+        \"exp_resetTrials\");\n  } else if ($.state.trialID <= -1) {\n    reset();\n 
+        } else {\n    let condition = { ...$.state.betweenSubjectsConditions };\n   
+        for (let i = 0; i < $.state.withinSubjectsVariableNames.length; i++) {\n     
+        const varName = $.state.withinSubjectsVariableNames[i];\n      const varValue
+        =\n          within_subjects_variables[i].values[\n              $.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]\n             
+        ];\n      condition[varName] = varValue;\n    }\n    $.groupState.currentCondition
+        = condition;\n\n    // Check if this is the last trial (if true, stop repeating
+        trials when next state transition is triggered)\n    if (\n        $.state.trialCount
+        > 0 &&\n        !$.state.isLast &&\n        $.state.trialID >= $.state.trialCount
+        - 1\n    ) {\n      $.state.isLast = true;\n      $.sendSignalCompat(\"this\",
+        \"exp_readyToLeaveTrials\");\n    }\n  }\n}\n\nfunction reset() {\n  $.state.trialID
+        = 0;\n  if (!$.state.betweenSubjectsConditions)\n    $.state.betweenSubjectsConditions
+        = {};\n  $.state.withinSubjectsVariableNames = [];\n  $.state.withinSubjectsConditionIndicesByTrial
+        = [];\n  $.state.trialCount = 1;\n  $.groupState.currentCondition = {\n   
+        ...$.state.betweenSubjectsConditions,\n  };\n  try {\n    initializeWithinSubjectsConditions(\n     
+        within_subjects_variables,\n      trialsCountForEachUniqueCondition\n   
+        );\n  } catch (error) {\n    $.log(error);\n    $.log(\"Within-subjects variables
+        are not defined.\");\n    initializeWithinSubjectsConditions([], 1);\n  }\n 
+        updateCondition();\n}\n\nfunction initializeRandomBetweenSubjectsConditions()
+        {\n  let betweenSubjectsCondition = {};\n  try {\n    between_subjects_variables.forEach((v)
+        => {\n      if (v.isRandom && !betweenSubjectsCondition[v.name]) {\n       
+        betweenSubjectsCondition[v.name] =\n          v.values[Math.floor(Math.random()
+        * v.values.length)];\n      }\n    });\n  } catch (e) {\n    $.log(\"Between-subjects
+        variables are not defined.\");\n  }\n  $.state.betweenSubjectsConditions
+        = betweenSubjectsCondition;\n}\n\nfunction initializeWithinSubjectsConditions(variables,
+        repeatsPerCond = 1) {\n  variables = [...variables.sort((a, b) => a.isRandom
+        - b.isRandom)];\n  const varNames = variables.map((v) => v.name);\n\n  let
+        indicesPerVar = variables.map((v) =>\n    Array.from({ length: v.values.length
+        }, (_, i) => i)\n  );\n  let condIndicesList = indicesPerVar\n    .reduce(\n     
+        (acc, array) => {\n        return acc.flatMap((accItem) =>\n          array.map((arrayItem)
+        => [...accItem, arrayItem])\n        );\n      },\n      [[]]\n    )\n   
+        .flatMap((condIndices) =>\n      Array.from({ length: repeatsPerCond }, ()
+        => condIndices)\n    );\n\n  let shufflePartitionSize = 0;\n  for (let i
+        = 0; i < variables.length; i++) {\n    if (variables[i].isRandom) {\n     
+        shufflePartitionSize =\n        shufflePartitionSize === 0\n          ? variables[i].values.length\n         
+        : shufflePartitionSize * variables[i].values.length;\n    }\n  }\n  shufflePartitionSize
+        *= repeatsPerCond;\n\n  if (shufflePartitionSize > 0) {\n    const result
+        = [...condIndicesList]; // Copy the array to avoid mutating the original\n   
+        for (let i = 0; i < condIndicesList.length; i += shufflePartitionSize) {\n     
+        let partition = result.slice(i, i + shufflePartitionSize);\n      partition
+        = shuffleArray(partition);\n      result.splice(i, shufflePartitionSize,
+        ...partition);\n    }\n    condIndicesList = result;\n  }\n\n  $.state.withinSubjectsVariableNames
+        = varNames;\n  $.state.withinSubjectsConditionIndicesByTrial = condIndicesList;\n 
+        $.state.trialCount = condIndicesList.length;\n}\n\nfunction shuffleArray(array)
+        {\n  for (let i = array.length - 1; i > 0; i--) {\n    const j = Math.floor(Math.random()
+        * (i + 1));\n    [array[i], array[j]] = [array[j], array[i]];\n  }\n  return
+        array;\n}\n"
       objectReference: {fileID: 0}
     - target: {fileID: 2966719835339860264, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
@@ -1514,43 +1379,41 @@ PrefabInstance:
     - target: {fileID: 2966719835339860266, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\n\r\nconst
-        uploadInterval = 1;\r\nconst dataLengthPerUpload = 15;\r\n\r\n$.onStart(()
-        => {\r\n    $.state.customData = {};\r\n    $.state.uploadIndex = 0;\r\n   
-        $.state.elapsedTime = 0;\r\n    $.state.dataLength = 0;\r\n    $.state.isUploading
-        = false;\r\n})\r\n\r\n$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\",
-        \"exp_recordCustomData\", \"boolean\")) {\r\n        $.setStateCompat(\"this\",
-        \"exp_recordCustomData\", false);\r\n        recordData();\r\n    }\r\n   
-        if ($.getStateCompat(\"this\", \"exp_uploadCustomData\", \"boolean\")) {\r\n       
-        if ($.state.uploadIndex === 0) {\r\n            uploadDataInit();\r\n           
-        $.setStateCompat(\"this\", \"exp_uploadCustomData\", false);\r\n        }\r\n   
-        }\r\n    if ($.state.isUploading) {\r\n        $.state.elapsedTime = $.state.elapsedTime
-        + deltaTime;\r\n        if ($.state.elapsedTime >= uploadInterval && $.state.uploadIndex
-        < Math.ceil($.state.dataLength / dataLengthPerUpload)) {\r\n            $.state.elapsedTime
-        = 0;\r\n            uploadDataStep();\r\n        }\r\n    }\r\n})\r\n\r\nfunction
-        recordData () {\r\n    $.state.customData = calculateData();\r\n}\r\n\r\nfunction
-        uploadDataInit() {\r\n    $.state.uploadIndex = 0;\r\n    $.state.elapsedTime
-        = 0;\r\n    $.state.isUploading = true;\r\n    let firstFileName = Object.keys($.state.customData)[0];\r\n   
-        if (firstFileName) {\r\n        $.state.dataLength = $.state.customData[firstFileName].length;\r\n   
-        }\r\n}\r\n\r\nfunction uploadDataStep() {\r\n    $.log($.state.uploadIndex);\r\n   
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\nconst uploadInterval
+        = 1;\nconst dataLengthPerUpload = 15;\n\n$.onStart(() => {\n    $.state.customData
+        = {};\n    $.state.uploadIndex = 0;\n    $.state.elapsedTime = 0;\n    $.state.dataLength
+        = 0;\n    $.state.isUploading = false;\n})\n\n$.onUpdate((deltaTime) => {\n   
+        if ($.getStateCompat(\"this\", \"exp_recordCustomData\", \"boolean\")) {\n       
+        $.setStateCompat(\"this\", \"exp_recordCustomData\", false);\n        recordData();\n   
+        }\n    if ($.getStateCompat(\"this\", \"exp_uploadCustomData\", \"boolean\"))
+        {\n        if ($.state.uploadIndex === 0) {\n            uploadDataInit();\n           
+        $.setStateCompat(\"this\", \"exp_uploadCustomData\", false);\n        }\n   
+        }\n    if ($.state.isUploading) {\n        $.state.elapsedTime = $.state.elapsedTime
+        + deltaTime;\n        if ($.state.elapsedTime >= uploadInterval && $.state.uploadIndex
+        < Math.ceil($.state.dataLength / dataLengthPerUpload)) {\n            $.state.elapsedTime
+        = 0;\n            uploadDataStep();\n        }\n    }\n})\n\nfunction recordData
+        () {\n    $.state.customData = calculateData();\n}\n\nfunction uploadDataInit()
+        {\n    $.state.uploadIndex = 0;\n    $.state.elapsedTime = 0;\n    $.state.isUploading
+        = true;\n    let firstFileName = Object.keys($.state.customData)[0];\n   
+        if (firstFileName) {\n        $.state.dataLength = $.state.customData[firstFileName].length;\n   
+        }\n}\n\nfunction uploadDataStep() {\n    $.log($.state.uploadIndex);\n   
         if ($.state.uploadIndex < Math.ceil($.state.dataLength / dataLengthPerUpload))
-        {\r\n        const slicedData = Object.fromEntries(\r\n            Object.entries($.state.customData).map(([key,
-        value]) => [\r\n                key,\r\n                value.slice($.state.uploadIndex
-        * dataLengthPerUpload, ($.state.uploadIndex + 1) * dataLengthPerUpload)\r\n           
-        ])\r\n        );\r\n        let request = {\r\n            type: \"uploadCustomData\",\r\n           
-        token: token || \"\",\r\n            data: slicedData,\r\n            eID:
-        expID || \"\",\r\n            pID: $.getPlayersNear($.getPosition().clone(),
-        Infinity)[0].idfc || \"\" // TODO: retrieve idfc through cluster Player Script\r\n       
-        };\r\n        $.log(request);\r\n        $.callExternal(JSON.stringify(request),
-        \"customDataUploaded\");\r\n        $.state.uploadIndex = $.state.uploadIndex
-        + 1;\r\n\r\n        if ($.state.uploadIndex >= Math.ceil($.state.dataLength
-        / dataLengthPerUpload)) {\r\n            $.state.uploadIndex = 0;\r\n           
-        $.state.isUploading = false;\r\n        }\r\n    }\r\n}\r\n\r\n$.onExternalCallEnd((res,
-        meta, err) =>\r\n{\r\n    if (res == null) {\r\n        $.log(\"callExternal
-        ERROR: \" + err);\r\n        return;\r\n    }\r\n\r\n    if (meta === \"customDataUploaded\")
-        {\r\n        $.log(\"Response after customDataUploaded called: \" + JSON.stringify(res));\r\n   
-        }\r\n});\r\nfunction calculateData () {\r\n    let returnData = $.state.customData;\r\n   
-        const CONDITION = $.groupState.currentCondition;\r\n    return returnData;\r\n}"
+        {\n        const slicedData = Object.fromEntries(\n            Object.entries($.state.customData).map(([key,
+        value]) => [\n                key,\n                value.slice($.state.uploadIndex
+        * dataLengthPerUpload, ($.state.uploadIndex + 1) * dataLengthPerUpload)\n           
+        ])\n        );\n        let request = {\n            type: \"uploadCustomData\",\n           
+        token: token || \"\",\n            data: slicedData,\n            eID: expID
+        || \"\",\n            pID: $.getPlayersNear($.getPosition().clone(), Infinity)[0].idfc
+        || \"\" // TODO: retrieve idfc through cluster Player Script\n        };\n       
+        $.log(request);\n        $.callExternal(JSON.stringify(request), \"customDataUploaded\");\n       
+        $.state.uploadIndex = $.state.uploadIndex + 1;\n\n        if ($.state.uploadIndex
+        >= Math.ceil($.state.dataLength / dataLengthPerUpload)) {\n            $.state.uploadIndex
+        = 0;\n            $.state.isUploading = false;\n        }\n    }\n}\n\n$.onExternalCallEnd((res,
+        meta, err) =>\n{\n    if (res == null) {\n        $.log(\"callExternal ERROR:
+        \" + err);\n        return;\n    }\n\n    if (meta === \"customDataUploaded\")
+        {\n        $.log(\"Response after customDataUploaded called: \" + JSON.stringify(res));\n   
+        }\n});\r\nfunction calculateData () {\n    let returnData = $.state.customData;\n   
+        const CONDITION = $.groupState.currentCondition;\n    return returnData;\n}"
       objectReference: {fileID: 0}
     - target: {fileID: 6888872806784858143, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
