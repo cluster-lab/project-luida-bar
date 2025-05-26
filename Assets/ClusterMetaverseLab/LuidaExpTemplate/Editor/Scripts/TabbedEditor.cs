@@ -1,14 +1,10 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEditor.SceneManagement;
-using System;
 using System.IO;
 
 public class TabbedEditor : EditorWindow
 {
-    public static event Action OnEditorClosed;
-    public static event Action OnItemsManagerTabLostFocus;
-
     private int currentTab = 0;
     private string[] tabNames = { "Experiment Identifiers", "Experiment Variables", "States List (& Questionnaires)", "State-listening Items", "Data Recorder" };
 
@@ -86,19 +82,7 @@ public class TabbedEditor : EditorWindow
         else
         {
             GUILayout.Label("Current Active Scene: " + currentScenePath, EditorStyles.boldLabel);
-            // draw toolbar
-            int newTab = GUILayout.Toolbar(currentTab, tabNames);
-
-            // detect switching away from the ItemsManager tab:
-            if (newTab != currentTab)
-            {
-                if (currentTab == 3)
-                {
-                    Debug.Log("TabbedEditor tab switched from ItemsManager to " + newTab);
-                    OnItemsManagerTabLostFocus?.Invoke();
-                }
-                currentTab = newTab;
-            }
+            currentTab = GUILayout.Toolbar(currentTab, tabNames);
 
             switch (currentTab)
             {
@@ -119,11 +103,6 @@ public class TabbedEditor : EditorWindow
                     break;
             }
         }
-    }
-
-    private void OnDestroy()
-    {
-        OnEditorClosed?.Invoke();
     }
 
     private void CheckAndCreateExpIdentifiers()
