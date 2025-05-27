@@ -1,8 +1,10 @@
 # LUIDA's Implement Template for Experiment Worlds
 
-To use this implement template, **please avoid directly cloning this repository.** Follow the steps in the [Getting Started](#getting-started) section to download and initialize this implement template. Please also try the tutorial we provided.
+If you are using this implementation template, please **do not clone this repository directly. Download it from the latest release instead.**
+If you're ready to get started, please check the Main Features below first, then follow the Tutorial to give it a try.
 
-本実装テンプレートを使用される場合、**このレポジトリを直接cloneしないでください。**[Getting Started](#getting-started)セクションに従って本実装テンプレートのダウンロードと初期化を行ってください。チュートリアルもぜひ試してください。
+本実装テンプレートを使用される場合、**このレポジトリを直接cloneしないで、最新リリースからダウンロードしてください。**
+始めたい方は、↓の**Main Featuresを確認してから、チュートリアルに従って**試してください。
 
 <!-- - [Getting Started](#getting-started) -->
 - [Main Features](#main-features)
