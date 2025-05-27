@@ -113,18 +113,21 @@ public class DataRecorderEditor : EditorWindow
             // Button to add a new custom data entry
             if (GUILayout.Button("Add Custom Data Entry"))
             {
-                customDataListNames.Add("");
-                customDataCalculationScripts.Add("");
+                int entryNumber = customDataListNames.Count + 1;
+                string defaultListName = $"customData{entryNumber}";
+                string defaultScript = "// Return an object with your custom data fields\nreturn {\n//  cond: CONDITION['sampleVariable'],\n//  ans: $.getStateCompat('global', 'sampleAnswer', 'boolean'),\n  value: 0\n};";
+                customDataListNames.Add(defaultListName);
+                customDataCalculationScripts.Add(defaultScript);
             }
             EditorGUILayout.EndScrollView();
 
             EditorGUILayout.Space();
 
             // Save Changes button
-            if (GUILayout.Button("SAVE CHANGES"))
-            {
-                TrySaveChangesToScript();
-            }
+            // if (GUILayout.Button("SAVE CHANGES"))
+            // {
+            //     TrySaveChangesToScript();
+            // }
         }
     }
 

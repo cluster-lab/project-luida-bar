@@ -48,10 +48,10 @@ public class ExpIdentifierEditor
         expID = EditorGUILayout.TextField("Experiment ID", expID);
         token = EditorGUILayout.TextField("Token", token);
 
-        if (GUILayout.Button("Save Identifiers"))
-        {
-            SaveExpIdentifiers();
-        }
+        // if (GUILayout.Button("Save Identifiers"))
+        // {
+        //     SaveExpIdentifiers();
+        // }
     }
 
     private void LoadExpIdentifiers()

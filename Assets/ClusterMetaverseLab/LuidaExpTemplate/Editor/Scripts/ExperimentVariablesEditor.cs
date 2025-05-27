@@ -77,7 +77,7 @@ public class ExperimentVariablesEditor : EditorWindow
                 betweenSubjectsVariables = new ExperimentVariable[0];
             }
 
-            DrawVariables(ref betweenSubjectsVariables);
+            DrawVariables(ref betweenSubjectsVariables, forceIsRandom: true);
 
             /*
             if (betweenSubjectsConditionSetterAsset == null)
@@ -91,16 +91,16 @@ public class ExperimentVariablesEditor : EditorWindow
             {
                 EditorGUILayout.LabelField("Between Subjects Condition Setter Asset", betweenSubjectsConditionSetterPath, EditorStyles.textField);
             }
-            */
 
             if (GUILayout.Button("Apply Updated Variables"))
             {
                 ApplyVariableUpdates();
             }
+            */
         }
     }
 
-    private void DrawVariables(ref ExperimentVariable[] variables)
+    private void DrawVariables(ref ExperimentVariable[] variables, bool forceIsRandom = false)
     {
         int newLength = EditorGUILayout.IntField("Length", variables.Length);
         if (newLength != variables.Length)
@@ -130,8 +130,16 @@ public class ExperimentVariablesEditor : EditorWindow
             valuesString = EditorGUILayout.TextField(valuesString, GUILayout.Width(150));
             variables[i].values = valuesString.Split(',').Select(v => v.Trim()).ToArray();
 
-            GUILayout.Label("Is Random", GUILayout.Width(70));
-            variables[i].isRandom = EditorGUILayout.Toggle(variables[i].isRandom, GUILayout.Width(20));
+            if (forceIsRandom)
+            {
+                variables[i].isRandom = true;
+                GUILayout.Label("Is Random: true", GUILayout.Width(90));
+            }
+            else
+            {
+                GUILayout.Label("Is Random", GUILayout.Width(70));
+                variables[i].isRandom = EditorGUILayout.Toggle(variables[i].isRandom, GUILayout.Width(20));
+            }
 
             if (GUILayout.Button("▲", GUILayout.Width(20)))
             {
@@ -163,7 +171,6 @@ public class ExperimentVariablesEditor : EditorWindow
             EditorGUILayout.EndHorizontal();
         }
     }
-
 
     private void GenerateJavaScript()
     {
