@@ -23,12 +23,32 @@ public class DataRecorderEditor : EditorWindow
     // Store custom data list names and their corresponding calculation scripts
     private List<string> customDataListNames = new List<string>();
     private List<string> customDataCalculationScripts = new List<string>();
+    private bool isSubscribed = false;
 
     public void OnEnable()
     {
         // Find or create the Custom Data Recorder on window enable
         FindOrCreateCustomDataRecorder();
         LoadCustomDataScripts();
+
+        if (!isSubscribed)
+        {
+            TabbedEditor.OnEditorClosed += TrySaveChangesToScript;
+            TabbedEditor.OnEditorClosed += OnDisable;
+            TabbedEditor.OnItemsManagerTabLostFocus += TrySaveChangesToScript;
+            isSubscribed = true;
+        }
+    }
+
+    public void OnDisable()
+    {
+        if (isSubscribed)
+        {
+            TabbedEditor.OnEditorClosed -= TrySaveChangesToScript;
+            TabbedEditor.OnEditorClosed -= OnDisable;
+            TabbedEditor.OnItemsManagerTabLostFocus -= TrySaveChangesToScript;
+            isSubscribed = false;
+        }
     }
 
     public void OnGUI()
@@ -93,36 +113,21 @@ public class DataRecorderEditor : EditorWindow
             // Button to add a new custom data entry
             if (GUILayout.Button("Add Custom Data Entry"))
             {
-                customDataListNames.Add("");
-                customDataCalculationScripts.Add("");
+                int entryNumber = customDataListNames.Count + 1;
+                string defaultListName = $"customData{entryNumber}";
+                string defaultScript = "// Return an object with your custom data fields\nreturn {\n//  cond: CONDITION['sampleVariable'],\n//  ans: $.getStateCompat('global', 'sampleAnswer', 'boolean'),\n  value: 0\n};";
+                customDataListNames.Add(defaultListName);
+                customDataCalculationScripts.Add(defaultScript);
             }
             EditorGUILayout.EndScrollView();
 
             EditorGUILayout.Space();
 
             // Save Changes button
-            if (GUILayout.Button("SAVE CHANGES"))
-            {
-                // Check for empty list names
-                bool hasEmptyName = false;
-                foreach (string name in customDataListNames)
-                {
-                    if (string.IsNullOrEmpty(name))
-                    {
-                        hasEmptyName = true;
-                        break;
-                    }
-                }
-
-                if (hasEmptyName)
-                {
-                    EditorUtility.DisplayDialog("Error", "List Name cannot be empty.", "OK");
-                }
-                else
-                {
-                    SaveChangesToScript();
-                }
-            }
+            // if (GUILayout.Button("SAVE CHANGES"))
+            // {
+            //     TrySaveChangesToScript();
+            // }
         }
     }
 
@@ -266,6 +271,29 @@ public class DataRecorderEditor : EditorWindow
         }
     }
 
+    private void TrySaveChangesToScript()
+    {
+        // Check for empty list names
+        bool hasEmptyName = false;
+        foreach (string name in customDataListNames)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                hasEmptyName = true;
+                break;
+            }
+        }
+
+        if (hasEmptyName)
+        {
+            EditorUtility.DisplayDialog("Error", "List Name cannot be empty.", "OK");
+        }
+        else
+        {
+            SaveChangesToScript();
+        }
+    }
+
     private void SaveChangesToScript()
     {
         if (calculatorAsset == null)
@@ -322,6 +350,8 @@ public class DataRecorderEditor : EditorWindow
         }
 
         LoadCustomDataScripts();
+
+        Debug.Log($"Custom data recorder's script saved to {path}");
     }
 
     private void AssignScriptToCombiner(GameObject recorderInstance, ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset scriptAsset)

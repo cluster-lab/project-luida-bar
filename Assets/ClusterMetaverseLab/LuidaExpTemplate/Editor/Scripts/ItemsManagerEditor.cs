@@ -213,7 +213,7 @@ public class ItemsManagerEditor : EditorWindow
         EditorGUILayout.BeginHorizontal();
 
         // --- SCROLLABLE CONTENT (Left Part, max width 1000px) ---
-        EditorGUILayout.BeginVertical(GUILayout.MaxWidth(1200f));
+        EditorGUILayout.BeginVertical(GUILayout.MaxWidth(1800f));
 
         _horizontalScrollPosition = EditorGUILayout.BeginScrollView(_horizontalScrollPosition, false, false, GUILayout.ExpandWidth(true));
 
@@ -331,7 +331,7 @@ public class ItemsManagerEditor : EditorWindow
             {
                 if (item == null) continue;
                 Color cellBgColor = isCellDarkColumn ? new Color(0.2f, 0.2f, 0.2f, 0.5f) : new Color(0.8f, 0.8f, 0.8f, 0.5f);
-                Rect cellRectInner = EditorGUILayout.BeginVertical("box", GUILayout.Width(240), GUILayout.MinHeight(50));
+                Rect cellRectInner = EditorGUILayout.BeginVertical("box", GUILayout.Width(240), GUILayout.MinHeight(20));
                 EditorGUI.DrawRect(cellRectInner, cellBgColor);
 
                 stateListenersByItem.TryGetValue(item, out var listenersList);
@@ -374,7 +374,7 @@ public class ItemsManagerEditor : EditorWindow
                 }
                 else
                 {
-                    if (GUILayout.Button("Add Listener", GUILayout.Height(40)))
+                    if (GUILayout.Button("Add Listener", GUILayout.Height(20)))
                     {
                         AddStateListener(stateID, item);
                         GUIUtility.ExitGUI();
@@ -688,23 +688,80 @@ public class ItemsManagerEditor : EditorWindow
                 }
                 else if (action.predefinedActionTemplate.variables != null && action.predefinedActionTemplate.variables.Length > 0)
                 {
-                    foreach (string variableName in action.predefinedActionTemplate.variables)
+                    // Check if all variable names are single characters (e.g., x, y, z)
+                    var variables = action.predefinedActionTemplate.variables;
+                    bool allSingleChar = variables.All(v => v.Length == 1);
+
+                    if (allSingleChar)
                     {
-                        Rect labelRect = new Rect(rect.x + 15, currentY, EditorGUIUtility.labelWidth * 0.6f, lineHeight);
-                        Rect fieldRect = new Rect(labelRect.xMax, currentY, rect.width - labelRect.width - 15, lineHeight);
+                        float labelWidth = 18f;
+                        float fieldWidth = 40f;
+                        float spacingH = 8f;
+                        float startX = rect.x + 15;
+                        float totalWidth = variables.Length * (labelWidth + fieldWidth + spacingH) - spacingH;
+                        float startY = currentY;
 
-                        EditorGUI.LabelField(labelRect, variableName);
-                        action.variableValues.TryGetValue(variableName, out string currentValue);
-                        currentValue ??= "";
-
-                        string newValue = EditorGUI.TextField(fieldRect, currentValue);
-                        if (newValue != currentValue)
+                        float x = startX;
+                        foreach (string variableName in variables)
                         {
-                            Undo.RecordObject(itemDataAsset, "Edit Variable " + variableName);
-                            action.variableValues[variableName] = newValue;
-                            EditorUtility.SetDirty(itemDataAsset);
+                            // Label
+                            Rect labelRect = new Rect(x, startY, labelWidth, lineHeight);
+                            EditorGUI.LabelField(labelRect, variableName);
+
+                            // Field
+                            action.variableValues.TryGetValue(variableName, out string currentValue);
+                            currentValue ??= "";
+                            Rect fieldRect = new Rect(x + labelWidth, startY, fieldWidth, lineHeight);
+                            string newValue = EditorGUI.TextField(fieldRect, currentValue);
+                            if (newValue != currentValue)
+                            {
+                                Undo.RecordObject(itemDataAsset, "Edit Variable " + variableName);
+                                action.variableValues[variableName] = newValue;
+                                EditorUtility.SetDirty(itemDataAsset);
+                            }
+                            x += labelWidth + fieldWidth + spacingH;
                         }
                         currentY += lineHeight + spacing;
+                    }
+                    else
+                    {
+                        foreach (string variableName in variables)
+                        {
+                            Rect labelRect = new Rect(rect.x + 15, currentY, EditorGUIUtility.labelWidth * 0.6f, lineHeight);
+                            EditorGUI.LabelField(labelRect, variableName);
+
+                            action.variableValues.TryGetValue(variableName, out string currentValue);
+                            currentValue ??= "";
+
+                            if (action.predefinedActionTemplate.actionType == "Set text" && variableName == "text")
+                            {
+                                EditorGUI.LabelField(new Rect(rect.x + 15, currentY, rect.width - 15, lineHeight), variableName);
+                                currentY += lineHeight + spacing;
+
+                                float textAreaHeight = lineHeight * 2;
+                                Rect textAreaRect = new Rect(rect.x + 15, currentY, rect.width - 15, textAreaHeight);
+                                string newValue = EditorGUI.TextArea(textAreaRect, currentValue);
+                                if (newValue != currentValue)
+                                {
+                                    Undo.RecordObject(itemDataAsset, "Edit Variable " + variableName);
+                                    action.variableValues[variableName] = newValue;
+                                    EditorUtility.SetDirty(itemDataAsset);
+                                }
+                                currentY += textAreaHeight + spacing;
+                            }
+                            else
+                            {
+                                Rect fieldRect = new Rect(labelRect.xMax, currentY, rect.width - labelRect.width - 15, lineHeight);
+                                string newValue = EditorGUI.TextField(fieldRect, currentValue);
+                                if (newValue != currentValue)
+                                {
+                                    Undo.RecordObject(itemDataAsset, "Edit Variable " + variableName);
+                                    action.variableValues[variableName] = newValue;
+                                    EditorUtility.SetDirty(itemDataAsset);
+                                }
+                                currentY += lineHeight + spacing;
+                            }
+                        }
                     }
                 }
             },
@@ -747,9 +804,30 @@ public class ItemsManagerEditor : EditorWindow
                 {
                     height += lineHeight * 3 + spacing; 
                 }
-                else if (action.predefinedActionTemplate.variables != null)
+                else if (action.predefinedActionTemplate.variables != null && action.predefinedActionTemplate.variables.Length > 0)
                 {
-                    height += (lineHeight + spacing) * action.predefinedActionTemplate.variables.Length; 
+                    var variables = action.predefinedActionTemplate.variables;
+                    bool allSingleChar = variables.All(v => v.Length == 1);
+
+                    if (allSingleChar)
+                    {
+                        height += lineHeight + spacing; // Only one line for all single-char fields
+                    }
+                    else
+                    {
+                        foreach (string variableName in variables)
+                        {
+                            if (action.predefinedActionTemplate.actionType == "Set text" && variableName == "text")
+                            {
+                                height += lineHeight + spacing; // label
+                                height += lineHeight * 2 + spacing; // textarea (2 lines)
+                            }
+                            else
+                            {
+                                height += lineHeight + spacing;
+                            }
+                        }
+                    }
                 }
                 return height + spacing; // Extra bottom spacing
             }

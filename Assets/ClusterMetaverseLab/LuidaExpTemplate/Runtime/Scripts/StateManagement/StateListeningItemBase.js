@@ -13,6 +13,7 @@ $.onStart(() => {
 $.onUpdate((deltaTime) => {
     if ($.getStateCompat("this", "state_exit", "boolean")) {
         $.state.stateExitActionID = 0;
+        $.state.last_state_id = $.state.state_id;
         $.setStateCompat("this", "state_exit", false);
     }
     if ($.state.stateExitActionID >= 0) OnStateExit(deltaTime);
@@ -147,7 +148,6 @@ function OnStateEnter(deltaTime) {
 
 function OnStateExit(deltaTime) {
     if (!stateExitActions[$.state.last_state_id] || $.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length) return;
-
     while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length && stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type !== "sleep") {
         stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();
         $.state.stateExitActionID += 1;

@@ -113,7 +113,7 @@ public class StateListenerAction: ISerializationCallbackReceiver
 
         if (isConditional && !string.IsNullOrEmpty(conditionVariable) && conditionValue != null)
         {
-            string jsConditionValue = $"'{conditionValue.Replace("'", "\\'")}'"; // Default to string literal
+            string jsConditionValue = $"{conditionValue.Replace("'", "\\'")}"; // Default to string literal
 
             // Attempt to format as number or boolean if applicable for JS comparison
             if (double.TryParse(conditionValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double numValue))

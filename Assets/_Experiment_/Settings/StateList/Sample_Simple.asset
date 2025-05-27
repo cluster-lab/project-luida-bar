@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 903632a1e1d0d4e27be675b7680dc266, type: 3}
-  m_Name: Template
+  m_Name: Sample_Simple
   m_EditorClassIdentifier: 
   States:
   - StateName: Start
     DestStateName: Intro
-    HasExitTime: 0
-    ExitTime: 3
+    HasExitTime: 1
+    ExitTime: 1
     IsRepeated: 0
     RepeatDestStateName: Start
     RepeatCount: 1
     qID: 0
   - StateName: Intro
     DestStateName: Trial - Start
-    HasExitTime: 0
-    ExitTime: 0
+    HasExitTime: 1
+    ExitTime: 5
     IsRepeated: 0
     RepeatDestStateName: 
     RepeatCount: 1
@@ -39,16 +39,16 @@ MonoBehaviour:
     qID: 0
   - StateName: Trial - Rest
     DestStateName: Outro
-    HasExitTime: 0
-    ExitTime: 0
+    HasExitTime: 1
+    ExitTime: 3
     IsRepeated: 0
-    RepeatDestStateName: Trial - Task
+    RepeatDestStateName: Trial - Start
     RepeatCount: 1
     qID: 0
   - StateName: Outro
     DestStateName: End
-    HasExitTime: 0
-    ExitTime: 0
+    HasExitTime: 1
+    ExitTime: 5
     IsRepeated: 0
     RepeatDestStateName: 
     RepeatCount: 1

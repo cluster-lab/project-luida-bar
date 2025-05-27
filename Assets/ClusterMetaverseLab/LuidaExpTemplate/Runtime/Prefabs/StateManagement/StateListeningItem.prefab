@@ -77,33 +77,34 @@ MonoBehaviour:
     = 0;\n    $.state.state_id = 0;\n    $.state.stateEnterActionID = -1;\n    $.state.stateExitActionID
     = -1;\n    $.state.duringStateActionID = -1;\n    Start();\n})\n\n$.onUpdate((deltaTime)
     => {\n    if ($.getStateCompat(\"this\", \"state_exit\", \"boolean\")) {\n       
-    $.state.stateExitActionID = 0;\n        $.setStateCompat(\"this\", \"state_exit\",
-    false);\n    }\n    if ($.state.stateExitActionID >= 0) OnStateExit(deltaTime);\n\n   
-    if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\n        $.setStateCompat(\"this\",
-    \"state_enter\", false);\n        $.state.state_id = $.getStateCompat(\"global\",
-    \"state_currentID\", \"integer\");\n        $.state.stateEnterActionID = 0;\n       
-    $.state.duringStateActionID = 0;\n    }\n    if ($.state.stateEnterActionID >=
-    0) OnStateEnter(deltaTime);\n\n    if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\n\n   
-    Update(deltaTime);\n})\n\nfunction ShowItem() {\n    $.setStateCompat(\"this\",
-    \"exp_showItem\", true);\n}\n\nfunction HideItem() {\n    $.setStateCompat(\"this\",
-    \"exp_showItem\", false);\n}\n\nfunction ToNextState() {\n    $.sendSignalCompat(\"this\",
-    \"state_triggerTransition\");\n}\n\nfunction SetText(text) {\n    try {\n     
-    $.subNode(\"Text\").setText(`${text}`);\n    } catch (e) {\n      $.log(`Error
-    in SetText: ${e}. Ensure a 'Text' sub-node exists and has setText method.`);\n   
-    }\n}\n\nfunction SetPosition(x, y, z) {\n    try {\n        $.setPosition(new
-    Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\n    } catch (e) {\n       
-    $.log(`Error in SetPosition: ${e}. Ensure MovableItem is present and x,y,z are
-    valid numbers.`);\n    }\n}\n\nfunction AddPosition(x, y, z) {\n    try {\n       
-    const currentPos = $.getPosition();\n        $.setPosition(currentPos.add(new
+    $.state.stateExitActionID = 0;\n        $.state.last_state_id = $.state.state_id;\n       
+    $.setStateCompat(\"this\", \"state_exit\", false);\n    }\n    if ($.state.stateExitActionID
+    >= 0) OnStateExit(deltaTime);\n\n    if ($.getStateCompat(\"this\", \"state_enter\",
+    \"boolean\")) {\n        $.setStateCompat(\"this\", \"state_enter\", false);\n       
+    $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
+    $.state.stateEnterActionID = 0;\n        $.state.duringStateActionID = 0;\n   
+    }\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\n\n    if
+    ($.state.duringStateActionID >= 0) DuringState(deltaTime);\n\n    Update(deltaTime);\n})\n\nfunction
+    ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
+    HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
+    ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
+    SetText(text) {\n    try {\n      $.subNode(\"Text\").setText(`${text}`);\n   
+    } catch (e) {\n      $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
+    exists and has setText method.`);\n    }\n}\n\nfunction SetPosition(x, y, z)
+    {\n    try {\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
+    parseFloat(z)));\n    } catch (e) {\n        $.log(`Error in SetPosition: ${e}.
+    Ensure MovableItem is present and x,y,z are valid numbers.`);\n    }\n}\n\nfunction
+    AddPosition(x, y, z) {\n    try {\n        const currentPos = $.getPosition();\n       
+    $.setPosition(currentPos.add(new Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));\n   
+    } catch (e) {\n        $.log(`Error in AddPosition: ${e}. Ensure MovableItem
+    is present and x,y,z are valid numbers.`);\n    }\n}\n\nfunction SetRotation(x,
+    y, z) {\n    try {\n        $.setRotation(new Quaternion().setFromEulerAngles(new
     Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));\n    } catch (e) {\n       
-    $.log(`Error in AddPosition: ${e}. Ensure MovableItem is present and x,y,z are
-    valid numbers.`);\n    }\n}\n\nfunction SetRotation(x, y, z) {\n    try {\n       
-    $.setRotation(new Quaternion().setFromEulerAngles(new Vector3(parseFloat(x),
-    parseFloat(y), parseFloat(z))));\n    } catch (e) {\n        $.log(`Error in
-    SetRotation: ${e}. Ensure MovableItem is present and x,y,z are valid numbers
-    (Euler degrees).`);\n    }\n}\n\nfunction AddRotation(x, y, z) {\n    try {\n       
-    const currentRot = $.getRotation();\n        const offsetRot = new Quaternion().setFromEulerAngles(new
-    Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\n        $.setRotation(currentRot.multiply(offsetRot));\n   
+    $.log(`Error in SetRotation: ${e}. Ensure MovableItem is present and x,y,z are
+    valid numbers (Euler degrees).`);\n    }\n}\n\nfunction AddRotation(x, y, z)
+    {\n    try {\n        const currentRot = $.getRotation();\n        const offsetRot
+    = new Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
+    parseFloat(z)));\n        $.setRotation(currentRot.multiply(offsetRot));\n   
     } catch (e) {\n        $.log(`Error in AddRotation: ${e}. Ensure MovableItem
     is present and x,y,z are valid numbers (Euler degrees).`);\n    }\n}\n\nfunction
     RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
@@ -137,7 +138,7 @@ MonoBehaviour:
     {\n            $.state.stateEnterActionID += 1;\n            timer = 0;\n       
     } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction OnStateExit(deltaTime)
     {\n    if (!stateExitActions[$.state.last_state_id] || $.state.stateExitActionID
-    >= stateExitActions[$.state.last_state_id].length) return;\n\n    while ($.state.stateExitActionID
+    >= stateExitActions[$.state.last_state_id].length) return;\n    while ($.state.stateExitActionID
     < stateExitActions[$.state.last_state_id].length && stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
     !== \"sleep\") {\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\n       
     $.state.stateExitActionID += 1;\n    }\n\n    if ($.state.stateExitActionID >=

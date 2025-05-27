@@ -8,6 +8,7 @@ public class ExpIdentifierEditor
     private string expID = "";
     private string token = "";
     private string filePath;
+    private bool isSubscribed = false;
 
     public void OnEnable()
     {
@@ -19,6 +20,25 @@ public class ExpIdentifierEditor
         {
             LoadExpIdentifiers();
         }
+
+        if (!isSubscribed)
+        {
+            TabbedEditor.OnEditorClosed += SaveExpIdentifiers;
+            TabbedEditor.OnEditorClosed += OnDisable;
+            TabbedEditor.OnItemsManagerTabLostFocus += SaveExpIdentifiers;
+            isSubscribed = true;
+        }
+    }
+
+    public void OnDisable()
+    {
+        if (isSubscribed)
+        {
+            TabbedEditor.OnEditorClosed -= SaveExpIdentifiers;
+            TabbedEditor.OnEditorClosed -= OnDisable;
+            TabbedEditor.OnItemsManagerTabLostFocus -= SaveExpIdentifiers;
+            isSubscribed = false;
+        }
     }
 
     public void OnGUI()
@@ -28,10 +48,10 @@ public class ExpIdentifierEditor
         expID = EditorGUILayout.TextField("Experiment ID", expID);
         token = EditorGUILayout.TextField("Token", token);
 
-        if (GUILayout.Button("Save Identifiers"))
-        {
-            SaveExpIdentifiers();
-        }
+        // if (GUILayout.Button("Save Identifiers"))
+        // {
+        //     SaveExpIdentifiers();
+        // }
     }
 
     private void LoadExpIdentifiers()

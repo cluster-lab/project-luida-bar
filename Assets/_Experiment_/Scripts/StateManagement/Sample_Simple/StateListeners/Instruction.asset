@@ -1,0 +1,181 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acb8c4c8a0a4dc6418e2f4d59454f5e3, type: 3}
+  m_Name: Instruction
+  m_EditorClassIdentifier: 
+  stateListeners:
+  - stateID: 1
+    onStateStartedActions:
+    - predefinedActionTemplate:
+        actionType: Show item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
+        variables: []
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys: []
+      _variableValuesList: []
+    - predefinedActionTemplate:
+        actionType: Set position
+        codeSnippet: $.setPosition(new Vector3({_x_}, {_y_}, {_z_}))
+        variables:
+        - x
+        - y
+        - z
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys:
+      - x
+      - y
+      - z
+      _variableValuesList:
+      - 0
+      - 2
+      - 2
+    - predefinedActionTemplate:
+        actionType: Set text
+        codeSnippet: $.subNode('Text').setText(`{_text_}`);
+        variables:
+        - text
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys:
+      - text
+      _variableValuesList:
+      - "Trials start in 5 seconds.\n\nIn each trial, you\u2019ll see a text written\n\"Red\"
+        or \"Blue\" in red or blue font,\nwhich may not necessarily match the word.\nYou
+        will be asked to click the sphere matching\neither the font color or the
+        word's meaning."
+    duringStateActions: []
+    onStateExitedActions: []
+  - stateID: 2
+    onStateStartedActions:
+    - predefinedActionTemplate:
+        actionType: Set text
+        codeSnippet: $.subNode('Text').setText(`{_text_}`);
+        variables:
+        - text
+      customAction: 
+      isConditional: 1
+      conditionVariable: request
+      conditionValue: material
+      _variableKeys:
+      - text
+      _variableValuesList:
+      - Click the sphere that matches the font color
+    - predefinedActionTemplate:
+        actionType: Set text
+        codeSnippet: $.subNode('Text').setText(`{_text_}`);
+        variables:
+        - text
+      customAction: 
+      isConditional: 1
+      conditionVariable: request
+      conditionValue: text
+      _variableKeys:
+      - text
+      _variableValuesList:
+      - "Click the sphere that matches the word\u2019s meaning"
+    - predefinedActionTemplate:
+        actionType: Set position
+        codeSnippet: $.setPosition(new Vector3({_x_}, {_y_}, {_z_}))
+        variables:
+        - x
+        - y
+        - z
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys:
+      - x
+      - y
+      - z
+      _variableValuesList:
+      - 0
+      - 2
+      - 1.5
+    duringStateActions: []
+    onStateExitedActions: []
+  - stateID: 3
+    onStateStartedActions:
+    - predefinedActionTemplate:
+        actionType: Set text
+        codeSnippet: $.subNode('Text').setText(`{_text_}`);
+        variables:
+        - text
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys:
+      - text
+      _variableValuesList:
+      - Take a rest for 3 seconds
+    duringStateActions: []
+    onStateExitedActions: []
+  - stateID: 4
+    onStateStartedActions:
+    - predefinedActionTemplate:
+        actionType: Set text
+        codeSnippet: $.subNode('Text').setText(`{_text_}`);
+        variables:
+        - text
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys:
+      - text
+      _variableValuesList:
+      - 'Well done! Thanks for your participation.
+
+        You can leave this room
+        now.'
+    duringStateActions: []
+    onStateExitedActions:
+    - predefinedActionTemplate:
+        actionType: Hide item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
+        variables: []
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys: []
+      _variableValuesList: []
+  otherImplementation: '// function Start() { }
+
+    // function Update(deltaTime)
+    { }
+
+    // $.onCollide((collision) => { });
+
+    // $.onGrab((isGrab, isLeftHand,
+    player) => { });
+
+    // $.onInteract((player) => { });
+
+    // $.onUse((isDown,
+    player) => { });
+
+    // $.onPhysicsUpdate((deltaTime) => { });
+
+    // $.onReceive((messageType,
+    arg, sender) => { });
+
+'
