@@ -1,0 +1,122 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acb8c4c8a0a4dc6418e2f4d59454f5e3, type: 3}
+  m_Name: Instruction
+  m_EditorClassIdentifier: 
+  stateListeners:
+  - stateID: 1
+    onStateStartedActions:
+    - predefinedActionTemplate:
+        actionType: Show item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
+        variables: []
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys: []
+      _variableValuesList: []
+    - predefinedActionTemplate:
+        actionType: Set text
+        codeSnippet: $.subNode('Text').setText(`{_text_}`);
+        variables:
+        - text
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys:
+      - text
+      _variableValuesList:
+      - "In this study, we replicate the Stroop effect in a VR environment\u2014\nthe
+        phenomenon whereby it takes longer to identify a word\u2019s font color \nwhen
+        that color conflicts with the word\u2019s semantic meaning\u2014\nand examine
+        how the stimulus presentation depth (near vs. far) \naffects response times
+        and accuracy."
+    duringStateActions: []
+    onStateExitedActions: []
+  - stateID: 3
+    onStateStartedActions:
+    - predefinedActionTemplate:
+        actionType: Set text
+        codeSnippet: $.subNode('Text').setText(`{_text_}`);
+        variables:
+        - text
+      customAction: 
+      isConditional: 1
+      conditionVariable: request
+      conditionValue: font
+      _variableKeys:
+      - text
+      _variableValuesList:
+      - Click the button that matches the text's font color.
+    - predefinedActionTemplate:
+        actionType: Set text
+        codeSnippet: $.subNode('Text').setText(`{_text_}`);
+        variables:
+        - text
+      customAction: 
+      isConditional: 1
+      conditionVariable: request
+      conditionValue: meaning
+      _variableKeys:
+      - text
+      _variableValuesList:
+      - Click the button that matches the text's meaning.
+    duringStateActions: []
+    onStateExitedActions:
+    - predefinedActionTemplate:
+        actionType: Set text
+        codeSnippet: $.subNode('Text').setText(`{_text_}`);
+        variables:
+        - text
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys:
+      - text
+      _variableValuesList:
+      - Take a break for 3 seconds
+  - stateID: 5
+    onStateStartedActions:
+    - predefinedActionTemplate:
+        actionType: Set text
+        codeSnippet: $.subNode('Text').setText(`{_text_}`);
+        variables:
+        - text
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys:
+      - text
+      _variableValuesList:
+      - 'Well done!
+
+        Now please fill in a questionnaire
+
+        (Displayed
+        in 10 seconds)'
+    duringStateActions: []
+    onStateExitedActions:
+    - predefinedActionTemplate:
+        actionType: Hide item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
+        variables: []
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys: []
+      _variableValuesList: []
+  otherImplementation: 
