@@ -302,6 +302,12 @@ public class DataRecorderEditor : EditorWindow
             return;
         }
 
+        if (customDataRecorder == null)
+        {
+            Debug.LogError("Custom data recorder Gameobject is null.");
+            return;
+        }
+
         // Construct the JavaScript script content
         StringBuilder scriptBuilder = new StringBuilder();
         scriptBuilder.Append("function calculateData () {\n");

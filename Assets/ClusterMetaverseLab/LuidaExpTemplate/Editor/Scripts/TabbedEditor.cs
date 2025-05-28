@@ -85,7 +85,42 @@ public class TabbedEditor : EditorWindow
         }
         else
         {
+            GUILayout.BeginHorizontal();
             GUILayout.Label("Current Active Scene: " + currentScenePath, EditorStyles.boldLabel);
+
+            // --- New Scene Creation Form
+            GUILayout.FlexibleSpace();
+            newSceneName = EditorGUILayout.TextField("New Experiment Name", newSceneName, GUILayout.Width(250));
+
+            if (GUILayout.Button("Create and Switch Scene"))
+            {
+                if (!string.IsNullOrEmpty(newSceneName))
+                {
+                    string newScenePath = scenePath + newSceneName + ".unity";
+
+                    if (!File.Exists(newScenePath))
+                    {
+                        // Save current scene if it has been modified
+                        if (EditorSceneManager.GetActiveScene().isDirty)
+                        {
+                            EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
+                        }
+                        File.Copy(templateScenePath, newScenePath);
+                        AssetDatabase.Refresh();
+                        EditorSceneManager.OpenScene(newScenePath);
+                    }
+                    else
+                    {
+                        EditorUtility.DisplayDialog("Error", "A scene with that name already exists!", "OK");
+                    }
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog("Error", "Please enter a valid scene name.", "OK");
+                }
+            }
+            GUILayout.EndHorizontal();
+
             // draw toolbar
             int newTab = GUILayout.Toolbar(currentTab, tabNames);
 
