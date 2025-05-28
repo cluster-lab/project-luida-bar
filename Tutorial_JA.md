@@ -1,6 +1,6 @@
 # LUIDA 実装テンプレート チュートリアル
 
-このチュートリアルでは、本実装テンプレートを用いて LUIDA 上で実験系を実装する方法を紹介します。
+このチュートリアルでは、本実装テンプレートを用いて LUIDA 上で動く実験系を実装する方法を、実際に簡単な実験を一つ作ってもらいながら紹介します。
 
 ## 本実装テンプレートの大まかな使用手順
 
@@ -21,7 +21,7 @@
 
 ---
 
-## はじめに
+## はじめに：インストール・アカウント作成・CCK などの勉強
 
 このチュートリアルを進めるにあたり、以下の基礎知識を事前に学習しておくことを推奨します：
 
@@ -39,18 +39,40 @@
 
 ## 1. ウェブコンソールで実験情報を登録
 
-以下の手順2-3は、[こちらの動画](https://drive.google.com/file/d/1D3TxoWqSrvJkEMVik8WquZu4GjI-tHbM/view?usp=sharing) の「1. Researchers register experiment information...」セクションでもご確認いただけます。
-
 1.  [LUIDAのウェブコンソール](https://luida-web-next.vercel.app/)を開きます。
-2.  「＋新規実験」をクリックし、実験の基本情報を登録します。「タイトル」「参加条件」「画像URL」は必須項目です。画像URLは、初期登録時には任意の文字列（例: `https://example.com/image.png`）を入力しても構いません。
-    ![実験基本情報登録画面](https://github.com/user-attachments/assets/d1814ffb-4552-47cf-a60e-2575acbfc570)
-3.  実験を登録できたら、ホームページからその実験の行をクリックして、その実験の詳細ページにアクセスします。そこで情報の追加編集やアンケートの登録が可能です。
-    | 実験詳細編集フォーム                                                                                                 | 質問紙登録フォーム                                                                                                   |
-    | :-----------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------: |
-    | ![実験詳細ページの編集画面例](https://github.com/user-attachments/assets/53ec6252-f623-415c-ba50-4d6a27d7a86b) | ![アンケート登録画面例](https://github.com/user-attachments/assets/f32d0b65-9551-482d-a7ad-09ecfba822df) |
-4.  登録後、実験詳細ページに表示される「実験ID」をコピーしておきます。このIDは後ほどUnityプロジェクトで使用します。
+2.  **実験を新規作成**：「＋新規実験」をクリックし、実験の基本情報を以下の値で登録します。
+    1. タイトル：`ストループ効果の実験`
+    2. 参加条件：`色覚異常のない方`
+    3. 報酬：`0`
+    4. 画像URL：任意の文字列（例: `https://example.com/image.png`）
+    5. ワールドID：一旦無視
+    6. ルーム定員：`1`
+    7. ステータス：`テスト中`
+
+| 新規実験ボタン | 実験基本情報登録画面 |
+| :---: | :---: |
+| ![質問紙追加ボタン](https://github.com/user-attachments/assets/cc1cc6c5-b0c9-4a48-bf08-daf5d345e04a) | ![テンプレートから選択](https://github.com/user-attachments/assets/a1c19c68-bed3-4b46-8d6e-5abb034f623b) |
+
+3.  **実験詳細ページへ移動**：実験を登録できたら、ホームページからその実験の行をクリックして、その実験の詳細ページにアクセスします。そこで先ほど登録した情報を確認します。
+4.  **質問紙の作成**：下にスクロールして、質問紙の登録フォームで以下の操作をします：
+    1. 「質問紙追加」ボタン→「テンプレート選択」から「IPQ」を選択→「追加」ボタン
+    2. 追加された質問紙の「質問一覧」ボタンをクリックし、追加済みの質問一覧を確認します。
+    ![質問紙の作成](https://github.com/user-attachments/assets/f468f40b-83ab-4646-83ad-a28c212a9ec4)
+<!--
+| 質問紙追加ボタン | テンプレートから選択 | 質問紙一覧 | 選択された質問紙の質問一覧 |
+| :---: | :---: | :---: | :---: |
+| ![質問紙追加ボタン](https://github.com/user-attachments/assets/484d8882-7d9e-4f7a-bf76-487e565e81e9) | ![テンプレートから選択](https://github.com/user-attachments/assets/f497bca7-5cb8-4000-ac6a-2dc8a562f067) | ![質問紙一覧](https://github.com/user-attachments/assets/40566274-f861-4427-9b50-8dbc4638f3cb) | ![選択された質問紙の質問一覧](https://github.com/user-attachments/assets/bd590c3c-1e27-4288-a3a4-54dec286a529) |
+-->
+5.  **実験IDをコピー**：実験詳細ページの上部に表示される「実験ID」をコピーしておきます。このIDは後ほどUnityプロジェクトで使用します。
     ![実験IDの確認箇所](https://github.com/user-attachments/assets/20780d32-15ce-4588-a377-415b6d0fef40)
 
+<!--
+詳細ページ内の操作（手順3~4）のデモ動画はこちら：https://github.com/user-attachments/assets/06e67729-6fa2-4a23-9b49-0b6cf7b4b45c
+
+| 実験詳細編集フォーム | 質問紙登録フォーム |
+| :---: | :---: |
+| ![実験詳細ページの編集画面例](https://github.com/user-attachments/assets/53ec6252-f623-415c-ba50-4d6a27d7a86b) | ![アンケート登録画面例](https://github.com/user-attachments/assets/f32d0b65-9551-482d-a7ad-09ecfba822df) |
+-->
 ---
 
 ## 2. 実装テンプレート(Unity)のダウンロードと初期設定
@@ -65,50 +87,89 @@
     ![clusterアクセストークン登録手順](https://github.com/user-attachments/assets/c06f43c6-3412-4462-92a9-ac3576252e99)
 5.  続いて、clusterの外部通信機能用のURLを登録し、生成されたトークンを本実装テンプレートに登録します。手順は以下の画像を参照してください。
     ![cluster外部通信URL登録手順](https://github.com/user-attachments/assets/f64e75df-93f2-4b1a-9b3a-36216405feb7)
-6.  `Window > Luida Editor` を開き、`Experiment Identifiers` セクション（またはタブ）に、先ほどウェブコンソールでコピーした実験IDを `Experiment ID` フィールドに入力します。 ~~最後に「Save」ボタンをクリックして設定を保存してください。~~
+6.  `Window > Luida Editor` を開き、`Experiment Identifiers` セクション（またはタブ）に、先ほどウェブコンソールでコピーした実験IDを `Experiment ID` フィールドに入力します。
     ![Luida Editor 実験ID登録画面](https://github.com/user-attachments/assets/9d216be0-5c45-41f2-9129-f46546f940ae)
 
 ---
 
 ## 3. 実験変数と試行回数を設定する
 
-![参加者内変数の設定例](https://github.com/user-attachments/assets/79cb3beb-c9fb-4652-b820-3a5565dafad1)
+![実験変数と試行回数の設定](https://github.com/user-attachments/assets/3cc430a4-1af1-40b0-8eab-050c0a397ece)
+
+この画面では、実験の参加者内/参加者間変数を登録できます。それに基づいて、システムが自動的に試行の数と各試行における実験条件を決定します。
+
+<details>
+    
+<summary> **各設定項目の説明** </summary>
+
+* `Variables for Within-Subject Conditions`は参加者内変数の設定フォームで、`Variables for Between-Subject Conditions`は参加者間変数の設定フォームです。
+* 各フォームの`Length`：登録する参加者内/間変数の数。その数だけ変数を設定する行が下に現れます。
+* 変数設定の行の各項目：
+    * `Name`：変数の名前
+    * `Values`：変数の値のリスト。カンマ（`,`）区切りで複数の値を指定します。
+    * `isRandom`：ランダム順で施行されるか。チェックしない場合はValueの値の順番通りに施行されます。
+        * 現在、参加者間変数では`isRandom`をtrueにしか設定できません。つまりある参加者に割り当てられる参加者間条件はランダムになっています。今後は参加者の事前アンケートの回答などに基づいて参加者間条件を割り当てる仕組みを実装する予定です。
+* `Trials Count per Condition`：各条件（変数の組み合わせ）あたりで行う試行の回数を入力します。
+    ![variable-settings](https://github.com/user-attachments/assets/1cf257e1-71f7-49de-95a9-d38e3661b655)
+
+</details>
+
+以下の手順で登録してください。
 
 1.  Unityのメニューバーから `Window > Luida Editor` を開き、`Experiment Variables` タブに切り替えます。「Create New Variables Asset」ボタンをクリックして、実験変数設定用の新しいアセットファイルを作成します。
-2.  `Variables for Within-Subject Conditions`（参加者内変数）セクションの `Length` に、使用する参加者内変数の種類数を入力します。
-    1.  `Length` が1以上の場合、各変数の `Name`（名前）と `Values`（値のリスト）を入力します。`Values` はカンマ区切りで複数の値を指定できます。
-        *   例:
-            -  Name: `request`　　Values: `material,text`　　isRandom: false
-            -  Name: `text`　　Values: `R,B`　　isRandom: true
-3.  `Variables for Between-Subject Conditions`（参加者間変数）セクションの `Length` に、使用する参加者間変数の種類数を入力します。
-    1.  参加者内変数と同様に、`Length` が1以上の場合、各変数の `Name` と `Values` を入力します。
-4.  `Trials Count per Condition` に、各条件（変数の組み合わせ）あたりで行う試行の回数を入力します（特に繰り返しがなければ `1` を設定します）。
-5.  最後に、Unityのシーンを保存してください (`File > Save Scenes` または `Ctrl/Cmd + S`)。
+2.  **参加者内変数の設定**
+    1.  `Variables for Within-Subject Conditions`の下の`Length`に`3`を入力します。
+    2.  下に現れた3つの行に以下の値を順番通りに入力します。
+        -  Name: `request`　　Values: `material,text`　　isRandom: false
+        -  Name: `font`　　Values: `R,B`　　isRandom: true
+        -  Name: `text`　　Values: `Red,Blue`　　isRandom: true
+3.  **参加者間変数の設定**
+    1.  `Variables for Between-Subject Conditions`の下の`Length`に`1`を入力します。
+    2.  下に現れた1つの行に以下の値を入力します。
+        -  Name: `depth`　　Values: `near,far`
+4.  `Trials Count per Condition` に、`2`を入力します。すると各条件（変数の組み合わせ）を持つ試行は2回ずつになります。
+5.  最後にUnityのシーンを保存します (`File > Save Scenes` または `Ctrl/Cmd + S`)。
 
 ---
 
 ## 4. 実験進行の設定（ステート遷移）と質問紙の紐づけ
 
-![Luida Editor Experiment Statesタブ](https://github.com/user-attachments/assets/4da5e8b7-afc5-41c6-b1d9-9a5270c7879e)
+![Luida Editor Experiment Statesタブ](https://github.com/user-attachments/assets/fbbc7f52-af5b-43db-adf7-4d579fed23b3)
 
-ここでは、実験の進行フローを「ステート」と呼ばれる単位で設定します。各ステートは実験の一区切り（例：教示、タスク実行、休憩、質問紙回答など）を表し、それらがどのように遷移するかを定義します。
+ここでは、実験の進行フローを「ステート」と呼ばれる単位で設定します。各ステートは実験の一区切り（例：説明、タスク実行、休憩、質問紙回答など）を表し、それらがどのように遷移するかを定義します。
 
 `Window > Luida Editor` を開き、`States List (& Questionnaires)` タブに切り替えると、いくつかのデフォルトステートが設定されているのが確認できます。
 
-特に変更の必要がなければデフォルトのまま進められますが、カスタマイズする場合は上の図と以下各項目の説明を合わせて参照してください。
+<details>
+    
+<summary> **各設定項目の説明** </summary>
 
 -   **Move state to**: リスト内でのステートの遷移順を上下に移動させます。
 -   **Has Exit Time**: このオプションを有効にすると、指定した時間（`Exit time (seconds)` フィールドに入力）が経過すると自動的に現在のステートが終了し、次のステートへ遷移します。
 -   **Is Repeated**: このオプションを有効にすると、ステート終了時に次のステートへは遷移せず、指定した `Repeat Destination` ステートへ戻ります。これを `Repeat Count` で指定した回数繰り返します。指定回数を超えると、通常どおり次のステートへ遷移します。
-    -   上の図の場合：`PracticeRest`終了後に`Practice`へ戻る動作を5回繰り返し、6回目の`PracticeRest`の終了後には次の`Trial - Start`へ進みます。
+    -   上の図の場合：`CalculationTask`終了後に`CalculationTask`へ戻る動作を5回繰り返し、6回目の`CalculationTask`の終了後には次の`Trial - Start`へ進みます。
 -   **Questionnaire**: このステート中に表示するアンケートを設定します。
-    -   **qID**: LUIDAウェブコンソールで登録したアンケートのID（登録順を示す1から始まる番号）を入力します。例えば、下のウェブコンソールのスクショの中で、2番目に登録した「プレゼンス質問票」をこのステートで表示したい場合は、`qID` に `2` を設定します。　<img width="500" alt="ウェブコンソールでのアンケートID確認例" src="https://github.com/user-attachments/assets/39d122b1-d725-4dfc-8f6e-d9e2d279d622" />
+    -   **qID**: LUIDAウェブコンソールで登録したアンケートのID（登録順を示す1から始まる番号）を入力します。例えば、下のウェブコンソールのスクショの中で、2番目に登録した「IPQ プレゼンス質問票」をこのステートで表示したい場合は、`qID` に `2` を設定します。　<img width="500" alt="ウェブコンソールでのアンケートID確認例" src="https://github.com/user-attachments/assets/39d122b1-d725-4dfc-8f6e-d9e2d279d622" />
 
-設定変更後は、Unityのシーンを忘れずに保存してください。
+</details>
+
+上の図の設定になるように、以下の手順に従って設定を行ってください。
+
+1. **最初のステートを3秒で自動的に飛ばす**：`Start`の行の`Has Exit Time`をチェックし、`Exit Time`に`3`と入力します。
+2. **説明のステートを10秒で自動的に飛ばす**：`Intro`の行の`Has Exit Time`をチェックし、`Exit Time`に`10`と入力します。
+3. **計算タスクのステートを追加し、5回繰り返す**：
+    1. `Add State Before Trials`ボタンを押し、ステートを追加します。`CalculationTask`と名前を変えてあげます。
+    2. `CalculationTask`の行の`Is Repeated`をチェックし、`Repeat Destination`で`CalculationTask`を選択し、`Repeat Count`に`5`と入力します。
+4. **試行の休憩ステートを3秒で自動的に飛ばす**：`Trial - Rest`の行の`Has Exit Time`をチェックし、`Exit Time`に`3`と入力します。
+5. **試行終了後のステートを10秒で自動的に飛ばす**：`Outro`の行の`Has Exit Time`をチェックし、`Exit Time`に`10`と入力します。
+6. **質問紙のステートを追加して質問紙と紐付ける**：
+    1. `Add State After Trials`ボタンを押し、ステートを追加します。`Questionnaire`と名前を変えてあげます。
+    2. `Add Questionnaire`ボタンを押し、`qID`に`1`と入力します。
+7. 最後にUnityのシーンを保存します。
 
 ---
 
-## 5. 実験進行に合わせたオブジェクトの挙動の設定
+## 5. 実験進行に合わせたオブジェクトの挙動の設定（書き換え中）
 
 ![Luida Editor State-listening Itemsタブ](https://github.com/user-attachments/assets/1937e67a-8137-482e-95c5-6ce359d00259)
 
@@ -134,7 +195,7 @@
 
 ---
 
-## 6. UnityとCCKを使ったその他の実装
+## 6. UnityとCCKを使ったその他の実装（書き換え中）
 
 Unityの Collider や Rigidbody などの標準コンポーネントは使用可能です。
 ただし、Cluster上で動作させる関係上、C#スクリプトは使用できません。その代わり、CCKの各種コンポーネントやClusterScriptを活用して開発を行います。
