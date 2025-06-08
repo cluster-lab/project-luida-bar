@@ -11,6 +11,17 @@ _.onReceive((id, body, sender) => {
                 haptics.playEffect(effect, body.target);
             }
             break;
+        case "envInfoRequest":
+            _.sendTo(sender, "envInfoResponse", {
+                isAndroid: _.isAndroid,
+                isDesktop: _.isDesktop,
+                isIos: _.isIos,
+                isMacOs: _.isMacOs,
+                isMobile: _.isMobile,
+                isVr: _.isVr,
+                isWindows: _.isWindows
+            });
+            break;
         default:
             break;
     }

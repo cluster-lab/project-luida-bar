@@ -11,6 +11,7 @@ $.onUpdate(() => {
             for (const newPlayer of newPlayers) {
                 $.state.inRoomIdfcs.push(newPlayer.idfc);
                 $.setPlayerScript(newPlayer);
+                newPlayer.send("envInfoRequest", true);
             }
         }
     }
@@ -36,6 +37,23 @@ $.onUpdate(() => {
   }
 */
 })
+
+$.onReceive((messageType, arg, sender) => {
+    switch (messageType) {
+        case "envInfoResponse":
+            let request = {
+                type: "uploadCustomData",
+                data: { envInfo: [ arg ] },
+                token: token || "",
+                eID: expID || "",
+                pID: sender.idfc
+            };
+            $.callExternal(callExternalEndpointID || "", JSON.stringify(request), "customDataUploaded");
+            break;
+        default:
+            break;
+    }
+});
 
 /*
 $.onExternalCallEnd((res, meta, err) =>

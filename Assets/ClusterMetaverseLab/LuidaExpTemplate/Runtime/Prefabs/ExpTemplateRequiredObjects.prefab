@@ -464,23 +464,24 @@ PrefabInstance:
     - target: {fileID: 5964733846762761526, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\n\r\nconst
-        uploadInterval = 1;\r\nconst dataLengthPerUpload = 15;\r\n\r\n$.onStart(()
-        => {\r\n    $.state.customData = {};\r\n    $.state.uploadIndex = 0;\r\n   
-        $.state.elapsedTime = 0;\r\n    $.state.dataLength = 0;\r\n    $.state.isUploading
-        = false;\r\n})\r\n\r\n$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\",
-        \"exp_recordCustomData\", \"boolean\")) {\r\n        $.setStateCompat(\"this\",
-        \"exp_recordCustomData\", false);\r\n        recordData();\r\n    }\r\n   
-        if ($.getStateCompat(\"this\", \"exp_uploadCustomData\", \"boolean\")) {\r\n       
-        if ($.state.uploadIndex === 0) {\r\n            uploadDataInit();\r\n           
-        $.setStateCompat(\"this\", \"exp_uploadCustomData\", false);\r\n        }\r\n   
-        }\r\n    if ($.state.isUploading) {\r\n        $.state.elapsedTime = $.state.elapsedTime
-        + deltaTime;\r\n        if ($.state.elapsedTime >= uploadInterval && $.state.uploadIndex
-        < Math.ceil($.state.dataLength / dataLengthPerUpload)) {\r\n            $.state.elapsedTime
-        = 0;\r\n            uploadDataStep();\r\n        }\r\n    }\r\n})\r\n\r\nfunction
-        recordData () {\r\n    $.state.customData = calculateData();\r\n}\r\n\r\nfunction
-        uploadDataInit() {\r\n    $.state.uploadIndex = 0;\r\n    $.state.elapsedTime
-        = 0;\r\n    $.state.isUploading = true;\r\n    let firstFileName = Object.keys($.state.customData)[0];\r\n   
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
+        = \"callExternalEndpointID_example\";\n\r\nconst uploadInterval = 1;\r\nconst
+        dataLengthPerUpload = 100;\r\n\r\n$.onStart(() => {\r\n    $.state.customData
+        = {};\r\n    $.state.uploadIndex = 0;\r\n    $.state.elapsedTime = 0;\r\n   
+        $.state.dataLength = 0;\r\n    $.state.isUploading = false;\r\n})\r\n\r\n$.onUpdate((deltaTime)
+        => {\r\n    if ($.getStateCompat(\"this\", \"exp_recordCustomData\", \"boolean\"))
+        {\r\n        $.setStateCompat(\"this\", \"exp_recordCustomData\", false);\r\n       
+        recordData();\r\n    }\r\n    if ($.getStateCompat(\"this\", \"exp_uploadCustomData\",
+        \"boolean\")) {\r\n        if ($.state.uploadIndex === 0) {\r\n           
+        uploadDataInit();\r\n            $.setStateCompat(\"this\", \"exp_uploadCustomData\",
+        false);\r\n        }\r\n    }\r\n    if ($.state.isUploading) {\r\n       
+        $.state.elapsedTime = $.state.elapsedTime + deltaTime;\r\n        if ($.state.elapsedTime
+        >= uploadInterval && $.state.uploadIndex < Math.ceil($.state.dataLength /
+        dataLengthPerUpload)) {\r\n            $.state.elapsedTime = 0;\r\n           
+        uploadDataStep();\r\n        }\r\n    }\r\n})\r\n\r\nfunction recordData
+        () {\r\n    $.state.customData = calculateData();\r\n}\r\n\r\nfunction uploadDataInit()
+        {\r\n    $.state.uploadIndex = 0;\r\n    $.state.elapsedTime = 0;\r\n   
+        $.state.isUploading = true;\r\n    let firstFileName = Object.keys($.state.customData)[0];\r\n   
         if (firstFileName) {\r\n        $.state.dataLength = $.state.customData[firstFileName].length;\r\n   
         }\r\n}\r\n\r\nfunction uploadDataStep() {\r\n    $.log($.state.uploadIndex);\r\n   
         if ($.state.uploadIndex < Math.ceil($.state.dataLength / dataLengthPerUpload))
@@ -491,9 +492,9 @@ PrefabInstance:
         token: token || \"\",\r\n            data: slicedData,\r\n            eID:
         expID || \"\",\r\n            pID: $.getPlayersNear($.getPosition().clone(),
         Infinity)[0].idfc || \"\" // TODO: retrieve idfc through cluster Player Script\r\n       
-        };\r\n        $.log(request);\r\n        $.callExternal(JSON.stringify(request),
-        \"customDataUploaded\");\r\n        $.state.uploadIndex = $.state.uploadIndex
-        + 1;\r\n\r\n        if ($.state.uploadIndex >= Math.ceil($.state.dataLength
+        };\r\n        $.log(request);\r\n        $.callExternal(callExternalEndpointID,
+        JSON.stringify(request), \"customDataUploaded\");\r\n        $.state.uploadIndex
+        = $.state.uploadIndex + 1;\r\n\r\n        if ($.state.uploadIndex >= Math.ceil($.state.dataLength
         / dataLengthPerUpload)) {\r\n            $.state.uploadIndex = 0;\r\n           
         $.state.isUploading = false;\r\n        }\r\n    }\r\n}\r\n\r\n$.onExternalCallEnd((res,
         meta, err) =>\r\n{\r\n    if (res == null) {\r\n        $.log(\"callExternal

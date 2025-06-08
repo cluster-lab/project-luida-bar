@@ -67,10 +67,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\n\r\nconst
-    uploadInterval = 1;\r\nconst dataLengthPerUpload = 15;\r\n\r\n$.onStart(() =>
-    {\r\n    $.state.customData = {};\r\n    $.state.uploadIndex = 0;\r\n    $.state.elapsedTime
-    = 0;\r\n    $.state.dataLength = 0;\r\n    $.state.isUploading = false;\r\n})\r\n\r\n$.onUpdate((deltaTime)
+  sourceCode: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
+    = \"callExternalEndpointID_example\";\n\r\nconst uploadInterval = 1;\r\nconst
+    dataLengthPerUpload = 100;\r\n\r\n$.onStart(() => {\r\n    $.state.customData
+    = {};\r\n    $.state.uploadIndex = 0;\r\n    $.state.elapsedTime = 0;\r\n   
+    $.state.dataLength = 0;\r\n    $.state.isUploading = false;\r\n})\r\n\r\n$.onUpdate((deltaTime)
     => {\r\n    if ($.getStateCompat(\"this\", \"exp_recordCustomData\", \"boolean\"))
     {\r\n        $.setStateCompat(\"this\", \"exp_recordCustomData\", false);\r\n       
     recordData();\r\n    }\r\n    if ($.getStateCompat(\"this\", \"exp_uploadCustomData\",
@@ -93,10 +94,11 @@ MonoBehaviour:
     token: token || \"\",\r\n            data: slicedData,\r\n            eID: expID
     || \"\",\r\n            pID: $.getPlayersNear($.getPosition().clone(), Infinity)[0].idfc
     || \"\" // TODO: retrieve idfc through cluster Player Script\r\n        };\r\n       
-    $.log(request);\r\n        $.callExternal(JSON.stringify(request), \"customDataUploaded\");\r\n       
-    $.state.uploadIndex = $.state.uploadIndex + 1;\r\n\r\n        if ($.state.uploadIndex
-    >= Math.ceil($.state.dataLength / dataLengthPerUpload)) {\r\n            $.state.uploadIndex
-    = 0;\r\n            $.state.isUploading = false;\r\n        }\r\n    }\r\n}\r\n\r\n$.onExternalCallEnd((res,
+    $.log(request);\r\n        $.callExternal(callExternalEndpointID, JSON.stringify(request),
+    \"customDataUploaded\");\r\n        $.state.uploadIndex = $.state.uploadIndex
+    + 1;\r\n\r\n        if ($.state.uploadIndex >= Math.ceil($.state.dataLength /
+    dataLengthPerUpload)) {\r\n            $.state.uploadIndex = 0;\r\n           
+    $.state.isUploading = false;\r\n        }\r\n    }\r\n}\r\n\r\n$.onExternalCallEnd((res,
     meta, err) =>\r\n{\r\n    if (res == null) {\r\n        $.log(\"callExternal
     ERROR: \" + err);\r\n        return;\r\n    }\r\n\r\n    if (meta === \"customDataUploaded\")
     {\r\n        $.log(\"Response after customDataUploaded called: \" + JSON.stringify(res));\r\n   
@@ -289,7 +291,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clusterScripts:
-  - {fileID: 5022602860645237092, guid: 72d5cae6319a90642a19559e532b6383, type: 3}
+  - {fileID: 5022602860645237092, guid: c22e594b3eff3364c8217424a55e9588, type: 3}
   - {fileID: 5022602860645237092, guid: 6d6042ff7a79fd24c942dcff94c71d21, type: 3}
   - {fileID: 5022602860645237092, guid: 0e30668acbd4ec042ba0b9b264c2453e, type: 3}
   playerScripts: []

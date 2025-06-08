@@ -66,21 +66,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "$.onStart(() => {\r\n  $.state.inRoomIdfcs = [];\r\n})\r\n\r\n$.onUpdate(()
-    => {\r\n    if ($.getStateCompat(\"this\", \"onJoined\", \"boolean\")) {\r\n       
-    $.setStateCompat(\"this\", \"onJoined\", false);\r\n        const newPlayers
-    = $.getPlayersNear($.getPosition(), Infinity)\r\n            .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));\r\n       
-    if (newPlayers.length > 0) {\r\n            for (const newPlayer of newPlayers)
-    {\r\n                $.state.inRoomIdfcs.push(newPlayer.idfc);\r\n               
-    $.setPlayerScript(newPlayer);\r\n            }\r\n        }\r\n    }\r\n/*\r\n 
-    if ($.getStateCompat(\"this\", \"exp_checkJoinEligibility\", \"boolean\")) {\r\n   
-    $.setStateCompat(\"this\", \"exp_checkJoinEligibility\", false);\r\n\r\n    const
-    newPlayers = $.getPlayersNear($.getPosition(), 1)\r\n      .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));\r\n   
-    \r\n    if (newPlayers.length > 0) {\r\n      $.state.newPlayers = newPlayers;\r\n     
-    $.log(newPlayers[0].idfc);\r\n\r\n      const request = {\r\n        type: \"checkJoinEligibility\",\r\n       
-    token: token || \"\",\r\n        eID: expID || \"\",\r\n        idfcs: newPlayers.map(p
-    => p.idfc).join(\"|\")\r\n      };\r\n      $.callExternal(JSON.stringify(request),
-    \"joinEligibilityChecked\");\r\n    }\r\n  }\r\n*/\r\n})\r\n\r\n/*\r\n$.onExternalCallEnd((res,
+  sourceCode: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
+    = \"callExternalEndpointID_example\";\n\r\n$.onStart(() => {\r\n  $.state.inRoomIdfcs
+    = [];\r\n})\r\n\r\n$.onUpdate(() => {\r\n    if ($.getStateCompat(\"this\", \"onJoined\",
+    \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"onJoined\", false);\r\n       
+    const newPlayers = $.getPlayersNear($.getPosition(), Infinity)\r\n           
+    .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));\r\n        if (newPlayers.length
+    > 0) {\r\n            for (const newPlayer of newPlayers) {\r\n               
+    $.state.inRoomIdfcs.push(newPlayer.idfc);\r\n                $.setPlayerScript(newPlayer);\r\n               
+    newPlayer.send(\"envInfoRequest\", true);\r\n            }\r\n        }\r\n   
+    }\r\n/*\r\n  if ($.getStateCompat(\"this\", \"exp_checkJoinEligibility\", \"boolean\"))
+    {\r\n    $.setStateCompat(\"this\", \"exp_checkJoinEligibility\", false);\r\n\r\n   
+    const newPlayers = $.getPlayersNear($.getPosition(), 1)\r\n      .filter(p =>
+    !$.state.inRoomIdfcs.includes(p.idfc));\r\n    \r\n    if (newPlayers.length
+    > 0) {\r\n      $.state.newPlayers = newPlayers;\r\n      $.log(newPlayers[0].idfc);\r\n\r\n     
+    const request = {\r\n        type: \"checkJoinEligibility\",\r\n        token:
+    token || \"\",\r\n        eID: expID || \"\",\r\n        idfcs: newPlayers.map(p
+    => p.idfc).join(\"|\")\r\n      };\r\n      $.callExternal(callExternalEndpointID,
+    JSON.stringify(request), \"joinEligibilityChecked\");\r\n    }\r\n  }\r\n*/\r\n})\r\n\r\n$.onReceive((messageType,
+    arg, sender) => {\r\n    switch (messageType) {\r\n        case \"envInfoResponse\":\r\n           
+    let request = {\r\n                type: \"uploadCustomData\",\r\n               
+    data: { envInfo: [ arg ] },\r\n                token: token || \"\",\r\n               
+    eID: expID || \"\",\r\n                pID: sender.idfc\r\n            };\r\n           
+    $.callExternal(callExternalEndpointID || \"\", JSON.stringify(request), \"customDataUploaded\");\r\n           
+    break;\r\n        default:\r\n            break;\r\n    }\r\n});\r\n\r\n/*\r\n$.onExternalCallEnd((res,
     meta, err) =>\r\n{\r\n  if (res == null) {\r\n    $.log(\"callExternal ERROR:
     \" + err);\r\n    return;\r\n  }\r\n\r\n  if (meta === \"joinEligibilityChecked\")
     {\r\n    const parsedRes = JSON.parse(res);\r\n    $.state.newPlayers.forEach(newPlayer
@@ -164,6 +173,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clusterScripts:
+  - {fileID: 5022602860645237092, guid: c22e594b3eff3364c8217424a55e9588, type: 3}
   - {fileID: 5022602860645237092, guid: 78eaf1d3a3a632e4babd6feceacedc38, type: 3}
   playerScripts: []
   clusterScriptMD5s: []
