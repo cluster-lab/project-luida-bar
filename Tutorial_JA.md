@@ -123,6 +123,7 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 4.  次に、clusterのアクセストークンを発行し、Unityプロジェクトに登録します。詳細な手順は以下の画像を参照してください。
     ![clusterアクセストークン登録手順](https://github.com/user-attachments/assets/c06f43c6-3412-4462-92a9-ac3576252e99)
 5.  続いて、clusterの外部通信機能用のURLを登録し、生成されたトークンを本実装テンプレートに登録します。手順は以下の画像を参照してください。
+    - 登録する外部通信機能用URL：https://luida-web-next.vercel.app/api/cluster  
     ![cluster外部通信URL登録手順](https://github.com/user-attachments/assets/f64e75df-93f2-4b1a-9b3a-36216405feb7)
 6.  `Window > Luida Editor` を開き、`Experiment Identifiers` セクション（またはタブ）に、先ほどウェブコンソールでコピーした実験IDを `Experiment ID` フィールドに入力します。
     ![Luida Editor 実験ID登録画面](https://github.com/user-attachments/assets/9d216be0-5c45-41f2-9129-f46546f940ae)
