@@ -7,6 +7,7 @@ public class ExpIdentifierEditor
 {
     private string expID = "";
     private string token = "";
+    private string callExternalEndpointID = "";
     private string filePath;
     private bool isSubscribed = false;
 
@@ -46,7 +47,8 @@ public class ExpIdentifierEditor
         GUILayout.Label("Experiment Identifiers", EditorStyles.boldLabel);
 
         expID = EditorGUILayout.TextField("Experiment ID", expID);
-        token = EditorGUILayout.TextField("Token", token);
+        token = EditorGUILayout.TextField("Verify Token", token);
+        callExternalEndpointID = EditorGUILayout.TextField("callExternal Endpoint ID", callExternalEndpointID);
 
         // if (GUILayout.Button("Save Identifiers"))
         // {
@@ -62,6 +64,7 @@ public class ExpIdentifierEditor
         // Use regular expressions to extract the expID and token from the file
         expID = ExtractValue(content, "expID");
         token = ExtractValue(content, "token");
+        callExternalEndpointID = ExtractValue(content, "callExternalEndpointID");
     }
 
     private string ExtractValue(string content, string key)
@@ -88,7 +91,7 @@ public class ExpIdentifierEditor
         }
 
         // Create the new content with the updated expID and token using double quotes
-        string content = $"expID = \"{expID}\";\ntoken = \"{token}\";\n";
+        string content = $"expID = \"{expID}\";\ntoken = \"{token}\";\ncallExternalEndpointID = \"{callExternalEndpointID}\";\n";
         File.WriteAllText(filePath, content);
 
         // Refresh the asset database to reflect changes in Unity

@@ -14,7 +14,7 @@ $.onUpdate((deltaTime) => {
         const questionnaireID = $.getStateCompat("this", "qID", "integer");
         if (questionnaireID > 0) {
             let request = { type: "questions", token: token || "", eID: expID || "", qID: questionnaireID, startIndex: 0 };
-            $.callExternal(JSON.stringify(request), "getQuestions");
+            $.callExternal(callExternalEndpointID, JSON.stringify(request), "getQuestions");
         } else {
             $.log("No questionnaire ID (qID) provided or it is invalid.");
         }
@@ -202,7 +202,7 @@ function submitAnswers() {
     if (conditionManager) {
         conditionManager.send("exp_questionnaire_answer", $.state.answers);
     }
-    $.callExternal(JSON.stringify(request), "postQuestionAnswers");
+    $.callExternal(callExternalEndpointID, JSON.stringify(request), "postQuestionAnswers");
     $.setStateCompat("this", "form_set_content_active", false);
     reset(false);
 }
@@ -261,7 +261,7 @@ $.onExternalCallEnd((res, meta, err) => {
             const questionnaireID = $.getStateCompat("this", "qID", "integer");
             if (questionnaireID !== -1) {
                 let request = { type: "questions", token: token || "", eID: expID || "", qID: questionnaireID, startIndex: $.state.questions.length };
-                $.callExternal(JSON.stringify(request), "getQuestions");
+                $.callExternal(callExternalEndpointID, JSON.stringify(request), "getQuestions");
             }
         }
     }

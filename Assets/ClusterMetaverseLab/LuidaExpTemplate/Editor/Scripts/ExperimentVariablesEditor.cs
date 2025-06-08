@@ -176,7 +176,7 @@ public class ExperimentVariablesEditor : EditorWindow
     {
         if (variablesAsset == null)
         {
-            EditorUtility.DisplayDialog("Error", "Please assign a JavaScriptAsset.", "OK");
+            // EditorUtility.DisplayDialog("Error", "Please assign a JavaScriptAsset.", "OK");
             return;
         }
 

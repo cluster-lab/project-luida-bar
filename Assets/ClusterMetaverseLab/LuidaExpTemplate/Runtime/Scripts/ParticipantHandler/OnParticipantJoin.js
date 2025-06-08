@@ -31,7 +31,7 @@ $.onUpdate(() => {
         eID: expID || "",
         idfcs: newPlayers.map(p => p.idfc).join("|")
       };
-      $.callExternal(JSON.stringify(request), "joinEligibilityChecked");
+      $.callExternal(callExternalEndpointID, JSON.stringify(request), "joinEligibilityChecked");
     }
   }
 */

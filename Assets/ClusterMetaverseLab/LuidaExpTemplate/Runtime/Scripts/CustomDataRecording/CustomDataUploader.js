@@ -60,7 +60,7 @@ function uploadDataStep() {
             pID: $.getPlayersNear($.getPosition().clone(), Infinity)[0].idfc || "" // TODO: retrieve idfc through cluster Player Script
         };
         $.log(request);
-        $.callExternal(JSON.stringify(request), "customDataUploaded");
+        $.callExternal(callExternalEndpointID, JSON.stringify(request), "customDataUploaded");
         $.state.uploadIndex = $.state.uploadIndex + 1;
 
         if ($.state.uploadIndex >= Math.ceil($.state.dataLength / dataLengthPerUpload)) {

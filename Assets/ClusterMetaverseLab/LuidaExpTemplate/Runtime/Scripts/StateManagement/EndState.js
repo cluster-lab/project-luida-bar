@@ -12,7 +12,7 @@ function OnStateEnter() {
     eID: expID || "",
     idfcs: $.getPlayersNear($.getPosition().clone(), Infinity).map(player => player.idfc),
   };
-  $.callExternal(JSON.stringify(request), "doneIdfcsPosted");
+  $.callExternal(callExternalEndpointID, JSON.stringify(request), "doneIdfcsPosted");
 }
 
 $.onExternalCallEnd((res, meta, err) =>
