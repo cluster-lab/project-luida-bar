@@ -1,5 +1,5 @@
 const uploadInterval = 1;
-const dataLengthPerUpload = 15;
+const dataLengthPerUpload = 100;
 
 $.onStart(() => {
     $.state.customData = {};
