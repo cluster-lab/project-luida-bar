@@ -1,5 +1,13 @@
 $.onStart(() => {
     reset();
+    
+    // TODO: set owner to the player by the assigned pID
+    
+    let owner = $.getOwner();
+    $.setVisiblePlayers([owner]);
+
+    $.worldItemReference("PrevButton").send("setOwner", owner);
+    $.worldItemReference("NextButton").send("setOwner", owner);
 });
 
 $.onUpdate((deltaTime) => {
@@ -58,7 +66,7 @@ function tryInitQuestion() {
 
 function initQuestion() {
     // Prepare to stop destruction of answer options and initialize a new question
-    $.sendSignalCompat("this", "form_stop_destroy_answer_option");
+    $.setStateCompat("owner", "form_destroy_answer_option", false);
     $.state.tryInitQuestion = false;
     $.state.answerOptionUIs = [];
     $.state.answerOptionLocalPositions = [];
@@ -153,7 +161,7 @@ function spawnNextAnswerOption() {
 
 function destroyAnswerOptionUIs() {
     // Send a signal to destroy the current answer option UI elements
-    $.sendSignalCompat("this", "form_destroy_answer_option");
+    $.setStateCompat("owner", "form_destroy_answer_option", true);
 }
 
 function handleFormAnswer(arg) {

@@ -1,6 +1,9 @@
 $.onStart(() => {
     $.state.answerValue = null;
     $.state.destroyable = false;
+    let owner = $.getOwner();
+    $.setVisiblePlayers([owner]);
+    $.setStateCompat("this", "show", true);
 })
 
 $.onUpdate(() => {
@@ -8,7 +11,7 @@ $.onUpdate(() => {
         $.setStateCompat("this", "form_try_answer", false);
         answer();
     }
-    if ($.state.destroyable && $.getStateCompat("global", "form_destroy_answer_option", "boolean")) {
+    if ($.state.destroyable && $.getStateCompat("owner", "form_destroy_answer_option", "boolean")) {
         $.sendSignalCompat("this", "form_destroy_answer_option");
         $.state.destroyable = false;
     }

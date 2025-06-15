@@ -439,9 +439,8 @@ GameObject:
   - component: {fileID: 6901064461653237453}
   - component: {fileID: 6281660993852899014}
   - component: {fileID: 2283742839625838976}
-  - component: {fileID: 2637395719500140389}
-  - component: {fileID: 1626385700766481977}
   - component: {fileID: 679173099575055621}
+  - component: {fileID: 8437594677551052287}
   m_Layer: 14
   m_Name: FormController
   m_TagString: Untagged
@@ -989,124 +988,6 @@ MonoBehaviour:
       type: 3}
     itemTemplateId:
       value: 11297569293038321797
---- !u!114 &2637395719500140389
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5697374075709122392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 0
-      key: form_destroy_answer_option
-    item: {fileID: 5697374075709122387}
-  logic:
-    statements:
-    - singleStatement:
-        targetState:
-          target: 2
-          key: form_destroy_answer_option
-          parameterType: 1
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 1
-              boolValue: 1
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 2
-              key: 
-              type: 6
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 0
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 2
-                  key: 
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
---- !u!114 &1626385700766481977
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5697374075709122392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 0
-      key: form_stop_destroy_answer_option
-    item: {fileID: 5697374075709122387}
-  logic:
-    statements:
-    - singleStatement:
-        targetState:
-          target: 2
-          key: form_destroy_answer_option
-          parameterType: 1
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 1
-              boolValue: 0
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 2
-              key: 
-              type: 6
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 0
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 2
-                  key: 
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
 --- !u!114 &679173099575055621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1125,6 +1006,23 @@ MonoBehaviour:
   playerScripts: []
   clusterScriptMD5s: []
   playerScriptMD5s: []
+--- !u!114 &8437594677551052287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5697374075709122392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49554f6eafb04d538a589436719e8fa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldItemReferences:
+  - id: PrevButton
+    item: {fileID: 5697374076976329125}
+  - id: NextButton
+    item: {fileID: 5697374075919056181}
 --- !u!1 &5697374075775875167
 GameObject:
   m_ObjectHideFlags: 0
@@ -1391,7 +1289,7 @@ GameObject:
   - component: {fileID: 5697374076674148511}
   - component: {fileID: 5697374076674148508}
   m_Layer: 0
-  m_Name: FormInitTrigger
+  m_Name: FormInitTrigger(deprecated?)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

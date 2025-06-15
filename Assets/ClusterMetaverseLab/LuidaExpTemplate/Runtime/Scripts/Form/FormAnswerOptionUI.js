@@ -5,6 +5,9 @@
 $.onStart(() => {
     $.state.answerValue = null;
     $.state.destroyable = false;
+    let owner = $.getOwner();
+    $.setVisiblePlayers([owner]);
+    $.setStateCompat("this", "show", true);
 })
 
 $.onUpdate(() => {
