@@ -2,6 +2,7 @@ $.onStart(() => {
   $.groupState.isParticipantsEnough = false;
   $.groupState.sessionID = Date.now() + "_" +  (Math.random() + 1).toString(36).substring(7);
   $.groupState.participants = []; // array of PlayerHandle who are currently in the experiment
+  $.state.participantsEnvInfo = [];
 })
 
 $.onUpdate(() => {
@@ -13,7 +14,7 @@ $.onUpdate(() => {
         if (newPlayers.length > 0) {
             for (const newPlayer of newPlayers) {
                 // TODO: Check if the player is eligible to join the experiment before adding them to $.groupState.participants.
-                $.groupState.participants.push(newPlayer);
+                $.groupState.participants = [ ...$.groupState.participants, newPlayer ];
                 $.setPlayerScript(newPlayer);
                 newPlayer.send("envInfoRequest", true);
             }
@@ -49,15 +50,24 @@ $.onUpdate(() => {
 $.onReceive((messageType, arg, sender) => {
     switch (messageType) {
         case "envInfoResponse":
-            let request = {
-                type: "uploadCustomData",
-                data: { envInfo: [ arg ] },
-                token: token || "",
-                eID: expID || "",
-                pID: sender.idfc,
-                sessionID: $.groupState.sessionID
-            };
-            $.callExternal(callExternalEndpointID || "", JSON.stringify(request), "customDataUploaded");
+            $.state.participantsEnvInfo = [
+              ...$.state.participantsEnvInfo,
+              {
+                idfc: sender.idfc,
+                envInfo: arg
+              }
+            ]
+            if ($.state.participantsEnvInfo.length >= pNum) {
+              let request = {
+                  type: "uploadCustomData",
+                  data: { envInfo: $.state.participantsEnvInfo },
+                  token: token || "",
+                  eID: expID || "",
+                  pID: "", // sender.idfc,
+                  sessionID: $.groupState.sessionID
+              };
+              $.callExternal(callExternalEndpointID || "", JSON.stringify(request), "customDataUploaded");
+            }
             break;
         default:
             break;
@@ -93,7 +103,7 @@ $.onExternalCallEnd((res, meta, err) =>
         // TODO: Show message about that this player is not eligible to join this experiment, and teleport the player back to LUIDA bar world.
       } else {
         newPlayer.setMoveSpeedRate(1);
-        $.groupState.participants.push(newPlayer);
+        $.groupState.participants = [ ...$.groupState.participants, newPlayer ];
         // TODO: Instead of enabling move, teleport the player from the checking area to the task area.
       }
     });

@@ -624,7 +624,9 @@ PrefabInstance:
         \"integer\") &&\n      $.getStateCompat(\"global\", \"exp_trialID\", \"integer\")
         >= 0\n  ) {\n    $.state.trialID = $.getStateCompat(\"global\", \"exp_trialID\",
         \"integer\");\n    updateCondition();\n  }\n});\n\n$.onReceive((messageType,
-        arg, sender) => {\n  switch (messageType) {\n    // case \"exp_questionnaire_answer\":\n   
+        arg, sender) => {\n  switch (messageType) {\n    case \"luida_participants_info\":\n     
+        $.groupState.participants = arg.participants;\n      $.groupState.sessionID
+        = arg.sessionID;\n      break;\n    // case \"exp_questionnaire_answer\":\n   
         //     $.state.betweenSubjectsConditions = GetBetweenSubjectsCondition(arg);\n   
         //     break;\n    default:\n      break;\n  }\n});\n\nfunction updateCondition()
         {\n  if ($.state.trialID >= $.state.trialCount) {\n    $.sendSignalCompat(\"this\",
@@ -684,8 +686,9 @@ PrefabInstance:
     - target: {fileID: 2966719835339860266, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\nconst uploadInterval
-        = 1;\nconst dataLengthPerUpload = 15;\n\n$.onStart(() => {\n    $.state.customData
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
+        = \"callExternalEndpointID_example\";\npNum = 1;\n\r\nconst uploadInterval
+        = 1;\nconst dataLengthPerUpload = 100;\n\n$.onStart(() => {\n    $.state.customData
         = {};\n    $.state.uploadIndex = 0;\n    $.state.elapsedTime = 0;\n    $.state.dataLength
         = 0;\n    $.state.isUploading = false;\n})\n\n$.onUpdate((deltaTime) => {\n   
         if ($.getStateCompat(\"this\", \"exp_recordCustomData\", \"boolean\")) {\n       
@@ -708,12 +711,14 @@ PrefabInstance:
         * dataLengthPerUpload, ($.state.uploadIndex + 1) * dataLengthPerUpload)\n           
         ])\n        );\n        let request = {\n            type: \"uploadCustomData\",\n           
         token: token || \"\",\n            data: slicedData,\n            eID: expID
-        || \"\",\n            pID: $.getPlayersNear($.getPosition().clone(), Infinity)[0].idfc
-        || \"\" // TODO: retrieve idfc through cluster Player Script\n        };\n       
-        $.log(request);\n        $.callExternal(JSON.stringify(request), \"customDataUploaded\");\n       
-        $.state.uploadIndex = $.state.uploadIndex + 1;\n\n        if ($.state.uploadIndex
-        >= Math.ceil($.state.dataLength / dataLengthPerUpload)) {\n            $.state.uploadIndex
-        = 0;\n            $.state.isUploading = false;\n        }\n    }\n}\n\n$.onExternalCallEnd((res,
+        || \"\",\n            sessionID: $.groupState.sessionID || \"\",\n           
+        pID: \"\" // $.groupState.participants\n            // pID: $.getPlayersNear($.getPosition().clone(),
+        Infinity)[0].idfc || \"\" // TODO: retrieve idfc through cluster Player Script\n       
+        };\n        $.log(request);\n        $.callExternal(callExternalEndpointID,
+        JSON.stringify(request), \"customDataUploaded\");\n        $.state.uploadIndex
+        = $.state.uploadIndex + 1;\n\n        if ($.state.uploadIndex >= Math.ceil($.state.dataLength
+        / dataLengthPerUpload)) {\n            $.state.uploadIndex = 0;\n           
+        $.state.isUploading = false;\n        }\n    }\n}\n\n$.onExternalCallEnd((res,
         meta, err) =>\n{\n    if (res == null) {\n        $.log(\"callExternal ERROR:
         \" + err);\n        return;\n    }\n\n    if (meta === \"customDataUploaded\")
         {\n        $.log(\"Response after customDataUploaded called: \" + JSON.stringify(res));\n   
