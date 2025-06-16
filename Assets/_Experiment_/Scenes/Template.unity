@@ -217,12 +217,6 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!4 &59568358 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
-    type: 3}
-  m_PrefabInstance: {fileID: 6096864659607230834}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &420922766
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -373,7 +367,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 59568358}
+  - {fileID: 1154936611}
   m_Father: {fileID: 1752504905}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -537,6 +531,69 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 10, y: 0.1, z: 10}
   m_Center: {x: 0, y: -0.05, z: 0}
+--- !u!1001 &1154936610
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 814595608}
+    m_Modifications:
+    - target: {fileID: 1331264762693232, guid: 8aad3465d2c6df7418cbced5b4ac4a81, type: 3}
+      propertyPath: m_Name
+      value: SpawnPointEntrance
+      objectReference: {fileID: 0}
+    - target: {fileID: 4677043343313530, guid: 8aad3465d2c6df7418cbced5b4ac4a81, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4677043343313530, guid: 8aad3465d2c6df7418cbced5b4ac4a81, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4677043343313530, guid: 8aad3465d2c6df7418cbced5b4ac4a81, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4677043343313530, guid: 8aad3465d2c6df7418cbced5b4ac4a81, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4677043343313530, guid: 8aad3465d2c6df7418cbced5b4ac4a81, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4677043343313530, guid: 8aad3465d2c6df7418cbced5b4ac4a81, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4677043343313530, guid: 8aad3465d2c6df7418cbced5b4ac4a81, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4677043343313530, guid: 8aad3465d2c6df7418cbced5b4ac4a81, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4677043343313530, guid: 8aad3465d2c6df7418cbced5b4ac4a81, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4677043343313530, guid: 8aad3465d2c6df7418cbced5b4ac4a81, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4677043343313530, guid: 8aad3465d2c6df7418cbced5b4ac4a81, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8aad3465d2c6df7418cbced5b4ac4a81, type: 3}
+--- !u!4 &1154936611 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4677043343313530, guid: 8aad3465d2c6df7418cbced5b4ac4a81,
+    type: 3}
+  m_PrefabInstance: {fileID: 1154936610}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1206647647
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1181,105 +1238,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2134110112}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &6096864659607230834
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 814595608}
-    m_Modifications:
-    - target: {fileID: 600138419, guid: bebbd8fabd7b322468f1d18e8b32081c, type: 3}
-      propertyPath: sourceCode
-      value: "$.onStart(() => {\n  $.state.inRoomIdfcs = [];\n})\n\n$.onUpdate(()
-        => {\n    if ($.getStateCompat(\"this\", \"onJoined\", \"boolean\")) {\n       
-        $.setStateCompat(\"this\", \"onJoined\", false);\n        const newPlayers
-        = $.getPlayersNear($.getPosition(), Infinity)\n            .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));\n       
-        if (newPlayers.length > 0) {\n            for (const newPlayer of newPlayers)
-        {\n                $.state.inRoomIdfcs.push(newPlayer.idfc);\n               
-        $.setPlayerScript(newPlayer);\n            }\n        }\n    }\n/*\n  if
-        ($.getStateCompat(\"this\", \"exp_checkJoinEligibility\", \"boolean\")) {\n   
-        $.setStateCompat(\"this\", \"exp_checkJoinEligibility\", false);\n\n    const
-        newPlayers = $.getPlayersNear($.getPosition(), 1)\n      .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));\n   
-        \n    if (newPlayers.length > 0) {\n      $.state.newPlayers = newPlayers;\n     
-        $.log(newPlayers[0].idfc);\n\n      const request = {\n        type: \"checkJoinEligibility\",\n       
-        token: token || \"\",\n        eID: expID || \"\",\n        idfcs: newPlayers.map(p
-        => p.idfc).join(\"|\")\n      };\n      $.callExternal(JSON.stringify(request),
-        \"joinEligibilityChecked\");\n    }\n  }\n*/\n})\n\n/*\n$.onExternalCallEnd((res,
-        meta, err) =>\n{\n  if (res == null) {\n    $.log(\"callExternal ERROR: \"
-        + err);\n    return;\n  }\n\n  if (meta === \"joinEligibilityChecked\") {\n   
-        const parsedRes = JSON.parse(res);\n    $.state.newPlayers.forEach(newPlayer
-        => {\n      if (parsedRes.ineligibleIdfcs.includes(newPlayer.idfc)) {\n       
-        // TODO: Show message about that this player is not eligible to join this
-        experiment, and teleport the player back to LUIDA bar world.\n      } else
-        {\n        newPlayer.setMoveSpeedRate(1);\n        $.state.inRoomIdfcs =
-        [ ...$.state.inRoomIdfcs, newPlayer.idfc ];\n        // TODO: Instead of
-        enabling move, teleport the player from the checking area to the task area.\n     
-        }\n    });\n    \n    $.state.newPlayers = [];\n    $.log(\"Only users who
-        have not joined this experiment before are allowed to proceed to the experiment.\");\n 
-        }\n});\n*/\n"
-      objectReference: {fileID: 0}
-    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6092516688112821229, guid: bebbd8fabd7b322468f1d18e8b32081c,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6095851746729471975, guid: bebbd8fabd7b322468f1d18e8b32081c,
-        type: 3}
-      propertyPath: m_Name
-      value: SpawnPointEntrance
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: bebbd8fabd7b322468f1d18e8b32081c, type: 3}
 --- !u!1001 &7533049804749356258
 PrefabInstance:
   m_ObjectHideFlags: 0
