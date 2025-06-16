@@ -14,6 +14,7 @@ public static class ItemsManagerAssetUtil
     private const string ScriptFolderFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
     private const string ScriptTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/StateManagement/StateListeningItemTemplate.js";
     private const string RequiredObjectsWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
+    private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
     private const string defaultOtherImplementation = @"// function Start() { }
 // function Update(deltaTime) { }
 // $.onCollide((collision) => { });
@@ -371,27 +372,25 @@ public static class ItemsManagerAssetUtil
         if (item == null) return;
         var itemGroupMember = item.GetComponent<ItemGroupMember>();
         if (itemGroupMember == null) return;
-        
-        ItemGroupHost host = FindItemGroupHostInScene();
-        if (host != null)
-        {
-            SerializedObject serializedItemGroupMember = new SerializedObject(itemGroupMember);
-            serializedItemGroupMember.FindProperty("host").objectReferenceValue = host;
-            serializedItemGroupMember.ApplyModifiedProperties();
-        }
-    }
 
-    private static ItemGroupHost FindItemGroupHostInScene()
-    {
         foreach (GameObject obj in SceneManager.GetActiveScene().GetRootGameObjects())
         {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == RequiredObjectsWrapperPrefabPath)
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) != RequiredObjectsWrapperPrefabPath) continue;
+            for (int i = 0; i < obj.transform.childCount; i++)
             {
-                ItemGroupHost host = obj.GetComponentInChildren<ItemGroupHost>(true);
-                if (host != null) return host;
+                Transform child = obj.transform.GetChild(i);
+                if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == ConditionManagerPrefabPath)
+                {
+                    ItemGroupHost host = child.GetComponent<ItemGroupHost>();
+                    if (host != null)
+                    {
+                        SerializedObject serializedItemGroupMember = new SerializedObject(itemGroupMember);
+                        serializedItemGroupMember.FindProperty("host").objectReferenceValue = host;
+                        serializedItemGroupMember.ApplyModifiedProperties();
+                    }
+                }
             }
         }
-        return UnityEngine.Object.FindObjectsOfType<ItemGroupHost>(true).FirstOrDefault();
     }
 
     #endregion

@@ -1,0 +1,223 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7807161544533224870
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 100295540188533776}
+  - component: {fileID: 1465207387068133349}
+  - component: {fileID: 3933797981565559285}
+  - component: {fileID: 2089283526597471262}
+  - component: {fileID: 2539487737753158382}
+  - component: {fileID: 1358033485673396458}
+  - component: {fileID: 5829355734938689256}
+  - component: {fileID: 8265952441852706706}
+  m_Layer: 0
+  m_Name: ParticipantManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &100295540188533776
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7807161544533224870}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1465207387068133349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7807161544533224870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id:
+    value: 0
+  itemName: 
+  size: {x: 0, y: 0, z: 0}
+--- !u!114 &3933797981565559285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7807161544533224870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61061896c654489a41575fc291bf4a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourceCodeAsset: {fileID: 0}
+  sourceCode: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
+    = \"callExternalEndpointID_example\";\npNum = 1;\n\r\n$.onStart(() => {\n  $.groupState.isParticipantsEnough
+    = false;\n  $.groupState.participants = []; // array of PlayerHandle who are
+    currently in the experiment\n  $.state.pIDFCs = []; // array of player idfcs
+    who are currently in the experiment\n})\n\n$.onUpdate(() => {\n    if ($.getStateCompat(\"this\",
+    \"onJoined\", \"boolean\")) {\n        $.setStateCompat(\"this\", \"onJoined\",
+    false);\n        const newPlayers = $.getPlayersNear($.getPosition(), Infinity)\n           
+    .filter(p => !$.state.pIDFCs.includes(p.idfc));\n        if (newPlayers.length
+    > 0) {\n            for (const newPlayer of newPlayers) {\n                //
+    TODO: Check if the player is eligible to join the experiment before adding them
+    to pIDFCs & participants.\n                $.state.pIDFCs.push(newPlayer.idfc);\n               
+    $.groupState.participants.push(newPlayer);\n                $.setPlayerScript(newPlayer);\n               
+    newPlayer.send(\"envInfoRequest\", true);\n            }\n        }\n       
+    if (!$.groupState.isParticipantsEnough && $.state.pIDFCs.length >= pNum) {\n           
+    $.groupState.isParticipantsEnough = true;\n            $.log(\"Participants are
+    enough to start the experiment.\");\n        }\n    }\n/*\n  if ($.getStateCompat(\"this\",
+    \"exp_checkJoinEligibility\", \"boolean\")) {\n    $.setStateCompat(\"this\",
+    \"exp_checkJoinEligibility\", false);\n\n    const newPlayers = $.getPlayersNear($.getPosition(),
+    1)\n      .filter(p => !$.state.pIDFCs.includes(p.idfc));\n    \n    if (newPlayers.length
+    > 0) {\n      $.state.newPlayers = newPlayers;\n      $.log(newPlayers[0].idfc);\n\n     
+    const request = {\n        type: \"checkJoinEligibility\",\n        token: token
+    || \"\",\n        eID: expID || \"\",\n        idfcs: newPlayers.map(p => p.idfc).join(\"|\")\n     
+    };\n      $.callExternal(callExternalEndpointID, JSON.stringify(request), \"joinEligibilityChecked\");\n   
+    }\n  }\n*/\n})\n\n$.onReceive((messageType, arg, sender) => {\n    switch (messageType)
+    {\n        case \"envInfoResponse\":\n            let request = {\n               
+    type: \"uploadCustomData\",\n                data: { envInfo: [ arg ] },\n               
+    token: token || \"\",\n                eID: expID || \"\",\n                pID:
+    sender.idfc\n            };\n            $.callExternal(callExternalEndpointID
+    || \"\", JSON.stringify(request), \"customDataUploaded\");\n            break;\n       
+    default:\n            break;\n    }\n});\n\n/*\n$.onExternalCallEnd((res, meta,
+    err) =>\n{\n  if (res == null) {\n    $.log(\"callExternal ERROR: \" + err);\n   
+    return;\n  }\n\n  if (meta === \"joinEligibilityChecked\") {\n    const parsedRes
+    = JSON.parse(res);\n    $.state.newPlayers.forEach(newPlayer => {\n      if (parsedRes.ineligibleIdfcs.includes(newPlayer.idfc))
+    {\n        // TODO: Show message about that this player is not eligible to join
+    this experiment, and teleport the player back to LUIDA bar world.\n      } else
+    {\n        newPlayer.setMoveSpeedRate(1);\n        $.state.pIDFCs = [ ...$.state.pIDFCs,
+    newPlayer.idfc ];\n        // TODO: Instead of enabling move, teleport the player
+    from the checking area to the task area.\n      }\n    });\n    \n    $.state.newPlayers
+    = [];\n    $.log(\"Only users who have not joined this experiment before are
+    allowed to proceed to the experiment.\");\n  }\n});\n*/\n"
+--- !u!114 &2089283526597471262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7807161544533224870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acb59730322447a7a13c40b87493e196, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourceCodeAsset: {fileID: 0}
+  sourceCode: "const haptics = _.hapticsHandle;\n\n_.onReceive((id, body, sender)
+    => {\n    switch (id) {\n        case \"haptics\":\n            if (haptics.isAvailable())
+    {\n                const effect = new HapticsEffect();\n                effect.frequency
+    = body.frequency;\n                effect.amplitude = body.amplitude;\n               
+    effect.duration = body.duration;\n                haptics.playEffect(effect,
+    body.target);\n            }\n            break;\n        case \"envInfoRequest\":\n           
+    _.sendTo(sender, \"envInfoResponse\", {\n                isAndroid: _.isAndroid,\n               
+    isDesktop: _.isDesktop,\n                isIos: _.isIos,\n                isMacOs:
+    _.isMacOs,\n                isMobile: _.isMobile,\n                isVr: _.isVr,\n               
+    isWindows: _.isWindows\n            });\n            break;\n        default:\n           
+    break;\n    }\n});\n"
+--- !u!114 &2539487737753158382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7807161544533224870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82b6c242e0a44f03b7bb271069f089e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggers:
+  - target: 1
+    specifiedTargetItem: {fileID: 1465207387068133349}
+    key: exp_checkJoinEligibility
+    type: 1
+    value:
+      boolValue: 1
+      floatValue: 0
+      integerValue: 0
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+  - target: 1
+    specifiedTargetItem: {fileID: 1465207387068133349}
+    key: onJoined
+    type: 1
+    value:
+      boolValue: 1
+      floatValue: 1
+      integerValue: 0
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+  - target: 2
+    specifiedTargetItem: {fileID: 0}
+    key: exp_participantMoveSpeed
+    type: 2
+    value:
+      boolValue: 0
+      floatValue: 1
+      integerValue: 0
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+--- !u!114 &1358033485673396458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7807161544533224870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef324b4228e9496bbce596eda9f877af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key:
+    target: 1
+    key: exp_participantMoveSpeed
+    item: {fileID: 0}
+--- !u!114 &5829355734938689256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7807161544533224870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77cbf20d08afa0146b1af698e23ed3ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clusterScripts:
+  - {fileID: 5022602860645237092, guid: c22e594b3eff3364c8217424a55e9588, type: 3}
+  - {fileID: 5022602860645237092, guid: 78eaf1d3a3a632e4babd6feceacedc38, type: 3}
+  playerScripts:
+  - {fileID: 5022602860645237092, guid: 82685120614308444add0dc2b678572e, type: 3}
+  clusterScriptMD5s: []
+  playerScriptMD5s: []
+--- !u!114 &8265952441852706706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7807161544533224870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6487efbf7339493cb3e1fa581f53b763, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

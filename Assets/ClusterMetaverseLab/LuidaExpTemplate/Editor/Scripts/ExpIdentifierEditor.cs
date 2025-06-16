@@ -8,6 +8,7 @@ public class ExpIdentifierEditor
     private string expID = "";
     private string token = "";
     private string callExternalEndpointID = "";
+    private int pNum = 1;
     private string filePath;
     private bool isSubscribed = false;
 
@@ -49,6 +50,7 @@ public class ExpIdentifierEditor
         expID = EditorGUILayout.TextField("Experiment ID", expID);
         token = EditorGUILayout.TextField("Verify Token", token);
         callExternalEndpointID = EditorGUILayout.TextField("callExternal Endpoint ID", callExternalEndpointID);
+        pNum = EditorGUILayout.IntField("Number of Participants", pNum);
 
         // if (GUILayout.Button("Save Identifiers"))
         // {
@@ -58,28 +60,26 @@ public class ExpIdentifierEditor
 
     private void LoadExpIdentifiers()
     {
-        // Read the content of the file
         string content = File.ReadAllText(filePath);
 
-        // Use regular expressions to extract the expID and token from the file
-        expID = ExtractValue(content, "expID");
-        token = ExtractValue(content, "token");
-        callExternalEndpointID = ExtractValue(content, "callExternalEndpointID");
+        expID = ExtractStringValue(content, "expID");
+        token = ExtractStringValue(content, "token");
+        callExternalEndpointID = ExtractStringValue(content, "callExternalEndpointID");
+        pNum = ExtractIntValue(content, "pNum");
     }
 
-    private string ExtractValue(string content, string key)
+    private string ExtractStringValue(string content, string key)
     {
-        // Use regular expressions to find the key-value pair with double quotes
-        string pattern = $@"{key}\s*=\s*""([^""]+)""";
-        Match match = Regex.Match(content, pattern);
+        var pattern = $@"{key}\s*=\s*""([^""]+)"";";
+        var match = Regex.Match(content, pattern);
+        return match.Success ? match.Groups[1].Value : "";
+    }
 
-        // Return the captured value if the match is successful, otherwise return an empty string
-        if (match.Success)
-        {
-            return match.Groups[1].Value;
-        }
-
-        return "";
+    private int ExtractIntValue(string content, string key)
+    {
+        var pattern = $@"{key}\s*=\s*(\d+);";
+        var match = Regex.Match(content, pattern);
+        return match.Success ? int.Parse(match.Groups[1].Value) : 0;
     }
 
     private void SaveExpIdentifiers()
@@ -91,7 +91,12 @@ public class ExpIdentifierEditor
         }
 
         // Create the new content with the updated expID and token using double quotes
-        string content = $"expID = \"{expID}\";\ntoken = \"{token}\";\ncallExternalEndpointID = \"{callExternalEndpointID}\";\n";
+        string content =
+            $"expID = \"{expID}\";\n" +
+            $"token = \"{token}\";\n" +
+            $"callExternalEndpointID = \"{callExternalEndpointID}\";\n" +
+            $"pNum = {pNum};\n";
+
         File.WriteAllText(filePath, content);
 
         // Refresh the asset database to reflect changes in Unity

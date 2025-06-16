@@ -17,6 +17,7 @@ public class StateListEditor : EditorWindow
     private string statePrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/State.prefab";
     private string trialRestStatePrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/Trial - Rest State.prefab";
     private const string RequiredObjectsWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
+    private const string ParticipantManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ParticipantManager.prefab";
     private const string stateListTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/StateList/Template.asset";
     private const string stateManagementScriptFolderPathFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
     private const string stateListeningItemPrefabPath = "Assets/ClusterVR.CreatorKit.Item.Implements.StateListeningItem"; //Fixed this Path
@@ -586,40 +587,6 @@ public class StateListEditor : EditorWindow
         }
     }
 
-    private Transform FindChildByStateID(Transform parent, int stateID)
-    {
-        foreach (Transform child in parent)
-        {
-            GameObject transition = child.Find("Transition")?.gameObject;
-            if (transition != null)
-            {
-                var itemLogic = transition.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
-                if (itemLogic != null)
-                {
-                    SerializedObject serializedComp = new SerializedObject(itemLogic);
-                    SerializedProperty statementsProp = serializedComp.FindProperty("logic.statements");
-                    if (statementsProp != null && statementsProp.isArray)
-                    {
-                        for (int i = 0; i < statementsProp.arraySize; i++)
-                        {
-                            SerializedProperty statement = statementsProp.GetArrayElementAtIndex(i);
-                            SerializedProperty targetKey = statement.FindPropertyRelative("singleStatement.targetState.key");
-                            if (targetKey != null && targetKey.stringValue == "state_id")
-                            {
-                                SerializedProperty valueProp = statement.FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
-                                if (valueProp != null && valueProp.intValue == stateID)
-                                {
-                                    return child;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
     private void UpdateTransitionCurrentStateId(GameObject transition, int stateId)
     {
         Component stateIdSettingComp = transition.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
@@ -959,89 +926,76 @@ public class StateListEditor : EditorWindow
     private void AddOrEnableQuestionnaireForm(int stateId, string stateNameInAsset)
     {
         GameObject stateObjectInScene = FindStateObject(stateNameInAsset);
-        if (stateObjectInScene != null)
-        {
-            Transform objectsContainer = stateObjectInScene.transform.Find("Objects");
-            if (objectsContainer == null)
-            {
-                GameObject newObjectsContainer = new GameObject("Objects");
-                newObjectsContainer.transform.SetParent(stateObjectInScene.transform, false);
-                objectsContainer = newObjectsContainer.transform;
-            }
-
-            GameObject existingInstance = objectsContainer.Cast<Transform>()
-                .FirstOrDefault(child => PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == formPrefabPath)?.gameObject;
-
-            // Get the qID value from the State scriptable object asset
-            int qIDToSet = 0;
-            if (stateId >= 0 && stateId < stateList.States.Length)
-            {
-                qIDToSet = stateList.States[stateId].qID > 0 ? stateList.States[stateId].qID : 0;
-            }
-
-            if (existingInstance != null)
-            {
-                if (!existingInstance.activeSelf)
-                {
-                    existingInstance.SetActive(true);
-                }
-                GameObject formController = existingInstance.transform.Find("FormController")?.gameObject;
-                UpdateQID(formController, qIDToSet);
-                // If the script needs to be re-applied or ensured on existing instances:
-                if (formController != null)
-                {
-                    var identifiersAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(identifiersAssetPath);
-                    if (identifiersAsset != null)
-                    {
-                        ScriptableClusterScriptCombiner combiner = formController.GetComponent<ScriptableClusterScriptCombiner>();
-                        if (combiner != null)
-                        {
-                            combiner.ReplaceScript(identifiersAsset, 0, null, 0, true);
-                            EditorUtility.SetDirty(combiner);
-                        }
-                    }
-                }
-                Debug.Log($"Questionnaire in {stateNameInAsset} ensured active with qID {qIDToSet}");
-            }
-            else
-            {
-                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(formPrefabPath);
-                if (prefab != null)
-                {
-                    GameObject newFormInstance = (GameObject)PrefabUtility.InstantiatePrefab(prefab, objectsContainer);
-                    newFormInstance.name = prefab.name;
-                    GameObject formController = newFormInstance.transform.Find("FormController")?.gameObject;
-                    if (formController != null)
-                    {
-                        var identifiersAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(identifiersAssetPath);
-                        if (identifiersAsset != null)
-                        {
-                            ScriptableClusterScriptCombiner combiner = formController.GetComponent<ScriptableClusterScriptCombiner>();
-                            if (combiner != null)
-                            {
-                                combiner.ReplaceScript(identifiersAsset, 0, null, 0, true);
-                                EditorUtility.SetDirty(combiner);
-                            }
-                            else
-                            {
-                                Debug.LogWarning($"ScriptableClusterScriptCombiner not found on FormController of {newFormInstance.name}");
-                            }
-                        }
-                        else
-                        {
-                            Debug.LogWarning($"Identifiers asset not found at {identifiersAssetPath}");
-                        }
-
-                        UpdateQID(formController, qIDToSet);
-                        CopyWorldItemReferenceListToFormController(formController);
-                        Debug.Log($"Questionnaire added to {stateNameInAsset} with qID {qIDToSet}");
-                    }
-                }
-            }
-        }
-        else
+        if (stateObjectInScene == null)
         {
             Debug.LogWarning($"State GameObject '{stateNameInAsset}' not found in scene. Cannot add questionnaire.");
+            return;
+        }
+
+        // Ensure the objects container exists
+        Transform objectsContainer = stateObjectInScene.transform.Find("Objects");
+        if (objectsContainer == null)
+        {
+            GameObject go = new GameObject("Objects");
+            go.transform.SetParent(stateObjectInScene.transform, false);
+            objectsContainer = go.transform;
+        }
+
+        // Remove any existing questionnaire objects
+        for (int i = objectsContainer.childCount - 1; i >= 0; i--)
+        {
+            var child = objectsContainer.GetChild(i).gameObject;
+            string path = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child);
+            if (path == formPrefabPath)
+            {
+                Undo.DestroyObjectImmediate(child);
+            }
+        }
+
+        // Get the qID value from the State scriptable object asset
+        int qIDToSet = 0;
+        if (stateId >= 0 && stateId < stateList.States.Length)
+        {
+            qIDToSet = stateList.States[stateId].qID > 0 ? stateList.States[stateId].qID : 0;
+        }
+
+        int pNum = GetPNum(); // Get participant number from identifiers asset
+        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(formPrefabPath);
+        if (prefab == null) return;
+        for (int i = 1; i <= pNum; i++)
+        {
+            GameObject newFormInstance = (GameObject)PrefabUtility.InstantiatePrefab(prefab, objectsContainer);
+            newFormInstance.name = $"{prefab.name}_p{i}";
+            GameObject formController = newFormInstance.transform.Find("FormController")?.gameObject;
+
+            if (formController != null)
+            {
+                EnableAccessToParticipantManager(formController);
+                
+                var identifiersAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(identifiersAssetPath);
+                if (identifiersAsset != null)
+                {
+                    ScriptableClusterScriptCombiner combiner = formController.GetComponent<ScriptableClusterScriptCombiner>();
+                    if (combiner != null)
+                    {
+                        combiner.ReplaceScript(identifiersAsset, 0, null, 0, true);
+                        EditorUtility.SetDirty(combiner);
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"ScriptableClusterScriptCombiner not found on FormController of {newFormInstance.name}");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"Identifiers asset not found at {identifiersAssetPath}");
+                }
+
+                UpdateID(formController, "qID", qIDToSet);
+                UpdateID(formController, "pID", i);
+                CopyWorldItemReferenceListToFormController(formController);
+                Debug.Log($"Questionnaire added to {stateNameInAsset} with qID {qIDToSet} and pID {i}");
+            }
         }
     }
 
@@ -1059,32 +1013,8 @@ public class StateListEditor : EditorWindow
         return null;
     }
 
-    private int GetCurrentQID(GameObject formController)
-    {
-        if (formController == null) return -1;
-        var itemLogic = formController.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
-        if (itemLogic != null)
-        {
-            SerializedObject serializedComp = new SerializedObject(itemLogic);
-            SerializedProperty statementsProp = serializedComp.FindProperty("logic.statements");
-            if (statementsProp != null && statementsProp.isArray)
-            {
-                for (int i = 0; i < statementsProp.arraySize; i++)
-                {
-                    SerializedProperty targetKey = statementsProp.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
-                    if (targetKey != null && targetKey.stringValue == "qID")
-                    {
-                        SerializedProperty qIdValueProp = statementsProp.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
-                        if (qIdValueProp != null)
-                            return qIdValueProp.intValue;
-                    }
-                }
-            }
-        }
-        return -1;
-    }
-
-    private void UpdateQID(GameObject formController, int qID)
+    // idLabel: "qID" or "pID"
+    private void UpdateID(GameObject formController, string idLabel, int id)
     {
         if (formController == null) return;
         var itemLogic = formController.GetComponent<ClusterVR.CreatorKit.Operation.Implements.ItemLogic>();
@@ -1092,28 +1022,28 @@ public class StateListEditor : EditorWindow
         {
             SerializedObject serializedComp = new SerializedObject(itemLogic);
             SerializedProperty statementsProp = serializedComp.FindProperty("logic.statements");
-            bool qIdUpdated = false;
+            bool idUpdated = false;
             if (statementsProp != null && statementsProp.isArray)
             {
                 for (int i = 0; i < statementsProp.arraySize; i++)
                 {
                     SerializedProperty targetKey = statementsProp.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.targetState.key");
-                    if (targetKey != null && targetKey.stringValue == "qID")
+                    if (targetKey != null && targetKey.stringValue == idLabel)
                     {
-                        SerializedProperty qIdValueProp = statementsProp.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
-                        if (qIdValueProp != null)
+                        SerializedProperty idValueProp = statementsProp.GetArrayElementAtIndex(i).FindPropertyRelative("singleStatement.expression.value.constant.integerValue");
+                        if (idValueProp != null)
                         {
-                            if (qIdValueProp.intValue != qID)
+                            if (idValueProp.intValue != id)
                             {
-                                qIdValueProp.intValue = qID;
-                                qIdUpdated = true;
+                                idValueProp.intValue = id;
+                                idUpdated = true;
                             }
                             break;
                         }
                     }
                 }
             }
-            if (qIdUpdated)
+            if (idUpdated)
             {
                 serializedComp.ApplyModifiedProperties();
             }
@@ -1157,7 +1087,7 @@ public class StateListEditor : EditorWindow
                 if (serializedStateList != null)
                     serializedStateList.ApplyModifiedProperties();
 
-                UpdateQID(formController, newQID);
+                UpdateID(formController, "qID", newQID);
             }
 
             GUILayout.Space(10);
@@ -1500,7 +1430,7 @@ public class StateListEditor : EditorWindow
         }
         return trialsCountForEachUniqueCondition * product;
     }
-    
+
     private GameObject FindStateObject(string stateName)
     {
         var wrapper = FindRequiredObjectsWrapperInstance();
@@ -1509,5 +1439,39 @@ public class StateListEditor : EditorWindow
         if (statesContainer == null) return null;
         var stateTransform = statesContainer.Find(stateName);
         return stateTransform?.gameObject;
+    }
+
+    private int GetPNum()
+    {
+        if (!File.Exists(identifiersAssetPath)) return 1;
+        var text = File.ReadAllText(identifiersAssetPath);
+        var m = System.Text.RegularExpressions.Regex.Match(text, @"pNum\s*=\s*(\d+)\s*;");
+        return m.Success ? int.Parse(m.Groups[1].Value) : 1;
+    }
+
+    private void EnableAccessToParticipantManager(GameObject item)
+    {
+        // Attach ItemGroupMember component to this object
+        var itemGroupMember = item.GetComponent<ItemGroupMember>()
+            ?? (item.AddComponent(typeof(ItemGroupMember)) as ItemGroupMember);
+
+        foreach (GameObject obj in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
+        {
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) != RequiredObjectsWrapperPrefabPath) continue;
+            for (int i = 0; i < obj.transform.childCount; i++)
+            {
+                Transform child = obj.transform.GetChild(i);
+                if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == ParticipantManagerPrefabPath)
+                {
+                    ItemGroupHost host = child.GetComponent<ItemGroupHost>();
+                    if (host != null)
+                    {
+                        SerializedObject serializedItemGroupMember = new SerializedObject(itemGroupMember);
+                        serializedItemGroupMember.FindProperty("host").objectReferenceValue = host;
+                        serializedItemGroupMember.ApplyModifiedProperties();
+                    }
+                }
+            }
+        }
     }
 }

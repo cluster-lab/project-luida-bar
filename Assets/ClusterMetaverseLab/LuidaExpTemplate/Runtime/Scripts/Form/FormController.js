@@ -1,16 +1,20 @@
 $.onStart(() => {
     reset();
-    
-    // TODO: set owner to the player by the assigned pID
-    
-    let owner = $.getOwner();
-    $.setVisiblePlayers([owner]);
-
-    $.worldItemReference("PrevButton").send("setOwner", owner);
-    $.worldItemReference("NextButton").send("setOwner", owner);
+    $.state.isOwnerSet = false;
 });
 
 $.onUpdate((deltaTime) => {
+    if (!$.state.isOwnerSet && $.groupState.isParticipantsEnough) {
+        let player = $.groupState.participants[($.getStateCompat("this", "pID", "integer") - 1) || 0];
+        $.requestOwner(player);
+        $.setVisiblePlayers([player]);
+
+        $.worldItemReference("PrevButton").send("setOwner", player);
+        $.worldItemReference("NextButton").send("setOwner", player);
+
+        $.state.isOwnerSet = true;
+    }
+
     // Ensure that the question is only initialized after all currently displayed answer options are destroyed
     if (!$.state.isInitiated && $.getStateCompat("this", "form_set_content_active", "boolean")) {
         $.state.isInitiated = true;
@@ -202,8 +206,9 @@ function submitAnswers() {
         token: token || "",
         eID: expID || "",
         qID: $.getStateCompat("this", "qID", "integer").toString() || "1",
-        pID: $.getPlayersNear($.getPosition().clone(), 100)[0].idfc || "", // TODO: retrieve idfc through cluster Player Script
-        // pRole: "",
+        pID: $.getOwner().idfc || "", // TODO: rename to pIDFC
+        pRole: $.getStateCompat("this", "pID", "integer").toString() || "1", // TODO: rename to pID?
+        // TODO: add sessionID
         answers: $.state.answers
     };
     const conditionManager = $.worldItemReference("ConditionManager");

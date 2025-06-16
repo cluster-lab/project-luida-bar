@@ -1,18 +1,26 @@
 $.onStart(() => {
-  $.state.inRoomIdfcs = [];
+  $.groupState.isParticipantsEnough = false;
+  $.groupState.participants = []; // array of PlayerHandle who are currently in the experiment
+  $.state.pIDFCs = []; // array of player idfcs who are currently in the experiment
 })
 
 $.onUpdate(() => {
     if ($.getStateCompat("this", "onJoined", "boolean")) {
         $.setStateCompat("this", "onJoined", false);
         const newPlayers = $.getPlayersNear($.getPosition(), Infinity)
-            .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));
+            .filter(p => !$.state.pIDFCs.includes(p.idfc));
         if (newPlayers.length > 0) {
             for (const newPlayer of newPlayers) {
-                $.state.inRoomIdfcs.push(newPlayer.idfc);
+                // TODO: Check if the player is eligible to join the experiment before adding them to pIDFCs & participants.
+                $.state.pIDFCs.push(newPlayer.idfc);
+                $.groupState.participants.push(newPlayer);
                 $.setPlayerScript(newPlayer);
                 newPlayer.send("envInfoRequest", true);
             }
+        }
+        if (!$.groupState.isParticipantsEnough && $.state.pIDFCs.length >= pNum) {
+            $.groupState.isParticipantsEnough = true;
+            $.log("Participants are enough to start the experiment.");
         }
     }
 /*
@@ -20,7 +28,7 @@ $.onUpdate(() => {
     $.setStateCompat("this", "exp_checkJoinEligibility", false);
 
     const newPlayers = $.getPlayersNear($.getPosition(), 1)
-      .filter(p => !$.state.inRoomIdfcs.includes(p.idfc));
+      .filter(p => !$.state.pIDFCs.includes(p.idfc));
     
     if (newPlayers.length > 0) {
       $.state.newPlayers = newPlayers;
@@ -70,7 +78,7 @@ $.onExternalCallEnd((res, meta, err) =>
         // TODO: Show message about that this player is not eligible to join this experiment, and teleport the player back to LUIDA bar world.
       } else {
         newPlayer.setMoveSpeedRate(1);
-        $.state.inRoomIdfcs = [ ...$.state.inRoomIdfcs, newPlayer.idfc ];
+        $.state.pIDFCs = [ ...$.state.pIDFCs, newPlayer.idfc ];
         // TODO: Instead of enabling move, teleport the player from the checking area to the task area.
       }
     });
