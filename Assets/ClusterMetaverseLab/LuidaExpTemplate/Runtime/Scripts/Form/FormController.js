@@ -208,7 +208,7 @@ function submitAnswers() {
         qID: $.getStateCompat("this", "qID", "integer").toString() || "1",
         pID: $.getOwner().idfc || "", // TODO: rename to pIDFC
         pRole: $.getStateCompat("this", "pID", "integer").toString() || "1", // TODO: rename to pID?
-        // TODO: add sessionID
+        sessionID: $.groupState.sessionID || "",
         answers: $.state.answers
     };
     const conditionManager = $.worldItemReference("ConditionManager");

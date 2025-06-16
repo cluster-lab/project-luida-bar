@@ -57,7 +57,9 @@ function uploadDataStep() {
             token: token || "",
             data: slicedData,
             eID: expID || "",
-            pID: $.getPlayersNear($.getPosition().clone(), Infinity)[0].idfc || "" // TODO: retrieve idfc through cluster Player Script
+            sessionID: $.groupState.sessionID || "",
+            pID: "" // $.groupState.participants
+            // pID: $.getPlayersNear($.getPosition().clone(), Infinity)[0].idfc || "" // TODO: retrieve idfc through cluster Player Script
         };
         $.log(request);
         $.callExternal(callExternalEndpointID, JSON.stringify(request), "customDataUploaded");

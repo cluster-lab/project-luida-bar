@@ -1,34 +1,34 @@
 $.onStart(() => {
   $.groupState.isParticipantsEnough = false;
+  $.groupState.sessionID = Date.now() + "_" +  (Math.random() + 1).toString(36).substring(7);
   $.groupState.participants = []; // array of PlayerHandle who are currently in the experiment
-  $.state.pIDFCs = []; // array of player idfcs who are currently in the experiment
 })
 
 $.onUpdate(() => {
     if ($.getStateCompat("this", "onJoined", "boolean")) {
         $.setStateCompat("this", "onJoined", false);
+        let pIdfcs = $.groupState.participants.map(p => p.idfc);
         const newPlayers = $.getPlayersNear($.getPosition(), Infinity)
-            .filter(p => !$.state.pIDFCs.includes(p.idfc));
+            .filter(p => !pIdfcs.includes(p.idfc));
         if (newPlayers.length > 0) {
             for (const newPlayer of newPlayers) {
-                // TODO: Check if the player is eligible to join the experiment before adding them to pIDFCs & participants.
-                $.state.pIDFCs.push(newPlayer.idfc);
+                // TODO: Check if the player is eligible to join the experiment before adding them to $.groupState.participants.
                 $.groupState.participants.push(newPlayer);
                 $.setPlayerScript(newPlayer);
                 newPlayer.send("envInfoRequest", true);
             }
         }
-        if (!$.groupState.isParticipantsEnough && $.state.pIDFCs.length >= pNum) {
-            $.groupState.isParticipantsEnough = true;
-            $.log("Participants are enough to start the experiment.");
+        if (!$.groupState.isParticipantsEnough && $.groupState.participants.length >= pNum) {
+            HandleParticipantsEnough();
         }
     }
 /*
   if ($.getStateCompat("this", "exp_checkJoinEligibility", "boolean")) {
     $.setStateCompat("this", "exp_checkJoinEligibility", false);
 
+    let pIdfcs = $.groupState.participants.map(p => p.idfc);
     const newPlayers = $.getPlayersNear($.getPosition(), 1)
-      .filter(p => !$.state.pIDFCs.includes(p.idfc));
+      .filter(p => !pIDFCs.includes(p.idfc));
     
     if (newPlayers.length > 0) {
       $.state.newPlayers = newPlayers;
@@ -54,7 +54,8 @@ $.onReceive((messageType, arg, sender) => {
                 data: { envInfo: [ arg ] },
                 token: token || "",
                 eID: expID || "",
-                pID: sender.idfc
+                pID: sender.idfc,
+                sessionID: $.groupState.sessionID
             };
             $.callExternal(callExternalEndpointID || "", JSON.stringify(request), "customDataUploaded");
             break;
@@ -62,6 +63,20 @@ $.onReceive((messageType, arg, sender) => {
             break;
     }
 });
+
+function HandleParticipantsEnough() {
+  $.log("Participants are enough to start the experiment.");
+  $.groupState.isParticipantsEnough = true;
+  $.sendSignalCompat("this", "exp_StartStateTransition");
+
+  const conditionManager = $.worldItemReference("ConditionManager");
+  if (conditionManager) {
+    conditionManager.send("luida_participants_info", {
+      participants: $.groupState.participants,
+      sessionID: $.groupState.sessionID
+    });
+  }
+}
 
 /*
 $.onExternalCallEnd((res, meta, err) =>
@@ -78,7 +93,7 @@ $.onExternalCallEnd((res, meta, err) =>
         // TODO: Show message about that this player is not eligible to join this experiment, and teleport the player back to LUIDA bar world.
       } else {
         newPlayer.setMoveSpeedRate(1);
-        $.state.pIDFCs = [ ...$.state.pIDFCs, newPlayer.idfc ];
+        $.groupState.participants.push(newPlayer);
         // TODO: Instead of enabling move, teleport the player from the checking area to the task area.
       }
     });
