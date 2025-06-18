@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.IO;
 
-public class ExperimentVariablesEditor : EditorWindow
+public class ExperimentVariablesConfigTab : EditorWindow
 {
     private JavaScriptAsset variablesAsset;
     private JavaScriptAsset betweenSubjectsConditionSetterAsset;
@@ -29,9 +29,9 @@ public class ExperimentVariablesEditor : EditorWindow
         RetrieveJavaScriptAsset();
         if (!isSubscribed)
         {
-            TabbedEditor.OnEditorClosed += ApplyVariableUpdates;
-            TabbedEditor.OnEditorClosed += OnDisable;
-            TabbedEditor.OnItemsManagerTabLostFocus += ApplyVariableUpdates;
+            LuidaConfigWindow.OnEditorClosed += ApplyVariableUpdates;
+            LuidaConfigWindow.OnEditorClosed += OnDisable;
+            LuidaConfigWindow.OnItemsManagerTabLostFocus += ApplyVariableUpdates;
             isSubscribed = true;
         }
     }
@@ -40,9 +40,9 @@ public class ExperimentVariablesEditor : EditorWindow
     {
         if (isSubscribed)
         {
-            TabbedEditor.OnEditorClosed -= ApplyVariableUpdates;
-            TabbedEditor.OnEditorClosed -= OnDisable;
-            TabbedEditor.OnItemsManagerTabLostFocus -= ApplyVariableUpdates;
+            LuidaConfigWindow.OnEditorClosed -= ApplyVariableUpdates;
+            LuidaConfigWindow.OnEditorClosed -= OnDisable;
+            LuidaConfigWindow.OnItemsManagerTabLostFocus -= ApplyVariableUpdates;
             isSubscribed = false;
         }
     }

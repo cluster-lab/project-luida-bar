@@ -14,8 +14,8 @@ public static class ItemsManagerUIDrawer
         new StateListeningAction("Show item", "$.setStateCompat('this', 'exp_showItem', true);"),
         new StateListeningAction("Hide item", "$.setStateCompat('this', 'exp_showItem', false);"),
         new StateListeningAction("To next state", "$.sendSignalCompat('this', 'state_triggerTransition');"),
-        new StateListeningAction("Record custom data", "$.sendSignalCompat('this', 'exp_recordCustomData');"),
-        new StateListeningAction("Upload recorded data", "$.sendSignalCompat('this', 'exp_uploadCustomData');"),
+        new StateListeningAction("Capture data into collection", "$.sendSignalCompat('this', 'exp_recordCustomData');"),
+        new StateListeningAction("Upload collected data", "$.sendSignalCompat('this', 'exp_uploadCustomData');"),
         new StateListeningAction("Set text", "$.subNode('Text').setText(`{_text_}`);", new[] { "text" }),
         new StateListeningAction("Sleep", "{_seconds_}", new[] { "seconds" }),
         new StateListeningAction("Send Haptics",
@@ -41,7 +41,7 @@ public static class ItemsManagerUIDrawer
             new[] { "childName", "x", "y", "z" }),
     };
 
-    public static void DrawGUI(ItemsManagerEditor editor)
+    public static void DrawGUI(ItemsManagerConfigTab editor)
     {
         EditorGUI.BeginChangeCheck();
 
@@ -58,7 +58,7 @@ public static class ItemsManagerUIDrawer
         }
     }
 
-    private static void DrawHeader(ItemsManagerEditor editor)
+    private static void DrawHeader(ItemsManagerConfigTab editor)
     {
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("New Item Name", GUILayout.Width(120));
@@ -78,7 +78,7 @@ public static class ItemsManagerUIDrawer
         EditorGUILayout.Space(10);
     }
 
-    private static void DrawMainGrid(ItemsManagerEditor editor)
+    private static void DrawMainGrid(ItemsManagerConfigTab editor)
     {
         GUIStyle removeButtonStyle = new GUIStyle(GUI.skin.button) { normal = { textColor = Color.red }, hover = { textColor = Color.red } };
 
@@ -100,7 +100,7 @@ public static class ItemsManagerUIDrawer
         EditorGUILayout.EndVertical();
     }
 
-    private static void DrawItemHeaders(ItemsManagerEditor editor, GUIStyle removeButtonStyle)
+    private static void DrawItemHeaders(ItemsManagerConfigTab editor, GUIStyle removeButtonStyle)
     {
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("State Name | Item Name", EditorStyles.boldLabel, GUILayout.Width(215));
@@ -135,7 +135,7 @@ public static class ItemsManagerUIDrawer
         GUI.backgroundColor = Color.white;
     }
 
-    private static void DrawOtherImplementationRow(ItemsManagerEditor editor)
+    private static void DrawOtherImplementationRow(ItemsManagerConfigTab editor)
     {
         EditorGUILayout.LabelField("Custom implementation not listening to any state", EditorStyles.largeLabel);
         EditorGUILayout.BeginHorizontal();
@@ -182,7 +182,7 @@ public static class ItemsManagerUIDrawer
         GUI.backgroundColor = Color.white;
     }
 
-    private static void DrawStateRows(ItemsManagerEditor editor, GUIStyle removeButtonStyle)
+    private static void DrawStateRows(ItemsManagerConfigTab editor, GUIStyle removeButtonStyle)
     {
         EditorGUILayout.LabelField("Pre-defined or customized actions listening to states", EditorStyles.largeLabel);
         EditorGUILayout.BeginHorizontal();
@@ -217,7 +217,7 @@ public static class ItemsManagerUIDrawer
         GUI.backgroundColor = Color.white;
     }
 
-    private static void DrawCell(ItemsManagerEditor editor, GameObject item, string stateName, int stateID, bool isDark, GUIStyle removeButtonStyle)
+    private static void DrawCell(ItemsManagerConfigTab editor, GameObject item, string stateName, int stateID, bool isDark, GUIStyle removeButtonStyle)
     {
         Color cellBgColor = isDark ? new Color(0.2f, 0.2f, 0.2f, 0.5f) : new Color(0.8f, 0.8f, 0.8f, 0.5f);
         Rect cellRectInner = EditorGUILayout.BeginVertical("box", GUILayout.Width(240), GUILayout.MinHeight(20));
@@ -259,7 +259,7 @@ public static class ItemsManagerUIDrawer
     
     #region ReorderableList UI
 
-    public static void SetupReorderableLists(ItemsManagerEditor editor)
+    public static void SetupReorderableLists(ItemsManagerConfigTab editor)
     {
         editor._reorderableLists.Clear();
         foreach (var item in editor.stateListeningItems)
@@ -279,7 +279,7 @@ public static class ItemsManagerUIDrawer
         }
     }
 
-    private static void CreateReorderableList(ItemsManagerEditor editor, GameObject itemGO, StateListeningItemData itemDataAsset, StateListener listener, List<StateListenerAction> actions, string header, string keySuffix)
+    private static void CreateReorderableList(ItemsManagerConfigTab editor, GameObject itemGO, StateListeningItemData itemDataAsset, StateListener listener, List<StateListenerAction> actions, string header, string keySuffix)
     {
         var key = $"{itemGO.GetInstanceID()}_{listener.stateID}_{keySuffix}";
         bool isCurrentStateTrialRelated = ItemsManagerAssetUtil.IsTrialRelatedState(listener.stateID, editor.stateList);
@@ -606,7 +606,7 @@ public static class ItemsManagerUIDrawer
         editor._reorderableLists[key] = rl;
     }
 
-    private static void DrawReorderableList(ItemsManagerEditor editor, GameObject item, int stateID, string keySuffix)
+    private static void DrawReorderableList(ItemsManagerConfigTab editor, GameObject item, int stateID, string keySuffix)
     {
         var key = $"{item.GetInstanceID()}_{stateID}_{keySuffix}";
         if (editor._reorderableLists.TryGetValue(key, out var rl))
@@ -650,7 +650,7 @@ public static class ItemsManagerUIDrawer
         GUILayout.Space(3);
     }
     
-    private static void DrawDocumentation(ItemsManagerEditor editor)
+    private static void DrawDocumentation(ItemsManagerConfigTab editor)
     {
         EditorGUILayout.BeginVertical("box", GUILayout.Width(380), GUILayout.ExpandHeight(true));
         EditorGUILayout.LabelField("Documentation for Customized Actions or Other Implementation", EditorStyles.largeLabel);
@@ -708,7 +708,14 @@ public static class ItemsManagerUIDrawer
         EditorGUILayout.LabelField("Data Logging", EditorStyles.boldLabel);
         foreach(var action in AvailableStateListeningActions.Where(a => a.actionType.Contains("data")))
         {
-            DrawDocEntry(action.actionType, action.actionType == "Record custom data" ? "Signals LUIDA's DataRecorder to log configured data." : "Signals LUIDA's DataRecorder to upload accumulated data.", getParamsInfoForUI(action), false, getJsSignature(action));
+            if (action.actionType == "Capture data into collection")
+            {
+                DrawDocEntry(action.actionType, "Signals LUIDA's DataCollector to capture data as configured in the 'Data Collector' tab of the LUIDA Config Window, and save it to the collected data set.", getParamsInfoForUI(action), false, getJsSignature(action));
+            }
+            if (action.actionType == "Upload collected data")
+            {
+                DrawDocEntry(action.actionType, "Signals LUIDA's DataCollector to upload the collected data.", getParamsInfoForUI(action), false, getJsSignature(action));
+            }
         }
 
         EditorGUILayout.LabelField("User Feedback & Utilities", EditorStyles.boldLabel);

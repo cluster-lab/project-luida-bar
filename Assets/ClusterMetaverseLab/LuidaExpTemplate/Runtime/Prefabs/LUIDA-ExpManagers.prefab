@@ -9,8 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8428161057630051971}
+  - component: {fileID: 92278431217772627}
   m_Layer: 0
-  m_Name: ExpTemplateRequiredObjects
+  m_Name: LUIDA-ExpManagers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,12 +31,23 @@ Transform:
   m_Children:
   - {fileID: 3711652237824790392}
   - {fileID: 2963938157378484329}
-  - {fileID: 2966719835339860264}
   - {fileID: 6324218061196038480}
   - {fileID: 1488493987227822950}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &92278431217772627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 908684358854966727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d62ec2d62755426ead004d99d5b73a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5775079480882698412
 GameObject:
   m_ObjectHideFlags: 0
@@ -67,7 +79,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8428161057630051971}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3660925819112729135
 MonoBehaviour:
@@ -131,7 +143,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8428161057630051971}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7311121729470545767
 MonoBehaviour:
@@ -498,141 +510,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7022389377809828575 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 720097705929188119, guid: 582d9461e4f86459080aac4eee555440,
-    type: 3}
-  m_PrefabInstance: {fileID: 7533049804082866632}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6487efbf7339493cb3e1fa581f53b763, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1001 &8929822412585993244
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 8428161057630051971}
-    m_Modifications:
-    - target: {fileID: 2627616726396763139, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: clusterScripts.Array.data[2]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761523, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_Name
-      value: CustomDataRecorder
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.7228634
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.67974794
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 7.8989253
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761526, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
-        = \"callExternalEndpointID_example\";\npNum = 1;\n\r\nconst uploadInterval
-        = 1;\nconst dataLengthPerUpload = 100;\n\n$.onStart(() => {\n    $.state.customData
-        = {};\n    $.state.uploadIndex = 0;\n    $.state.elapsedTime = 0;\n    $.state.dataLength
-        = 0;\n    $.state.isUploading = false;\n})\n\n$.onUpdate((deltaTime) => {\n   
-        if ($.getStateCompat(\"this\", \"exp_recordCustomData\", \"boolean\")) {\n       
-        $.setStateCompat(\"this\", \"exp_recordCustomData\", false);\n        recordData();\n   
-        }\n    if ($.getStateCompat(\"this\", \"exp_uploadCustomData\", \"boolean\"))
-        {\n        if ($.state.uploadIndex === 0) {\n            uploadDataInit();\n           
-        $.setStateCompat(\"this\", \"exp_uploadCustomData\", false);\n        }\n   
-        }\n    if ($.state.isUploading) {\n        $.state.elapsedTime = $.state.elapsedTime
-        + deltaTime;\n        if ($.state.elapsedTime >= uploadInterval && $.state.uploadIndex
-        < Math.ceil($.state.dataLength / dataLengthPerUpload)) {\n            $.state.elapsedTime
-        = 0;\n            uploadDataStep();\n        }\n    }\n})\n\nfunction recordData
-        () {\n    $.state.customData = calculateData();\n}\n\nfunction uploadDataInit()
-        {\n    $.state.uploadIndex = 0;\n    $.state.elapsedTime = 0;\n    $.state.isUploading
-        = true;\n    let firstFileName = Object.keys($.state.customData)[0];\n   
-        if (firstFileName) {\n        $.state.dataLength = $.state.customData[firstFileName].length;\n   
-        }\n}\n\nfunction uploadDataStep() {\n    $.log($.state.uploadIndex);\n   
-        if ($.state.uploadIndex < Math.ceil($.state.dataLength / dataLengthPerUpload))
-        {\n        const slicedData = Object.fromEntries(\n            Object.entries($.state.customData).map(([key,
-        value]) => [\n                key,\n                value.slice($.state.uploadIndex
-        * dataLengthPerUpload, ($.state.uploadIndex + 1) * dataLengthPerUpload)\n           
-        ])\n        );\n        let request = {\n            type: \"uploadCustomData\",\n           
-        token: token || \"\",\n            data: slicedData,\n            eID: expID
-        || \"\",\n            sessionID: $.groupState.sessionID || \"\",\n           
-        pID: \"\" // $.groupState.participants\n            // pID: $.getPlayersNear($.getPosition().clone(),
-        Infinity)[0].idfc || \"\" // TODO: retrieve idfc through cluster Player Script\n       
-        };\n        $.log(request);\n        $.callExternal(callExternalEndpointID,
-        JSON.stringify(request), \"customDataUploaded\");\n        $.state.uploadIndex
-        = $.state.uploadIndex + 1;\n\n        if ($.state.uploadIndex >= Math.ceil($.state.dataLength
-        / dataLengthPerUpload)) {\n            $.state.uploadIndex = 0;\n           
-        $.state.isUploading = false;\n        }\n    }\n}\n\n$.onExternalCallEnd((res,
-        meta, err) =>\n{\n    if (res == null) {\n        $.log(\"callExternal ERROR:
-        \" + err);\n        return;\n    }\n\n    if (meta === \"customDataUploaded\")
-        {\n        $.log(\"Response after customDataUploaded called: \" + JSON.stringify(res));\n   
-        }\n});\r\n"
-      objectReference: {fileID: 0}
-    - target: {fileID: 8273925800708392170, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: host
-      value: 
-      objectReference: {fileID: 7022389377809828575}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 964d6187f971a8f43b4ee67279f1ef90, type: 3}
---- !u!4 &2966719835339860264 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-    type: 3}
-  m_PrefabInstance: {fileID: 8929822412585993244}
-  m_PrefabAsset: {fileID: 0}

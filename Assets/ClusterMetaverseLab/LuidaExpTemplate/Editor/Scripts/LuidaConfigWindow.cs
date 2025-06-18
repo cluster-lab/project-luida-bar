@@ -4,19 +4,19 @@ using UnityEditor.SceneManagement;
 using System;
 using System.IO;
 
-public class TabbedEditor : EditorWindow
+public class LuidaConfigWindow : EditorWindow
 {
     public static event Action OnEditorClosed;
     public static event Action OnItemsManagerTabLostFocus;
 
     private int currentTab = 0;
-    private string[] tabNames = { "Experiment Identifiers", "Experiment Variables", "States List (& Questionnaires)", "State-listening Items", "Data Recorder" };
+    private string[] tabNames = { "Experiment Identifiers", "Experiment Variables", "States List (& Questionnaires)", "State-listening Items", "Data Collector" };
 
-    private ExpIdentifierEditor expIdentifierEditor;
-    private StateListEditor stateListEditor;
-    private ItemsManagerEditor itemsManagerEditor;
-    private ExperimentVariablesEditor experimentVariablesEditor;
-    private DataRecorderEditor dataRecorderEditor;
+    private ExpIdentifierConfigTab expIdentifierConfigTab;
+    private StateMachineConfigTab stateMachineConfigTab;
+    private ItemsManagerConfigTab itemsManagerEditor;
+    private ExperimentVariablesConfigTab experimentVariablesConfigTab;
+    private DataCollectorConfigTab dataCollectorConfigTab;
 
     private string newSceneName = "";
     private const string scenePath = "Assets/_Experiment_/Scenes/";
@@ -24,25 +24,25 @@ public class TabbedEditor : EditorWindow
     private const string expIdentifiersPath = "Assets/_Experiment_/Settings/ExpIdentifiers.js";
     private const string templateExpIdentifiersPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/ExpIdentifiers.js";
 
-    [MenuItem("Window/Luida Editor")]
+    [MenuItem("Window/LUIDA Config Window")]
     public static void ShowWindow()
     {
-        GetWindow<TabbedEditor>("Luida Editor");
+        GetWindow<LuidaConfigWindow>("LUIDA Config Window");
     }
 
     private void OnEnable()
     {
-        expIdentifierEditor = new ExpIdentifierEditor();
-        experimentVariablesEditor = new ExperimentVariablesEditor();
-        stateListEditor = new StateListEditor();
-        itemsManagerEditor = new ItemsManagerEditor();
-        dataRecorderEditor = new DataRecorderEditor();
+        expIdentifierConfigTab = new ExpIdentifierConfigTab();
+        experimentVariablesConfigTab = new ExperimentVariablesConfigTab();
+        stateMachineConfigTab = new StateMachineConfigTab();
+        itemsManagerEditor = new ItemsManagerConfigTab();
+        dataCollectorConfigTab = new DataCollectorConfigTab();
 
-        expIdentifierEditor.OnEnable();
-        experimentVariablesEditor.OnEnable();
-        stateListEditor.OnEnable();
+        expIdentifierConfigTab.OnEnable();
+        experimentVariablesConfigTab.OnEnable();
+        stateMachineConfigTab.OnEnable();
         itemsManagerEditor.OnEnable();
-        dataRecorderEditor.OnEnable();
+        dataCollectorConfigTab.OnEnable();
 
         CheckAndCreateExpIdentifiers();
     }
@@ -127,7 +127,7 @@ public class TabbedEditor : EditorWindow
             // detect switching away from the ItemsManager tab:
             if (newTab != currentTab)
             {
-                Debug.Log("TabbedEditor tab switched from " + currentTab + " to " + newTab);
+                Debug.Log("LuidaConfigWindow tab switched from " + currentTab + " to " + newTab);
                 OnItemsManagerTabLostFocus?.Invoke();
                 currentTab = newTab;
             }
@@ -135,19 +135,19 @@ public class TabbedEditor : EditorWindow
             switch (currentTab)
             {
                 case 0:
-                    expIdentifierEditor.OnGUI();
+                    expIdentifierConfigTab.OnGUI();
                     break;
                 case 1:
-                    experimentVariablesEditor.OnGUI();
+                    experimentVariablesConfigTab.OnGUI();
                     break;
                 case 2:
-                    stateListEditor.OnGUI();
+                    stateMachineConfigTab.OnGUI();
                     break;
                 case 3:
                     itemsManagerEditor.OnGUI();
                     break;
                 case 4:
-                    dataRecorderEditor.OnGUI();
+                    dataCollectorConfigTab.OnGUI();
                     break;
             }
         }

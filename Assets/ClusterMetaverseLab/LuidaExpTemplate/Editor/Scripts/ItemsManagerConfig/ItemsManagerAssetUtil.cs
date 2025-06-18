@@ -13,7 +13,7 @@ public static class ItemsManagerAssetUtil
     private const string PrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/StateListeningItem.prefab";
     private const string ScriptFolderFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
     private const string ScriptTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/StateManagement/StateListeningItemTemplate.js";
-    private const string RequiredObjectsWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
+    private const string ExpManagersWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/LUIDA-ExpManagers.prefab";
     private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
     private const string defaultOtherImplementation = @"// function Start() { }
 // function Update(deltaTime) { }
@@ -27,14 +27,14 @@ public static class ItemsManagerAssetUtil
 
     #region Data Refreshing
     
-    public static void RefreshStateList(ItemsManagerEditor editor)
+    public static void RefreshStateList(ItemsManagerConfigTab editor)
     {
         string sceneName = SceneManager.GetActiveScene().name;
         string listPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
         editor.stateList = AssetDatabase.LoadAssetAtPath<StateList>(listPath);
     }
     
-    public static void RefreshExperimentVariablesCache(ItemsManagerEditor editor)
+    public static void RefreshExperimentVariablesCache(ItemsManagerConfigTab editor)
     {
         editor._cachedExperimentVariables.Clear();
         string sceneName = SceneManager.GetActiveScene().name;
@@ -59,7 +59,7 @@ public static class ItemsManagerAssetUtil
                     string[] values = string.IsNullOrEmpty(valuesString)
                         ? Array.Empty<string>()
                         : valuesString.Split(',').Select(v => v.Trim().Trim('"')).Where(v => !string.IsNullOrEmpty(v)).ToArray();
-                    editor._cachedExperimentVariables.Add(new ItemsManagerEditor.EditorExperimentVariable { name = name, values = values });
+                    editor._cachedExperimentVariables.Add(new ItemsManagerConfigTab.EditorExperimentVariable { name = name, values = values });
                 }
             }
         };
@@ -68,7 +68,7 @@ public static class ItemsManagerAssetUtil
         parseAndAdd("between_subjects_variables");
     }
 
-    public static void RefreshStateListeningItems(ItemsManagerEditor editor)
+    public static void RefreshStateListeningItems(ItemsManagerConfigTab editor)
     {
         editor.stateListeningItems.Clear();
         var currentItemsInScene = new List<GameObject>();
@@ -116,7 +116,7 @@ public static class ItemsManagerAssetUtil
 
     #region Asset & Item Modification
 
-    public static void CreateStateListeningItem(ItemsManagerEditor editor)
+    public static void CreateStateListeningItem(ItemsManagerConfigTab editor)
     {
         if (string.IsNullOrEmpty(editor.newItemName))
         {
@@ -175,7 +175,7 @@ public static class ItemsManagerAssetUtil
         editor.newItemName = string.Empty;
     }
 
-    public static void RemoveStateListeningItem(GameObject item, ItemsManagerEditor editor)
+    public static void RemoveStateListeningItem(GameObject item, ItemsManagerConfigTab editor)
     {
         if (item == null) return;
         string scene = SceneManager.GetActiveScene().name;
@@ -193,7 +193,7 @@ public static class ItemsManagerAssetUtil
         editor._needsRebuild = true;
     }
     
-    public static void AddStateListener(GameObject item, int stateIndex, ItemsManagerEditor editor)
+    public static void AddStateListener(GameObject item, int stateIndex, ItemsManagerConfigTab editor)
     {
         if (item == null || !editor.stateListenersByItem.TryGetValue(item, out var listeners)) return;
         if (listeners.Any(l => l.stateID == stateIndex))
@@ -214,7 +214,7 @@ public static class ItemsManagerAssetUtil
         editor._needsRebuild = true;
     }
 
-    public static void RemoveStateListener(GameObject item, int stateID, ItemsManagerEditor editor)
+    public static void RemoveStateListener(GameObject item, int stateID, ItemsManagerConfigTab editor)
     {
         string itemDataAssetPath = GetItemDataAssetPath(item);
         var itemDataAsset = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(itemDataAssetPath);
@@ -237,7 +237,7 @@ public static class ItemsManagerAssetUtil
     
     #region JS Generation and Saving
 
-    public static void ApplyAssetsToScripts(ItemsManagerEditor editor)
+    public static void ApplyAssetsToScripts(ItemsManagerConfigTab editor)
     {
         SaveAllItemsToAssets(editor);
 
@@ -249,7 +249,7 @@ public static class ItemsManagerAssetUtil
         }
     }
 
-    private static void SaveAllItemsToAssets(ItemsManagerEditor editor)
+    private static void SaveAllItemsToAssets(ItemsManagerConfigTab editor)
     {
         foreach (var item in editor.stateListeningItems.Where(i => i != null))
         {
@@ -258,7 +258,7 @@ public static class ItemsManagerAssetUtil
         AssetDatabase.SaveAssets();
     }
 
-    private static void SaveItemToAsset(GameObject item, ItemsManagerEditor editor)
+    private static void SaveItemToAsset(GameObject item, ItemsManagerConfigTab editor)
     {
         if (!item) return;
 
@@ -300,7 +300,7 @@ public static class ItemsManagerAssetUtil
         return $"{{ type: \"exec\", action: () => {{\n            {actionCode}\n        }} }}";
     }
 
-    private static string GenerateActionsObjectsForItem(GameObject item, ItemsManagerEditor editor)
+    private static string GenerateActionsObjectsForItem(GameObject item, ItemsManagerConfigTab editor)
     {
         if (item == null) return string.Empty;
         if (!editor.stateListenersByItem.TryGetValue(item, out var listeners))
@@ -375,7 +375,7 @@ public static class ItemsManagerAssetUtil
 
         foreach (GameObject obj in SceneManager.GetActiveScene().GetRootGameObjects())
         {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) != RequiredObjectsWrapperPrefabPath) continue;
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) != ExpManagersWrapperPrefabPath) continue;
             for (int i = 0; i < obj.transform.childCount; i++)
             {
                 Transform child = obj.transform.GetChild(i);

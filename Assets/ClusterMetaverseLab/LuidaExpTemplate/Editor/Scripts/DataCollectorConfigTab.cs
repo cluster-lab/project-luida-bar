@@ -5,18 +5,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using ClusterVR.CreatorKit.Item.Implements;
 
-public class DataRecorderEditor : EditorWindow
+public class DataCollectorConfigTab : EditorWindow
 {
-    private const string DataRecorderPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/CustomDataRecording/CustomDataRecorder.prefab";
-    private const string RequiredObjectsWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
-    private const string WorldItemRefListObjectName = "WorldItemRefList";
+    private const string DataCollectorPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/CustomDataCollection/LUIDA-DataCollector.prefab";
+    private const string ExpManagersWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/LUIDA-ExpManagers.prefab";
+    private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
 
     private const string IdentifiersAssetPath = "Assets/_Experiment_/Settings/ExpIdentifiers.js";
-    private const string CalculatorTemplateAssetPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/CustomDataRecording/CustomDataCalculatorTemplate.js";
-    private const string DataRecorderScriptFolderPath = "Assets/_Experiment_/Scripts/DataRecorder/";
+    private const string CalculatorTemplateAssetPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/CustomDataCollection/CustomDataCalculatorTemplate.js";
+    private const string DataCollectorScriptFolderPath = "Assets/_Experiment_/Scripts/DataCollectors/";
 
-    private GameObject customDataRecorder; // Only one instance allowed
+    private GameObject dataCollector; // Only one instance allowed
     private ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset calculatorAsset;
     private Vector2 scrollPosition;
 
@@ -27,15 +28,15 @@ public class DataRecorderEditor : EditorWindow
 
     public void OnEnable()
     {
-        // Find or create the Custom Data Recorder on window enable
-        FindOrCreateCustomDataRecorder();
+        // Find or create the Custom Data Collector on window enable
+        FindOrCreateCustomDataCollector();
         LoadCustomDataScripts();
 
         if (!isSubscribed)
         {
-            TabbedEditor.OnEditorClosed += TrySaveChangesToScript;
-            TabbedEditor.OnEditorClosed += OnDisable;
-            TabbedEditor.OnItemsManagerTabLostFocus += TrySaveChangesToScript;
+            LuidaConfigWindow.OnEditorClosed += TrySaveChangesToScript;
+            LuidaConfigWindow.OnEditorClosed += OnDisable;
+            LuidaConfigWindow.OnItemsManagerTabLostFocus += TrySaveChangesToScript;
             isSubscribed = true;
         }
     }
@@ -44,20 +45,20 @@ public class DataRecorderEditor : EditorWindow
     {
         if (isSubscribed)
         {
-            TabbedEditor.OnEditorClosed -= TrySaveChangesToScript;
-            TabbedEditor.OnEditorClosed -= OnDisable;
-            TabbedEditor.OnItemsManagerTabLostFocus -= TrySaveChangesToScript;
+            LuidaConfigWindow.OnEditorClosed -= TrySaveChangesToScript;
+            LuidaConfigWindow.OnEditorClosed -= OnDisable;
+            LuidaConfigWindow.OnItemsManagerTabLostFocus -= TrySaveChangesToScript;
             isSubscribed = false;
         }
     }
 
     public void OnGUI()
     {
-        GUILayout.Label("Custom Data Recorder Editor", EditorStyles.largeLabel);
+        GUILayout.Label("Data Collector Config", EditorStyles.largeLabel);
         
-        if (customDataRecorder == null)
+        if (dataCollector == null)
         {
-            FindOrCreateCustomDataRecorder();
+            FindOrCreateCustomDataCollector();
         }
         else
         {
@@ -80,11 +81,11 @@ public class DataRecorderEditor : EditorWindow
                 EditorGUILayout.LabelField("List Name to save custom data", GUILayout.Width(180));
                 customDataListNames[i] = EditorGUILayout.TextField(customDataListNames[i], GUILayout.Width(100));
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Remove this recorder", GUILayout.Width(150)))
+                if (GUILayout.Button("Remove this Colected Data Entry", GUILayout.Width(150)))
                 {
                     // Show warning before removing
-                    if (EditorUtility.DisplayDialog("Remove Custom Data Entry",
-                            "Are you sure you want to remove this custom data entry?",
+                    if (EditorUtility.DisplayDialog("Remove Colected Data Entry",
+                            "Are you sure you want to remove this collected data entry?",
                             "Remove", "Cancel"))
                     {
                         customDataListNames.RemoveAt(i);
@@ -131,94 +132,54 @@ public class DataRecorderEditor : EditorWindow
         }
     }
 
-    private void FindOrCreateCustomDataRecorder()
+    private void FindOrCreateCustomDataCollector()
     {
-        FindCustomDataRecorder();
-
-        if (customDataRecorder == null)
-        {
-            CreateCustomDataRecorder();
-        }
-        EnsureCalculatorScriptExists();
+        FindCustomDataCollector();
+        if (dataCollector == null) CreateCustomDataCollector();
+        if (calculatorAsset == null) DuplicateAndSetupCalculatorScript();
+        EnsureAccessToExpConditions();
     }
 
-    private void FindCustomDataRecorder()
-    {
-        customDataRecorder = null;
-        calculatorAsset = null;
-
-        GameObject expRequiredObjectsWrapper = FindRequiredObjectsWrapperInstance();
-        if (expRequiredObjectsWrapper != null)
-        {
-            Transform dataRecorderTransform = expRequiredObjectsWrapper.transform.Find("CustomDataRecorder");
-            if (dataRecorderTransform != null)
-            {
-                customDataRecorder = dataRecorderTransform.gameObject;
-                LinkCalculatorScript(customDataRecorder);
-                return;
-            }
-        }
-    }
-
-    private void CreateCustomDataRecorder()
-    {
-        GameObject customDataRecorderPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(DataRecorderPrefabPath);
-        if (customDataRecorderPrefab == null)
-        {
-            Debug.LogError("CustomDataRecorder prefab not found at path: " + DataRecorderPrefabPath);
-            return;
-        }
-
-        GameObject newRecorderInstance = (GameObject)PrefabUtility.InstantiatePrefab(customDataRecorderPrefab);
-        newRecorderInstance.name = "CustomDataRecorder";
-
-        GameObject expRequiredObjectsWrapper = FindRequiredObjectsWrapperInstance();
-        if (expRequiredObjectsWrapper != null)
-        {
-            GameObject worldItemRefList = expRequiredObjectsWrapper.transform.Find(WorldItemRefListObjectName)?.gameObject;
-            if (worldItemRefList != null)
-            {
-                var worldItemReferenceList = worldItemRefList.GetComponent<ClusterVR.CreatorKit.Item.Implements.WorldItemReferenceList>();
-                if (worldItemReferenceList != null)
-                {
-                    UnityEditorInternal.ComponentUtility.CopyComponent(worldItemReferenceList);
-                    UnityEditorInternal.ComponentUtility.PasteComponentAsNew(newRecorderInstance);
-                }
-                else
-                {
-                    Debug.LogError("WorldItemReferenceList component not found in WorldItemRefList.");
-                }
-            }
-            else
-            {
-                Debug.LogError($"WorldItemRefList GameObject not found in {expRequiredObjectsWrapper.name}.");
-            }
-            customDataRecorder.transform.SetParent(expRequiredObjectsWrapper.transform);
-        }
-        else
-        {
-            Debug.LogError("ExpTemplateRequiredObjects prefab instance not found in the scene.");
-        }
-
-        DuplicateAndSetupCalculatorScript(newRecorderInstance);
-        customDataRecorder = newRecorderInstance;
-    }
-
-    private GameObject FindRequiredObjectsWrapperInstance()
+    private void FindCustomDataCollector()
     {
         GameObject[] rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
 
         foreach (GameObject obj in rootObjects)
         {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == RequiredObjectsWrapperPrefabPath)
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == DataCollectorPrefabPath)
             {
-                return obj;
+                dataCollector = obj;
+                calculatorAsset = FindExistingCalculatorScript();
+                return;
             }
         }
-        return null;
+
+        dataCollector = null;
+        calculatorAsset = null;
     }
 
-    private void DuplicateAndSetupCalculatorScript(GameObject newRecorderInstance)
+    private void CreateCustomDataCollector()
+    {
+        GameObject dataCollectorPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(DataCollectorPrefabPath);
+        if (dataCollectorPrefab == null)
+        {
+            Debug.LogError("DataCollector prefab not found at path: " + DataCollectorPrefabPath);
+            return;
+        }
+        GameObject newCollectorInstance = (GameObject)PrefabUtility.InstantiatePrefab(dataCollectorPrefab);
+        newCollectorInstance.name = "LUIDA-DataCollector";
+        dataCollector = newCollectorInstance;
+    }
+
+    private ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset FindExistingCalculatorScript()
+    {
+        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        string calculatorPath = $"{DataCollectorScriptFolderPath}{sceneName}.js";
+        var asset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(calculatorPath);
+        return asset;
+    }
+
+    private void DuplicateAndSetupCalculatorScript()
     {
         var identifiersAsset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(IdentifiersAssetPath);
         var calculatorTemplateAsset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(CalculatorTemplateAssetPath);
@@ -230,11 +191,11 @@ public class DataRecorderEditor : EditorWindow
         }
 
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        string newCalculatorPath = $"{DataRecorderScriptFolderPath}{sceneName}.js";
+        string newCalculatorPath = $"{DataCollectorScriptFolderPath}{sceneName}.js";
 
-        if (!Directory.Exists(DataRecorderScriptFolderPath))
+        if (!Directory.Exists(DataCollectorScriptFolderPath))
         {
-            Directory.CreateDirectory(DataRecorderScriptFolderPath);
+            Directory.CreateDirectory(DataCollectorScriptFolderPath);
         }
 
         AssetDatabase.CopyAsset(CalculatorTemplateAssetPath, newCalculatorPath);
@@ -247,27 +208,32 @@ public class DataRecorderEditor : EditorWindow
             return;
         }
 
-        AssignScriptToCombiner(newRecorderInstance, newCalculatorAsset);
+        AssignScriptToCombiner(dataCollector, newCalculatorAsset);
         calculatorAsset = newCalculatorAsset;
     }
 
-    private void EnsureCalculatorScriptExists()
+    private void EnsureAccessToExpConditions()
     {
-        if (calculatorAsset == null)
-        {
-            DuplicateAndSetupCalculatorScript(customDataRecorder);
-        }
-    }
+        var itemGroupMember = dataCollector.GetComponent<ItemGroupMember>()
+            ?? (dataCollector.AddComponent(typeof(ItemGroupMember)) as ItemGroupMember);
 
-    private void LinkCalculatorScript(GameObject recorder)
-    {
-        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        string calculatorPath = $"{DataRecorderScriptFolderPath}{sceneName}.js";
-        calculatorAsset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(calculatorPath);
-
-        if (calculatorAsset != null)
+        foreach (GameObject obj in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
         {
-            AssignScriptToCombiner(recorder, calculatorAsset);
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) != ExpManagersWrapperPrefabPath) continue;
+            for (int i = 0; i < obj.transform.childCount; i++)
+            {
+                Transform child = obj.transform.GetChild(i);
+                if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == ConditionManagerPrefabPath)
+                {
+                    ItemGroupHost host = child.GetComponent<ItemGroupHost>();
+                    if (host != null)
+                    {
+                        SerializedObject serializedItemGroupMember = new SerializedObject(itemGroupMember);
+                        serializedItemGroupMember.FindProperty("host").objectReferenceValue = host;
+                        serializedItemGroupMember.ApplyModifiedProperties();
+                    }
+                }
+            }
         }
     }
 
@@ -302,9 +268,9 @@ public class DataRecorderEditor : EditorWindow
             return;
         }
 
-        if (customDataRecorder == null)
+        if (dataCollector == null)
         {
-            Debug.LogError("Custom data recorder Gameobject is null.");
+            Debug.LogError("Custom data collector Gameobject is null.");
             return;
         }
 
@@ -345,24 +311,24 @@ public class DataRecorderEditor : EditorWindow
         AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
 
         // Update the script
-        var scriptCombiner = customDataRecorder.GetComponent<ScriptableClusterScriptCombiner>();
+        var scriptCombiner = dataCollector.GetComponent<ScriptableClusterScriptCombiner>();
         if (scriptCombiner != null)
         {
             scriptCombiner.CombineScripts();
         }
         else
         {
-            Debug.LogError("ScriptableClusterScriptCombiner component not found on: " + customDataRecorder.name);
+            Debug.LogError("ScriptableClusterScriptCombiner component not found on: " + dataCollector.name);
         }
 
         LoadCustomDataScripts();
 
-        Debug.Log($"Custom data recorder's script saved to {path}");
+        Debug.Log($"Custom data collector's script saved to {path}");
     }
 
-    private void AssignScriptToCombiner(GameObject recorderInstance, ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset scriptAsset)
+    private void AssignScriptToCombiner(GameObject collectorInstance, ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset scriptAsset)
     {
-        var scriptCombiner = recorderInstance.GetComponent<ScriptableClusterScriptCombiner>();
+        var scriptCombiner = collectorInstance.GetComponent<ScriptableClusterScriptCombiner>();
         if (scriptCombiner != null)
         {
             var identifiersAsset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(IdentifiersAssetPath);
@@ -383,7 +349,7 @@ public class DataRecorderEditor : EditorWindow
         }
         else
         {
-            Debug.LogError("ScriptableClusterScriptCombiner component not found on the CustomDataRecorder instance.");
+            Debug.LogError("ScriptableClusterScriptCombiner component not found on the DataCollector instance.");
         }
     }
 

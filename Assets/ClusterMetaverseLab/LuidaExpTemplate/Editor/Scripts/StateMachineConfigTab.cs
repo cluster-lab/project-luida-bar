@@ -8,7 +8,7 @@ using System.Text;
 using ClusterVR.CreatorKit.Item;
 using ClusterVR.CreatorKit.Item.Implements;
 
-public class StateListEditor : EditorWindow
+public class StateMachineConfigTab : EditorWindow
 {
     private StateList stateList;
     private StateList.State[] previousStates;
@@ -16,7 +16,7 @@ public class StateListEditor : EditorWindow
     private SerializedProperty statesProperty;
     private string statePrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/State.prefab";
     private string trialRestStatePrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/Trial - Rest State.prefab";
-    private const string RequiredObjectsWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
+    private const string ExpManagersWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/LUIDA-ExpManagers.prefab";
     private const string ParticipantManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ParticipantManager.prefab";
     private const string stateListTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/StateList/Template.asset";
     private const string stateManagementScriptFolderPathFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
@@ -1163,7 +1163,7 @@ public class StateListEditor : EditorWindow
             Debug.LogError("FormController not found for CopyWorldItemReferenceListToFormController.");
             return;
         }
-        GameObject expTemplateInstance = FindRequiredObjectsWrapperInstance();
+        GameObject expTemplateInstance = FindExpManagersWrapperInstance();
         if (expTemplateInstance != null)
         {
             Transform worldItemRefListTransform = expTemplateInstance.transform.Find(WorldItemRefListObjectName);
@@ -1194,19 +1194,19 @@ public class StateListEditor : EditorWindow
                     Debug.LogError($"'{WorldItemRefListObjectName}' does not have a WorldItemReferenceList component.");
             }
             else
-                Debug.LogError($"'{WorldItemRefListObjectName}' object not found under ExpTemplateRequiredObjects.");
+                Debug.LogError($"'{WorldItemRefListObjectName}' object not found under LUIDA-ExpManagers.");
         }
         else
-            Debug.LogError("ExpTemplateRequiredObjects prefab instance not found in the scene.");
+            Debug.LogError("LUIDA-ExpManagers prefab instance not found in the scene.");
     }
 
-    private GameObject FindRequiredObjectsWrapperInstance()
+    private GameObject FindExpManagersWrapperInstance()
     {
         GameObject[] rootObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
         foreach (GameObject obj in rootObjects)
         {
             string prefabPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(obj));
-            if (prefabPath == RequiredObjectsWrapperPrefabPath)
+            if (prefabPath == ExpManagersWrapperPrefabPath)
                 return obj;
         }
         return null;
@@ -1317,31 +1317,31 @@ public class StateListEditor : EditorWindow
 
     private GameObject FindOrCreateStatesContainer()
     {
-        GameObject requiredObjectsWrapper = FindRequiredObjectsWrapperInstance();
-        if (requiredObjectsWrapper == null)
+        GameObject expManagersWrapper = FindExpManagersWrapperInstance();
+        if (expManagersWrapper == null)
         {
             // Attempt to create the wrapper if it's missing
-            GameObject wrapperPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(RequiredObjectsWrapperPrefabPath);
+            GameObject wrapperPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(ExpManagersWrapperPrefabPath);
             if (wrapperPrefab != null)
             {
-                requiredObjectsWrapper = (GameObject)PrefabUtility.InstantiatePrefab(wrapperPrefab);
-                requiredObjectsWrapper.name = wrapperPrefab.name; // Remove "(Clone)"
-                Undo.RegisterCreatedObjectUndo(requiredObjectsWrapper, "Create Required Objects Wrapper");
-                Debug.Log("RequiredObjectsWrapper prefab instance created as it was not found.");
+                expManagersWrapper = (GameObject)PrefabUtility.InstantiatePrefab(wrapperPrefab);
+                expManagersWrapper.name = wrapperPrefab.name; // Remove "(Clone)"
+                Undo.RegisterCreatedObjectUndo(expManagersWrapper, "Create Required Objects Wrapper");
+                Debug.Log("ExpManagersWrapper prefab instance created as it was not found.");
             }
             else
             {
-                Debug.LogError($"RequiredObjectsWrapper prefab not found at {RequiredObjectsWrapperPrefabPath}. Cannot create 'States' container.");
+                Debug.LogError($"ExpManagersWrapper prefab not found at {ExpManagersWrapperPrefabPath}. Cannot create 'States' container.");
                 return null;
             }
         }
 
-        Transform statesObjectTransform = requiredObjectsWrapper.transform.Find("States");
+        Transform statesObjectTransform = expManagersWrapper.transform.Find("States");
         if (statesObjectTransform == null)
         {
             GameObject statesObject = new GameObject("States");
             Undo.RegisterCreatedObjectUndo(statesObject, "Create States Container");
-            statesObject.transform.SetParent(requiredObjectsWrapper.transform, false);
+            statesObject.transform.SetParent(expManagersWrapper.transform, false);
             return statesObject;
         }
         return statesObjectTransform.gameObject;
@@ -1433,7 +1433,7 @@ public class StateListEditor : EditorWindow
 
     private GameObject FindStateObject(string stateName)
     {
-        var wrapper = FindRequiredObjectsWrapperInstance();
+        var wrapper = FindExpManagersWrapperInstance();
         if (wrapper == null) return null;
         var statesContainer = wrapper.transform.Find("States");
         if (statesContainer == null) return null;
@@ -1457,7 +1457,7 @@ public class StateListEditor : EditorWindow
 
         foreach (GameObject obj in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
         {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) != RequiredObjectsWrapperPrefabPath) continue;
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) != ExpManagersWrapperPrefabPath) continue;
             for (int i = 0; i < obj.transform.childCount; i++)
             {
                 Transform child = obj.transform.GetChild(i);

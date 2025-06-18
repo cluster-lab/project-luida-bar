@@ -34,7 +34,7 @@ public class LuidaStateListeningItemInspector : Editor
     private const string prefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/StateListeningItem.prefab";
     private const string scriptFolderPathFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
     private const string stateListeningItemScriptTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/StateManagement/StateListeningItemTemplate.js";
-    private const string RequiredObjectsWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
+    private const string ExpManagersWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/LUIDA-ExpManagers.prefab";
     private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
 
     private JavaScriptAsset stateListeningItemScript;
@@ -588,7 +588,7 @@ public class LuidaStateListeningItemInspector : Editor
 
         foreach (GameObject obj in rootObjects)
         {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == RequiredObjectsWrapperPrefabPath)
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == ExpManagersWrapperPrefabPath)
             {
                 for (int i = 0; i < obj.transform.childCount; i++)
                 {

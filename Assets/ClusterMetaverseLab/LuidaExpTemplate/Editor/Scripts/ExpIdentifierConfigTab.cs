@@ -3,7 +3,7 @@ using UnityEngine;
 using System.IO;
 using System.Text.RegularExpressions;
 
-public class ExpIdentifierEditor
+public class ExpIdentifierConfigTab : EditorWindow
 {
     private string expID = "";
     private string token = "";
@@ -25,9 +25,9 @@ public class ExpIdentifierEditor
 
         if (!isSubscribed)
         {
-            TabbedEditor.OnEditorClosed += SaveExpIdentifiers;
-            TabbedEditor.OnEditorClosed += OnDisable;
-            TabbedEditor.OnItemsManagerTabLostFocus += SaveExpIdentifiers;
+            LuidaConfigWindow.OnEditorClosed += SaveExpIdentifiers;
+            LuidaConfigWindow.OnEditorClosed += OnDisable;
+            LuidaConfigWindow.OnItemsManagerTabLostFocus += SaveExpIdentifiers;
             isSubscribed = true;
         }
     }
@@ -36,9 +36,9 @@ public class ExpIdentifierEditor
     {
         if (isSubscribed)
         {
-            TabbedEditor.OnEditorClosed -= SaveExpIdentifiers;
-            TabbedEditor.OnEditorClosed -= OnDisable;
-            TabbedEditor.OnItemsManagerTabLostFocus -= SaveExpIdentifiers;
+            LuidaConfigWindow.OnEditorClosed -= SaveExpIdentifiers;
+            LuidaConfigWindow.OnEditorClosed -= OnDisable;
+            LuidaConfigWindow.OnItemsManagerTabLostFocus -= SaveExpIdentifiers;
             isSubscribed = false;
         }
     }
