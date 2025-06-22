@@ -3,26 +3,30 @@ $.onStart(() => {
   $.groupState.sessionID = Date.now() + "_" +  (Math.random() + 1).toString(36).substring(7);
   $.groupState.participants = []; // array of PlayerHandle who are currently in the experiment
   $.state.participantsEnvInfo = [];
+  $.state.timer = 0;
   
   // TODO: load exp info so that we can check later what environments this experiment requires
 })
 
-$.onUpdate(() => {
-    if ($.getStateCompat("this", "onJoined", "boolean")) {
-        $.setStateCompat("this", "onJoined", false);
-        let pIdfcs = $.groupState.participants.map(p => p.idfc);
-        const newPlayers = $.getPlayersNear($.getPosition(), Infinity)
-            .filter(p => !pIdfcs.includes(p.idfc));
-        if (newPlayers.length > 0) {
-            for (const newPlayer of newPlayers) {
-                // TODO: Check if the player is eligible to join the experiment before adding them to $.groupState.participants.
-                $.groupState.participants = [ ...$.groupState.participants, newPlayer ];
-                $.setPlayerScript(newPlayer);
-                newPlayer.send("envInfoRequest", true);
+$.onUpdate((deltaTime) => {
+    if (!$.groupState.isParticipantsEnough) {
+        $.state.timer += deltaTime;
+        if ($.state.timer >= 3){
+            $.state.timer = 0;
+            let pIdfcs = $.groupState.participants.map(p => p.idfc);
+            const newPlayers = $.getPlayersNear($.getPosition(), Infinity)
+                .filter(p => !pIdfcs.includes(p.idfc));
+            if (newPlayers.length > 0) {
+                for (const newPlayer of newPlayers) {
+                    // TODO: Check if the player is eligible to join the experiment before adding them to $.groupState.participants.
+                    $.groupState.participants = [ ...$.groupState.participants, newPlayer ];
+                    $.setPlayerScript(newPlayer);
+                    newPlayer.send("initializeParticipant", true);
+                }
             }
-        }
-        if (!$.groupState.isParticipantsEnough && $.groupState.participants.length >= pNum) {
-            HandleParticipantsEnough();
+            if (!$.groupState.isParticipantsEnough && $.groupState.participants.length >= pNum) {
+                HandleParticipantsEnough();
+            }
         }
     }
 /*
@@ -78,7 +82,8 @@ $.onReceive((messageType, arg, sender) => {
 function HandleParticipantsEnough() {
   $.log("Participants are enough to start the experiment.");
   $.groupState.isParticipantsEnough = true;
-  $.sendSignalCompat("this", "exp_StartStateTransition");
+    $.sendSignalCompat("this", "exp_playersAreEnough");
+    $.sendSignalCompat("this", "exp_StartStateTransition");
 
   const conditionManager = $.worldItemReference("ConditionManager");
   if (conditionManager) {

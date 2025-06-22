@@ -11,7 +11,8 @@ _.onReceive((id, body, sender) => {
                 haptics.playEffect(effect, body.target);
             }
             break;
-        case "envInfoRequest":
+        case "initializeParticipant":
+            _.setMoveSpeedRate(1);
             _.sendTo(sender, "envInfoResponse", {
                 isAndroid: _.isAndroid,
                 isDesktop: _.isDesktop,

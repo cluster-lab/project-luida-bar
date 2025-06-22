@@ -97,7 +97,7 @@ function addAnswerOption (id, localPos, rot, ansId) {
     const itemHandle = $.createItem(id, $.getPosition().clone().add(localPos.clone().applyQuaternion(rot)), rot);
     $.state.answerOptionUIs = [...$.state.answerOptionUIs, itemHandle];
     $.state.answerOptionLocalPositions = [...$.state.answerOptionLocalPositions, localPos];
-    itemHandle.send("form_init_answer_option", { value: ansId + 1, label: $.state.answerOptions[ansId] });
+    itemHandle.send("form_init_answer_option", { value: ansId + 1, label: $.state.answerOptions[ansId], owner: $.getOwner() });
 }
 
 function spawnNextAnswerOption() {

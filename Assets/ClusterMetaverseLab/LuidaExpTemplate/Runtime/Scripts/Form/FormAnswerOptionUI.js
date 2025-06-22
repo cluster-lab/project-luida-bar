@@ -5,9 +5,6 @@
 $.onStart(() => {
     $.state.answerValue = null;
     $.state.destroyable = false;
-    let owner = $.getOwner();
-    $.setVisiblePlayers([owner]);
-    $.setStateCompat("this", "show", true);
 })
 
 $.onUpdate(() => {
@@ -27,6 +24,9 @@ $.onReceive((messageType, arg, sender) => {
             $.state.formController = sender;
             if (arg["value"]) $.state.answerValue = arg["value"]
             if (arg["label"] && $.subNode("Text")) $.subNode("Text").setText(arg["label"]);
+
+            $.setVisiblePlayers([arg["owner"]]);
+            $.setStateCompat("this", "show", true);
             $.state.destroyable = true;
             break;
         // case "form_destroy_answer_option":
