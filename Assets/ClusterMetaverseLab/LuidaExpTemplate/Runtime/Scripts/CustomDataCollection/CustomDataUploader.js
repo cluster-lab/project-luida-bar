@@ -44,7 +44,7 @@ function uploadDataInit() {
 }
 
 function uploadDataStep() {
-    $.log($.state.uploadIndex);
+    $.log("Upload data step: " + $.state.uploadIndex);
     if ($.state.uploadIndex < Math.ceil($.state.dataLength / dataLengthPerUpload)) {
         const slicedData = Object.fromEntries(
             Object.entries($.state.customData).map(([key, value]) => [
@@ -57,12 +57,13 @@ function uploadDataStep() {
             token: token || "",
             data: slicedData,
             eID: expID || "",
-            sessionID: $.groupState.sessionID || "",
-            pID: "" // $.groupState.participants
-            // pID: $.getPlayersNear($.getPosition().clone(), Infinity)[0].idfc || "" // TODO: retrieve idfc through cluster Player Script
+            pID: $.groupState.participants[0].idfc // TODO: replace with `sessionID: $.groupState.sessionID`
         };
-        $.log(request);
-        $.callExternal(callExternalEndpointID, JSON.stringify(request), "customDataUploaded");
+        $.log(JSON.stringify(request));
+        $.callExternal(
+            new ExternalEndpointId(callExternalEndpointID),
+            JSON.stringify(request),
+            "customDataUploaded");
         $.state.uploadIndex = $.state.uploadIndex + 1;
 
         if ($.state.uploadIndex >= Math.ceil($.state.dataLength / dataLengthPerUpload)) {

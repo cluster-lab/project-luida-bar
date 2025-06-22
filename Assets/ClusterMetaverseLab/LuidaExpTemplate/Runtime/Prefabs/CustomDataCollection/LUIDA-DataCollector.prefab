@@ -86,25 +86,25 @@ MonoBehaviour:
     {\n    $.state.uploadIndex = 0;\n    $.state.elapsedTime = 0;\n    $.state.isUploading
     = true;\n    let firstFileName = Object.keys($.state.customData)[0];\n    if
     (firstFileName) {\n        $.state.dataLength = $.state.customData[firstFileName].length;\n   
-    }\n}\n\nfunction uploadDataStep() {\n    $.log($.state.uploadIndex);\n    if
-    ($.state.uploadIndex < Math.ceil($.state.dataLength / dataLengthPerUpload)) {\n       
-    const slicedData = Object.fromEntries(\n            Object.entries($.state.customData).map(([key,
+    }\n}\n\nfunction uploadDataStep() {\n    $.log(\"Upload data step: \" + $.state.uploadIndex);\n   
+    if ($.state.uploadIndex < Math.ceil($.state.dataLength / dataLengthPerUpload))
+    {\n        const slicedData = Object.fromEntries(\n            Object.entries($.state.customData).map(([key,
     value]) => [\n                key,\n                value.slice($.state.uploadIndex
     * dataLengthPerUpload, ($.state.uploadIndex + 1) * dataLengthPerUpload)\n           
     ])\n        );\n        let request = {\n            type: \"uploadCustomData\",\n           
     token: token || \"\",\n            data: slicedData,\n            eID: expID
-    || \"\",\n            sessionID: $.groupState.sessionID || \"\",\n           
-    pID: \"\" // $.groupState.participants\n            // pID: $.getPlayersNear($.getPosition().clone(),
-    Infinity)[0].idfc || \"\" // TODO: retrieve idfc through cluster Player Script\n       
-    };\n        $.log(request);\n        $.callExternal(callExternalEndpointID, JSON.stringify(request),
-    \"customDataUploaded\");\n        $.state.uploadIndex = $.state.uploadIndex +
-    1;\n\n        if ($.state.uploadIndex >= Math.ceil($.state.dataLength / dataLengthPerUpload))
-    {\n            $.state.uploadIndex = 0;\n            $.state.isUploading = false;\n       
-    }\n    }\n}\n\n$.onExternalCallEnd((res, meta, err) =>\n{\n    if (res == null)
-    {\n        $.log(\"callExternal ERROR: \" + err);\n        return;\n    }\n\n   
-    if (meta === \"customDataUploaded\") {\n        $.log(\"Response after customDataUploaded
-    called: \" + JSON.stringify(res));\n    }\n});\r\nfunction calculateData () {\n   
-    let returnData = $.state.customData;\n    const CONDITION = $.groupState.currentCondition;\n   
+    || \"\",\n            pID: $.groupState.participants[0].idfc // TODO: replace
+    with `sessionID: $.groupState.sessionID`\n        };\n        $.log(JSON.stringify(request));\n       
+    $.callExternal(\n            new ExternalEndpointId(callExternalEndpointID),\n           
+    JSON.stringify(request),\n            \"customDataUploaded\");\n        $.state.uploadIndex
+    = $.state.uploadIndex + 1;\n\n        if ($.state.uploadIndex >= Math.ceil($.state.dataLength
+    / dataLengthPerUpload)) {\n            $.state.uploadIndex = 0;\n           
+    $.state.isUploading = false;\n        }\n    }\n}\n\n$.onExternalCallEnd((res,
+    meta, err) =>\n{\n    if (res == null) {\n        $.log(\"callExternal ERROR:
+    \" + err);\n        return;\n    }\n\n    if (meta === \"customDataUploaded\")
+    {\n        $.log(\"Response after customDataUploaded called: \" + JSON.stringify(res));\n   
+    }\n});\r\nfunction calculateData () {\n    let returnData = $.state.customData;\n   
+    const CONDITION = $.groupState.currentCondition;\n    const PARTICIPANTS = $.groupState.participants;\n   
     return returnData;\n}"
 --- !u!114 &4976748577095326931
 MonoBehaviour:

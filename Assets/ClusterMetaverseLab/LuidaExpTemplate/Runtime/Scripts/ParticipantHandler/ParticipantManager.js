@@ -3,6 +3,8 @@ $.onStart(() => {
   $.groupState.sessionID = Date.now() + "_" +  (Math.random() + 1).toString(36).substring(7);
   $.groupState.participants = []; // array of PlayerHandle who are currently in the experiment
   $.state.participantsEnvInfo = [];
+  
+  // TODO: load exp info so that we can check later what environments this experiment requires
 })
 
 $.onUpdate(() => {
@@ -41,7 +43,7 @@ $.onUpdate(() => {
         eID: expID || "",
         idfcs: newPlayers.map(p => p.idfc).join("|")
       };
-      $.callExternal(callExternalEndpointID, JSON.stringify(request), "joinEligibilityChecked");
+      $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), "joinEligibilityChecked");
     }
   }
 */
@@ -63,16 +65,15 @@ $.onReceive((messageType, arg, sender) => {
                   data: { envInfo: $.state.participantsEnvInfo },
                   token: token || "",
                   eID: expID || "",
-                  pID: "", // sender.idfc,
-                  sessionID: $.groupState.sessionID
+                  pID: $.groupState.sessionID, // TODO: change 'pID' to 'sessionID' 
               };
-              $.callExternal(callExternalEndpointID || "", JSON.stringify(request), "customDataUploaded");
+              $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), "customDataUploaded");
             }
             break;
         default:
             break;
     }
-});
+}, { item: true, player: true });
 
 function HandleParticipantsEnough() {
   $.log("Participants are enough to start the experiment.");

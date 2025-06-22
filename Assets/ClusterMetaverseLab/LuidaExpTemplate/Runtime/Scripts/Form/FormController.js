@@ -26,7 +26,7 @@ $.onUpdate((deltaTime) => {
         const questionnaireID = $.getStateCompat("this", "qID", "integer");
         if (questionnaireID > 0) {
             let request = { type: "questions", token: token || "", eID: expID || "", qID: questionnaireID, startIndex: 0 };
-            $.callExternal(callExternalEndpointID, JSON.stringify(request), "getQuestions");
+            $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), "getQuestions");
         } else {
             $.log("No questionnaire ID (qID) provided or it is invalid.");
         }
@@ -206,7 +206,7 @@ function submitAnswers() {
         token: token || "",
         eID: expID || "",
         qID: $.getStateCompat("this", "qID", "integer").toString() || "1",
-        pID: $.getOwner().idfc || "", // TODO: rename to pIDFC
+        pID: $.getOwner().idfc || "", // TODO: rename to pIdfc, or simply don't send idfc
         pRole: $.getStateCompat("this", "pID", "integer").toString() || "1", // TODO: rename to pID?
         sessionID: $.groupState.sessionID || "",
         answers: $.state.answers
@@ -215,7 +215,7 @@ function submitAnswers() {
     if (conditionManager) {
         conditionManager.send("exp_questionnaire_answer", $.state.answers);
     }
-    $.callExternal(callExternalEndpointID, JSON.stringify(request), "postQuestionAnswers");
+    $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), "postQuestionAnswers");
     $.setStateCompat("this", "form_set_content_active", false);
     reset(false);
 }
@@ -274,7 +274,7 @@ $.onExternalCallEnd((res, meta, err) => {
             const questionnaireID = $.getStateCompat("this", "qID", "integer");
             if (questionnaireID !== -1) {
                 let request = { type: "questions", token: token || "", eID: expID || "", qID: questionnaireID, startIndex: $.state.questions.length };
-                $.callExternal(callExternalEndpointID, JSON.stringify(request), "getQuestions");
+                $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), "getQuestions");
             }
         }
     }

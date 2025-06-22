@@ -81,7 +81,7 @@ public class DataCollectorConfigTab : EditorWindow
                 EditorGUILayout.LabelField("List Name to save custom data", GUILayout.Width(180));
                 customDataListNames[i] = EditorGUILayout.TextField(customDataListNames[i], GUILayout.Width(100));
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Remove this Colected Data Entry", GUILayout.Width(150)))
+                if (GUILayout.Button("Remove this Colected Data Entry", GUILayout.Width(250)))
                 {
                     // Show warning before removing
                     if (EditorUtility.DisplayDialog("Remove Colected Data Entry",
@@ -278,8 +278,9 @@ public class DataCollectorConfigTab : EditorWindow
         StringBuilder scriptBuilder = new StringBuilder();
         scriptBuilder.Append("function calculateData () {\n");
         scriptBuilder.Append("  let returnData = $.state.customData;\n");
-        scriptBuilder.Append("  const CONDITION = $.groupState.currentCondition;\n\n");
-
+        scriptBuilder.Append("  const CONDITION = $.groupState.currentCondition;\n");
+        scriptBuilder.Append("  const PARTICIPANTS = $.groupState.participants;\n\n");
+        
         for (int i = 0; i < customDataListNames.Count; i++)
         {
             string listName = customDataListNames[i];

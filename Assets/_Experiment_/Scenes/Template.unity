@@ -311,18 +311,17 @@ PrefabInstance:
         {\n    $.state.uploadIndex = 0;\n    $.state.elapsedTime = 0;\n    $.state.isUploading
         = true;\n    let firstFileName = Object.keys($.state.customData)[0];\n   
         if (firstFileName) {\n        $.state.dataLength = $.state.customData[firstFileName].length;\n   
-        }\n}\n\nfunction uploadDataStep() {\n    $.log($.state.uploadIndex);\n   
+        }\n}\n\nfunction uploadDataStep() {\n    $.log(\"Upload data step: \" + $.state.uploadIndex);\n   
         if ($.state.uploadIndex < Math.ceil($.state.dataLength / dataLengthPerUpload))
         {\n        const slicedData = Object.fromEntries(\n            Object.entries($.state.customData).map(([key,
         value]) => [\n                key,\n                value.slice($.state.uploadIndex
         * dataLengthPerUpload, ($.state.uploadIndex + 1) * dataLengthPerUpload)\n           
         ])\n        );\n        let request = {\n            type: \"uploadCustomData\",\n           
         token: token || \"\",\n            data: slicedData,\n            eID: expID
-        || \"\",\n            sessionID: $.groupState.sessionID || \"\",\n           
-        pID: \"\" // $.groupState.participants\n            // pID: $.getPlayersNear($.getPosition().clone(),
-        Infinity)[0].idfc || \"\" // TODO: retrieve idfc through cluster Player Script\n       
-        };\n        $.log(request);\n        $.callExternal(callExternalEndpointID,
-        JSON.stringify(request), \"customDataUploaded\");\n        $.state.uploadIndex
+        || \"\",\n            pID: $.groupState.participants[0].idfc // TODO: replace
+        with `sessionID: $.groupState.sessionID`\n        };\n        $.log(JSON.stringify(request));\n       
+        $.callExternal(\n            new ExternalEndpointId(callExternalEndpointID),\n           
+        JSON.stringify(request),\n            \"customDataUploaded\");\n        $.state.uploadIndex
         = $.state.uploadIndex + 1;\n\n        if ($.state.uploadIndex >= Math.ceil($.state.dataLength
         / dataLengthPerUpload)) {\n            $.state.uploadIndex = 0;\n           
         $.state.isUploading = false;\n        }\n    }\n}\n\n$.onExternalCallEnd((res,
@@ -330,7 +329,12 @@ PrefabInstance:
         \" + err);\n        return;\n    }\n\n    if (meta === \"customDataUploaded\")
         {\n        $.log(\"Response after customDataUploaded called: \" + JSON.stringify(res));\n   
         }\n});\r\nfunction calculateData () {\n  let returnData = $.state.customData;\n 
-        const CONDITION = $.groupState.currentCondition;\n\n  return returnData;\n}\n"
+        const CONDITION = $.groupState.currentCondition;\n  const PARTICIPANTS =
+        $.groupState.participants;\n\n  function saveData_example() {\nreturn { foo:
+        \"bar\" };\n    return {};\n  }\n  const newRecord_example = saveData_example();\n 
+        if (\"example\" in returnData && Array.isArray(returnData[\"example\"]))
+        {\n    returnData[\"example\"].push(newRecord_example);\n  } else {\n   
+        returnData[\"example\"] = [newRecord_example];\n  }\n\n  return returnData;\n}\n"
       objectReference: {fileID: 0}
     - target: {fileID: 8273925800708392170, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
@@ -525,6 +529,66 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 320188938653792925, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: sourceCode
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
+        = \"callExternalEndpointID_example\";\npNum = 1;\n\r\n$.onStart(() => {\n 
+        $.groupState.isParticipantsEnough = false;\n  $.groupState.sessionID = Date.now()
+        + \"_\" +  (Math.random() + 1).toString(36).substring(7);\n  $.groupState.participants
+        = []; // array of PlayerHandle who are currently in the experiment\n  $.state.participantsEnvInfo
+        = [];\n  \n  // TODO: load exp info so that we can check later what environments
+        this experiment requires\n})\n\n$.onUpdate(() => {\n    if ($.getStateCompat(\"this\",
+        \"onJoined\", \"boolean\")) {\n        $.setStateCompat(\"this\", \"onJoined\",
+        false);\n        let pIdfcs = $.groupState.participants.map(p => p.idfc);\n       
+        const newPlayers = $.getPlayersNear($.getPosition(), Infinity)\n           
+        .filter(p => !pIdfcs.includes(p.idfc));\n        if (newPlayers.length >
+        0) {\n            for (const newPlayer of newPlayers) {\n               
+        // TODO: Check if the player is eligible to join the experiment before adding
+        them to $.groupState.participants.\n                $.groupState.participants
+        = [ ...$.groupState.participants, newPlayer ];\n                $.setPlayerScript(newPlayer);\n               
+        newPlayer.send(\"envInfoRequest\", true);\n            }\n        }\n       
+        if (!$.groupState.isParticipantsEnough && $.groupState.participants.length
+        >= pNum) {\n            HandleParticipantsEnough();\n        }\n    }\n/*\n 
+        if ($.getStateCompat(\"this\", \"exp_checkJoinEligibility\", \"boolean\"))
+        {\n    $.setStateCompat(\"this\", \"exp_checkJoinEligibility\", false);\n\n   
+        let pIdfcs = $.groupState.participants.map(p => p.idfc);\n    const newPlayers
+        = $.getPlayersNear($.getPosition(), 1)\n      .filter(p => !pIDFCs.includes(p.idfc));\n   
+        \n    if (newPlayers.length > 0) {\n      $.state.newPlayers = newPlayers;\n     
+        $.log(newPlayers[0].idfc);\n\n      const request = {\n        type: \"checkJoinEligibility\",\n       
+        token: token || \"\",\n        eID: expID || \"\",\n        idfcs: newPlayers.map(p
+        => p.idfc).join(\"|\")\n      };\n      $.callExternal(new ExternalEndpointId(callExternalEndpointID),
+        JSON.stringify(request), \"joinEligibilityChecked\");\n    }\n  }\n*/\n})\n\n$.onReceive((messageType,
+        arg, sender) => {\n    switch (messageType) {\n        case \"envInfoResponse\":\n           
+        $.state.participantsEnvInfo = [\n              ...$.state.participantsEnvInfo,\n             
+        {\n                idfc: sender.idfc,\n                envInfo: arg\n             
+        }\n            ]\n            if ($.state.participantsEnvInfo.length >= pNum)
+        {\n              let request = {\n                  type: \"uploadCustomData\",\n                 
+        data: { envInfo: $.state.participantsEnvInfo },\n                  token:
+        token || \"\",\n                  eID: expID || \"\",\n                 
+        pID: $.groupState.sessionID, // TODO: change 'pID' to 'sessionID' \n             
+        };\n              $.callExternal(new ExternalEndpointId(callExternalEndpointID),
+        JSON.stringify(request), \"customDataUploaded\");\n            }\n           
+        break;\n        default:\n            break;\n    }\n}, { item: true, player:
+        true });\n\nfunction HandleParticipantsEnough() {\n  $.log(\"Participants
+        are enough to start the experiment.\");\n  $.groupState.isParticipantsEnough
+        = true;\n  $.sendSignalCompat(\"this\", \"exp_StartStateTransition\");\n\n 
+        const conditionManager = $.worldItemReference(\"ConditionManager\");\n  if
+        (conditionManager) {\n    conditionManager.send(\"luida_participants_info\",
+        {\n      participants: $.groupState.participants,\n      sessionID: $.groupState.sessionID\n   
+        });\n  }\n}\n\n/*\n$.onExternalCallEnd((res, meta, err) =>\n{\n  if (res
+        == null) {\n    $.log(\"callExternal ERROR: \" + err);\n    return;\n  }\n\n 
+        if (meta === \"joinEligibilityChecked\") {\n    const parsedRes = JSON.parse(res);\n   
+        $.state.newPlayers.forEach(newPlayer => {\n      if (parsedRes.ineligibleIdfcs.includes(newPlayer.idfc))
+        {\n        // TODO: Show message about that this player is not eligible to
+        join this experiment, and teleport the player back to LUIDA bar world.\n     
+        } else {\n        newPlayer.setMoveSpeedRate(1);\n        $.groupState.participants
+        = [ ...$.groupState.participants, newPlayer ];\n        // TODO: Instead
+        of enabling move, teleport the player from the checking area to the task
+        area.\n      }\n    });\n    \n    $.state.newPlayers = [];\n    $.log(\"Only
+        users who have not joined this experiment before are allowed to proceed to
+        the experiment.\");\n  }\n});\n*/\n"
+      objectReference: {fileID: 0}
     - target: {fileID: 908684358854966727, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: m_Name

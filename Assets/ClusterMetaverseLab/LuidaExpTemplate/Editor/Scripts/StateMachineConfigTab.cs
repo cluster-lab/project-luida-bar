@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEditor;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ public class StateMachineConfigTab : EditorWindow
     private string trialRestStatePrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/Trial - Rest State.prefab";
     private const string ExpManagersWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/LUIDA-ExpManagers.prefab";
     private const string ParticipantManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ParticipantManager.prefab";
+    private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
     private const string stateListTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/StateList/Template.asset";
     private const string stateManagementScriptFolderPathFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
     private const string stateListeningItemPrefabPath = "Assets/ClusterVR.CreatorKit.Item.Implements.StateListeningItem"; //Fixed this Path
@@ -993,7 +995,7 @@ public class StateMachineConfigTab : EditorWindow
 
                 UpdateID(formController, "qID", qIDToSet);
                 UpdateID(formController, "pID", i);
-                CopyWorldItemReferenceListToFormController(formController);
+                AddControllerManagerToWorldItemReferenceList(formController);
                 Debug.Log($"Questionnaire added to {stateNameInAsset} with qID {qIDToSet} and pID {i}");
             }
         }
@@ -1156,11 +1158,11 @@ public class StateMachineConfigTab : EditorWindow
         }
     }
 
-    private void CopyWorldItemReferenceListToFormController(GameObject formController)
+    private void AddControllerManagerToWorldItemReferenceList(GameObject formController)
     {
         if (formController == null)
         {
-            Debug.LogError("FormController not found for CopyWorldItemReferenceListToFormController.");
+            Debug.LogError("FormController not found for AddControllerManagerToWorldItemReferenceList.");
             return;
         }
         GameObject expTemplateInstance = FindExpManagersWrapperInstance();
@@ -1173,22 +1175,23 @@ public class StateMachineConfigTab : EditorWindow
                 if (worldItemRefComponentSource != null)
                 {
                     var existingRefList = formController.GetComponent<WorldItemReferenceList>();
-                    if (existingRefList != null)
+                    if (existingRefList == null)
                     {
-                        DestroyImmediate(existingRefList, true);
+                        existingRefList = formController.AddComponent(typeof(WorldItemReferenceList)) as WorldItemReferenceList;
                     }
-
-                    if (UnityEditorInternal.ComponentUtility.CopyComponent(worldItemRefComponentSource))
+                    var conditionManagerObj = FindConditionManagerGameObject();
+                    if (conditionManagerObj != null)
                     {
-                        if (!UnityEditorInternal.ComponentUtility.PasteComponentAsNew(formController))
-                        {
-                            Debug.LogError("Failed to paste WorldItemReferenceList component to FormController.");
-                        }
+                        SerializedObject serializedRefList = new SerializedObject(existingRefList);
+                        var prop = serializedRefList.FindProperty("worldItemReferences");
+                        prop.InsertArrayElementAtIndex(0);
+                        var refItem = prop.GetArrayElementAtIndex(0);
+                        refItem.FindPropertyRelative("id").stringValue = "ConditionManager";
+                        refItem.FindPropertyRelative("item").objectReferenceValue = conditionManagerObj.GetComponent<Item>();
+                        serializedRefList.ApplyModifiedProperties();
                     }
                     else
-                    {
-                        Debug.LogError("Failed to copy WorldItemReferenceList component.");
-                    }
+                        Debug.LogError("ConditionManager not found in the scene.");
                 }
                 else
                     Debug.LogError($"'{WorldItemRefListObjectName}' does not have a WorldItemReferenceList component.");
@@ -1198,6 +1201,25 @@ public class StateMachineConfigTab : EditorWindow
         }
         else
             Debug.LogError("LUIDA-ExpManagers prefab instance not found in the scene.");
+    }
+    
+    public static GameObject FindConditionManagerGameObject()
+    {
+        foreach (var root in SceneManager.GetActiveScene().GetRootGameObjects())
+        {
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(root) != ExpManagersWrapperPrefabPath)
+                continue;
+
+            foreach (Transform child in root.transform)
+            {
+                if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject)
+                    == ConditionManagerPrefabPath)
+                {
+                    return child.gameObject;
+                }
+            }
+        }
+        return null;
     }
 
     private GameObject FindExpManagersWrapperInstance()
@@ -1218,6 +1240,7 @@ public class StateMachineConfigTab : EditorWindow
         sb.AppendLine($"function {functionName}({extraParameters}) {{");
         sb.AppendLine("  const STATE_ID = $.state.state_id;");
         sb.AppendLine("  const CONDITION = $.groupState.currentCondition;");
+        sb.AppendLine("  const PARTICIPANTS = $.groupState.participants;");
         sb.AppendLine("");
 
         var groupedListeners = listeners

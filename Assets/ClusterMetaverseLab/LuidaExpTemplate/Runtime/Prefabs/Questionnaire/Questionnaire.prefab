@@ -637,26 +637,26 @@ MonoBehaviour:
     // Reintroduced callExternal to get questions\n        const questionnaireID
     = $.getStateCompat(\"this\", \"qID\", \"integer\");\n        if (questionnaireID
     > 0) {\n            let request = { type: \"questions\", token: token || \"\",
-    eID: expID || \"\", qID: questionnaireID, startIndex: 0 };\n            $.callExternal(callExternalEndpointID,
-    JSON.stringify(request), \"getQuestions\");\n        } else {\n            $.log(\"No
-    questionnaire ID (qID) provided or it is invalid.\");\n        }\n    }\n\n   
-    if ($.state.tryInitQuestion && !$.state.answerOptionUIs.some(ans => ans.exists()))
-    {\n        initQuestion();\n    }\n\n    // Timer to trigger batch generation
-    of answer options\n    $.state.timer = ($.state.timer || 0) + deltaTime;\n   
-    if ($.state.timer > 0.2 && $.state.pendingAnswerOptions && $.state.pendingAnswerOptions.length
-    > 0) {\n        spawnNextAnswerOption();\n        $.state.timer = 0; // Reset
-    the timer after generating a batch\n    }\n});\n\n$.onInteract(() => {\n    $.setStateCompat(\"this\",
-    \"form_set_content_active\", true);\n    $.setStateCompat(\"this\", \"form_set_start_hint_active\",
-    false);\n});\n\n$.onReceive((messageType, arg) => {\n    if (!$.state.isInitiated)
-    return;\n    switch (messageType) {\n        case \"form_answer\":\n           
-    handleFormAnswer(arg);\n            break;\n        case \"form_to_next\":\n           
-    saveAnswer();\n            break;\n        case \"form_to_prev\":\n           
-    toPrev();\n            break;\n    }\n});\n\nfunction tryInitQuestion() {\n   
-    $.state.tryInitQuestion = true;\n}\n\nfunction initQuestion() {\n    // Prepare
-    to stop destruction of answer options and initialize a new question\n    $.setStateCompat(\"owner\",
-    \"form_destroy_answer_option\", false);\n    $.state.tryInitQuestion = false;\n   
-    $.state.answerOptionUIs = [];\n    $.state.answerOptionLocalPositions = [];\n   
-    const q = $.state.questions[$.state.qID];\n    $.subNode(\"Title\").setText(splitTextByWidth(q.t,
+    eID: expID || \"\", qID: questionnaireID, startIndex: 0 };\n            $.callExternal(new
+    ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), \"getQuestions\");\n       
+    } else {\n            $.log(\"No questionnaire ID (qID) provided or it is invalid.\");\n       
+    }\n    }\n\n    if ($.state.tryInitQuestion && !$.state.answerOptionUIs.some(ans
+    => ans.exists())) {\n        initQuestion();\n    }\n\n    // Timer to trigger
+    batch generation of answer options\n    $.state.timer = ($.state.timer || 0)
+    + deltaTime;\n    if ($.state.timer > 0.2 && $.state.pendingAnswerOptions &&
+    $.state.pendingAnswerOptions.length > 0) {\n        spawnNextAnswerOption();\n       
+    $.state.timer = 0; // Reset the timer after generating a batch\n    }\n});\n\n$.onInteract(()
+    => {\n    $.setStateCompat(\"this\", \"form_set_content_active\", true);\n   
+    $.setStateCompat(\"this\", \"form_set_start_hint_active\", false);\n});\n\n$.onReceive((messageType,
+    arg) => {\n    if (!$.state.isInitiated) return;\n    switch (messageType) {\n       
+    case \"form_answer\":\n            handleFormAnswer(arg);\n            break;\n       
+    case \"form_to_next\":\n            saveAnswer();\n            break;\n       
+    case \"form_to_prev\":\n            toPrev();\n            break;\n    }\n});\n\nfunction
+    tryInitQuestion() {\n    $.state.tryInitQuestion = true;\n}\n\nfunction initQuestion()
+    {\n    // Prepare to stop destruction of answer options and initialize a new
+    question\n    $.setStateCompat(\"owner\", \"form_destroy_answer_option\", false);\n   
+    $.state.tryInitQuestion = false;\n    $.state.answerOptionUIs = [];\n    $.state.answerOptionLocalPositions
+    = [];\n    const q = $.state.questions[$.state.qID];\n    $.subNode(\"Title\").setText(splitTextByWidth(q.t,
     50));\n    $.subNode(\"Description\").setText(splitTextByWidth(q.d, 100));\n   
     $.state.questionTypeID = q.i;\n    $.state.answerOptions = Array.isArray(q.a)\n       
     ? q.a\n        : (typeof q.a === \"string\" ? q.a.split(\",\") : []) ;\n    if
@@ -721,15 +721,16 @@ MonoBehaviour:
     let request = {\n        type: \"questionAnswers\",\n        token: token ||
     \"\",\n        eID: expID || \"\",\n        qID: $.getStateCompat(\"this\", \"qID\",
     \"integer\").toString() || \"1\",\n        pID: $.getOwner().idfc || \"\", //
-    TODO: rename to pIDFC\n        pRole: $.getStateCompat(\"this\", \"pID\", \"integer\").toString()
-    || \"1\", // TODO: rename to pID?\n        sessionID: $.groupState.sessionID
-    || \"\",\n        answers: $.state.answers\n    };\n    const conditionManager
-    = $.worldItemReference(\"ConditionManager\");\n    if (conditionManager) {\n       
-    conditionManager.send(\"exp_questionnaire_answer\", $.state.answers);\n    }\n   
-    $.callExternal(callExternalEndpointID, JSON.stringify(request), \"postQuestionAnswers\");\n   
-    $.setStateCompat(\"this\", \"form_set_content_active\", false);\n    reset(false);\n}\n\nfunction
-    toNext() {\n    destroyAnswerOptionUIs(); // Ensure previous UI elements are
-    destroyed\n    $.state.qID = $.state.qID + 1;\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\n   
+    TODO: rename to pIdfc, or simply don't send idfc\n        pRole: $.getStateCompat(\"this\",
+    \"pID\", \"integer\").toString() || \"1\", // TODO: rename to pID?\n        sessionID:
+    $.groupState.sessionID || \"\",\n        answers: $.state.answers\n    };\n   
+    const conditionManager = $.worldItemReference(\"ConditionManager\");\n    if
+    (conditionManager) {\n        conditionManager.send(\"exp_questionnaire_answer\",
+    $.state.answers);\n    }\n    $.callExternal(new ExternalEndpointId(callExternalEndpointID),
+    JSON.stringify(request), \"postQuestionAnswers\");\n    $.setStateCompat(\"this\",
+    \"form_set_content_active\", false);\n    reset(false);\n}\n\nfunction toNext()
+    {\n    destroyAnswerOptionUIs(); // Ensure previous UI elements are destroyed\n   
+    $.state.qID = $.state.qID + 1;\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\n   
     if ($.state.qID >= $.state.questions.length) {\n        submitAnswers();\n   
     } else {\n        $.state.tmpAnswer = null;\n        tryInitQuestion();\n   
     }\n}\n\nfunction toPrev() {\n    if ($.state.qID <= 0) return;\n    destroyAnswerOptionUIs();
@@ -751,17 +752,17 @@ MonoBehaviour:
     {\n            const questionnaireID = $.getStateCompat(\"this\", \"qID\", \"integer\");\n           
     if (questionnaireID !== -1) {\n                let request = { type: \"questions\",
     token: token || \"\", eID: expID || \"\", qID: questionnaireID, startIndex: $.state.questions.length
-    };\n                $.callExternal(callExternalEndpointID, JSON.stringify(request),
-    \"getQuestions\");\n            }\n        }\n    }\n\n    if (meta === \"postQuestionAnswers\")
-    {\n        $.log(\"Answers recorded!\");\n        $.sendSignalCompat(\"this\",
-    \"state_triggerTransition\");\n        reset(false);\n    }\n});\n\nfunction
-    splitTextByWidth(text, maxWidth = 50) {\n    const lines = [];\n    let currentLine
-    = '';\n    let currentWidth = 0;\n\n    for (const char of text) {\n        //
-    Check if the character is full-width (2 bytes in UTF-16)\n        const charWidth
-    = char.match(/[^\\x00-\\x7F]/) ? 2 : 1;\n\n        if (currentWidth + charWidth
-    > maxWidth) {\n        lines.push(currentLine);\n        currentLine = '';\n       
-    currentWidth = 0;\n        }\n\n        currentLine += char;\n        currentWidth
-    += charWidth;\n    }\n\n    if (currentLine) {\n        lines.push(currentLine);\n   
+    };\n                $.callExternal(new ExternalEndpointId(callExternalEndpointID),
+    JSON.stringify(request), \"getQuestions\");\n            }\n        }\n    }\n\n   
+    if (meta === \"postQuestionAnswers\") {\n        $.log(\"Answers recorded!\");\n       
+    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n        reset(false);\n   
+    }\n});\n\nfunction splitTextByWidth(text, maxWidth = 50) {\n    const lines =
+    [];\n    let currentLine = '';\n    let currentWidth = 0;\n\n    for (const char
+    of text) {\n        // Check if the character is full-width (2 bytes in UTF-16)\n       
+    const charWidth = char.match(/[^\\x00-\\x7F]/) ? 2 : 1;\n\n        if (currentWidth
+    + charWidth > maxWidth) {\n        lines.push(currentLine);\n        currentLine
+    = '';\n        currentWidth = 0;\n        }\n\n        currentLine += char;\n       
+    currentWidth += charWidth;\n    }\n\n    if (currentLine) {\n        lines.push(currentLine);\n   
     }\n\n    return lines.join('\\n');\n}\n"
 --- !u!114 &5697374075709122382
 MonoBehaviour:

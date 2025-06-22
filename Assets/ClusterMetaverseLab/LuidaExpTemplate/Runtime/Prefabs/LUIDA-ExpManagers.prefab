@@ -261,6 +261,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2089283526597471262, guid: d54fd1885b76d47d9bd9a3a2f0675afb,
+        type: 3}
+      propertyPath: sourceCode
+      value: "const haptics = _.hapticsHandle;\n\n_.onReceive((id, body, sender)
+        => {\n    switch (id) {\n        case \"haptics\":\n            if (haptics.isAvailable())
+        {\n                const effect = new HapticsEffect();\n                effect.frequency
+        = body.frequency;\n                effect.amplitude = body.amplitude;\n               
+        effect.duration = body.duration;\n                haptics.playEffect(effect,
+        body.target);\n            }\n            break;\n        case \"envInfoRequest\":\n           
+        _.sendTo(sender, \"envInfoResponse\", {\n                isAndroid: _.isAndroid,\n               
+        isDesktop: _.isDesktop,\n                isIos: _.isIos,\n               
+        isMacOs: _.isMacOs,\n                isMobile: _.isMobile,\n               
+        isVr: _.isVr,\n                isWindows: _.isWindows\n            });\n           
+        break;\n        default:\n            break;\n    }\n});\n"
+      objectReference: {fileID: 0}
     - target: {fileID: 3933797981565559285, guid: d54fd1885b76d47d9bd9a3a2f0675afb,
         type: 3}
       propertyPath: sourceCode
@@ -269,13 +284,15 @@ PrefabInstance:
         $.groupState.isParticipantsEnough = false;\n  $.groupState.sessionID = Date.now()
         + \"_\" +  (Math.random() + 1).toString(36).substring(7);\n  $.groupState.participants
         = []; // array of PlayerHandle who are currently in the experiment\n  $.state.participantsEnvInfo
-        = [];\n})\n\n$.onUpdate(() => {\n    if ($.getStateCompat(\"this\", \"onJoined\",
-        \"boolean\")) {\n        $.setStateCompat(\"this\", \"onJoined\", false);\n       
-        let pIdfcs = $.groupState.participants.map(p => p.idfc);\n        const newPlayers
-        = $.getPlayersNear($.getPosition(), Infinity)\n            .filter(p => !pIdfcs.includes(p.idfc));\n       
-        if (newPlayers.length > 0) {\n            for (const newPlayer of newPlayers)
-        {\n                // TODO: Check if the player is eligible to join the experiment
-        before adding them to $.groupState.participants.\n                $.groupState.participants
+        = [];\n  \n  // TODO: load exp info so that we can check later what environments
+        this experiment requires\n})\n\n$.onUpdate(() => {\n    if ($.getStateCompat(\"this\",
+        \"onJoined\", \"boolean\")) {\n        $.setStateCompat(\"this\", \"onJoined\",
+        false);\n        let pIdfcs = $.groupState.participants.map(p => p.idfc);\n       
+        const newPlayers = $.getPlayersNear($.getPosition(), Infinity)\n           
+        .filter(p => !pIdfcs.includes(p.idfc));\n        if (newPlayers.length >
+        0) {\n            for (const newPlayer of newPlayers) {\n               
+        // TODO: Check if the player is eligible to join the experiment before adding
+        them to $.groupState.participants.\n                $.groupState.participants
         = [ ...$.groupState.participants, newPlayer ];\n                $.setPlayerScript(newPlayer);\n               
         newPlayer.send(\"envInfoRequest\", true);\n            }\n        }\n       
         if (!$.groupState.isParticipantsEnough && $.groupState.participants.length
@@ -287,7 +304,7 @@ PrefabInstance:
         \n    if (newPlayers.length > 0) {\n      $.state.newPlayers = newPlayers;\n     
         $.log(newPlayers[0].idfc);\n\n      const request = {\n        type: \"checkJoinEligibility\",\n       
         token: token || \"\",\n        eID: expID || \"\",\n        idfcs: newPlayers.map(p
-        => p.idfc).join(\"|\")\n      };\n      $.callExternal(callExternalEndpointID,
+        => p.idfc).join(\"|\")\n      };\n      $.callExternal(new ExternalEndpointId(callExternalEndpointID),
         JSON.stringify(request), \"joinEligibilityChecked\");\n    }\n  }\n*/\n})\n\n$.onReceive((messageType,
         arg, sender) => {\n    switch (messageType) {\n        case \"envInfoResponse\":\n           
         $.state.participantsEnvInfo = [\n              ...$.state.participantsEnvInfo,\n             
@@ -296,10 +313,11 @@ PrefabInstance:
         {\n              let request = {\n                  type: \"uploadCustomData\",\n                 
         data: { envInfo: $.state.participantsEnvInfo },\n                  token:
         token || \"\",\n                  eID: expID || \"\",\n                 
-        pID: \"\", // sender.idfc,\n                  sessionID: $.groupState.sessionID\n             
-        };\n              $.callExternal(callExternalEndpointID || \"\", JSON.stringify(request),
-        \"customDataUploaded\");\n            }\n            break;\n        default:\n           
-        break;\n    }\n});\n\nfunction HandleParticipantsEnough() {\n  $.log(\"Participants
+        pID: $.groupState.sessionID, // TODO: change 'pID' to 'sessionID' \n             
+        };\n              $.callExternal(new ExternalEndpointId(callExternalEndpointID),
+        JSON.stringify(request), \"customDataUploaded\");\n            }\n           
+        break;\n        default:\n            break;\n    }\n}, { item: true, player:
+        true });\n\nfunction HandleParticipantsEnough() {\n  $.log(\"Participants
         are enough to start the experiment.\");\n  $.groupState.isParticipantsEnough
         = true;\n  $.sendSignalCompat(\"this\", \"exp_StartStateTransition\");\n\n 
         const conditionManager = $.worldItemReference(\"ConditionManager\");\n  if

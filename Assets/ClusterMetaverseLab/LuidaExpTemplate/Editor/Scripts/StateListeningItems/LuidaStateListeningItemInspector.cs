@@ -536,7 +536,8 @@ public class LuidaStateListeningItemInspector : Editor
         // Build the function signature, optionally adding extra parameters.
         var content = $"function {functionName}({extraParameters}) {{\n";
         content += "  const STATE_ID = $.state.state_id;\n";
-        content += "  const CONDITION = $.groupState.currentCondition;\n\n";
+        content += "  const CONDITION = $.groupState.currentCondition;\n";
+        content += "  const PARTICIPANTS = $.groupState.participants;\n\n";
 
         // Aggregate action content from all listeners of the item
         foreach (var listenerData in stateListeners)
