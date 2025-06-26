@@ -4,7 +4,7 @@ $.onInteract(() => {
 
 $.onReceive((messageType, arg) => {
     switch (messageType) {
-        case "setOwner":
+        case "setParticipant":
             $.requestOwner(arg);
             $.setVisiblePlayers([arg]);
             break;

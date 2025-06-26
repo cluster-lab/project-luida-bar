@@ -1,18 +1,20 @@
 $.onStart(() => {
     reset();
-    $.state.isOwnerSet = false;
+    $.state.isParticipantAssigned = false;
+    $.groupState.qCompletedCount = 0;
 });
 
 $.onUpdate((deltaTime) => {
-    if (!$.state.isOwnerSet && $.groupState.isParticipantsEnough) {
+    if (!$.state.isParticipantAssigned && $.groupState.isParticipantsEnough) {
         let player = $.groupState.participants[($.getStateCompat("this", "pID", "integer") - 1) || 0];
+        $.state.participant = player;
         $.requestOwner(player);
         $.setVisiblePlayers([player]);
 
-        $.worldItemReference("PrevButton").send("setOwner", player);
-        $.worldItemReference("NextButton").send("setOwner", player);
+        $.worldItemReference("PrevButton").send("setParticipant", player);
+        $.worldItemReference("NextButton").send("setParticipant", player);
 
-        $.state.isOwnerSet = true;
+        $.state.isParticipantAssigned = true;
     }
 
     // Ensure that the question is only initialized after all currently displayed answer options are destroyed
@@ -20,7 +22,14 @@ $.onUpdate((deltaTime) => {
         $.state.isInitiated = true;
         $.state.qID = 0;
         $.state.questions = [];
-        $.subNode("LoadingHint").setEnabled(true);
+        $.setStateCompat("this", "form_show_start_hint", false);
+        $.setStateCompat("this", "form_show_loading_bar", true);
+        $.state.participant.send("setQuestionnaireUI", {
+            n: "LoadingText",
+            e: true,
+            p: $.subNode("LoadingBar").getGlobalPosition(),
+            r: $.subNode("LoadingBar").getGlobalRotation(),
+        });
 
         // Reintroduced callExternal to get questions
         const questionnaireID = $.getStateCompat("this", "qID", "integer");
@@ -46,7 +55,6 @@ $.onUpdate((deltaTime) => {
 
 $.onInteract(() => {
     $.setStateCompat("this", "form_set_content_active", true);
-    $.setStateCompat("this", "form_set_start_hint_active", false);
 });
 
 $.onReceive((messageType, arg) => {
@@ -70,13 +78,26 @@ function tryInitQuestion() {
 
 function initQuestion() {
     // Prepare to stop destruction of answer options and initialize a new question
-    $.setStateCompat("owner", "form_destroy_answer_option", false);
     $.state.tryInitQuestion = false;
     $.state.answerOptionUIs = [];
     $.state.answerOptionLocalPositions = [];
     const q = $.state.questions[$.state.qID];
-    $.subNode("Title").setText(splitTextByWidth(q.t, 50));
-    $.subNode("Description").setText(splitTextByWidth(q.d, 100));
+    $.state.participant?.send("setQuestionnaireUIs", [
+        {
+            n: "Title",
+            e: true,
+            p: $.subNode("Title").getGlobalPosition(),
+            r: $.subNode("Title").getGlobalRotation(),
+            t: q.t
+        },
+        {
+            n: "Description",
+            e: true,
+            p: $.subNode("Description").getGlobalPosition(),
+            r: $.subNode("Description").getGlobalRotation(),
+            t: q.d
+        }
+    ]);
     $.state.questionTypeID = q.i;
     $.state.answerOptions = Array.isArray(q.a)
         ? q.a
@@ -97,13 +118,27 @@ function addAnswerOption (id, localPos, rot, ansId) {
     const itemHandle = $.createItem(id, $.getPosition().clone().add(localPos.clone().applyQuaternion(rot)), rot);
     $.state.answerOptionUIs = [...$.state.answerOptionUIs, itemHandle];
     $.state.answerOptionLocalPositions = [...$.state.answerOptionLocalPositions, localPos];
-    itemHandle.send("form_init_answer_option", { value: ansId + 1, label: $.state.answerOptions[ansId], owner: $.getOwner() });
+    itemHandle.send("form_init_answer_option", { value: ansId + 1, label: $.state.answerOptions[ansId], participant: $.state.participant });
 }
 
 function spawnNextAnswerOption() {
     const n = $.state.pendingAnswerOptions.length || 0;
     if ($.state.answerOptionIndex >= n) {
         $.state.pendingAnswerOptions = [];
+        if ($.state.questionTypeID !== 3) {
+            let rot = $.getRotation().clone();
+            let posOffset = $.getPosition().clone().add(new Vector3(
+                $.state.questionTypeID === 1 ? 0.06 : $.state.questionTypeID === 4 ? 0 : 0.2,
+                $.state.questionTypeID === 1 ? 0.2: 0, 0));
+            const req = $.state.answerOptions.map((label, i) => ({
+                n: $.state.questionTypeID === 4 ? "AnsText" : ("AnsOptLabel_" + i),
+                e: true,
+                p: $.state.answerOptionLocalPositions[i].clone().add(posOffset),
+                r: rot,
+                t: $.state.questionTypeID === 4 ? "Click here" : label
+            }));
+            $.state.participant?.send("setQuestionnaireUIs", req);
+        }
         return;
     }
 
@@ -164,8 +199,13 @@ function spawnNextAnswerOption() {
 }
 
 function destroyAnswerOptionUIs() {
-    // Send a signal to destroy the current answer option UI elements
-    $.setStateCompat("owner", "form_destroy_answer_option", true);
+    if ($.state.answerOptionUIs) {
+        for (const optionUi of $.state.answerOptionUIs) {
+            optionUi.send("form_destroy_answer_option", true);
+        }
+    }
+    $.state.answerOptionUIs = [];
+    $.state.participant?.send("clearQuestionnaireAnswerUIs", true);
 }
 
 function handleFormAnswer(arg) {
@@ -206,7 +246,7 @@ function submitAnswers() {
         token: token || "",
         eID: expID || "",
         qID: $.getStateCompat("this", "qID", "integer").toString() || "1",
-        pID: $.getOwner().idfc || "", // TODO: rename to pIdfc, or simply don't send idfc
+        pID: $.state.participant.idfc || "", // TODO: rename to pIdfc, or simply don't send idfc
         pRole: $.getStateCompat("this", "pID", "integer").toString() || "1", // TODO: rename to pID?
         sessionID: $.groupState.sessionID || "",
         answers: $.state.answers
@@ -216,8 +256,13 @@ function submitAnswers() {
         conditionManager.send("exp_questionnaire_answer", $.state.answers);
     }
     $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), "postQuestionAnswers");
-    $.setStateCompat("this", "form_set_content_active", false);
-    reset(false);
+    $.state.participant?.send("setQuestionnaireUI", {
+        n: "WaitingText",
+        p: $.getPosition(),
+        r: $.getRotation(),
+        e: true
+    });
+    reset();
 }
 
 function toNext() {
@@ -241,9 +286,8 @@ function toPrev() {
     tryInitQuestion();
 }
 
-function reset(showStartHint = true) {
-    destroyAnswerOptionUIs(); // Reset will also destroy any existing answer option UIs
-    $.setStateCompat("this", "form_set_start_hint_active", showStartHint);
+function reset() {
+    destroyAnswerOptionUIs(); // destroy any existing answer option UIs first
     $.subNode("RadioButtonIndicator").setEnabled(false);
     $.state.answers = [];
     $.state.qID = 0;
@@ -254,6 +298,9 @@ function reset(showStartHint = true) {
     $.state.answerOptionIndex = 0;
     $.state.pendingAnswerOptions = [];
     $.setStateCompat("this", "form_set_content_active", false);
+    $.state.participant?.send("setQuestionnaireUIs", [
+        { n: "Title", e: false }, { n: "Description", e: false }
+    ]);
 }
 
 $.onExternalCallEnd((res, meta, err) => {
@@ -264,10 +311,13 @@ $.onExternalCallEnd((res, meta, err) => {
 
     if (meta === "getQuestions") {
         const parsedRes = JSON.parse(res);
-
         let isFirstGet = $.state.questions.length === 0;
         $.state.questions = [ ...$.state.questions, ...parsedRes.questions ];
-        $.subNode("LoadingHint").setEnabled(false);
+        $.setStateCompat("this", "form_show_loading_bar", false);
+        $.state.participant?.send("setQuestionnaireUI", {
+            n: "LoadingText",
+            e: false
+        });
         if (isFirstGet) tryInitQuestion();
 
         if ("isDone" in parsedRes && !parsedRes.isDone) {
@@ -281,33 +331,18 @@ $.onExternalCallEnd((res, meta, err) => {
 
     if (meta === "postQuestionAnswers") {
         $.log("Answers recorded!");
-        $.sendSignalCompat("this", "state_triggerTransition");
-        reset(false);
+        $.groupState.qCompletedCount += 1;
+        if ($.groupState.qCompletedCount >= $.groupState.participants.length) {
+            $.log("All participants have completed the questionnaire!");
+            $.groupState.qCompletedCount = 0;
+            $.sendSignalCompat("this", "state_triggerTransition");
+            $.groupState.participants.forEach(p => {
+                p.send("setQuestionnaireUI", {
+                    n: "WaitingText",
+                    e: false
+                });
+            });
+        }
+        reset();
     }
 });
-
-function splitTextByWidth(text, maxWidth = 50) {
-    const lines = [];
-    let currentLine = '';
-    let currentWidth = 0;
-
-    for (const char of text) {
-        // Check if the character is full-width (2 bytes in UTF-16)
-        const charWidth = char.match(/[^\x00-\x7F]/) ? 2 : 1;
-
-        if (currentWidth + charWidth > maxWidth) {
-        lines.push(currentLine);
-        currentLine = '';
-        currentWidth = 0;
-        }
-
-        currentLine += char;
-        currentWidth += charWidth;
-    }
-
-    if (currentLine) {
-        lines.push(currentLine);
-    }
-
-    return lines.join('\n');
-}

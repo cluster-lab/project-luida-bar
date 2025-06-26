@@ -17,16 +17,16 @@ $.onReceive((messageType, arg, sender) => {
     switch (messageType) {
         case "form_init_answer_option":
             $.state.formController = sender;
-            $.setVisiblePlayers([arg["owner"]]);
+            $.setVisiblePlayers([arg["participant"]]);
             $.setStateCompat("this", "show", true);
             $.state.destroyable = true;
             $.state.formController.send("form_answer", $.getStateCompat("this", "form_toggle_on", "boolean"));
             // if (arg["value"]) $.state.answerValue = arg["value"]
             // if (arg["label"] && $.subNode("Text")) $.subNode("Text").setText(arg["label"]);
             break;
-        // case "form_destroy_answer_option":
-        //     $.setStateCompat("this", "form_destroy_answer_option", true);
-        //     break;
+        case "form_destroy_answer_option":
+            $.sendSignalCompat("this", "form_destroy_answer_option");
+            break;
         default:
             break;
     }
