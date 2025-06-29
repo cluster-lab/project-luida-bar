@@ -6,6 +6,7 @@ using System.IO;
 
 public class LuidaConfigWindow : EditorWindow
 {
+    public static LuidaConfigWindow Instance { get; private set; }
     public static event Action OnEditorClosed;
     public static event Action OnItemsManagerTabLostFocus;
 
@@ -23,7 +24,9 @@ public class LuidaConfigWindow : EditorWindow
     private const string templateScenePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scenes/Template.unity";
     private const string expIdentifiersPath = "Assets/_Experiment_/Settings/ExpIdentifiers.js";
     private const string templateExpIdentifiersPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/ExpIdentifiers.js";
-
+    
+    public StateMachineConfigTab StateTab => stateMachineConfigTab;
+    
     [MenuItem("Window/LUIDA Config Window")]
     public static void ShowWindow()
     {
@@ -45,6 +48,8 @@ public class LuidaConfigWindow : EditorWindow
         dataCollectorConfigTab.OnEnable();
 
         CheckAndCreateExpIdentifiers();
+        
+        Instance = this;
     }
 
     private void OnGUI()
@@ -156,6 +161,7 @@ public class LuidaConfigWindow : EditorWindow
     private void OnDestroy()
     {
         OnEditorClosed?.Invoke();
+        Instance = null;
     }
 
     private void CheckAndCreateExpIdentifiers()

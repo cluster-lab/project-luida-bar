@@ -1,17 +1,18 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
+using UnityEditorInternal;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using ClusterVR.CreatorKit.Item;
+using ClusterVR.CreatorKit.Gimmick.Implements;
 using ClusterVR.CreatorKit.Item.Implements;
 
 public class StateMachineConfigTab : EditorWindow
 {
-    private StateList stateList;
+    public StateList stateList;
     private StateList.State[] previousStates;
     private SerializedObject serializedStateList;
     private SerializedProperty statesProperty;
@@ -22,7 +23,6 @@ public class StateMachineConfigTab : EditorWindow
     private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
     private const string stateListTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/StateList/Template.asset";
     private const string stateManagementScriptFolderPathFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
-    private const string stateListeningItemPrefabPath = "Assets/ClusterVR.CreatorKit.Item.Implements.StateListeningItem"; //Fixed this Path
     private const string formPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/Questionnaire/Questionnaire.prefab";
     private const string identifiersAssetPath = "Assets/_Experiment_/Settings/ExpIdentifiers.js";
     private const string WorldItemRefListObjectName = "WorldItemRefList";
@@ -34,7 +34,7 @@ public class StateMachineConfigTab : EditorWindow
 
     public void OnEnable()
     {
-        sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        sceneName = SceneManager.GetActiveScene().name;
         LoadStateList();
         if (stateList != null && stateList.States != null) // Ensure stateList and States are not null
         {
@@ -50,7 +50,7 @@ public class StateMachineConfigTab : EditorWindow
 
     private void LoadStateList()
     {
-        sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        sceneName = SceneManager.GetActiveScene().name;
         string stateListPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
 
         stateList = AssetDatabase.LoadAssetAtPath<StateList>(stateListPath);
@@ -416,12 +416,12 @@ public class StateMachineConfigTab : EditorWindow
             EditorGUILayout.BeginVertical(GUILayout.MinWidth(180));
             string stateNameValFromProp = stateNameProp.stringValue;
             GameObject sceneObj = GameObject.Find(stateNameValFromProp);
-            if (HasEnabledFormInstance(sceneObj))
-                DisplayQuestionnaireRow(stateNameValFromProp, i);
+            if (HasEnabledFormInstance(stateNameProp.stringValue))
+                DisplayQuestionnaireRow(stateNameProp.stringValue, i);
             else
             {
-                EditorGUILayout.LabelField("Questionnaire", GUILayout.Width(100));
-                if (GUILayout.Button("Add Questionnaire", GUILayout.Width(150)))
+                EditorGUILayout.LabelField("Questionnaires", GUILayout.Width(100));
+                if (GUILayout.Button("Add Questionnaires", GUILayout.Width(150)))
                     AddOrEnableQuestionnaireForm(i, stateNameValFromProp);
             }
             EditorGUILayout.EndVertical();
@@ -469,6 +469,8 @@ public class StateMachineConfigTab : EditorWindow
         {
             UpdateSceneObjects();
             UpdateStateListeningItemsAfterReorder();
+            
+            /*
             if (stateList.States != null)
             {
                 previousStates = new StateList.State[stateList.States.Length];
@@ -478,6 +480,15 @@ public class StateMachineConfigTab : EditorWindow
             {
                 previousStates = new StateList.State[0];
             }
+            */
+            
+            // synchronize the questionnaire hierarchy
+            SyncQuestionnaireContainers(previousStates, stateList.States);
+            SyncQuestionnaireGimmicks();
+
+            // now update previousStates for next frame
+            previousStates = new StateList.State[stateList.States.Length];
+            Array.Copy(stateList.States, previousStates, stateList.States.Length);
         }
 
         EditorGUILayout.EndScrollView();
@@ -925,28 +936,26 @@ public class StateMachineConfigTab : EditorWindow
         }
     }
 
-    private void AddOrEnableQuestionnaireForm(int stateId, string stateNameInAsset)
+    public void AddOrEnableQuestionnaireForm(int stateId, string stateNameInAsset)
     {
-        GameObject stateObjectInScene = FindStateObject(stateNameInAsset);
-        if (stateObjectInScene == null)
+        GameObject questionnairesContainer = FindOrCreateQuestionnairesContainer();
+        if (questionnairesContainer == null)
         {
-            Debug.LogWarning($"State GameObject '{stateNameInAsset}' not found in scene. Cannot add questionnaire.");
+            Debug.LogError("Failed to create or find LUIDA-Questionnaires container.");
             return;
         }
 
-        // Ensure the objects container exists
-        Transform objectsContainer = stateObjectInScene.transform.Find("Objects");
-        if (objectsContainer == null)
+        GameObject stateContainer = FindOrCreateStateContainer(questionnairesContainer, stateNameInAsset);
+        if (stateContainer == null)
         {
-            GameObject go = new GameObject("Objects");
-            go.transform.SetParent(stateObjectInScene.transform, false);
-            objectsContainer = go.transform;
+            Debug.LogError($"Failed to create or find container for state '{stateNameInAsset}' under LUIDA-Questionnaires.");
+            return;
         }
 
         // Remove any existing questionnaire objects
-        for (int i = objectsContainer.childCount - 1; i >= 0; i--)
+        for (int i = stateContainer.transform.childCount - 1; i >= 0; i--)
         {
-            var child = objectsContainer.GetChild(i).gameObject;
+            var child = stateContainer.transform.GetChild(i).gameObject;
             string path = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child);
             if (path == formPrefabPath)
             {
@@ -954,26 +963,32 @@ public class StateMachineConfigTab : EditorWindow
             }
         }
 
-        // Get the qID value from the State scriptable object asset
-        int qIDToSet = 0;
-        if (stateId >= 0 && stateId < stateList.States.Length)
-        {
-            qIDToSet = stateList.States[stateId].qID > 0 ? stateList.States[stateId].qID : 0;
-        }
+        int qIDToSet = stateList.States[stateId].qID > 0 ? stateList.States[stateId].qID : stateId + 1; // Default qID if not set
+        stateList.States[stateId].qID = qIDToSet; // Update qID in StateList asset
+        EditorUtility.SetDirty(stateList); // Mark StateList asset as dirty
 
-        int pNum = GetPNum(); // Get participant number from identifiers asset
+        int pNum = GetPNum();
         GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(formPrefabPath);
         if (prefab == null) return;
+
+        float horizontalSpacing = 3f;
+        float startX = -((pNum - 1) * horizontalSpacing) / 2f;
+
         for (int i = 1; i <= pNum; i++)
         {
-            GameObject newFormInstance = (GameObject)PrefabUtility.InstantiatePrefab(prefab, objectsContainer);
+            GameObject newFormInstance = (GameObject)PrefabUtility.InstantiatePrefab(prefab, stateContainer.transform);
             newFormInstance.name = $"{prefab.name}_p{i}";
+
+            float x = startX + (i - 1) * horizontalSpacing;
+            Vector3 localPos = newFormInstance.transform.localPosition;
+            newFormInstance.transform.localPosition = new Vector3(x, localPos.y, localPos.z);
+
             GameObject formController = newFormInstance.transform.Find("FormController")?.gameObject;
 
             if (formController != null)
             {
                 EnableAccessToParticipantManager(formController);
-                
+
                 var identifiersAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(identifiersAssetPath);
                 if (identifiersAsset != null)
                 {
@@ -983,33 +998,30 @@ public class StateMachineConfigTab : EditorWindow
                         combiner.ReplaceScript(identifiersAsset, 0, null, 0, true);
                         EditorUtility.SetDirty(combiner);
                     }
-                    else
-                    {
-                        Debug.LogWarning($"ScriptableClusterScriptCombiner not found on FormController of {newFormInstance.name}");
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning($"Identifiers asset not found at {identifiersAssetPath}");
                 }
 
                 UpdateID(formController, "qID", qIDToSet);
                 UpdateID(formController, "pID", i);
                 AddControllerManagerToWorldItemReferenceList(formController);
-                Debug.Log($"Questionnaire added to {stateNameInAsset} with qID {qIDToSet} and pID {i}");
             }
         }
+
+        serializedStateList.Update(); // Update serialized object
+        serializedStateList.ApplyModifiedProperties(); // Apply changes to StateList
+        Repaint(); // Refresh the editor window
     }
 
-    private GameObject GetFormController(GameObject stateObjectInScene)
+    private GameObject GetFormController(string stateName)
     {
-        if (stateObjectInScene == null) return null;
-        Transform objectsContainer = stateObjectInScene.transform.Find("Objects");
-        if (objectsContainer == null) return null;
+        var root = GameObject.Find("LUIDA-Questionnaires");
+        if (root == null) return null;
+        var stateContainer = root.transform.Find(stateName);
+        if (stateContainer == null) return null;
 
-        foreach (Transform child in objectsContainer)
+        foreach (Transform child in stateContainer)
         {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == formPrefabPath)
+            var path = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject);
+            if (path == formPrefabPath)
                 return child.Find("FormController")?.gameObject;
         }
         return null;
@@ -1052,12 +1064,11 @@ public class StateMachineConfigTab : EditorWindow
         }
     }
 
-    private void DisplayQuestionnaireRow(string stateNameInAsset, int stateIdInAsset)
+    private void DisplayQuestionnaireRow(string stateName, int stateIdInAsset)
     {
-        GameObject stateObjectInScene = FindStateObject(stateNameInAsset);
-        if (stateObjectInScene != null && HasEnabledFormInstance(stateObjectInScene))
+        if (HasEnabledFormInstance(stateName))
         {
-            GameObject formController = GetFormController(stateObjectInScene);
+            GameObject formController = GetFormController(stateName);
 
             // Always get qID from the asset, not from the formController
             int assetQID = (stateList != null && stateIdInAsset >= 0 && stateIdInAsset < stateList.States.Length)
@@ -1065,21 +1076,15 @@ public class StateMachineConfigTab : EditorWindow
                 : -1;
 
             EditorGUILayout.BeginVertical("box");
-            EditorGUILayout.LabelField("Questionnaire", GUILayout.Width(100));
+            EditorGUILayout.LabelField("Questionnaires", GUILayout.Width(100));
             EditorGUILayout.BeginHorizontal();
 
-            GameObject questionnaireObject = formController?.transform.parent.gameObject;
+            // GameObject questionnaireObject = formController?.transform.parent.gameObject;
 
             EditorGUILayout.BeginVertical();
-            EditorGUILayout.BeginHorizontal();
-            EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.ObjectField(questionnaireObject, typeof(GameObject), true, GUILayout.Width(100));
-            EditorGUI.EndDisabledGroup();
-            EditorGUILayout.EndHorizontal();
-
+            
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("qID", GUILayout.Width(20));
-
             int newQID = EditorGUILayout.IntField(assetQID, GUILayout.Width(30));
             if (newQID != assetQID && formController != null)
             {
@@ -1091,7 +1096,6 @@ public class StateMachineConfigTab : EditorWindow
 
                 UpdateID(formController, "qID", newQID);
             }
-
             GUILayout.Space(10);
             if (GUILayout.Button("Remove", GUILayout.Width(70)))
             {
@@ -1102,60 +1106,74 @@ public class StateMachineConfigTab : EditorWindow
                     serializedStateList.ApplyModifiedProperties();
 
                 // Remove the form instance GameObject
-                RemoveFormInstance(stateObjectInScene, formController);
+                RemoveFormInstance(stateName);
             }
             EditorGUILayout.EndHorizontal();
+            
+            EditorGUILayout.LabelField("GameObjects can be found here:");
+            EditorGUILayout.BeginHorizontal();
+            EditorGUI.BeginDisabledGroup(true);
+            var root = GameObject.Find("LUIDA-Questionnaires");
+            var stateContainer = root?.transform.Find(stateName)?.gameObject;
+            EditorGUILayout.ObjectField(stateContainer, typeof(GameObject), true, GUILayout.Width(100));
+            EditorGUI.EndDisabledGroup();
+            EditorGUILayout.EndHorizontal();
+            
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndVertical();
         }
     }
 
-    private bool HasEnabledFormInstance(GameObject stateObjectInScene)
+    private bool HasEnabledFormInstance(string stateName)
     {
-        if (stateObjectInScene == null) return false;
-        Transform objects = stateObjectInScene.transform.Find("Objects");
-        if (objects == null) return false;
-        foreach (Transform child in objects)
+        var root = GameObject.Find("LUIDA-Questionnaires");
+        if (root == null) return false;
+        var stateContainer = root.transform.Find(stateName);
+        if (stateContainer == null) return false;
+
+        foreach (Transform child in stateContainer)
         {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == formPrefabPath && child.gameObject.activeSelf)
-                return true;
+            if (!child.gameObject.activeSelf) continue;
+            var path = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject);
+            if (path == formPrefabPath) return true;
         }
         return false;
     }
 
-    private void RemoveFormInstance(GameObject stateObjectInScene, GameObject formController)
+    private void RemoveFormInstance(string stateName)
     {
-        if (formController != null)
+        var root = GameObject.Find("LUIDA-Questionnaires");
+        if (!root) return;
+
+        var stateContainer = root.transform.Find(stateName);
+        if (!stateContainer) return;
+
+        var toDestroy = new List<GameObject>();
+        foreach (Transform child in stateContainer)
         {
-            GameObject formInstance = formController.transform.parent.gameObject;
-            if (formInstance != null)
+            var path = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject);
+            if (path == formPrefabPath)
             {
-                Undo.DestroyObjectImmediate(formInstance);
-                Debug.Log($"Questionnaire in {stateObjectInScene.name} removed.");
+                toDestroy.Add(child.gameObject);
             }
         }
-        else
+
+        foreach (var go in toDestroy)
         {
-            Transform objects = stateObjectInScene.transform.Find("Objects");
-            if (objects != null)
-            {
-                Transform formToDestroy = null;
-                foreach (Transform child in objects)
-                {
-                    if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == formPrefabPath)
-                    {
-                        formToDestroy = child;
-                        break;
-                    }
-                }
-                if (formToDestroy != null)
-                {
-                    Undo.DestroyObjectImmediate(formToDestroy.gameObject);
-                    Debug.Log($"Questionnaire in {stateObjectInScene.name} removed (fallback).");
-                }
-            }
+            Undo.DestroyObjectImmediate(go);
         }
+        Debug.Log($"Removed questionnaire instances under '{stateName}'.");
+
+        var idx = Array.FindIndex(stateList.States, s => s.StateName == stateName);
+        if (idx >= 0)
+        {
+            stateList.States[idx].qID = 0;
+            EditorUtility.SetDirty(stateList);
+            serializedStateList.ApplyModifiedProperties();
+        }
+
+        Repaint();
     }
 
     private void AddControllerManagerToWorldItemReferenceList(GameObject formController)
@@ -1454,7 +1472,7 @@ public class StateMachineConfigTab : EditorWindow
         return trialsCountForEachUniqueCondition * product;
     }
 
-    private GameObject FindStateObject(string stateName)
+    public GameObject FindStateObject(string stateName)
     {
         var wrapper = FindExpManagersWrapperInstance();
         if (wrapper == null) return null;
@@ -1495,6 +1513,125 @@ public class StateMachineConfigTab : EditorWindow
                     }
                 }
             }
+        }
+    }
+    
+    private GameObject FindOrCreateQuestionnairesContainer()
+    {
+        GameObject questionnairesContainer = GameObject.Find("LUIDA-Questionnaires");
+        if (questionnairesContainer == null)
+        {
+            questionnairesContainer = new GameObject("LUIDA-Questionnaires");
+            Undo.RegisterCreatedObjectUndo(questionnairesContainer, "Create LUIDA-Questionnaires Container");
+        }
+        return questionnairesContainer;
+    }
+    
+    private GameObject FindOrCreateStateContainer(GameObject questionnairesContainer, string stateName)
+    {
+        Transform stateContainerTransform = questionnairesContainer.transform.Find(stateName);
+        if (stateContainerTransform == null)
+        {
+            GameObject stateContainer = new GameObject(stateName);
+            stateContainer.transform.SetParent(questionnairesContainer.transform, false);
+            Undo.RegisterCreatedObjectUndo(stateContainer, $"Create State Container for {stateName}");
+            return stateContainer;
+        }
+        return stateContainerTransform.gameObject;
+    }
+    
+    /// <summary>
+    /// Rename or delete questionnaire sub-folders to mirror your StateList.
+    /// </summary>
+    private void SyncQuestionnaireContainers(StateList.State[] previous, StateList.State[] current)
+    {
+        var root = GameObject.Find("LUIDA-Questionnaires");
+        if (root == null) return;
+
+        // --- 1. Renames ---
+        int common = Mathf.Min(previous.Length, current.Length);
+        for (int i = 0; i < common; i++)
+        {
+            string oldName = previous[i].StateName;
+            string newName = current[i].StateName;
+            if (oldName != newName && !string.IsNullOrEmpty(oldName) && !string.IsNullOrEmpty(newName))
+            {
+                var oldTrans = root.transform.Find(oldName);
+                var newTrans = root.transform.Find(newName);
+
+                if (oldTrans != null)
+                {
+                    if (newTrans != null)
+                    {
+                        // merge children of oldTrans into existing newTrans
+                        while (oldTrans.childCount > 0)
+                        {
+                            var child = oldTrans.GetChild(0);
+                            child.SetParent(newTrans, true);
+                        }
+                        Undo.DestroyObjectImmediate(oldTrans.gameObject);
+                    }
+                    else
+                    {
+                        // no collision, just rename
+                        oldTrans.name = newName;
+                    }
+                }
+            }
+        }
+
+        // --- 2. Removals (states dropped entirely) ---
+        var currentNames = new HashSet<string>(current.Select(s => s.StateName));
+        foreach (var prev in previous)
+        {
+            if (!string.IsNullOrEmpty(prev.StateName) && !currentNames.Contains(prev.StateName))
+            {
+                var t = root.transform.Find(prev.StateName);
+                if (t) Undo.DestroyObjectImmediate(t.gameObject);
+            }
+        }
+    }
+
+    /// <summary>
+    /// For each CURRENT state, copy its SetGameObjectActiveGimmick from
+    /// “LUIDA-ExpManagers > States > {stateName} > Objects”
+    /// onto “LUIDA-Questionnaires > {stateName}” (removing any old one first).
+    /// </summary>
+    private void SyncQuestionnaireGimmicks()
+    {
+        var questionnairesRoot = GameObject.Find("LUIDA-Questionnaires");
+        var managers = FindExpManagersWrapperInstance();
+        if (!questionnairesRoot || !managers) return;
+
+        var statesContainer = managers.transform.Find("States");
+        if (!statesContainer) return;
+
+        foreach (var stateData in stateList.States)
+        {
+            var stateName = stateData.StateName;
+            if (string.IsNullOrEmpty(stateName)) continue;
+
+            // find source: States/{stateName}/Objects
+            var stateObj = statesContainer.Find(stateName);
+            if (!stateObj) continue;
+            var objectsContainer = stateObj.Find("Objects");
+            if (!objectsContainer) continue;
+
+            var sourceGimmick = objectsContainer.GetComponent<SetGameObjectActiveGimmick>();
+            if (!sourceGimmick) continue;
+
+            // find target: LUIDA-Questionnaires/{stateName}
+            var targetTrans = questionnairesRoot.transform.Find(stateName);
+            if (!targetTrans) continue;
+            var targetGO = targetTrans.gameObject;
+
+            // remove any existing copy
+            var existing = targetGO.GetComponent<SetGameObjectActiveGimmick>();
+            if (existing) Undo.DestroyObjectImmediate(existing);
+
+            // copy component
+            ComponentUtility.CopyComponent(sourceGimmick);
+            ComponentUtility.PasteComponentAsNew(targetGO);
         }
     }
 }

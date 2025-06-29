@@ -11,6 +11,7 @@ public class ExpIdentifierConfigTab : EditorWindow
     private int pNum = 1;
     private string filePath;
     private bool isSubscribed = false;
+    private const string formPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/Questionnaire/Questionnaire.prefab";
 
     public void OnEnable()
     {
@@ -103,5 +104,40 @@ public class ExpIdentifierConfigTab : EditorWindow
         AssetDatabase.Refresh();
 
         Debug.Log($"Experiment identifiers saved to {filePath}");
+
+        UpdateQuestionnaireObjects();
+    }
+
+    private void UpdateQuestionnaireObjects()
+    {
+        var wnd = LuidaConfigWindow.Instance;
+        if (!wnd || !wnd.StateTab.stateList || wnd.StateTab.stateList.States == null) return;
+
+        int newPNum = pNum;
+
+        // for each state, count how many questionnaire children are in the scene
+        for (var i = 0; i < wnd.StateTab.stateList.States.Length; i++)
+        {
+            var state = wnd.StateTab.stateList.States[i];
+            if (state.qID <= 0) continue;
+            
+            var go = wnd.StateTab.FindStateObject(state.StateName);
+            var objs = go?.transform.Find("Objects");
+            var existingCount = 0;
+            if (!objs)
+            {
+                foreach (Transform child in objs)
+                {
+                    if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject)
+                        == formPrefabPath)
+                        existingCount++;
+                }
+            }
+
+            if (existingCount != newPNum)
+            {
+                wnd.StateTab.AddOrEnableQuestionnaireForm(i, state.StateName);
+            }
+        }
     }
 }
