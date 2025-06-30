@@ -86,11 +86,18 @@ function AddRotation(x, y, z) {
     }
 }
 
-function RecordCustomData() {
+function SendDataToCollector(label, value) {
+    if (!$.groupState.collectedData) $.groupState.collectedData = {};
+    let collectedData = $.groupState.collectedData;
+    collectedData[label] = value;
+    $.groupState.collectedData = collectedData;
+}
+
+function ProcessAndSaveCollectedData() {
     $.sendSignalCompat("this", "exp_recordCustomData");
 }
 
-function UploadRecordedData() {
+function UploadCollectedData() {
     $.sendSignalCompat("this", "exp_uploadCustomData");
 }
 
@@ -127,6 +134,7 @@ function SendHaptics(target, frequency, amplitude, duration) {
 
 function OnStateEnter(deltaTime) {
     CONDITION = $.groupState.currentCondition;
+    PARTICIPANTS = $.groupState.participants;
     if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length) return;
     
     while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !== "sleep") {

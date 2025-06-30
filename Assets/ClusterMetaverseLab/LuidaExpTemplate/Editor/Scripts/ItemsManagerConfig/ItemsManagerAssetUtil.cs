@@ -15,6 +15,7 @@ public static class ItemsManagerAssetUtil
     private const string ScriptTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/StateManagement/StateListeningItemTemplate.js";
     private const string ExpManagersWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/LUIDA-ExpManagers.prefab";
     private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
+    private const string DataCollectorPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/CustomDataCollection/LUIDA-DataCollector.prefab";
     private const string defaultOtherImplementation = @"// function Start() { }
 // function Update(deltaTime) { }
 // $.onCollide((collision) => { });
@@ -137,6 +138,7 @@ public static class ItemsManagerAssetUtil
         Undo.RegisterCreatedObjectUndo(go, "Create StateListeningItem " + editor.newItemName);
 
         EnableAccessToConditions(go);
+        AddDataCollectorToWorldItemReferenceList(go);
 
         string scene = SceneManager.GetActiveScene().name;
         string scriptFolder = string.Format(ScriptFolderFormat, scene);
@@ -391,6 +393,36 @@ public static class ItemsManagerAssetUtil
                 }
             }
         }
+    }
+    
+    private static void AddDataCollectorToWorldItemReferenceList(GameObject stateListeningItem)
+    {
+        GameObject dataCollector = null;
+        GameObject[] rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
+        foreach (GameObject obj in rootObjects)
+        {
+            string prefabPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(obj));
+            if (prefabPath == DataCollectorPrefabPath) dataCollector = obj;
+        }
+        
+        if (dataCollector)
+        {
+            var refList = stateListeningItem.GetComponent<WorldItemReferenceList>();
+            if (!refList)
+            {
+                refList = stateListeningItem.AddComponent(typeof(WorldItemReferenceList)) as WorldItemReferenceList;
+            }
+            
+            SerializedObject serializedRefList = new SerializedObject(refList);
+            var prop = serializedRefList.FindProperty("worldItemReferences");
+            prop.InsertArrayElementAtIndex(0);
+            var refItem = prop.GetArrayElementAtIndex(0);
+            refItem.FindPropertyRelative("id").stringValue = "luida-data-collector";
+            refItem.FindPropertyRelative("item").objectReferenceValue = dataCollector.GetComponent<Item>();
+            serializedRefList.ApplyModifiedProperties();
+        }
+        else
+            Debug.LogError("LUIDA-DataCollector prefab instance not found in the scene.");
     }
 
     #endregion

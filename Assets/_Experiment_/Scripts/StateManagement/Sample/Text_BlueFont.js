@@ -11,11 +11,6 @@ const stateEnterActions = {
             }
         } },
         { type: "exec", action: () => {
-            if (CONDITION['font'] === 'B') {
-              $.setStateCompat('this', 'exp_showItem', true);
-            }
-        } },
-        { type: "exec", action: () => {
             if (CONDITION['text'] === 'Red') {
               $.subNode('Text').setText(`Red`);
             }
@@ -23,6 +18,11 @@ const stateEnterActions = {
         { type: "exec", action: () => {
             if (CONDITION['text'] === 'Blue') {
               $.subNode('Text').setText(`Blue`);
+            }
+        } },
+        { type: "exec", action: () => {
+            if (CONDITION['font'] === 'B') {
+              $.setStateCompat('this', 'exp_showItem', true);
             }
         } }
     ]
@@ -38,3 +38,13 @@ const stateExitActions = {
         } }
     ]
 };
+
+
+// function Start() { }
+// function Update(deltaTime) { }
+// $.onCollide((collision) => { });
+// $.onGrab((isGrab, isLeftHand, player) => { });
+// $.onInteract((player) => { });
+// $.onUse((isDown, player) => { });
+// $.onPhysicsUpdate((deltaTime) => { });
+// $.onReceive((messageType, arg, sender) => { });

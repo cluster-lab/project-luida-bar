@@ -14,7 +14,8 @@ public static class ItemsManagerUIDrawer
         new StateListeningAction("Show item", "$.setStateCompat('this', 'exp_showItem', true);"),
         new StateListeningAction("Hide item", "$.setStateCompat('this', 'exp_showItem', false);"),
         new StateListeningAction("To next state", "$.sendSignalCompat('this', 'state_triggerTransition');"),
-        new StateListeningAction("Capture data into collection", "$.sendSignalCompat('this', 'exp_recordCustomData');"),
+        new StateListeningAction("Send data to collector", "if (!$.groupState.collectedData) $.groupState.collectedData = {};\n    let collectedData = $.groupState.collectedData;\n    collectedData['{_label_}'] = {_value_};\n    $.groupState.collectedData = collectedData;", new[] { "label", "value" }),
+        new StateListeningAction("Process and save collected data", "$.sendSignalCompat('this', 'exp_recordCustomData');"),
         new StateListeningAction("Upload collected data", "$.sendSignalCompat('this', 'exp_uploadCustomData');"),
         new StateListeningAction("Set text", "$.subNode('Text').setText(`{_text_}`);", new[] { "text" }),
         new StateListeningAction("Sleep", "{_seconds_}", new[] { "seconds" }),
@@ -656,12 +657,30 @@ public static class ItemsManagerUIDrawer
         EditorGUILayout.LabelField("Documentation for Customized Actions or Other Implementation", EditorStyles.largeLabel);
         EditorGUILayout.HelpBox("Guidance for predefined actions and custom JavaScript functions available in this item manager.", MessageType.None);
         EditorGUILayout.Space();
-        EditorGUILayout.LabelField("--------------- Variable: CONDITION ---------------", EditorStyles.boldLabel);
+        
+        EditorGUILayout.LabelField("--------------- Variables ---------------", EditorStyles.boldLabel);
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.Space(20);
+        EditorGUILayout.BeginVertical();
+        EditorGUILayout.LabelField("CONDITION", EditorStyles.boldLabel);
         EditorGUILayout.HelpBox(
             "⋅ Contains values from your configured experimental variables for the current trial.\n" +
             "⋅ Use `CONDITION[\"your_variable_name\"]` in 'Customized Action' code blocks of trial-related states (e.g., Trial - Start).",
             MessageType.Info);
+        EditorGUILayout.EndVertical();
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.Space(20);
+        EditorGUILayout.BeginVertical();
+        EditorGUILayout.LabelField("PARTICIPANTS", EditorStyles.boldLabel);
+        EditorGUILayout.HelpBox(
+            "⋅ An array of PlayerHandle of the participants joining this experiment.\n" +
+            "⋅ Use `PARTICIPANTS[0]` to retrieve the first participant, `PARTICIPANTS[1]` to retrieve the second participant, and so on.",
+            MessageType.Info);
+        EditorGUILayout.EndVertical();
+        EditorGUILayout.EndHorizontal();
         EditorGUILayout.Space();
+        
         EditorGUILayout.LabelField("--- Predefined Actions & Equivalent ClusterScript Functions ---", EditorStyles.boldLabel);
         EditorGUILayout.HelpBox("Below are predefined actions selectable from dropdowns, and their equivalent ClusterScript functions you can use in 'Customized Action' code blocks.", MessageType.Info);
 
@@ -708,13 +727,17 @@ public static class ItemsManagerUIDrawer
         EditorGUILayout.LabelField("Data Logging", EditorStyles.boldLabel);
         foreach(var action in AvailableStateListeningActions.Where(a => a.actionType.Contains("data")))
         {
-            if (action.actionType == "Capture data into collection")
+            if (action.actionType == "Send data to collector")
             {
-                DrawDocEntry(action.actionType, "Signals LUIDA's DataCollector to capture data as configured in the 'Data Collector' tab of the LUIDA Config Window, and save it to the collected data set.", getParamsInfoForUI(action), false, getJsSignature(action));
+                DrawDocEntry(action.actionType, "Send data to LUIDA's Data Collector.", getParamsInfoForUI(action), false, getJsSignature(action));
+            }
+            if (action.actionType == "Process and save collected data")
+            {
+                DrawDocEntry(action.actionType, "Signals LUIDA's Data Collector to process and save the collected data as configured in the LUIDA Config Window's 'Data Collector' tab.", getParamsInfoForUI(action), false, getJsSignature(action));
             }
             if (action.actionType == "Upload collected data")
             {
-                DrawDocEntry(action.actionType, "Signals LUIDA's DataCollector to upload the collected data.", getParamsInfoForUI(action), false, getJsSignature(action));
+                DrawDocEntry(action.actionType, "Signals LUIDA's Data Collector to upload the saved data collection.", getParamsInfoForUI(action), false, getJsSignature(action));
             }
         }
 

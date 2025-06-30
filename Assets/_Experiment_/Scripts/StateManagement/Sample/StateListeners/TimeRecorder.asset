@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: acb8c4c8a0a4dc6418e2f4d59454f5e3, type: 3}
-  m_Name: TimerAndRecorder
+  m_Name: TimeRecorder
   m_EditorClassIdentifier: 
   stateListeners:
   - stateID: 3
@@ -33,15 +33,17 @@ MonoBehaviour:
         actionType: Customized Action
         codeSnippet: 
         variables: []
-      customAction: "$.state.isInTrial = false;\n$.setStateCompat(\n  \"owner\",
-        \"timer\", $.state.timer);"
+      customAction: '$.state.isInTrial = false;
+
+        SendDataToCollector("timer",
+        $.state.timer);'
       isConditional: 0
       conditionVariable: 
       conditionValue: 
       _variableKeys: []
       _variableValuesList: []
     - predefinedActionTemplate:
-        actionType: Record custom data
+        actionType: Process and save collected data
         codeSnippet: $.sendSignalCompat('this', 'exp_recordCustomData');
         variables: []
       customAction: 
@@ -50,19 +52,5 @@ MonoBehaviour:
       conditionValue: 
       _variableKeys: []
       _variableValuesList: []
-  - stateID: 5
-    onStateStartedActions:
-    - predefinedActionTemplate:
-        actionType: Upload recorded data
-        codeSnippet: $.sendSignalCompat('this', 'exp_uploadCustomData');
-        variables: []
-      customAction: 
-      isConditional: 0
-      conditionVariable: 
-      conditionValue: 
-      _variableKeys: []
-      _variableValuesList: []
-    duringStateActions: []
-    onStateExitedActions: []
   otherImplementation: "function Start() { $.state.timer = 0; }\nfunction Update(deltaTime)
-    {\n  if ($.state.isInTrial)\n    $.state.timer += deltaTime;\n}"
+    {\n  if ($.state.isInTrial) $.state.timer += deltaTime;\n}"

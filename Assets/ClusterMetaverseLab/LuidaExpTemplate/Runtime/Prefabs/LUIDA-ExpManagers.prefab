@@ -435,11 +435,12 @@ PrefabInstance:
         });\n            break;\n        case \"setQuestionnaireUI\":\n           
         setQuestionnaireUI(body.n,\n                (body.hasOwnProperty(\"e\") ?
         body.e : null),\n                body.p, body.r,\n                (body.hasOwnProperty(\"t\")
-        ? body.t : null));\n            break;\n        case \"setQuestionnaireUIs\":\n           
+        ? body.t.toString() : null));\n            break;\n        case \"setQuestionnaireUIs\":\n           
         for (const ui of body) {\n                setQuestionnaireUI(ui.n,\n                   
         (ui.hasOwnProperty(\"e\") ? ui.e : null),\n                    ui.p, ui.r,\n                   
-        (ui.hasOwnProperty(\"t\") ? ui.t : null));\n            }\n            break;\n       
-        case \"clearQuestionnaireAnswerUIs\":\n            let targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(\"AnsText\");\n           
+        (ui.hasOwnProperty(\"t\") ? ui.t.toString() : null));\n            }\n           
+        break;\n        case \"clearQuestionnaireAnswerUIs\":\n            let targetUI
+        = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(\"AnsText\");\n           
         targetUI.setEnabled(false);\n            for (let i = 0; i < 20; i++) {\n               
         targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(\"AnsOptLabel_\"
         + i);\n                if (targetUI) {\n                    targetUI.setEnabled(false);\n               
@@ -455,26 +456,26 @@ PrefabInstance:
     - target: {fileID: 3933797981565559285, guid: d54fd1885b76d47d9bd9a3a2f0675afb,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
-        = \"callExternalEndpointID_example\";\npNum = 1;\n\r\n$.onStart(() => {\n 
-        $.groupState.isParticipantsEnough = false;\n  $.groupState.sessionID = Date.now()
-        + \"_\" +  (Math.random() + 1).toString(36).substring(7);\n  $.groupState.participants
-        = []; // array of PlayerHandle who are currently in the experiment\n  $.state.participantsEnvInfo
-        = [];\n  $.state.timer = 0;\n  \n  // TODO: load exp info so that we can
-        check later what environments this experiment requires\n})\n\n$.onUpdate((deltaTime)
-        => {\n    if (!$.groupState.isParticipantsEnough) {\n        $.state.timer
-        += deltaTime;\n        if ($.state.timer >= 1){\n            $.state.timer
-        = 0;\n            let pIdfcs = $.groupState.participants.map(p => p.idfc);\n           
-        const newPlayers = $.getPlayersNear($.getPosition(), Infinity)\n               
-        .filter(p => !pIdfcs.includes(p.idfc));\n            if (newPlayers.length
-        > 0) {\n                for (const newPlayer of newPlayers) {\n                   
-        // TODO: Check if the player is eligible to join the experiment before adding
-        them to $.groupState.participants.\n                    $.groupState.participants
-        = [ ...$.groupState.participants, newPlayer ];\n                    $.setPlayerScript(newPlayer);\n                   
-        newPlayer.send(\"initializeParticipant\", true);\n                }\n           
-        }\n            if (!$.groupState.isParticipantsEnough && $.groupState.participants.length
-        >= pNum) {\n                HandleParticipantsEnough();\n            }\n       
-        }\n    }\n/*\n  if ($.getStateCompat(\"this\", \"exp_checkJoinEligibility\",
+      value: "expID = \"67a05c0278f2295ce64877b3\";\ntoken = \"d98822e9-add2-4e0b-bb40-c6e7c5bb9d82\";\ncallExternalEndpointID
+        = \"ea278de3-2d03-4beb-b160-a97181d39ef6\";\npNum = 1;\n\r\n$.onStart(()
+        => {\n  $.groupState.isParticipantsEnough = false;\n  $.groupState.sessionID
+        = Date.now() + \"_\" +  (Math.random() + 1).toString(36).substring(7);\n 
+        $.groupState.participants = []; // array of PlayerHandle who are currently
+        in the experiment\n  $.state.participantsEnvInfo = [];\n  $.state.timer =
+        0;\n  \n  // TODO: load exp info so that we can check later what environments
+        this experiment requires\n})\n\n$.onUpdate((deltaTime) => {\n    if (!$.groupState.isParticipantsEnough)
+        {\n        $.state.timer += deltaTime;\n        if ($.state.timer >= 1){\n           
+        $.state.timer = 0;\n            let pIdfcs = $.groupState.participants.map(p
+        => p.idfc);\n            const newPlayers = $.getPlayersNear($.getPosition(),
+        Infinity)\n                .filter(p => !pIdfcs.includes(p.idfc));\n           
+        if (newPlayers.length > 0) {\n                for (const newPlayer of newPlayers)
+        {\n                    // TODO: Check if the player is eligible to join the
+        experiment before adding them to $.groupState.participants.\n                   
+        $.groupState.participants = [ ...$.groupState.participants, newPlayer ];\n                   
+        $.setPlayerScript(newPlayer);\n                    newPlayer.send(\"initializeParticipant\",
+        true);\n                }\n            }\n            if (!$.groupState.isParticipantsEnough
+        && $.groupState.participants.length >= pNum) {\n                HandleParticipantsEnough();\n           
+        }\n        }\n    }\n/*\n  if ($.getStateCompat(\"this\", \"exp_checkJoinEligibility\",
         \"boolean\")) {\n    $.setStateCompat(\"this\", \"exp_checkJoinEligibility\",
         false);\n\n    let pIdfcs = $.groupState.participants.map(p => p.idfc);\n   
         const newPlayers = $.getPlayersNear($.getPosition(), 1)\n      .filter(p

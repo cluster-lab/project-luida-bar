@@ -37,15 +37,31 @@ MonoBehaviour:
       _variableKeys:
       - text
       _variableValuesList:
-      - "In this study, we replicate the Stroop effect in a VR environment\u2014\nthe
-        phenomenon whereby it takes longer to identify a word\u2019s font color \nwhen
-        that color conflicts with the word\u2019s semantic meaning\u2014\nand examine
-        how the stimulus presentation depth (near vs. far) \naffects response times
-        and accuracy."
+      - This experiment...
     duringStateActions: []
-    onStateExitedActions: []
+    onStateExitedActions:
+    - predefinedActionTemplate:
+        actionType: Hide item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
+        variables: []
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys: []
+      _variableValuesList: []
   - stateID: 3
     onStateStartedActions:
+    - predefinedActionTemplate:
+        actionType: Show item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
+        variables: []
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys: []
+      _variableValuesList: []
     - predefinedActionTemplate:
         actionType: Set text
         codeSnippet: $.subNode('Text').setText(`{_text_}`);
@@ -58,7 +74,9 @@ MonoBehaviour:
       _variableKeys:
       - text
       _variableValuesList:
-      - Click the button that matches the text's font color.
+      - 'Click the button that
+
+        matches the text''s font color'
     - predefinedActionTemplate:
         actionType: Set text
         codeSnippet: $.subNode('Text').setText(`{_text_}`);
@@ -71,9 +89,13 @@ MonoBehaviour:
       _variableKeys:
       - text
       _variableValuesList:
-      - Click the button that matches the text's meaning.
+      - 'Click the button that
+
+        matches the text''s meaning'
     duringStateActions: []
-    onStateExitedActions:
+    onStateExitedActions: []
+  - stateID: 4
+    onStateStartedActions:
     - predefinedActionTemplate:
         actionType: Set text
         codeSnippet: $.subNode('Text').setText(`{_text_}`);
@@ -87,26 +109,6 @@ MonoBehaviour:
       - text
       _variableValuesList:
       - Take a break for 3 seconds
-  - stateID: 5
-    onStateStartedActions:
-    - predefinedActionTemplate:
-        actionType: Set text
-        codeSnippet: $.subNode('Text').setText(`{_text_}`);
-        variables:
-        - text
-      customAction: 
-      isConditional: 0
-      conditionVariable: 
-      conditionValue: 
-      _variableKeys:
-      - text
-      _variableValuesList:
-      - 'Well done!
-
-        Now please fill in a questionnaire
-
-        (Displayed
-        in 10 seconds)'
     duringStateActions: []
     onStateExitedActions:
     - predefinedActionTemplate:
@@ -119,4 +121,24 @@ MonoBehaviour:
       conditionValue: 
       _variableKeys: []
       _variableValuesList: []
-  otherImplementation: 
+  otherImplementation: '// function Start() { }
+
+    // function Update(deltaTime)
+    { }
+
+    // $.onCollide((collision) => { });
+
+    // $.onGrab((isGrab, isLeftHand,
+    player) => { });
+
+    // $.onInteract((player) => { });
+
+    // $.onUse((isDown,
+    player) => { });
+
+    // $.onPhysicsUpdate((deltaTime) => { });
+
+    // $.onReceive((messageType,
+    arg, sender) => { });
+
+'

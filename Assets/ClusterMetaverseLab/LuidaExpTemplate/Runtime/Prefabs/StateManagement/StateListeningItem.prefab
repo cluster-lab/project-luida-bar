@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 6758608954925073686}
   - component: {fileID: 833797841801743093}
   - component: {fileID: 3339612299653716798}
+  - component: {fileID: 161685276529953077}
   m_Layer: 0
   m_Name: StateListeningItem
   m_TagString: Untagged
@@ -107,8 +108,11 @@ MonoBehaviour:
     parseFloat(z)));\n        $.setRotation(currentRot.multiply(offsetRot));\n   
     } catch (e) {\n        $.log(`Error in AddRotation: ${e}. Ensure MovableItem
     is present and x,y,z are valid numbers (Euler degrees).`);\n    }\n}\n\nfunction
-    RecordCustomData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
-    UploadRecordedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
+    SendDataToCollector(label, value) {\n    if (!$.groupState.collectedData) $.groupState.collectedData
+    = {};\n    let collectedData = $.groupState.collectedData;\n    collectedData[label]
+    = value;\n    $.groupState.collectedData = collectedData;\n}\n\nfunction ProcessAndSaveCollectedData()
+    {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
+    UploadCollectedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
     SendHaptics(target, frequency, amplitude, duration) {\n    try {\n        if
     (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\n       
     if ($.state.player) {\n            let hapticsTarget = target;\n            if
@@ -126,8 +130,8 @@ MonoBehaviour:
     // Duration in seconds\n            });\n        } else {\n            $.log(\"SendHaptics:
     No player found nearby.\");\n        }\n    } catch (e) {\n        $.log(`Error
     in SendHaptics: ${e}`);\n    }\n}\n\nfunction OnStateEnter(deltaTime) {\n   
-    CONDITION = $.groupState.currentCondition;\n    if (!stateEnterActions[$.state.state_id]
-    || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
+    CONDITION = $.groupState.currentCondition;\n    PARTICIPANTS = $.groupState.participants;\n   
+    if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
     return;\n    \n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
     && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !== \"sleep\")
     {\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\n       
@@ -551,3 +555,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ebba999bbbae914d98345e60fc162ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &161685276529953077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5660514857068071925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49554f6eafb04d538a589436719e8fa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldItemReferences: []

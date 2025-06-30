@@ -4,11 +4,6 @@ const stateEnterActions = {
             $.state.isInTrial = true;
             $.state.timer = 0;
         } }
-    ],
-    5: [
-        { type: "exec", action: () => {
-            $.sendSignalCompat('this', 'exp_uploadCustomData');
-        } }
     ]
 };
 
@@ -19,8 +14,7 @@ const stateExitActions = {
     3: [
         { type: "exec", action: () => {
             $.state.isInTrial = false;
-            $.setStateCompat(
-              "owner", "timer", $.state.timer);
+            SendDataToCollector("timer", $.state.timer);
         } },
         { type: "exec", action: () => {
             $.sendSignalCompat('this', 'exp_recordCustomData');
@@ -31,6 +25,5 @@ const stateExitActions = {
 
 function Start() { $.state.timer = 0; }
 function Update(deltaTime) {
-  if ($.state.isInTrial)
-    $.state.timer += deltaTime;
+  if ($.state.isInTrial) $.state.timer += deltaTime;
 }

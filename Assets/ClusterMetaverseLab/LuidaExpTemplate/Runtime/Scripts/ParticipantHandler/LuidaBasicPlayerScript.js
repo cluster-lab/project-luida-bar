@@ -27,14 +27,14 @@ _.onReceive((id, body, sender) => {
             setQuestionnaireUI(body.n,
                 (body.hasOwnProperty("e") ? body.e : null),
                 body.p, body.r,
-                (body.hasOwnProperty("t") ? body.t : null));
+                (body.hasOwnProperty("t") ? body.t.toString() : null));
             break;
         case "setQuestionnaireUIs":
             for (const ui of body) {
                 setQuestionnaireUI(ui.n,
                     (ui.hasOwnProperty("e") ? ui.e : null),
                     ui.p, ui.r,
-                    (ui.hasOwnProperty("t") ? ui.t : null));
+                    (ui.hasOwnProperty("t") ? ui.t.toString() : null));
             }
             break;
         case "clearQuestionnaireAnswerUIs":
