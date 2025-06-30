@@ -11,7 +11,7 @@ $.onStart(() => {
 $.onUpdate((deltaTime) => {
     if (!$.groupState.isParticipantsEnough) {
         $.state.timer += deltaTime;
-        if ($.state.timer >= 3){
+        if ($.state.timer >= 1){
             $.state.timer = 0;
             let pIdfcs = $.groupState.participants.map(p => p.idfc);
             const newPlayers = $.getPlayersNear($.getPosition(), Infinity)

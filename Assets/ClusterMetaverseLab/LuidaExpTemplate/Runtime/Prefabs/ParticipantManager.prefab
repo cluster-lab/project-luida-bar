@@ -1,5 +1,157 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2178693722624212497
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2656686999155914180}
+  - component: {fileID: 8999692670396329590}
+  - component: {fileID: 8482477747665269750}
+  - component: {fileID: 8868493077664712499}
+  m_Layer: 0
+  m_Name: WaitingMessage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2656686999155914180
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2178693722624212497}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.5, z: 2}
+  m_LocalScale: {x: 3, y: 0.75, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 9004969966000341912}
+  m_Father: {fileID: 100295540188533776}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &8999692670396329590
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2178693722624212497}
+  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &8482477747665269750
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2178693722624212497}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 0e028c7d7604f7e40818164664f0f854, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8868493077664712499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2178693722624212497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce2b9f4eb5444df69e31db5c54e12447, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 0
+      key: exp_showWaitingMessage
+    item: {fileID: 1465207387068133349}
+--- !u!1 &3665580663408095924
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9004969966000341912}
+  - component: {fileID: 4599560185385902877}
+  m_Layer: 0
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9004969966000341912
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3665580663408095924}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.01}
+  m_LocalScale: {x: 0.25, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2656686999155914180}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4599560185385902877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3665580663408095924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 661c45a344104837b0ee4901951c608c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textMesh: {fileID: 0}
+  text: "Waiting for enough participants...\n\u53C2\u52A0\u8005\u304C\u63C3\u3046\u307E\u3067\u5C11\u3005\u304A\u5F85\u3061\u304F\u3060\u3055\u3044"
+  size: 0.1
+  textAnchor: 4
+  textAlignment: 1
+  color: {r: 0, g: 0, b: 0, a: 1}
 --- !u!1 &7807161544533224870
 GameObject:
   m_ObjectHideFlags: 0
@@ -15,6 +167,7 @@ GameObject:
   - component: {fileID: 5829355734938689256}
   - component: {fileID: 3300219981269909958}
   - component: {fileID: 4779675142033733973}
+  - component: {fileID: 5220618866430275580}
   - component: {fileID: 2539487737753158382}
   - component: {fileID: 994443135076434042}
   - component: {fileID: 1358033485673396458}
@@ -38,7 +191,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2656686999155914180}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -72,62 +226,60 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
   sourceCode: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
-    = \"callExternalEndpointID_example\";\npNum = 1;\n\r\n$.onStart(() => {\r\n 
-    $.groupState.isParticipantsEnough = false;\r\n  $.groupState.sessionID = Date.now()
-    + \"_\" +  (Math.random() + 1).toString(36).substring(7);\r\n  $.groupState.participants
-    = []; // array of PlayerHandle who are currently in the experiment\r\n  $.state.participantsEnvInfo
-    = [];\r\n  $.state.timer = 0;\r\n  \r\n  // TODO: load exp info so that we can
-    check later what environments this experiment requires\r\n})\r\n\r\n$.onUpdate((deltaTime)
-    => {\r\n    if (!$.groupState.isParticipantsEnough) {\r\n        $.state.timer
-    += deltaTime;\r\n        if ($.state.timer >= 3){\r\n            $.state.timer
-    = 0;\r\n            let pIdfcs = $.groupState.participants.map(p => p.idfc);\r\n           
-    const newPlayers = $.getPlayersNear($.getPosition(), Infinity)\r\n               
-    .filter(p => !pIdfcs.includes(p.idfc));\r\n            if (newPlayers.length
-    > 0) {\r\n                for (const newPlayer of newPlayers) {\r\n                   
-    // TODO: Check if the player is eligible to join the experiment before adding
-    them to $.groupState.participants.\r\n                    $.groupState.participants
-    = [ ...$.groupState.participants, newPlayer ];\r\n                    $.setPlayerScript(newPlayer);\r\n                   
-    newPlayer.send(\"initializeParticipant\", true);\r\n                }\r\n           
-    }\r\n            if (!$.groupState.isParticipantsEnough && $.groupState.participants.length
-    >= pNum) {\r\n                HandleParticipantsEnough();\r\n            }\r\n       
-    }\r\n    }\r\n/*\r\n  if ($.getStateCompat(\"this\", \"exp_checkJoinEligibility\",
-    \"boolean\")) {\r\n    $.setStateCompat(\"this\", \"exp_checkJoinEligibility\",
-    false);\r\n\r\n    let pIdfcs = $.groupState.participants.map(p => p.idfc);\r\n   
-    const newPlayers = $.getPlayersNear($.getPosition(), 1)\r\n      .filter(p =>
-    !pIDFCs.includes(p.idfc));\r\n    \r\n    if (newPlayers.length > 0) {\r\n     
-    $.state.newPlayers = newPlayers;\r\n      $.log(newPlayers[0].idfc);\r\n\r\n     
-    const request = {\r\n        type: \"checkJoinEligibility\",\r\n        token:
-    token || \"\",\r\n        eID: expID || \"\",\r\n        idfcs: newPlayers.map(p
-    => p.idfc).join(\"|\")\r\n      };\r\n      $.callExternal(new ExternalEndpointId(callExternalEndpointID),
-    JSON.stringify(request), \"joinEligibilityChecked\");\r\n    }\r\n  }\r\n*/\r\n})\r\n\r\n$.onReceive((messageType,
-    arg, sender) => {\r\n    switch (messageType) {\r\n        case \"envInfoResponse\":\r\n           
-    $.state.participantsEnvInfo = [\r\n              ...$.state.participantsEnvInfo,\r\n             
-    {\r\n                idfc: sender.idfc,\r\n                envInfo: arg\r\n             
-    }\r\n            ]\r\n            if ($.state.participantsEnvInfo.length >= pNum)
-    {\r\n              let request = {\r\n                  type: \"uploadCustomData\",\r\n                 
-    data: { envInfo: $.state.participantsEnvInfo },\r\n                  token: token
-    || \"\",\r\n                  eID: expID || \"\",\r\n                  pID: $.groupState.sessionID,
-    // TODO: change 'pID' to 'sessionID' \r\n              };\r\n              $.callExternal(new
-    ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), \"customDataUploaded\");\r\n           
-    }\r\n            break;\r\n        default:\r\n            break;\r\n    }\r\n},
-    { item: true, player: true });\r\n\r\nfunction HandleParticipantsEnough() {\r\n 
-    $.log(\"Participants are enough to start the experiment.\");\r\n  $.groupState.isParticipantsEnough
-    = true;\r\n    $.sendSignalCompat(\"this\", \"exp_playersAreEnough\");\r\n   
-    $.sendSignalCompat(\"this\", \"exp_StartStateTransition\");\r\n\r\n  const conditionManager
-    = $.worldItemReference(\"ConditionManager\");\r\n  if (conditionManager) {\r\n   
-    conditionManager.send(\"luida_participants_info\", {\r\n      participants: $.groupState.participants,\r\n     
-    sessionID: $.groupState.sessionID\r\n    });\r\n  }\r\n}\r\n\r\n/*\r\n$.onExternalCallEnd((res,
-    meta, err) =>\r\n{\r\n  if (res == null) {\r\n    $.log(\"callExternal ERROR:
-    \" + err);\r\n    return;\r\n  }\r\n\r\n  if (meta === \"joinEligibilityChecked\")
-    {\r\n    const parsedRes = JSON.parse(res);\r\n    $.state.newPlayers.forEach(newPlayer
-    => {\r\n      if (parsedRes.ineligibleIdfcs.includes(newPlayer.idfc)) {\r\n       
-    // TODO: Show message about that this player is not eligible to join this experiment,
-    and teleport the player back to LUIDA bar world.\r\n      } else {\r\n       
-    newPlayer.setMoveSpeedRate(1);\r\n        $.groupState.participants = [ ...$.groupState.participants,
-    newPlayer ];\r\n        // TODO: Instead of enabling move, teleport the player
-    from the checking area to the task area.\r\n      }\r\n    });\r\n    \r\n   
-    $.state.newPlayers = [];\r\n    $.log(\"Only users who have not joined this experiment
-    before are allowed to proceed to the experiment.\");\r\n  }\r\n});\r\n*/\r\n"
+    = \"callExternalEndpointID_example\";\npNum = 1;\n\r\n$.onStart(() => {\n  $.groupState.isParticipantsEnough
+    = false;\n  $.groupState.sessionID = Date.now() + \"_\" +  (Math.random() + 1).toString(36).substring(7);\n 
+    $.groupState.participants = []; // array of PlayerHandle who are currently in
+    the experiment\n  $.state.participantsEnvInfo = [];\n  $.state.timer = 0;\n 
+    \n  // TODO: load exp info so that we can check later what environments this
+    experiment requires\n})\n\n$.onUpdate((deltaTime) => {\n    if (!$.groupState.isParticipantsEnough)
+    {\n        $.state.timer += deltaTime;\n        if ($.state.timer >= 1){\n           
+    $.state.timer = 0;\n            let pIdfcs = $.groupState.participants.map(p
+    => p.idfc);\n            const newPlayers = $.getPlayersNear($.getPosition(),
+    Infinity)\n                .filter(p => !pIdfcs.includes(p.idfc));\n           
+    if (newPlayers.length > 0) {\n                for (const newPlayer of newPlayers)
+    {\n                    // TODO: Check if the player is eligible to join the experiment
+    before adding them to $.groupState.participants.\n                    $.groupState.participants
+    = [ ...$.groupState.participants, newPlayer ];\n                    $.setPlayerScript(newPlayer);\n                   
+    newPlayer.send(\"initializeParticipant\", true);\n                }\n           
+    }\n            if (!$.groupState.isParticipantsEnough && $.groupState.participants.length
+    >= pNum) {\n                HandleParticipantsEnough();\n            }\n       
+    }\n    }\n/*\n  if ($.getStateCompat(\"this\", \"exp_checkJoinEligibility\",
+    \"boolean\")) {\n    $.setStateCompat(\"this\", \"exp_checkJoinEligibility\",
+    false);\n\n    let pIdfcs = $.groupState.participants.map(p => p.idfc);\n   
+    const newPlayers = $.getPlayersNear($.getPosition(), 1)\n      .filter(p => !pIDFCs.includes(p.idfc));\n   
+    \n    if (newPlayers.length > 0) {\n      $.state.newPlayers = newPlayers;\n     
+    $.log(newPlayers[0].idfc);\n\n      const request = {\n        type: \"checkJoinEligibility\",\n       
+    token: token || \"\",\n        eID: expID || \"\",\n        idfcs: newPlayers.map(p
+    => p.idfc).join(\"|\")\n      };\n      $.callExternal(new ExternalEndpointId(callExternalEndpointID),
+    JSON.stringify(request), \"joinEligibilityChecked\");\n    }\n  }\n*/\n})\n\n$.onReceive((messageType,
+    arg, sender) => {\n    switch (messageType) {\n        case \"envInfoResponse\":\n           
+    $.state.participantsEnvInfo = [\n              ...$.state.participantsEnvInfo,\n             
+    {\n                idfc: sender.idfc,\n                envInfo: arg\n             
+    }\n            ]\n            if ($.state.participantsEnvInfo.length >= pNum)
+    {\n              let request = {\n                  type: \"uploadCustomData\",\n                 
+    data: { envInfo: $.state.participantsEnvInfo },\n                  token: token
+    || \"\",\n                  eID: expID || \"\",\n                  pID: $.groupState.sessionID,
+    // TODO: change 'pID' to 'sessionID' \n              };\n              $.callExternal(new
+    ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), \"customDataUploaded\");\n           
+    }\n            break;\n        default:\n            break;\n    }\n}, { item:
+    true, player: true });\n\nfunction HandleParticipantsEnough() {\n  $.log(\"Participants
+    are enough to start the experiment.\");\n  $.groupState.isParticipantsEnough
+    = true;\n    $.sendSignalCompat(\"this\", \"exp_playersAreEnough\");\n    $.sendSignalCompat(\"this\",
+    \"exp_StartStateTransition\");\n\n  const conditionManager = $.worldItemReference(\"ConditionManager\");\n 
+    if (conditionManager) {\n    conditionManager.send(\"luida_participants_info\",
+    {\n      participants: $.groupState.participants,\n      sessionID: $.groupState.sessionID\n   
+    });\n  }\n}\n\n/*\n$.onExternalCallEnd((res, meta, err) =>\n{\n  if (res == null)
+    {\n    $.log(\"callExternal ERROR: \" + err);\n    return;\n  }\n\n  if (meta
+    === \"joinEligibilityChecked\") {\n    const parsedRes = JSON.parse(res);\n   
+    $.state.newPlayers.forEach(newPlayer => {\n      if (parsedRes.ineligibleIdfcs.includes(newPlayer.idfc))
+    {\n        // TODO: Show message about that this player is not eligible to join
+    this experiment, and teleport the player back to LUIDA bar world.\n      } else
+    {\n        newPlayer.setMoveSpeedRate(1);\n        $.groupState.participants
+    = [ ...$.groupState.participants, newPlayer ];\n        // TODO: Instead of enabling
+    move, teleport the player from the checking area to the task area.\n      }\n   
+    });\n    \n    $.state.newPlayers = [];\n    $.log(\"Only users who have not
+    joined this experiment before are allowed to proceed to the experiment.\");\n 
+    }\n});\n*/\n"
 --- !u!114 &2089283526597471262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,36 +293,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "const haptics = _.hapticsHandle;\r\n\r\n_.onReceive((id, body, sender)
-    => {\r\n    switch (id) {\r\n        case \"haptics\":\r\n            if (haptics.isAvailable())
-    {\r\n                const effect = new HapticsEffect();\r\n                effect.frequency
-    = body.frequency;\r\n                effect.amplitude = body.amplitude;\r\n               
-    effect.duration = body.duration;\r\n                haptics.playEffect(effect,
-    body.target);\r\n            }\r\n            break;\r\n        case \"initializeParticipant\":\r\n           
-    _.setMoveSpeedRate(1);\r\n            _.sendTo(sender, \"envInfoResponse\", {\r\n               
-    isAndroid: _.isAndroid,\r\n                isDesktop: _.isDesktop,\r\n               
-    isIos: _.isIos,\r\n                isMacOs: _.isMacOs,\r\n                isMobile:
-    _.isMobile,\r\n                isVr: _.isVr,\r\n                isWindows: _.isWindows\r\n           
-    });\r\n            break;\r\n        case \"setQuestionnaireUI\":\r\n           
-    setQuestionnaireUI(body.n,\r\n                (body.hasOwnProperty(\"e\") ? body.e
-    : null),\r\n                body.p, body.r,\r\n                (body.hasOwnProperty(\"t\")
-    ? body.t : null));\r\n            break;\r\n        case \"setQuestionnaireUIs\":\r\n           
-    for (const ui of body) {\r\n                setQuestionnaireUI(ui.n,\r\n                   
-    (ui.hasOwnProperty(\"e\") ? ui.e : null),\r\n                    ui.p, ui.r,\r\n                   
-    (ui.hasOwnProperty(\"t\") ? ui.t : null));\r\n            }\r\n            break;\r\n       
-    case \"clearQuestionnaireAnswerUIs\":\r\n            let targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(\"AnsText\");\r\n           
-    targetUI.setEnabled(false);\r\n            for (let i = 0; i < 20; i++) {\r\n               
+  sourceCode: "const haptics = _.hapticsHandle;\n\n_.onReceive((id, body, sender)
+    => {\n    switch (id) {\n        case \"haptics\":\n            if (haptics.isAvailable())
+    {\n                const effect = new HapticsEffect();\n                effect.frequency
+    = body.frequency;\n                effect.amplitude = body.amplitude;\n               
+    effect.duration = body.duration;\n                haptics.playEffect(effect,
+    body.target);\n            }\n            break;\n        case \"initializeParticipant\":\n           
+    _.setMoveSpeedRate(1);\n            _.sendTo(sender, \"envInfoResponse\", {\n               
+    isAndroid: _.isAndroid,\n                isDesktop: _.isDesktop,\n               
+    isIos: _.isIos,\n                isMacOs: _.isMacOs,\n                isMobile:
+    _.isMobile,\n                isVr: _.isVr,\n                isWindows: _.isWindows\n           
+    });\n            break;\n        case \"setQuestionnaireUI\":\n            setQuestionnaireUI(body.n,\n               
+    (body.hasOwnProperty(\"e\") ? body.e : null),\n                body.p, body.r,\n               
+    (body.hasOwnProperty(\"t\") ? body.t : null));\n            break;\n        case
+    \"setQuestionnaireUIs\":\n            for (const ui of body) {\n               
+    setQuestionnaireUI(ui.n,\n                    (ui.hasOwnProperty(\"e\") ? ui.e
+    : null),\n                    ui.p, ui.r,\n                    (ui.hasOwnProperty(\"t\")
+    ? ui.t : null));\n            }\n            break;\n        case \"clearQuestionnaireAnswerUIs\":\n           
+    let targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(\"AnsText\");\n           
+    targetUI.setEnabled(false);\n            for (let i = 0; i < 20; i++) {\n               
     targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(\"AnsOptLabel_\"
-    + i);\r\n                if (targetUI) {\r\n                    targetUI.setEnabled(false);\r\n               
-    } else {\r\n                    break;\r\n                }\r\n            }\r\n           
-    break;\r\n        default:\r\n            break;\r\n    }\r\n});\r\n\r\nfunction
-    setQuestionnaireUI(targetName, isEnabled, position, rotation, text) {\r\n   
-    let targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(targetName);\r\n   
-    if (!targetUI) return;\r\n    if (isEnabled !== null) targetUI.setEnabled(isEnabled);\r\n   
+    + i);\n                if (targetUI) {\n                    targetUI.setEnabled(false);\n               
+    } else {\n                    break;\n                }\n            }\n           
+    break;\n        default:\n            break;\n    }\n});\n\nfunction setQuestionnaireUI(targetName,
+    isEnabled, position, rotation, text) {\n    let targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(targetName);\n   
+    if (!targetUI) return;\n    if (isEnabled !== null) targetUI.setEnabled(isEnabled);\n   
     if (position) targetUI.getUnityComponent(\"Transform\").unityProp.localPosition
-    = position;\r\n    if (rotation) targetUI.getUnityComponent(\"Transform\").unityProp.localRotation
-    = rotation;\r\n    if (text !== null) targetUI.findObject(\"Text\").getUnityComponent(\"Text\").unityProp.text
-    = text;\r\n}\r\n"
+    = position;\n    if (rotation) targetUI.getUnityComponent(\"Transform\").unityProp.localRotation
+    = rotation;\n    if (text !== null) targetUI.findObject(\"Text\").getUnityComponent(\"Text\").unityProp.text
+    = text;\n}\n"
 --- !u!114 &5829355734938689256
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -268,6 +419,64 @@ MonoBehaviour:
                   vector3Value: {x: 0, y: 0, z: 0}
                 sourceState:
                   target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &5220618866430275580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7807161544533224870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d06d8dc2ce9e442ab2712de694945b2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 1465207387068133349}
+  key:
+    target: 0
+    key: exp_playersAreEnough
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 0
+          key: exp_showWaitingMessage
+          parameterType: 1
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 0
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 0
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 0
                   key: 
                   type: 6
               operatorExpression:
