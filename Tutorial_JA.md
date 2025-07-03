@@ -143,6 +143,8 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 `LUIDA > Config Window > Experiment Variables`画面（左図）で、実験の参加者内/参加者間変数を登録すると、それに基づいてシステムが自動的に試行の数と各試行における実験条件を決定します（右図）。
 
+各設定項目の詳細は[ドキュメント](/Documentation_JA.md#実験変数と試行回数の設定)をご参照ください。
+
 <table>
   <tr>
     <td><img src="https://github.com/user-attachments/assets/d697ecb9-555c-4a65-90fe-1cc295cabc8d" alt="variables-config-ui" width="600"/></td>
@@ -174,6 +176,9 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 `LUIDA > Config Window > State Machine`画面（左図）で、実験の進行フローを「ステート」と呼ばれる単位で設定すると、右図のように実験が自動的に進行します。
 各ステートは実験の一区切り（例：説明、タスク実行、休憩、質問紙回答など）を表し、それらがどのように遷移するかをここで定義できます。
+
+各設定項目の詳細は[ドキュメント](/Documentation_JA.md#実験進行の設定ステート遷移と質問紙の紐づけ)をご参照ください。
+
 ![state-transition-example](https://github.com/user-attachments/assets/69ce4439-a2da-4912-8344-feba222e1347)
 
 <!-- ![Luida Editor Experiment Statesタブ](https://github.com/user-attachments/assets/fbbc7f52-af5b-43db-adf7-4d579fed23b3) -->
@@ -206,13 +211,15 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 ## 5. 実験進行に合わせたオブジェクトの挙動の設定
 
-![Luida Editor State-listening Itemsタブ](https://github.com/user-attachments/assets/1937e67a-8137-482e-95c5-6ce359d00259)
-
 `LUIDA > Config Window > State-listening Items`では、実験の進行（ステートの遷移）に合わせてオブジェクトの動作を制御できます。
 
 動作の例：自身や子オブジェクトの表示/非表示、自身や子オブジェクトの位置・回転の設定、テキスト内容の変更、コントローラを振動させる、数秒間待機、カスタムな動作（ご自身でコーディング）など。
 
 _*特定のステートに依存しないオブジェクトや動作は、この機能ではなく、通常のUnityおよびCluster Creator Kit（CCK）の方法でも作成・設定できます。_
+
+各設定項目の詳細は[ドキュメント](/Documentation_JA.md#実験進行に合わせたオブジェクトの挙動の設定)をご参照ください。
+
+![Luida Editor State-listening Itemsタブ](https://github.com/user-attachments/assets/1937e67a-8137-482e-95c5-6ce359d00259)
 
 ### 以下の手順に従って、それぞれのオブジェクトの作成と挙動の設定を行ってください
 
@@ -404,6 +411,8 @@ PARTICIPANTS[0].requestTextInput(
 ## 6. カスタム形式で記録したいデータの定義
 
 `LUIDA > Config Window > Data Collector`では、カスタム形式で記録したいデータ（例：回答ボタンをクリックする際に送られるisRedの値、試行が終わるたびに送られるタイマーの値、そして試行ごとの実験条件）の定義や計算ができます。
+
+各設定項目の詳細は[ドキュメント](/Documentation_JA.md#カスタム形式で記録したいデータの定義)をご参照ください。
 
 <!-- <img width="357" alt="Screenshot 2025-05-28 at 14 49 45" src="https://github.com/user-attachments/assets/f0e27d68-5f55-4589-bce2-7b5e402fa7f4" /> -->
 ![image](https://github.com/user-attachments/assets/373f5444-eeb5-415e-a010-311f63720ecb)
