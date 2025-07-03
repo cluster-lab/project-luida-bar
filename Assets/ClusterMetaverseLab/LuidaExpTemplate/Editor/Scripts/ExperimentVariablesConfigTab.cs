@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.IO;
+using UnityEditorInternal; // Required for ReorderableList
 
 public class ExperimentVariablesConfigTab : EditorWindow
 {
@@ -16,9 +17,14 @@ public class ExperimentVariablesConfigTab : EditorWindow
     private string conditionManagerScriptPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/ConditionManagement/ConditionManager.js";
 
 
-    private ExperimentVariable[] withinSubjectsVariables;
-    private ExperimentVariable[] betweenSubjectsVariables;
+    // Use List<T> instead of array for easy modification with ReorderableList
+    private List<ExperimentVariable> withinSubjectsVariables = new List<ExperimentVariable>();
+    private List<ExperimentVariable> betweenSubjectsVariables = new List<ExperimentVariable>();
     private int trialsCountForEachUniqueCondition;
+
+    // ReorderableList fields
+    private ReorderableList withinSubjectsList;
+    private ReorderableList betweenSubjectsList;
 
     private string variablesAssetPath;
     private string betweenSubjectsConditionSetterPath;
@@ -27,6 +33,8 @@ public class ExperimentVariablesConfigTab : EditorWindow
     public void OnEnable()
     {
         RetrieveJavaScriptAsset();
+        SetupReorderableLists(); // Setup lists after retrieving data
+
         if (!isSubscribed)
         {
             LuidaConfigWindow.OnEditorClosed += ApplyVariableUpdates;
@@ -47,6 +55,96 @@ public class ExperimentVariablesConfigTab : EditorWindow
         }
     }
 
+    private void SetupReorderableLists()
+    {
+        // === Within-Subjects List ===
+        withinSubjectsList = new ReorderableList(withinSubjectsVariables, typeof(ExperimentVariable), true, true, true, true);
+
+        withinSubjectsList.drawHeaderCallback = (Rect rect) => {
+            EditorGUI.LabelField(rect, "Variables for Within-Subject Conditions", EditorStyles.boldLabel);
+        };
+
+        withinSubjectsList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => {
+            var element = withinSubjectsVariables[index];
+            rect.y += 2; // Add a little vertical padding
+            float singleLineHeight = EditorGUIUtility.singleLineHeight;
+
+            // Adjusted Rects for more space between Name and Values
+            var nameRect = new Rect(rect.x, rect.y, rect.width * 0.35f, singleLineHeight);
+            var valuesRect = new Rect(rect.x + rect.width * 0.4f, rect.y, rect.width * 0.4f, singleLineHeight);
+            var randomLabelRect = new Rect(rect.x + rect.width * 0.82f, rect.y, 70, singleLineHeight);
+            var randomToggleRect = new Rect(randomLabelRect.xMax, rect.y, 20, singleLineHeight);
+
+            float labelWidth = 40f; // <-- Adjust this width as needed
+            var nameLabelRect = new Rect(nameRect.x, nameRect.y, labelWidth, nameRect.height);
+            var nameFieldRect = new Rect(nameRect.x + labelWidth, nameRect.y, nameRect.width - labelWidth, nameRect.height);
+            EditorGUI.LabelField(nameLabelRect, new GUIContent("Name:", "Variable name..."));
+            element.name = EditorGUI.TextField(nameFieldRect, element.name);
+            
+            string valuesString = string.Join(",", element.values);
+            labelWidth = 45f;
+            var valuesLabelRect = new Rect(valuesRect.x, valuesRect.y, labelWidth, valuesRect.height);
+            var valuesFieldRect = new Rect(valuesRect.x + labelWidth, valuesRect.y, valuesRect.width - labelWidth, valuesRect.height);
+            EditorGUI.LabelField(valuesLabelRect, new GUIContent("Values:", "Comma-separated values..."));
+            valuesString = EditorGUI.TextField(valuesFieldRect, valuesString);
+            element.values = valuesString.Split(',').Select(v => v.Trim()).Where(v => !string.IsNullOrEmpty(v)).ToArray();
+            
+            EditorGUI.LabelField(randomLabelRect, "Is Random");
+            element.isRandom = EditorGUI.Toggle(randomToggleRect, element.isRandom);
+        };
+
+        withinSubjectsList.onAddCallback = (ReorderableList list) => {
+            withinSubjectsVariables.Add(new ExperimentVariable { 
+                name = "NewVariable", 
+                values = new[] { "value1", "value2", "value3" }, 
+                isRandom = false 
+            });
+        };
+
+        // === Between-Subjects List ===
+        betweenSubjectsList = new ReorderableList(betweenSubjectsVariables, typeof(ExperimentVariable), true, true, true, true);
+
+        betweenSubjectsList.drawHeaderCallback = (Rect rect) => {
+            EditorGUI.LabelField(rect, "Variables for Between-Subject Conditions", EditorStyles.boldLabel);
+        };
+
+        betweenSubjectsList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => {
+            var element = betweenSubjectsVariables[index];
+            rect.y += 2; // Add a little vertical padding
+            float singleLineHeight = EditorGUIUtility.singleLineHeight;
+            
+            // Adjusted Rects for more space between Name and Values
+            var nameRect = new Rect(rect.x, rect.y, rect.width * 0.35f, singleLineHeight);
+            var valuesRect = new Rect(rect.x + rect.width * 0.4f, rect.y, rect.width * 0.4f, singleLineHeight);
+            var randomLabelRect = new Rect(rect.x + rect.width * 0.82f, rect.y, rect.width * 0.18f, singleLineHeight);
+
+            float labelWidth = 40f; // <-- Adjust this width as needed
+            var nameLabelRect = new Rect(nameRect.x, nameRect.y, labelWidth, nameRect.height);
+            var nameFieldRect = new Rect(nameRect.x + labelWidth, nameRect.y, nameRect.width - labelWidth, nameRect.height);
+            EditorGUI.LabelField(nameLabelRect, new GUIContent("Name:", "Variable name..."));
+            element.name = EditorGUI.TextField(nameFieldRect, element.name);
+            
+            string valuesString = string.Join(",", element.values);
+            labelWidth = 45f;
+            var valuesLabelRect = new Rect(valuesRect.x, valuesRect.y, labelWidth, valuesRect.height);
+            var valuesFieldRect = new Rect(valuesRect.x + labelWidth, valuesRect.y, valuesRect.width - labelWidth, valuesRect.height);
+            EditorGUI.LabelField(valuesLabelRect, new GUIContent("Values:", "Comma-separated values..."));
+            valuesString = EditorGUI.TextField(valuesFieldRect, valuesString);
+            element.values = valuesString.Split(',').Select(v => v.Trim()).Where(v => !string.IsNullOrEmpty(v)).ToArray();
+
+            element.isRandom = true; 
+            EditorGUI.LabelField(randomLabelRect, "Is Random: true");
+        };
+
+        betweenSubjectsList.onAddCallback = (ReorderableList list) => {
+            betweenSubjectsVariables.Add(new ExperimentVariable { 
+                name = "NewVariable", 
+                values = new[] { "value1", "value2", "value3" }, 
+                isRandom = true 
+            });
+        };
+    }
+
     public void OnGUI()
     {
         if (variablesAsset == null)
@@ -61,23 +159,23 @@ public class ExperimentVariablesConfigTab : EditorWindow
         }
         else
         {
+            EditorGUILayout.HelpBox("For fields `Values`, remember to separate multiple values using a comma.", MessageType.Info);
+            
+            // Ensure lists are initialized, in case of an assembly reload
+            if (withinSubjectsList == null || betweenSubjectsList == null) {
+                SetupReorderableLists();
+            }
+
             trialsCountForEachUniqueCondition = EditorGUILayout.IntField("Trials Count per Condition", trialsCountForEachUniqueCondition);
 
-            GUILayout.Label("Variables for Within-Subject Conditions", EditorStyles.boldLabel);
-            if (withinSubjectsVariables == null)
-            {
-                withinSubjectsVariables = new ExperimentVariable[0];
-            }
+            EditorGUILayout.Space();
 
-            DrawVariables(ref withinSubjectsVariables);
-
-            GUILayout.Label("Variables for Between-Subject Conditions", EditorStyles.boldLabel);
-            if (betweenSubjectsVariables == null)
-            {
-                betweenSubjectsVariables = new ExperimentVariable[0];
-            }
-
-            DrawVariables(ref betweenSubjectsVariables, forceIsRandom: true);
+            // Draw the reorderable lists
+            withinSubjectsList.DoLayoutList();
+            
+            EditorGUILayout.Space();
+            
+            betweenSubjectsList.DoLayoutList();
 
             /*
             if (betweenSubjectsConditionSetterAsset == null)
@@ -99,84 +197,13 @@ public class ExperimentVariablesConfigTab : EditorWindow
             */
         }
     }
-
-    private void DrawVariables(ref ExperimentVariable[] variables, bool forceIsRandom = false)
-    {
-        int newLength = EditorGUILayout.IntField("Length", variables.Length);
-        if (newLength != variables.Length)
-        {
-            System.Array.Resize(ref variables, newLength);
-            for (int i = 0; i < newLength; i++)
-            {
-                if (variables[i] == null)
-                {
-                    variables[i] = new ExperimentVariable();
-                    variables[i].name = "";
-                    variables[i].values = new string[0];
-                    variables[i].isRandom = false;
-                }
-            }
-        }
-
-        for (int i = 0; i < variables.Length; i++)
-        {
-            EditorGUILayout.BeginHorizontal("box");
-
-            GUILayout.Label("Name", GUILayout.Width(50));
-            variables[i].name = EditorGUILayout.TextField(variables[i].name, GUILayout.Width(150));
-
-            GUILayout.Label("Values (comma-separated)", GUILayout.Width(150));
-            string valuesString = string.Join(",", variables[i].values);
-            valuesString = EditorGUILayout.TextField(valuesString, GUILayout.Width(150));
-            variables[i].values = valuesString.Split(',').Select(v => v.Trim()).ToArray();
-
-            if (forceIsRandom)
-            {
-                variables[i].isRandom = true;
-                GUILayout.Label("Is Random: true", GUILayout.Width(90));
-            }
-            else
-            {
-                GUILayout.Label("Is Random", GUILayout.Width(70));
-                variables[i].isRandom = EditorGUILayout.Toggle(variables[i].isRandom, GUILayout.Width(20));
-            }
-
-            if (GUILayout.Button("▲", GUILayout.Width(20)))
-            {
-                if (i > 0)
-                {
-                    var temp = variables[i];
-                    variables[i] = variables[i - 1];
-                    variables[i - 1] = temp;
-                }
-            }
-
-            if (GUILayout.Button("▼", GUILayout.Width(20)))
-            {
-                if (i < variables.Length - 1)
-                {
-                    var temp = variables[i];
-                    variables[i] = variables[i + 1];
-                    variables[i + 1] = temp;
-                }
-            }
-
-            if (GUILayout.Button("-", GUILayout.Width(20)))
-            {
-                var variablesList = variables.ToList();
-                variablesList.RemoveAt(i);
-                variables = variablesList.ToArray();
-            }
-
-            EditorGUILayout.EndHorizontal();
-        }
-    }
+    
+    // The old DrawVariables method is no longer needed and has been removed.
 
     private void GenerateJavaScript()
     {
         if (variablesAsset == null)
         {
-            // EditorUtility.DisplayDialog("Error", "Please assign a JavaScriptAsset.", "OK");
             return;
         }
 
@@ -186,23 +213,21 @@ public class ExperimentVariablesConfigTab : EditorWindow
         string combinedJs = $"const trialsCountForEachUniqueCondition = {trialsCountForEachUniqueCondition};\n" +
             withinSubjectsVariablesJs + "\n" + betweenSubjectsVariablesJs + "\n";
 
-        // Write the changes to the actual file
         File.WriteAllText(variablesAssetPath, combinedJs);
 
-        // Update the ScriptableObject
         SerializedObject serializedObject = new SerializedObject(variablesAsset);
         SerializedProperty textProperty = serializedObject.FindProperty("text");
         textProperty.stringValue = combinedJs;
         serializedObject.ApplyModifiedProperties();
 
-        // Mark the asset as dirty and save
         EditorUtility.SetDirty(variablesAsset);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
         AssetDatabase.ImportAsset(variablesAssetPath);
     }
 
-    private string GenerateJavaScriptArray(string variableName, ExperimentVariable[] variables)
+    // Updated to accept a List instead of an array
+    private string GenerateJavaScriptArray(string variableName, List<ExperimentVariable> variables)
     {
         string js = $"const {variableName} = [\n";
         foreach (var variable in variables)
@@ -237,6 +262,12 @@ public class ExperimentVariablesConfigTab : EditorWindow
         variablesAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(variablesAssetPath);
         if (variablesAsset == null)
         {
+            string directoryPath = Path.GetDirectoryName(variablesAssetPath);
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+            
             if (File.Exists(templatePath))
             {
                 File.Copy(templatePath, variablesAssetPath);
@@ -264,14 +295,15 @@ public class ExperimentVariablesConfigTab : EditorWindow
         betweenSubjectsVariables = ParseJavaScriptArray("between_subjects_variables", jsContent);
     }
 
-    private ExperimentVariable[] ParseJavaScriptArray(string variableName, string jsContent)
+    // Updated to return a List instead of an array
+    private List<ExperimentVariable> ParseJavaScriptArray(string variableName, string jsContent)
     {
         string pattern = $@"const {variableName} = \[(.*?)\];";
         Match match = Regex.Match(jsContent, pattern, RegexOptions.Singleline);
 
         if (!match.Success)
         {
-            return new ExperimentVariable[0];
+            return new List<ExperimentVariable>();
         }
 
         string arrayContent = match.Groups[1].Value;
@@ -297,7 +329,7 @@ public class ExperimentVariablesConfigTab : EditorWindow
             variables.Add(variable);
         }
 
-        return variables.ToArray();
+        return variables;
     }
 
     private void RetrieveOrCreateBetweenSubjectsConditionSetter()
@@ -309,6 +341,12 @@ public class ExperimentVariablesConfigTab : EditorWindow
         betweenSubjectsConditionSetterAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(betweenSubjectsConditionSetterPath);
         if (betweenSubjectsConditionSetterAsset == null)
         {
+            string directoryPath = Path.GetDirectoryName(betweenSubjectsConditionSetterPath);
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+
             if (File.Exists(templatePath))
             {
                 File.Copy(templatePath, betweenSubjectsConditionSetterPath);
@@ -325,19 +363,19 @@ public class ExperimentVariablesConfigTab : EditorWindow
     private void ApplyVariableUpdates()
     {
         GenerateJavaScript();
+        var scriptAssets = new List<JavaScriptAsset>();
         if (betweenSubjectsConditionSetterAsset != null)
         {
-            UpdateScriptableClusterScriptCombiner(new JavaScriptAsset[] { betweenSubjectsConditionSetterAsset, variablesAsset }, false);
+            scriptAssets.Add(betweenSubjectsConditionSetterAsset);
         }
-        else
-        {
-            UpdateScriptableClusterScriptCombiner(new JavaScriptAsset[] { variablesAsset });
-        }
+        scriptAssets.Add(variablesAsset);
+        
+        UpdateScriptableClusterScriptCombiner(scriptAssets.ToArray());
 
         Debug.Log($"Experiment variables saved to {variablesAssetPath}");
     }
 
-    private void UpdateScriptableClusterScriptCombiner(JavaScriptAsset[] scriptAssets, bool prepend = true)
+    private void UpdateScriptableClusterScriptCombiner(JavaScriptAsset[] scriptAssets)
     {
         GameObject conditionManager = GameObject.Find("ConditionManager");
         if (conditionManager != null)
@@ -346,29 +384,12 @@ public class ExperimentVariablesConfigTab : EditorWindow
             if (scriptCombiner != null)
             {
                 scriptCombiner.ClearScripts();
-                for (int i = 0; i < scriptAssets.Length; i++)
+                foreach(var asset in scriptAssets)
                 {
-                    scriptCombiner.AppendScript(scriptAssets[i], null, false);
+                    if(asset != null) scriptCombiner.AppendScript(asset, null, false);
                 }
                 scriptCombiner.AppendScript(conditionManagerScript, null, true);
-/*
-                int existingScriptIndex = scriptCombiner.GetClusterScripts().IndexOf(scriptAsset);
-                if (existingScriptIndex != -1)
-                {
-                    scriptCombiner.ReplaceScript(scriptAsset, existingScriptIndex, null, 0, true);
-                }
-                else
-                {
-                    if (prepend)
-                    {
-                        scriptCombiner.PrependScript(scriptAsset, null, true);
-                    }
-                    else
-                    {
-                        scriptCombiner.AppendScript(scriptAsset, null, true);
-                    }
-                }
-*/
+
                 EditorUtility.SetDirty(scriptCombiner);
                 EditorSceneManager.MarkSceneDirty(conditionManager.scene);
             }

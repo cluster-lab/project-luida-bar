@@ -11,7 +11,7 @@ public class LuidaConfigWindow : EditorWindow
     public static event Action OnItemsManagerTabLostFocus;
 
     private int currentTab = 0;
-    private string[] tabNames = { "Experiment Identifiers", "Experiment Variables", "States List (& Questionnaires)", "State-listening Items", "Data Collector" };
+    private string[] tabNames = { "Experiment Identifiers", "Experiment Variables", "State Machine (& Questionnaires)", "State-listening Items", "Data Collector" };
 
     private ExpIdentifierConfigTab expIdentifierConfigTab;
     private StateMachineConfigTab stateMachineConfigTab;
@@ -27,7 +27,7 @@ public class LuidaConfigWindow : EditorWindow
     
     public StateMachineConfigTab StateTab => stateMachineConfigTab;
     
-    [MenuItem("Window/LUIDA Config Window")]
+    [MenuItem("LUIDA/Config Window")]
     public static void ShowWindow()
     {
         GetWindow<LuidaConfigWindow>("LUIDA Config Window");

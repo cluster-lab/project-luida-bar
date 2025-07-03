@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class LuidaCaptureDataToCollectionGimmick : LuidaFakeGimmick
+public class LuidaProcessDataAndSaveToCollectionGimmick : LuidaFakeGimmick
 {
     protected override string TargetPrefabPath => "ClusterMetaverseLab/LuidaExpTemplate/FakeGimmickSources/CaptureDataToCollection";
 }

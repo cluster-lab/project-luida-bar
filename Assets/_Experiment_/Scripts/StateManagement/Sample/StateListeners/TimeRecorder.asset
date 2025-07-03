@@ -33,10 +33,8 @@ MonoBehaviour:
         actionType: Customized Action
         codeSnippet: 
         variables: []
-      customAction: '$.state.isInTrial = false;
-
-        SendDataToCollector("timer",
-        $.state.timer);'
+      customAction: "$.state.isInTrial = false;\nSendDataToCollector(\n    \"timer\",
+        $.state.timer);"
       isConditional: 0
       conditionVariable: 
       conditionValue: 
@@ -52,5 +50,19 @@ MonoBehaviour:
       conditionValue: 
       _variableKeys: []
       _variableValuesList: []
+  - stateID: 5
+    onStateStartedActions:
+    - predefinedActionTemplate:
+        actionType: Upload collected data
+        codeSnippet: $.sendSignalCompat('this', 'exp_uploadCustomData');
+        variables: []
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys: []
+      _variableValuesList: []
+    duringStateActions: []
+    onStateExitedActions: []
   otherImplementation: "function Start() { $.state.timer = 0; }\nfunction Update(deltaTime)
     {\n  if ($.state.isInTrial) $.state.timer += deltaTime;\n}"
