@@ -4,15 +4,15 @@ function calculateData () {
   const PARTICIPANTS = $.groupState.participants;
   const COLLECTED_DATA = $.groupState.collectedData;
 
-  function saveData_example() {
+  function saveData_data() {
 return { foo: "bar" };
     return {};
   }
-  const newRecord_example = saveData_example();
-  if ("example" in returnData && Array.isArray(returnData["example"])) {
-    returnData["example"].push(newRecord_example);
+  const newRecord_data = saveData_data();
+  if ("data" in returnData && Array.isArray(returnData["data"])) {
+    returnData["data"].push(newRecord_data);
   } else {
-    returnData["example"] = [newRecord_example];
+    returnData["data"] = [newRecord_data];
   }
 
   return returnData;
