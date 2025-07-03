@@ -2,7 +2,7 @@
 
 このチュートリアルでは、本実装テンプレートを用いて LUIDA 上で動く実験系を実装する方法を、実際に簡単な実験を一つ作ってもらいながら紹介します。
 
-# 本実装テンプレートの大まかな使用手順
+## 本実装テンプレートの大まかな使用手順
 
 0.  インストール・アカウント作成・CCK などの勉強
 1.  LUIDAウェブコンソールで実験を新規作成し、必要な情報を記入
@@ -21,7 +21,7 @@
 
 ---
 
-# はじめに：インストール・アカウント作成・CCK などの勉強
+## はじめに：インストール・アカウント作成・CCK などの勉強
 
 このチュートリアルを進めるにあたり、以下の基礎知識を事前に学習しておくことを推奨します：
 
@@ -38,7 +38,7 @@
 
 ---
 
-# 0. 本チュートリアルで実装する実験計画の確認
+## 0. 本チュートリアルで実装する実験計画の確認
 
 本研究では、VR空間においてストループ効果（色と文字の意味が異なる場合に、文字の色を認識するのに時間がかかる現象）を再現し、
 まずは計算課題を繰り返し、参加者に認知負荷をかけた後に、
@@ -61,10 +61,10 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 ---
 
-# 1. ウェブコンソールで実験情報を登録
+## 1. ウェブコンソールで実験情報を登録
 
 <details>
-<summary>以下の手順に従って登録を行ってください</summary>
+<summary><h3>こちらの手順に従って登録・設定してください</h3></summary>
 
 1.  [LUIDAのウェブコンソール](https://luida-web-next.vercel.app/)を開きます。
 2.  **実験を新規作成**：「＋新規実験」をクリックし、実験の基本情報を以下の値で登録します。
@@ -105,10 +105,10 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 ---
 
-# 2. 実装テンプレート(Unity)のダウンロードと初期設定
+## 2. 実装テンプレート(Unity)のダウンロードと初期設定
 
 <details>
-<summary>以下の手順に従って登録を行ってください</summary>
+<summary><h3>こちらの手順に従って登録・設定してください</h3></summary>
 
 1.  [最新リリースの実装テンプレート](https://github.com/cluster-lab/project-luida-bar/releases)をダウンロードします。
 2.  ダウンロードしたUnityプロジェクトをUnity Hubから開きます。プロジェクトを開いた際にコンソールにエラーが表示されることがありますが、まずは無視して進み、以下の必須パッケージをUnityにインポートしてください。
@@ -139,147 +139,113 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 ---
 
-# 3. 実験変数と試行回数を設定する
+## 3. 実験変数と試行回数を設定する
 
-![実験変数と試行回数の設定](https://github.com/user-attachments/assets/3cc430a4-1af1-40b0-8eab-050c0a397ece)
+`LUIDA > Config Window > Experiment Variables`画面（左図）で、実験の参加者内/参加者間変数を登録すると、それに基づいてシステムが自動的に試行の数と各試行における実験条件を決定します（右図）。
 
-この画面では、実験の参加者内/参加者間変数を登録できます。それに基づいて、システムが自動的に試行の数と各試行における実験条件を決定します。
-
-## ドキュメント（各設定項目の説明）
-<details>
-    
-<summary> 各設定項目の説明 </summary>
-
-* `Variables for Within-Subject Conditions`は参加者内変数の設定フォームで、`Variables for Between-Subject Conditions`は参加者間変数の設定フォームです。
-* 各フォームの`Length`：登録する参加者内/間変数の数。その数だけ変数を設定する行が下に現れます。
-* 変数設定の行の各項目：
-    * `Name`：変数の名前
-    * `Values`：変数の値のリスト。カンマ（`,`）区切りで複数の値を指定します。
-    * `isRandom`：ランダム順で施行されるか。チェックしない場合はValueの値の順番通りに施行されます。
-        * 現在、参加者間変数では`isRandom`をtrueにしか設定できません。つまりある参加者に割り当てられる参加者間条件はランダムになっています。今後は参加者の事前アンケートの回答などに基づいて参加者間条件を割り当てる仕組みを実装する予定です。
-* `Trials Count per Condition`：各条件（変数の組み合わせ）あたりで行う試行の回数を入力します。
-    ![variable-settings](https://github.com/user-attachments/assets/1cf257e1-71f7-49de-95a9-d38e3661b655)
-
-</details>
-
-## 設定手順（チュートリアル用）
+<table>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/d697ecb9-555c-4a65-90fe-1cc295cabc8d" alt="variables-config-ui" width="600"/></td>
+    <td><img src="https://github.com/user-attachments/assets/d888c793-3c0c-4215-94a3-2eb5d95db4e6" alt="variables-config-example" width="600"/></td>
+  </tr>
+</table>
 
 <details>
-<summary>以下の手順に従って登録を行ってください</summary>
+<summary><h3>こちらの手順に従って設定してください</h3></summary>
 
-1.  Unityのメニューバーから `Window > Luida Editor` を開き、`Experiment Variables` タブに切り替えます。「Create New Variables Asset」ボタンをクリックして、実験変数設定用の新しいアセットファイルを作成します。
-2.  **参加者内変数の設定**
-    1.  `Variables for Within-Subject Conditions`の下の`Length`に`3`を入力します。
-    2.  下に現れた3つの行に以下の値を順番通りに入力します。
-        -  Name: `request`　　Values: `material,text`　　isRandom: false
-        -  Name: `font`　　Values: `R,B`　　isRandom: true
-        -  Name: `text`　　Values: `Red,Blue`　　isRandom: true
-3.  **参加者間変数の設定**
-    1.  `Variables for Between-Subject Conditions`の下の`Length`に`1`を入力します。
-    2.  下に現れた1つの行に以下の値を入力します。
-        -  Name: `depth`　　Values: `near,far`
+1.  Unityのメニューバーから `LUIDA > Config Window` を開き、`Experiment Variables` タブに切り替えます。「Create New Variables Asset」ボタンをクリックして、実験変数設定用の新しいアセットファイルを作成します。
+2.  **参加者内変数の設定**：`Variables for Within-Subject Conditions`に3つの項目を追加し、以下の通りに設定します：
+    -  Name: `request`　　Values: `material,text`　　isRandom: □
+    -  Name: `font`　　Values: `R,B`　　isRandom: ☑
+    -  Name: `text`　　Values: `Red,Blue`　　isRandom: ☑
+3.  **参加者間変数の設定**：`Variables for Between-Subject Conditions`に1つの項目を追加し、以下の通りに設定します：
+    -  Name: `depth`　　Values: `near,far`
 4.  `Trials Count per Condition` に、`2`を入力します。すると各条件（変数の組み合わせ）を持つ試行は2回ずつになります。
-5.  最後にUnityのシーンを保存します (`File > Save Scenes` または `Ctrl/Cmd + S`)。
+
+設定後、画面が下の図の通りになっているか確認しましょう。
+
+![image](https://github.com/user-attachments/assets/5232a67b-c2b8-43f9-8a8c-c83bbea20760)
 
 </details>
 
 ---
 
-# 4. 実験進行の設定（ステート遷移）と質問紙の紐づけ
+## 4. 実験進行の設定（ステート遷移）と質問紙の紐づけ
 
-![Luida Editor Experiment Statesタブ](https://github.com/user-attachments/assets/fbbc7f52-af5b-43db-adf7-4d579fed23b3)
+`LUIDA > Config Window > State Machine`画面（左図）で、実験の進行フローを「ステート」と呼ばれる単位で設定すると、右図のように実験が自動的に進行します。
+各ステートは実験の一区切り（例：説明、タスク実行、休憩、質問紙回答など）を表し、それらがどのように遷移するかをここで定義できます。
+![state-transition-example](https://github.com/user-attachments/assets/69ce4439-a2da-4912-8344-feba222e1347)
 
-ここでは、実験の進行フローを「ステート」と呼ばれる単位で設定します。各ステートは実験の一区切り（例：説明、タスク実行、休憩、質問紙回答など）を表し、それらがどのように遷移するかを定義します。
-
-`Window > Luida Editor` を開き、`States List (& Questionnaires)` タブに切り替えると、いくつかのデフォルトステートが設定されているのが確認できます。
-
-## ドキュメント（各設定項目の説明）
-<details>
-    
-<summary> **各設定項目の説明** </summary>
-
--   **Move state to**: リスト内でのステートの遷移順を上下に移動させます。
--   **Has Exit Time**: このオプションを有効にすると、指定した時間（`Exit time (seconds)` フィールドに入力）が経過すると自動的に現在のステートが終了し、次のステートへ遷移します。
--   **Is Repeated**: このオプションを有効にすると、ステート終了時に次のステートへは遷移せず、指定した `Repeat Destination` ステートへ戻ります。これを `Repeat Count` で指定した回数繰り返します。指定回数を超えると、通常どおり次のステートへ遷移します。
-    -   上の図の場合：`CalculationTask`終了後に`CalculationTask`へ戻る動作を5回繰り返し、6回目の`CalculationTask`の終了後には次の`Trial - Start`へ進みます。
--   **Questionnaire**: このステート中に表示するアンケートを設定します。
-    -   **qID**: LUIDAウェブコンソールで登録したアンケートのID（登録順を示す1から始まる番号）を入力します。例えば、下のウェブコンソールのスクショの中で、2番目に登録した「IPQ プレゼンス質問票」をこのステートで表示したい場合は、`qID` に `2` を設定します。　<img width="500" alt="ウェブコンソールでのアンケートID確認例" src="https://github.com/user-attachments/assets/39d122b1-d725-4dfc-8f6e-d9e2d279d622" />
-
-</details>
-
-## 設定手順（チュートリアル用）
+<!-- ![Luida Editor Experiment Statesタブ](https://github.com/user-attachments/assets/fbbc7f52-af5b-43db-adf7-4d579fed23b3) -->
 
 <details>
-<summary>上の図の設定になるように、以下の手順に従って登録を行ってください</summary>
+<summary><h3>こちらの手順に従って設定してください</h3></summary>
 
-1. **最初のステートを3秒で自動的に飛ばす**：`Start`の行の`Has Exit Time`をチェックし、`Exit Time`に`3`と入力します。
-2. **説明のステートを10秒で自動的に飛ばす**：`Intro`の行の`Has Exit Time`をチェックし、`Exit Time`に`10`と入力します。
+1. **最初のステートを質問紙と紐付ける**：`Start`の行で
+    1. `Add State After Trials`ボタンを押し、ステートを追加します。`Questionnaire`と名前を変えてあげます。
+    2. `Add Questionnaire`ボタンを押し、`qID`に`1`と入力します。
+2. **説明のステートを30秒で自動的に飛ばす**：`Intro`の行の`Has Exit Time`をチェックし、`Exit Time`に`30`と入力します。
 3. **計算タスクのステートを追加し、5回繰り返す**：
     1. `Add State Before Trials`ボタンを押し、ステートを追加します。`CalculationTask`と名前を変えてあげます。
     2. `CalculationTask`の行の`Is Repeated`をチェックし、`Repeat Destination`で`CalculationTask`を選択し、`Repeat Count`に`5`と入力します。
-4. **試行の休憩ステートを3秒で自動的に飛ばす**：`Trial - Rest`の行の`Has Exit Time`をチェックし、`Exit Time`に`3`と入力します。
-5. **試行終了後のステートを10秒で自動的に飛ばす**：`Outro`の行の`Has Exit Time`をチェックし、`Exit Time`に`10`と入力します。
-6. **質問紙のステートを追加して質問紙と紐付ける**：
+        - するとこのステートは次に進む前は5回繰り返されます。
+        - もっと計算させたい場合は数字を増やしてください。
+4. **試行のステート**：`Trial - Start`の行は特に設定なし。
+5. **試行の休憩ステートを3秒で自動的に飛ばす**：`Trial - Rest`の行の`Has Exit Time`をチェックし、`Exit Time`に`3`と入力します。
+6. **試行終了後のステートを質問紙と紐付ける**：`Outro`の行で
     1. `Add State After Trials`ボタンを押し、ステートを追加します。`Questionnaire`と名前を変えてあげます。
-    2. `Add Questionnaire`ボタンを押し、`qID`に`1`と入力します。
-7. 最後にUnityのシーンを保存します。
+    2. `Add Questionnaire`ボタンを押し、`qID`に`2`と入力します。
+
+設定後、画面が下の図の通りになっているか確認しましょう。
+
+![state-transition-sample](https://github.com/user-attachments/assets/965e8bc0-c679-4bbd-96cb-85c21b67cf5a)
 
 </details>
 
 ---
 
-# 5. 実験進行に合わせたオブジェクトの挙動の設定
+## 5. 実験進行に合わせたオブジェクトの挙動の設定
 
 ![Luida Editor State-listening Itemsタブ](https://github.com/user-attachments/assets/1937e67a-8137-482e-95c5-6ce359d00259)
 
-`Window > Luida Editor > State-listening Items`では、実験の進行（特定のステート）に合わせてオブジェクトの表示/非表示や動作を制御できます。
-特定のステートに依存しないオブジェクトや動作は、通常のUnityおよびCluster Creator Kit（CCK）の方法で作成・設定します。
+`LUIDA > Config Window > State-listening Items`では、実験の進行（ステートの遷移）に合わせてオブジェクトの動作を制御できます。
 
-## State-listening Itemsのドキュメント（各設定項目の説明）
-<details>
-    
-<summary> **各設定項目の説明** </summary>
+動作の例：自身や子オブジェクトの表示/非表示、自身や子オブジェクトの位置・回転の設定、テキスト内容の変更、コントローラを振動させる、数秒間待機、カスタムな動作（ご自身でコーディング）など。
 
-1.   **New Item Name** フィールドに管理用の名前を入力し、「Create New Listening Item」ボタンをクリックすると、新しいGameObjectがシーンの中で作成され、設定画面にも新しい列が追加されます。
-2.   各列の上部に`Custom Implementation not listening to any state`の枠があり、ステート遷移に依存しない定数、関数やコールバック（掴まれた時、衝突が起きた時など）はここで定義可能
-3.   オブジェクト（列）と、動作を紐付けたいステート（行）が交差するセルで「Add Listener」ボタンをクリックします。するとステートの遷移に応じて動作するリスナーが作成されます。
-4.   リスナーの中に、以下のタイミングで実行する処理（Action）を設定します。
-  - タイミング
-    -   **On State Start**: このステートが開始されたときに一度だけ実行される
-    -   **During State**: このステートがアクティブな間、毎フレーム実行される
-    -   **On State Exit**: このステートが終了するときに一度だけ実行される
-  -   Action
-    -   Show Item, Hide Item, Set Text, Set Positionなどの選べられる項目。追加できる項目は設定画面の右側に列挙されています。
-    -   Customized Actionにすると、コードブロックが表示されます。そこで自前のClusterScriptを書くことができます。使える関数は設定画面の右側に列挙されています。
-<img width="200" alt="Screenshot 2025-05-27 at 18 49 05" src="https://github.com/user-attachments/assets/7873d106-a28e-4d34-aa66-da11c6d805c7" />
+_*特定のステートに依存しないオブジェクトや動作は、この機能ではなく、通常のUnityおよびCluster Creator Kit（CCK）の方法でも作成・設定できます。_
 
-</details>
-
-## A. メインタスクに関わるオブジェクトの作成と挙動の設定（チュートリアル用）
-
-### 指示用のオブジェクト
+### 以下の手順に従って、それぞれのオブジェクトの作成と挙動の設定を行ってください
 
 <details>
 
-<summary>ここに従って設定してください</summary>
+<summary><h3>指示用のオブジェクト</h3></summary>
 
-0. `Window > Luida Editor > State-listening Items`を開きます。
+0. `LUIDA > Config Window > State-listening Items`を開きます。
 1. `New Item Name`に`Instruction`と名前を入れて`Add state-listening item`ボタンをクリックします。
    - すると下のテーブルに列が追加され、シーンの中にも`Instruction`という名前を持つオブジェクトが作成されます。
 2. `Instruction`の列と、`Intro`、`Trial - Start`、`Outro`の行が交差するセルで、`Add Listener`ボタンをクリックし、以下のテーブルにある図の通りに設定します。
 
-| Intro | Trial - Start | Outro |
+| Intro | Trial - Start | Trial - Rest |
 | :---: | :---: | :---: |
-| ![Instruction at Intro](https://github.com/user-attachments/assets/db5b3e12-9a7f-437f-aca2-2b78ee2636e5) | ![Instruction at Trial - Start](https://github.com/user-attachments/assets/01e8f8b2-351e-48e7-ada3-22d8c7f6a61e) | ![Instruction at Outro](https://github.com/user-attachments/assets/bf35de27-4eeb-467c-9b46-a4db7a0a14b5) |
-| Introステートに入ったら表示され、テキスト内容が本実験の説明文に切り替わる | Trial - Startステートに入る＆出る際、テキスト内容が切り替わる (↓の「Trial - Start の時のInstructionのSet Textのテキスト内容」を見てください) | Outroステートに入ったらテキスト内容が切り替わる: `Well done! Now please fill in a questionnaire (Displayed in 10 seconds)` |
+| ![Instruction at Intro](https://github.com/user-attachments/assets/dadb05d3-727e-4c9d-a5a7-7fc31d259787) | ![Instruction at Trial - Start](https://github.com/user-attachments/assets/d06ccd02-2873-4bc1-b3ec-0db15056198a) | ![image](https://github.com/user-attachments/assets/b5c1d8d9-592c-4cae-bb64-80dcb625881d) |
+| Introステートに入ったら表示され、テキスト内容が本実験の説明文に切り替わる。出るときには非表示になる。 | Trial - Startステートに入ったら表示され、テキスト内容が切り替わる (↓の「Trial - Start の時のInstructionのSet Text動作について」を見てください)。 | Trial - Restステートに入ったら、テキスト内容が切り替わる: `Take a break for 5 seconds`。出るときには非表示になる。 |
 
 <details>
 
-<summary>Trial - Start の時のInstructionのSet Textのテキスト内容</summary>
+<summary>Trial - Start の時のInstructionのSet Textについて</summary>
 
-- On State Start 1つ目のSet TextのText：`Click the button that matches the text's font color.`
-- On State Start 2つ目のSet TextのText：`Click the button that matches the text's meaning.`
-- On State EndのSet TextのText：`Take a break for 3 seconds`
+- On State Start 1つ目のSet Text
+    1. **if**ボタンをクリック
+    2. Var Name：`request`
+    3. Is Value: `font`
+    4. Text：`Click the button that matches the text's font color.`
+- On State Start 2つ目のSet Text
+    1. **if**ボタンをクリック
+    2. Var Name：`request`
+    3. Is Value: `meaning`
+    4. Text：`Click the button that matches the text's meaning.`
+
+これにより、実験条件`request`に応じて、この指示オブジェクトのテキスト内容が異なる。
 
 </details>
 
@@ -292,21 +258,19 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 </details>
 
-### 題目テキスト
-
 <details>
 
-<summary>ここに従って設定してください</summary>
+<summary><h3>タスクの題目テキスト</h3></summary>
 
-0. `Window > Luida Editor > State-listening Items`を開きます。
+0. `LUIDA > Config Window > State-listening Items`を開きます。
 1. **赤いフォントを持つテキスト**：`New Item Name`に`Text_RedFont`と名前を入れて`Add state-listening item`ボタンをクリックします。
 2. **青いフォントを持つテキスト**：`New Item Name`に`Text_BlueFont`と名前を入れて`Add state-listening item`ボタンをクリックします。
 3. `Text_RedFont`と`Text_BlueFont`の列と、`Trial - Start`の行が交差するセルで、`Add Listener`ボタンをクリックし、以下の図の通りに設定します。
-    - 設定の説明
-        - `Trial - Start`ステート中にしか表示されない
-        - 該当試行のfont=Rの場合は赤いフォントのみを表示し、font=Bの場合は青いフォントのみを表示する
-        - 該当試行のtext=Redの場合は両方ともテキスト内容をRedにし、text=Blueの場合は両方ともテキスト内容をBlueにする
-        - 該当試行のdepth=nearの場合は両方ともz=1にし、depth=farの場合は両方ともz=3にする
+    - _設定の説明_
+        - _`Trial - Start`ステート中にしか表示されない_
+        - _該当試行の実験条件`font`=`R`の場合は**赤いフォントのみ**を表示し、`font`=`B`の場合は**青いフォントのみ**を表示する_
+        - _該当試行の実験条件`text`=`Red`の場合は両方ともテキスト内容を**Red**にし、`text`=`Blue`の場合は両方ともテキスト内容を**Blue**にする_
+        - _該当試行の実験条件`depth`=`near`の場合は両方とも**z=1**にし、`depth`=`far`の場合は両方とも**z=3**にする_
 <img width="499" alt="Screenshot 2025-05-28 at 15 51 20" src="https://github.com/user-attachments/assets/dcb72791-f7d0-4f05-a241-10fd421994a3" />
 
 4. シーンの中にあるText_RedFontとText_BlueFontオブジェクトを特定し、下の図の通りに位置を調整します。
@@ -319,13 +283,11 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 </details>
 
-### 回答ボタン
-
 <details>
 
-<summary>ここに従って設定してください</summary>
+<summary><h3>タスクの回答用ボタン</h3></summary>
 
-0. `Window > Luida Editor > State-listening Items`を開きます。
+0. `LUIDA > Config Window > State-listening Items`を開きます。
 1. **赤と回答するボタン**：`New Item Name`に`Answer_Red`と名前を入れて`Add state-listening item`ボタンをクリックします。
 2. **青と回答するボタン**：`New Item Name`に`Answer_Blue`と名前を入れて`Add state-listening item`ボタンをクリックします。
 3. `Answer_Red`と`Answer_Blue`の列と、`Trial - Start`の行が交差するセルで、`Add Listener`ボタンをクリックし、以下の図の通りに設定します。
@@ -343,30 +305,28 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 5. **クリックしたら回答を送ってステート遷移させるように設定**：Answer_RedとAnswer_Blueオブジェクト自体を特定し、それぞれにコンポーネント`Interact Item Trigger`と`Luida To Next State Gimmick`を追加し、以下の図の通りに設定します。
     - Trigger（トリガー）とGimmick（ギミック）の関係はCCKのドキュメントをご参照ください：https://docs.cluster.mu/creatorkit/world/trigger-gimmick/
         - 予想される動作（例えばAnswer_Red場合）：
-            1. クリックされたら`Interact Item Trigger`が動作し、Global宛に`isRed=true`のメッセージ、次にThis（自分自身）宛に`toNextState`というメッセージが送信されます。
+            1. クリックされたら`Interact Item Trigger`が動作し、`LUIDA-DataCollector`（データ記録用のオブジェクト、詳細は後述）宛に`isRed=true`のメッセージ、次にThis（自分自身）宛に`toNextState`というメッセージが送信されます。
             2. This（自分自身）宛に`toNextState`というメッセージが届いたら`Luida To Next State Gimmick`が動作し、ステート遷移を発火させます。
-    - `Luida To Next State Gimmick`はLuida専用のCCKギミックです。他にも`Luida Record Custom Data Gimmick`と`Luida Update Custom Data Gimmick`
+    - _`Luida To Next State Gimmick`はLuida専用のCCKギミックです。他にも`Luida Process Data And Save To Collection Gimmick`と`Luida Update Collected Data Gimmick`があります。_
 
 | Answer_Red | Answer_Blue |
 | :---: | :---: |
-| ![Instruction GameObject](https://github.com/user-attachments/assets/d03aed78-303b-4801-ab80-8c47b7550d64) | ![Instruction GameObject's Text child](https://github.com/user-attachments/assets/95593229-c448-4b17-96e5-669dc766be9a) |
+| ![Instruction GameObject](https://github.com/user-attachments/assets/631c765c-8daf-4e7d-8ceb-d5ba3543bdd6) | ![Instruction GameObject's Text child](https://github.com/user-attachments/assets/49386e8f-539a-465a-b2cd-a4b53f29870a) |
 
 </details>
 
-### タイマーとデータ記録用オブジェクト
-
 <details>
 
-<summary>ここに従って設定してください</summary>
+<summary><h3>タイマー（タスクにかかった時間を数える）オブジェクト</h3></summary>
 
-0. `Window > Luida Editor > State-listening Items`を開きます。
-1. `New Item Name`に`TimerAndRecorder`と名前を入れて`Add state-listening item`ボタンをクリックします。
-2. `TimerAndRecorder`の列と、`Custom implementation not listening to any State`、`Trial - Start`、`Outro`の行が交差するセルで、`Add Listener`ボタンをクリックし、以下のテーブルにある図の通りに設定します。
+0. `LUIDA > Config Window > State-listening Items`を開きます。
+1. `New Item Name`に`TimeRecorder`と名前を入れて`Add state-listening item`ボタンをクリックします。
+2. `TimeRecorder`の列と、`Custom implementation not listening to any State`、`Trial - Start`、`Outro`の行が交差するセルで、`Add Listener`ボタンをクリックし、以下のテーブルにある図の通りに設定します。
 
 | Custom implementation not listening to any State | Trial - Start | Outro |
 | :---: | :---: | :---: |
-| ![Instruction GameObject](https://github.com/user-attachments/assets/47dbd2d3-e382-45f2-bc0a-9ceb410e0db6) | ![Instruction GameObject's Text child](https://github.com/user-attachments/assets/ed165d94-8f9b-4800-881a-283b8a18b6d6) | ![Instruction GameObject's Text child](https://github.com/user-attachments/assets/ab3f3b93-4993-40c8-99df-e66ed53073a7) |
-| スクリプトとその説明は↓のCustom implementationにあります | スクリプトとその説明は↓のTrial - Startにあります | 全思考が終了した後、記録してきたデータをアップロードさせます。 |
+| ![Instruction GameObject](https://github.com/user-attachments/assets/47dbd2d3-e382-45f2-bc0a-9ceb410e0db6) | ![TimerRecorder-TrialStart](https://github.com/user-attachments/assets/837fab63-e31c-47d3-a62a-a24a8bdcd5bf) | ![TimeRecorder-Outro](https://github.com/user-attachments/assets/ea250246-4c3a-4aca-b94b-7feecde4c41e) |
+| スクリプトとその説明は↓の`▶ Custom implementation`にあります | スクリプトとその説明は↓の`▶ Trial - Start`にあります | 全試行が終了した後、記録してきたデータをアップロードさせます。 |
 
 <details>
 
@@ -397,34 +357,22 @@ On State EndのCustomized Action:
 試行中フラグを下し、タイマーの値を送信（setStateCompatについてはCCKのドキュメントを参照）
 ```javascript
 $.state.isInTrial = false;
-$.setStateCompat("owner", "timer", $.state.timer); // setStateCompatはglobal宛に送信できないが、owner宛は可能。また参加者が一人だけなので、owner宛でも別の参加者に送ることは無い。
+SendDataToCollector("timer", $.state.timer); // 回答に使った時間をLUIDAのデータ記録機能を持つData Collector（詳細は後述する）に送る
 ```
 
-また、`Record Custom Data` アクションで、Luidaのデータ記録機能を発火させます。データの保存形式は後述します。
+また、`Process and save collected data` アクションで、Luidaのデータ記録機能を発火させます。データの保存形式は後述します。
 
 </details>
 
-3. シーンの中でオブジェクトを調整することはないので、シーンを保存して次に進みます。
-
 </details>
-
-設定変更後は、Unityのシーンを保存してください。
-
-
-## B.認知負荷をかけるための計算タスクの作成と挙動の設定（チュートリアル用）
 
 <details>
 
-<summary>計算タスクの入力フィールド（兼管理用オブジェクト）を、以下の手順に従って設定してください</summary>
+<summary><h3>認知負荷をかけるための計算タスク用オブジェクト</h3></summary>
 
-1. ステートの追加
-    1. `Window > Luida Editor > State List`を開き、`Add State Before Trials`をクリックし、新しいステートを`CalculationTask`と名付けます。
-    2. `Is Repeated`のチェックを入れ、`Repeat Destination`で`CalculationTask`を選択し、`Repeat Count`に`5`と入力します。
-        - するとこのステートは次に進む前は5回繰り返されます。
-        - もっと計算させたい場合は数字を増やしてください。
-2. `Window > Luida Editor > State-listening Items`を開きます。
-3. `New Item Name`に`CalculationTextInput`と名前を入れて`Add state-listening item`ボタンをクリックします。
-4. `CalculationTextInput`の列の`Custom implementation not listening to any State`のコードブロックに、以下のスクリプトをコピペします：
+1. `LUIDA > Config Window > State-listening Items`を開きます。
+2. `New Item Name`に`CalculationTextInput`と名前を入れて`Add state-listening item`ボタンをクリックします。
+3. `CalculationTextInput`の列の`Custom implementation not listening to any State`のコードブロックに、以下のスクリプトをコピペします：
 ```javascript
 function getRandomInt(max) { // 乱数の整数を生成する関数を定義する
   return Math.floor(Math.random() * max);
@@ -436,93 +384,50 @@ $.onTextInput((text, meta, status) => {
   }
 });
 ```
-5. `CalculationTextInput`の列と、`CalculationTask`の行が交差するセルで、`Add Listener`ボタンをクリックし、以下の図の通りに設定します。
-   - Customized Actionのコードブロックに以下のスクリプトをコピペします
+4. `CalculationTextInput`の列と、`CalculationTask`の行が交差するセルで、`Add Listener`ボタンをクリックし、Customized Action動作を一つ追加し、コードブロックに以下のスクリプトをコピペします
 ```javascript
-let player = $.getPlayersNear(new Vector3(0,0,0), Infinity)[0]; // 参加者を特定する
-player.requestTextInput( // その参加者宛にテキスト入力を求める
+// PARTICIPANTS[0]で一人目の参加者（1人しかいないけど）を特定する
+PARTICIPANTS[0].requestTextInput(
   "ask_to_calculate",
-  getRandomInt(100) + "+" + getRandomInt(100) + "=?" // 計算課題
+  getRandomInt(100) + "+" + getRandomInt(100) + "=?"
 );
 ```
 
-<img width="466" alt="Screenshot 2025-05-28 at 17 07 53" src="https://github.com/user-attachments/assets/3b20a8c3-0842-4e4d-ab14-6a53059d6631" />
-
-6. シーンの中でオブジェクトを調整することはないので、シーンを保存して次に進みます。
+| Custom implementation not listening to any State | Trial - Start |
+| :---: | :---: |
+| ![calculation-task-code](https://github.com/user-attachments/assets/891b2e76-1fc2-4e44-9c7d-54e3989549ec) | ![calculation-task-code-during-task](https://github.com/user-attachments/assets/dc5343c8-d54a-4f6e-93bf-5bfb7c342bc6) |
 
 </details>
-
 
 ---
 
-# 6. カスタム形式で記録したいデータの定義
+## 6. カスタム形式で記録したいデータの定義
 
-<img width="357" alt="Screenshot 2025-05-28 at 14 49 45" src="https://github.com/user-attachments/assets/f0e27d68-5f55-4589-bce2-7b5e402fa7f4" />
+`LUIDA > Config Window > Data Collector`では、カスタム形式で記録したいデータ（例：回答ボタンをクリックする際に送られるisRedの値、試行が終わるたびに送られるタイマーの値、そして試行ごとの実験条件）の定義や計算ができます。
 
-回答ボタンをクリックする際に送られるisRedの値、試行が終わるたびに送られるタイマーの値、そして試行ごとの実験条件を記録するための設定は、このセッションで説明されます。
+<!-- <img width="357" alt="Screenshot 2025-05-28 at 14 49 45" src="https://github.com/user-attachments/assets/f0e27d68-5f55-4589-bce2-7b5e402fa7f4" /> -->
+![image](https://github.com/user-attachments/assets/373f5444-eeb5-415e-a010-311f63720ecb)
 
-## ドキュメント（設定項目の説明）
-<details>
-    
-<summary> **設定項目の説明** </summary>
+以下の記述に従って設定してください。
 
-- `List name to save custom data`: LUIDAのストレージに保存する際のファイル名
-- `Script to define...`: 記録するデータを（前処理を挟んで）保存する形式を定義するスクリプト
-- `Add Custom Data Entry`ボタン：記録したいデータの枠を追加する
-
-一つの枠につき、一つのファイルとしてLUIDAのストレージに保存します。JavaScriptのObjectの配列形式で保存するため、通常は枠は一つで良くて、そのObjectに項目を複数個設定すればいいです。例えば：
-
-Name: `Data`, Script:
-```JavaScript
-return {
-  label1: value1,
-  label2: value2,
-};
-```
-
-もしファイルを分けて記録したい場合、`Add Custom Data Entry`ボタンをクリックし、記録したいデータの枠を追加してください。例えば：
-
-Name: `Data1`, Script:
-```JavaScript
-return {
-  label1: value1
-};
-```
-
-Name: `Data2`, Script:
-```JavaScript
-return {
-  label2: value2
-};
-```
-
-コードブロックの中身
-- `CONDITION['変数の名前']`で、`Record Custom Data`が実行される際の実験変数の値を参照できます。
-- 必ず `return { ... };` のような形式で、JavaScriptのObjectを一つ返すようにしてください。
-- returnする前に、Cluster Scriptを使って何かの計算や前処理を行うことができます。
-
-そのコードブロックの中はCluster Scriptをかけるため
-
-</details>
-
-## 設定手順（チュートリアル用）
-上の図になるように、以下の手順に従って設定してください。
-1. `List name to save custom data`に適宜な文字列を入力します（`AnswerAndTime`とか）
-2. 下のコードブロックに以下のスクリプトをコピペします：
+1. 設定画面のコードブロックに以下のスクリプトをコピペします：
 ```JavaScript
 return {
   d: CONDITION['depth'], // 該当試行のdepth条件（参加者間変数depthの該当試行における値）
   req: CONDITION['request'], // 該当試行のrequest条件（参加者内変数requestの該当試行における値）
   font: CONDITION['font'], // 該当試行のfont条件（参加者内変数fontの該当試行における値）
   text: CONDITION['text'], // 該当試行のtext条件（参加者内変数textの該当試行における値）
-  ans: $.getStateCompat('global', 'isRed', 'boolean') ? "R" : "B",　// 回答（赤か青）
-  time: $.getStateCompat('owner', 'timer', 'float')　// 答えるのに使った時間
+  ans: $.getStateCompat('this', 'isRed', 'boolean') ? "R" : "B",　// 回答（赤か青）
+  time: COLLECTED_DATA['timer']　// 答えるのに使った時間
 };
 ```
+  - CCKのコンポーネントでLUIDA-DataCollector宛てに送られてきたisRedの値は、`$.getStateCompat('this', 'isRed', 'boolean')`で取得する
+  - 関数`SendDataToCollector("timer", $.state.timer);`で送られてきたタイマーの値は、`COLLECTED_DATA['timer']`で取得する
+  - 現在の試行の実験条件は`CONDITION[変数名]`で取得する
 
 ---
 
-# 7. アップロード前の準備
+## 7. アップロード前の準備
 
 <details>
 <summary>以下の手順に従って設定を行ってください</summary>
@@ -538,7 +443,7 @@ return {
 
 ---
 
-# 8. cluster にアップロード
+## 8. cluster にアップロード
 
 <details>
 <summary>以下の手順に従って設定を行ってください</summary>
@@ -555,7 +460,7 @@ return {
 
 ---
 
-# 9. ワールド ID の登録
+## 9. ワールド ID の登録
 
 <details>
 <summary>以下の手順に従って設定を行ってください</summary>
@@ -570,7 +475,7 @@ return {
 
 ---
 
-# 10. アバターの設定
+## 10. アバターの設定
 
 <details>
 <summary>以下の手順に従って設定を行ってください</summary>
@@ -594,7 +499,7 @@ return {
 
 ---
 
-# 11. LUIDA での自動掲載を待つ
+## 11. LUIDA での自動掲載を待つ
 
 上記までのすべての設定が完了すると、あなたが作成した実験はLUIDAの参加者募集ワールドに掲載される準備が整います。掲載まで数日程度お待ちいただく場合があります。
 
