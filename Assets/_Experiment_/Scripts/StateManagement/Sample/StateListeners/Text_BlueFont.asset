@@ -54,16 +54,6 @@ MonoBehaviour:
       - 1.5
       - 3
     - predefinedActionTemplate:
-        actionType: Show item
-        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
-        variables: []
-      customAction: 
-      isConditional: 1
-      conditionVariable: font
-      conditionValue: B
-      _variableKeys: []
-      _variableValuesList: []
-    - predefinedActionTemplate:
         actionType: Set text
         codeSnippet: $.subNode('Text').setText(`{_text_}`);
         variables:
@@ -89,6 +79,16 @@ MonoBehaviour:
       - text
       _variableValuesList:
       - Blue
+    - predefinedActionTemplate:
+        actionType: Show item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
+        variables: []
+      customAction: 
+      isConditional: 1
+      conditionVariable: font
+      conditionValue: B
+      _variableKeys: []
+      _variableValuesList: []
     duringStateActions: []
     onStateExitedActions:
     - predefinedActionTemplate:
@@ -101,4 +101,24 @@ MonoBehaviour:
       conditionValue: 
       _variableKeys: []
       _variableValuesList: []
-  otherImplementation: 
+  otherImplementation: '// function Start() { }
+
+    // function Update(deltaTime)
+    { }
+
+    // $.onCollide((collision) => { });
+
+    // $.onGrab((isGrab, isLeftHand,
+    player) => { });
+
+    // $.onInteract((player) => { });
+
+    // $.onUse((isDown,
+    player) => { });
+
+    // $.onPhysicsUpdate((deltaTime) => { });
+
+    // $.onReceive((messageType,
+    arg, sender) => { });
+
+'

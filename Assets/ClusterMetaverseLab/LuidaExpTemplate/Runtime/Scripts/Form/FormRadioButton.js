@@ -8,7 +8,7 @@ $.onUpdate(() => {
         $.setStateCompat("this", "form_try_answer", false);
         answer();
     }
-    if ($.state.destroyable && $.getStateCompat("global", "form_destroy_answer_option", "boolean")) {
+    if ($.state.destroyable && $.getStateCompat("owner", "form_destroy_answer_option", "boolean")) {
         $.sendSignalCompat("this", "form_destroy_answer_option");
         $.state.destroyable = false;
     }
@@ -19,12 +19,14 @@ $.onReceive((messageType, arg, sender) => {
         case "form_init_answer_option":
             $.state.formController = sender;
             if (arg["value"]) $.state.answerValue = arg["value"]
-            if (arg["label"] && $.subNode("Text")) $.subNode("Text").setText(arg["label"]);
+            
+            $.setVisiblePlayers([arg["participant"]]);
+            $.setStateCompat("this", "show", true);
             $.state.destroyable = true;
             break;
-        // case "form_destroy_answer_option":
-        //     $.setStateCompat("this", "form_destroy_answer_option", true);
-        //     break;
+        case "form_destroy_answer_option":
+            $.sendSignalCompat("this", "form_destroy_answer_option");
+            break;
         default:
             break;
     }

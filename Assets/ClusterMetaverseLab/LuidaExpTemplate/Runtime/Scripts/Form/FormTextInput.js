@@ -8,7 +8,7 @@ $.onUpdate(() => {
     //     $.setStateCompat("this", "form_try_answer", false);
     //     answer();
     // }
-    if ($.state.destroyable && $.getStateCompat("global", "form_destroy_answer_option", "boolean")) {
+    if ($.state.destroyable && $.getStateCompat("owner", "form_destroy_answer_option", "boolean")) {
       $.sendSignalCompat("this", "form_destroy_answer_option");
       $.state.destroyable = false;
     }
@@ -18,13 +18,14 @@ $.onReceive((messageType, arg, sender) => {
   switch (messageType) {
       case "form_init_answer_option":
         $.state.formController = sender;
+        $.state.player = arg["participant"];
+        $.setVisiblePlayers([arg["participant"]]);
+        $.setStateCompat("this", "show", true);
         $.state.destroyable = true;
-        // if (arg["value"]) $.state.answerValue = arg["value"]
-        // if (arg["label"] && $.subNode("Text")) $.subNode("Text").setText(arg["label"]);
         break;
-      // case "form_destroy_answer_option":
-      //     $.setStateCompat("this", "form_destroy_answer_option", true);
-      //     break;
+      case "form_destroy_answer_option":
+          $.sendSignalCompat("this", "form_destroy_answer_option");
+          break;
       default:
           break;
   }
@@ -43,7 +44,7 @@ $.onTextInput((text, meta, status) => {
     switch(status) {
       case TextInputStatus.Success:
         $.state.answerValue = text;
-        $.subNode("Text").setText(text);
+        $.state.player?.send("setQuestionnaireUI", { n: "AnsText", t: text });
         answer();
         break;
       case TextInputStatus.Busy:

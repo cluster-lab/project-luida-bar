@@ -4,30 +4,29 @@ const stateEnterActions = {
             $.setStateCompat('this', 'exp_showItem', true);
         } },
         { type: "exec", action: () => {
-            $.subNode('Text').setText(`In this study, we replicate the Stroop effect in a VR environment—
-            the phenomenon whereby it takes longer to identify a word’s font color 
-            when that color conflicts with the word’s semantic meaning—
-            and examine how the stimulus presentation depth (near vs. far) 
-            affects response times and accuracy.`);
+            $.subNode('Text').setText(`This experiment...`);
         } }
     ],
     3: [
         { type: "exec", action: () => {
+            $.setStateCompat('this', 'exp_showItem', true);
+        } },
+        { type: "exec", action: () => {
             if (CONDITION['request'] === 'font') {
-              $.subNode('Text').setText(`Click the button that matches the text's font color.`);
+              $.subNode('Text').setText(`Click the button that
+              matches the text's font color`);
             }
         } },
         { type: "exec", action: () => {
             if (CONDITION['request'] === 'meaning') {
-              $.subNode('Text').setText(`Click the button that matches the text's meaning.`);
+              $.subNode('Text').setText(`Click the button that
+              matches the text's meaning`);
             }
         } }
     ],
-    5: [
+    4: [
         { type: "exec", action: () => {
-            $.subNode('Text').setText(`Well done!
-            Now please fill in a questionnaire
-            (Displayed in 10 seconds)`);
+            $.subNode('Text').setText(`Take a break for 3 seconds`);
         } }
     ]
 };
@@ -36,14 +35,24 @@ const duringStateActions = {
 };
 
 const stateExitActions = {
-    3: [
+    1: [
         { type: "exec", action: () => {
-            $.subNode('Text').setText(`Take a break for 3 seconds`);
+            $.setStateCompat('this', 'exp_showItem', false);
         } }
     ],
-    5: [
+    4: [
         { type: "exec", action: () => {
             $.setStateCompat('this', 'exp_showItem', false);
         } }
     ]
 };
+
+
+// function Start() { }
+// function Update(deltaTime) { }
+// $.onCollide((collision) => { });
+// $.onGrab((isGrab, isLeftHand, player) => { });
+// $.onInteract((player) => { });
+// $.onUse((isDown, player) => { });
+// $.onPhysicsUpdate((deltaTime) => { });
+// $.onReceive((messageType, arg, sender) => { });

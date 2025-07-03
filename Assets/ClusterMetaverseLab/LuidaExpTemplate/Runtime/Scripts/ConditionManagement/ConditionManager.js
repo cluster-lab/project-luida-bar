@@ -15,6 +15,10 @@ $.onUpdate(() => {
 
 $.onReceive((messageType, arg, sender) => {
   switch (messageType) {
+    case "luida_participants_info":
+      $.groupState.participants = arg.participants;
+      $.groupState.sessionID = arg.sessionID;
+      break;
     // case "exp_questionnaire_answer":
     //     $.state.betweenSubjectsConditions = GetBetweenSubjectsCondition(arg);
     //     break;

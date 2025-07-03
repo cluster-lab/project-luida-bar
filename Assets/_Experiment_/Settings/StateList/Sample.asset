@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 903632a1e1d0d4e27be675b7680dc266, type: 3}
-  m_Name: Tutorial
+  m_Name: Sample
   m_EditorClassIdentifier: 
   States:
   - StateName: Start
     DestStateName: Intro
-    HasExitTime: 1
-    ExitTime: 2
+    HasExitTime: 0
+    ExitTime: 3
     IsRepeated: 0
     RepeatDestStateName: Start
     RepeatCount: 1
-    qID: 0
+    qID: 1
   - StateName: Intro
     DestStateName: CalculationTask
     HasExitTime: 1
-    ExitTime: 10
+    ExitTime: 30
     IsRepeated: 0
     RepeatDestStateName: 
     RepeatCount: 1
@@ -54,21 +54,13 @@ MonoBehaviour:
     RepeatCount: 1
     qID: 0
   - StateName: Outro
-    DestStateName: Questionnaire
-    HasExitTime: 1
-    ExitTime: 10
-    IsRepeated: 0
-    RepeatDestStateName: 
-    RepeatCount: 1
-    qID: 0
-  - StateName: Questionnaire
     DestStateName: End
     HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
     RepeatDestStateName: 
     RepeatCount: 1
-    qID: 1
+    qID: 2
   - StateName: End
     DestStateName: 
     HasExitTime: 0

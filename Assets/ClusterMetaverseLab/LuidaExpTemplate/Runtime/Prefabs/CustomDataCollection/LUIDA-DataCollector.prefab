@@ -1,0 +1,327 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5964733846762761523
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5964733846762761524}
+  - component: {fileID: 5964733846762761527}
+  - component: {fileID: 5964733846762761526}
+  - component: {fileID: 4976748577095326931}
+  - component: {fileID: 5964733846762761520}
+  - component: {fileID: 5964733846762761525}
+  - component: {fileID: 2627616726396763139}
+  - component: {fileID: 8273925800708392170}
+  - component: {fileID: 8901108051797212556}
+  m_Layer: 0
+  m_Name: LUIDA-DataCollector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5964733846762761524
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5964733846762761523}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5964733846762761527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5964733846762761523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id:
+    value: 0
+  itemName: 
+  size: {x: 0, y: 0, z: 0}
+--- !u!114 &5964733846762761526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5964733846762761523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61061896c654489a41575fc291bf4a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourceCodeAsset: {fileID: 0}
+  sourceCode: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
+    = \"callExternalEndpointID_example\";\npNum = 1;\n\r\nconst uploadInterval =
+    1;\r\nconst dataLengthPerUpload = 100;\r\n\r\n$.onStart(() => {\r\n    $.state.customData
+    = {};\r\n    $.state.uploadIndex = 0;\r\n    $.state.elapsedTime = 0;\r\n   
+    $.state.dataLength = 0;\r\n    $.state.isUploading = false;\r\n})\r\n\r\n$.onUpdate((deltaTime)
+    => {\r\n    if ($.getStateCompat(\"this\", \"exp_recordCustomData\", \"boolean\"))
+    {\r\n        $.setStateCompat(\"this\", \"exp_recordCustomData\", false);\r\n       
+    recordData();\r\n    }\r\n    if ($.getStateCompat(\"this\", \"exp_uploadCustomData\",
+    \"boolean\")) {\r\n        if ($.state.uploadIndex === 0) {\r\n            uploadDataInit();\r\n           
+    $.setStateCompat(\"this\", \"exp_uploadCustomData\", false);\r\n        }\r\n   
+    }\r\n    if ($.state.isUploading) {\r\n        $.state.elapsedTime = $.state.elapsedTime
+    + deltaTime;\r\n        if ($.state.elapsedTime >= uploadInterval && $.state.uploadIndex
+    < Math.ceil($.state.dataLength / dataLengthPerUpload)) {\r\n            $.state.elapsedTime
+    = 0;\r\n            uploadDataStep();\r\n        }\r\n    }\r\n})\r\n\r\nfunction
+    recordData () {\r\n    $.state.customData = calculateData();\r\n}\r\n\r\nfunction
+    uploadDataInit() {\r\n    $.state.uploadIndex = 0;\r\n    $.state.elapsedTime
+    = 0;\r\n    $.state.isUploading = true;\r\n    let firstFileName = Object.keys($.state.customData)[0];\r\n   
+    if (firstFileName) {\r\n        $.state.dataLength = $.state.customData[firstFileName].length;\r\n   
+    }\r\n}\r\n\r\nfunction uploadDataStep() {\r\n    $.log(\"Upload data step: \"
+    + $.state.uploadIndex);\r\n    if ($.state.uploadIndex < Math.ceil($.state.dataLength
+    / dataLengthPerUpload)) {\r\n        const slicedData = Object.fromEntries(\r\n           
+    Object.entries($.state.customData).map(([key, value]) => [\r\n               
+    key,\r\n                value.slice($.state.uploadIndex * dataLengthPerUpload,
+    ($.state.uploadIndex + 1) * dataLengthPerUpload)\r\n            ])\r\n       
+    );\r\n        let request = {\r\n            type: \"uploadCustomData\",\r\n           
+    token: token || \"\",\r\n            data: slicedData,\r\n            eID: expID
+    || \"\",\r\n            pID: $.groupState.participants[0].idfc // TODO: replace
+    with `sessionID: $.groupState.sessionID`\r\n        };\r\n        $.log(JSON.stringify(request));\r\n       
+    $.callExternal(\r\n            new ExternalEndpointId(callExternalEndpointID),\r\n           
+    JSON.stringify(request),\r\n            \"customDataUploaded\");\r\n        $.state.uploadIndex
+    = $.state.uploadIndex + 1;\r\n\r\n        if ($.state.uploadIndex >= Math.ceil($.state.dataLength
+    / dataLengthPerUpload)) {\r\n            $.state.uploadIndex = 0;\r\n           
+    $.state.isUploading = false;\r\n        }\r\n    }\r\n}\r\n\r\n$.onExternalCallEnd((res,
+    meta, err) =>\r\n{\r\n    if (res == null) {\r\n        $.log(\"callExternal
+    ERROR: \" + err);\r\n        return;\r\n    }\r\n\r\n    if (meta === \"customDataUploaded\")
+    {\r\n        $.log(\"Response after customDataUploaded called: \" + JSON.stringify(res));\r\n   
+    }\r\n});\r\n\r\nfunction calculateData () {\r\n    let returnData = $.state.customData;\r\n   
+    const CONDITION = $.groupState.currentCondition;\r\n    const PARTICIPANTS =
+    $.groupState.participants;\r\n    return returnData;\r\n}"
+--- !u!114 &4976748577095326931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5964733846762761523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d06d8dc2ce9e442ab2712de694945b2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 5964733846762761527}
+  key:
+    target: 2
+    key: exp_conditionChanged
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 0
+          key: exp_conditionChanged
+          parameterType: 1
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 1
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 0
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 0
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &5964733846762761520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5964733846762761523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d06d8dc2ce9e442ab2712de694945b2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 5964733846762761527}
+  key:
+    target: 2
+    key: exp_recordCustomData
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 0
+          key: exp_recordCustomData
+          parameterType: 1
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 1
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 0
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 0
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &5964733846762761525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5964733846762761523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d06d8dc2ce9e442ab2712de694945b2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 5964733846762761527}
+  key:
+    target: 2
+    key: exp_uploadCustomData
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 0
+          key: exp_uploadCustomData
+          parameterType: 1
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 1
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 0
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 0
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &2627616726396763139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5964733846762761523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466c56cb3cb32ec48b21ffb81ad21213, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clusterScripts:
+  - {fileID: 5022602860645237092, guid: c22e594b3eff3364c8217424a55e9588, type: 3}
+  - {fileID: 5022602860645237092, guid: 6d6042ff7a79fd24c942dcff94c71d21, type: 3}
+  - {fileID: 5022602860645237092, guid: 0e30668acbd4ec042ba0b9b264c2453e, type: 3}
+  playerScripts: []
+  clusterScriptMD5s: []
+  playerScriptMD5s: []
+--- !u!114 &8273925800708392170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5964733846762761523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b331e57100a4127901fa699e619e234, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  host: {fileID: 0}
+--- !u!114 &8901108051797212556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5964733846762761523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b83b38d61e594e9a94383939b963187, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

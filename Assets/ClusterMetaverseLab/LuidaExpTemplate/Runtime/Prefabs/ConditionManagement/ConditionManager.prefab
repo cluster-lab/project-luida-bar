@@ -228,7 +228,9 @@ MonoBehaviour:
     $.getStateCompat(\"global\", \"exp_trialID\", \"integer\") &&\r\n      $.getStateCompat(\"global\",
     \"exp_trialID\", \"integer\") >= 0\r\n  ) {\r\n    $.state.trialID = $.getStateCompat(\"global\",
     \"exp_trialID\", \"integer\");\r\n    updateCondition();\r\n  }\r\n});\r\n\r\n$.onReceive((messageType,
-    arg, sender) => {\r\n  switch (messageType) {\r\n    // case \"exp_questionnaire_answer\":\r\n   
+    arg, sender) => {\r\n  switch (messageType) {\r\n    case \"luida_participants_info\":\r\n     
+    $.groupState.participants = arg.participants;\r\n      $.groupState.sessionID
+    = arg.sessionID;\r\n      break;\r\n    // case \"exp_questionnaire_answer\":\r\n   
     //     $.state.betweenSubjectsConditions = GetBetweenSubjectsCondition(arg);\r\n   
     //     break;\r\n    default:\r\n      break;\r\n  }\r\n});\r\n\r\nfunction updateCondition()
     {\r\n  if ($.state.trialID >= $.state.trialCount) {\r\n    $.sendSignalCompat(\"this\",

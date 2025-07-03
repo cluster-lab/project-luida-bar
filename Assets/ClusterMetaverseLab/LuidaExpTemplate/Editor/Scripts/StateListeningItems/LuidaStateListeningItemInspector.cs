@@ -34,7 +34,7 @@ public class LuidaStateListeningItemInspector : Editor
     private const string prefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/StateListeningItem.prefab";
     private const string scriptFolderPathFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
     private const string stateListeningItemScriptTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/StateManagement/StateListeningItemTemplate.js";
-    private const string RequiredObjectsWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ExpTemplateRequiredObjects.prefab";
+    private const string ExpManagersWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/LUIDA-ExpManagers.prefab";
     private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
 
     private JavaScriptAsset stateListeningItemScript;
@@ -536,7 +536,8 @@ public class LuidaStateListeningItemInspector : Editor
         // Build the function signature, optionally adding extra parameters.
         var content = $"function {functionName}({extraParameters}) {{\n";
         content += "  const STATE_ID = $.state.state_id;\n";
-        content += "  const CONDITION = $.groupState.currentCondition;\n\n";
+        content += "  const CONDITION = $.groupState.currentCondition;\n";
+        content += "  const PARTICIPANTS = $.groupState.participants;\n\n";
 
         // Aggregate action content from all listeners of the item
         foreach (var listenerData in stateListeners)
@@ -588,7 +589,7 @@ public class LuidaStateListeningItemInspector : Editor
 
         foreach (GameObject obj in rootObjects)
         {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == RequiredObjectsWrapperPrefabPath)
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == ExpManagersWrapperPrefabPath)
             {
                 for (int i = 0; i < obj.transform.childCount; i++)
                 {
