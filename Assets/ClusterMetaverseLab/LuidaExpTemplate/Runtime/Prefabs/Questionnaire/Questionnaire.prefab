@@ -724,21 +724,21 @@ MonoBehaviour:
     y, 0), rotOffset, $.state.answerOptionIndex);\r\n                break;\r\n\r\n           
     case 1: // Linear Scale\r\n                answerUiId = new WorldItemTemplateId(\"answer-option-scale-button\");\r\n\r\n               
     let scaleX = ((n > 11 ? 3 : 2) / (n - 1)) * ($.state.answerOptionIndex - (n -
-    1) / 2);\r\n                addAnswerOption(answerUiId, new Vector3(scaleX, 0,
-    0), rotOffset, $.state.answerOptionIndex);\r\n                break;\r\n\r\n           
-    case 3: // Toggle\r\n                answerUiId = new WorldItemTemplateId(\"answer-option-toggle\");\r\n               
-    addAnswerOption(answerUiId, new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);\r\n               
-    break;\r\n\r\n            case 4: // Text Input\r\n                answerUiId
-    = new WorldItemTemplateId(\"answer-option-text-input\");\r\n                addAnswerOption(answerUiId,
-    new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);\r\n               
-    break;\r\n\r\n            default:\r\n                break;\r\n        }\r\n\r\n       
-    $.state.answerOptionIndex += 1;\r\n    }\r\n}\r\n\r\nfunction destroyAnswerOptionUIs()
-    {\r\n    if ($.state.answerOptionUIs) {\r\n        for (const optionUi of $.state.answerOptionUIs)
-    {\r\n            optionUi.send(\"form_destroy_answer_option\", true);\r\n       
-    }\r\n    }\r\n    $.state.answerOptionUIs = [];\r\n    $.state.participant?.send(\"clearQuestionnaireAnswerUIs\",
-    true);\r\n}\r\n\r\nfunction handleFormAnswer(arg) {\r\n    let posOffset = $.getPosition().clone();\r\n   
-    switch ($.state.questionTypeID) {\r\n        case 0: // Radio Buttons\r\n       
-    case 1: // Linear Scale\r\n            $.subNode(\"RadioButtonIndicator\").setEnabled(true);\r\n           
+    1) / 2);\n                addAnswerOption(answerUiId, new Vector3(scaleX, 0,
+    0), rotOffset, $.state.answerOptionIndex);\n                break;\n\n           
+    case 3: // Toggle\n                answerUiId = new WorldItemTemplateId(\"answer-option-toggle\");\n               
+    addAnswerOption(answerUiId, new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);\n               
+    break;\n\n            case 4: // Text Input\n                answerUiId = new
+    WorldItemTemplateId(\"answer-option-text-input\");\n                addAnswerOption(answerUiId,
+    new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);\n               
+    break;\n\n            default:\n                break;\n        }\n\n       
+    $.state.answerOptionIndex += 1;\n    }\n}\n\nfunction destroyAnswerOptionUIs()
+    {\n    if ($.state.answerOptionUIs) {\n        for (const optionUi of $.state.answerOptionUIs)
+    {\n            optionUi.send(\"form_destroy_answer_option\", true);\n       
+    }\n    }\n    $.state.answerOptionUIs = [];\n    $.state.participant?.send(\"clearQuestionnaireAnswerUIs\",
+    true);\n}\n\nfunction handleFormAnswer(arg) {\n    let posOffset = $.getPosition().clone();\n   
+    switch ($.state.questionTypeID) {\n        case 0: // Radio Buttons\n       
+    case 1: // Linear Scale\n            $.subNode(\"RadioButtonIndicator\").setEnabled(true);\n           
     $.subNode(\"RadioButtonIndicator\").setPosition($.state.answerOptionLocalPositions[arg
     - 1].clone());\r\n        case 3: // Toggle\r\n        case 4: // Text Input\r\n           
     $.state.tmpAnswer = arg;\r\n            break;\r\n        case 2: // Checkbox\r\n           
