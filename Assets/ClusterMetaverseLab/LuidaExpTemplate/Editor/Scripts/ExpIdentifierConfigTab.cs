@@ -124,7 +124,7 @@ public class ExpIdentifierConfigTab : EditorWindow
             var go = wnd.StateTab.FindStateObject(state.StateName);
             var objs = go?.transform.Find("Objects");
             var existingCount = 0;
-            if (!objs)
+            if (objs)
             {
                 foreach (Transform child in objs)
                 {
