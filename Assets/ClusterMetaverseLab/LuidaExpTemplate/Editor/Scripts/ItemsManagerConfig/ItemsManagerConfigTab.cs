@@ -44,15 +44,16 @@ public class ItemsManagerConfigTab : EditorWindow
     public void OnEnable()
     {
         _needsRebuild = true;
-        EditorApplication.hierarchyChanged += OnHierarchyChanged;
-        EditorApplication.projectChanged += OnProjectChanged;
-        EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
 
         if (!isSubscribed)
         {
+            EditorApplication.hierarchyChanged += OnHierarchyChanged;
+            EditorApplication.projectChanged += OnProjectChanged;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            
             LuidaConfigWindow.OnEditorClosed += HandleCloseOrFocusLost;
             LuidaConfigWindow.OnEditorClosed += OnDisable;
-            LuidaConfigWindow.OnItemsManagerTabLostFocus += HandleCloseOrFocusLost;
+            LuidaConfigWindow.OnTabSwitched += HandleCloseOrFocusLost;
             isSubscribed = true;
         }
         
@@ -62,15 +63,15 @@ public class ItemsManagerConfigTab : EditorWindow
 
     public void OnDisable()
     {
-        EditorApplication.hierarchyChanged -= OnHierarchyChanged;
-        EditorApplication.projectChanged -= OnProjectChanged;
-        EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
-
         if (isSubscribed)
         {
+            EditorApplication.hierarchyChanged -= OnHierarchyChanged;
+            EditorApplication.projectChanged -= OnProjectChanged;
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+
             LuidaConfigWindow.OnEditorClosed -= HandleCloseOrFocusLost;
             LuidaConfigWindow.OnEditorClosed -= OnDisable;
-            LuidaConfigWindow.OnItemsManagerTabLostFocus -= HandleCloseOrFocusLost;
+            LuidaConfigWindow.OnTabSwitched -= HandleCloseOrFocusLost;
             isSubscribed = false;
         }
     }
@@ -84,8 +85,6 @@ public class ItemsManagerConfigTab : EditorWindow
     {
         if (state == PlayModeStateChange.ExitingEditMode)
         {
-            var luidaWindow = Resources.FindObjectsOfTypeAll<LuidaConfigWindow>().FirstOrDefault();
-            if (luidaWindow != null) luidaWindow.Close();
             ItemsManagerAssetUtil.RefreshStateListeningItems(this);
             ItemsManagerAssetUtil.ApplyAssetsToScripts(this);
         }

@@ -5,10 +5,16 @@ using System.Text.RegularExpressions;
 
 public class ExpIdentifierConfigTab : EditorWindow
 {
+    private string prevExpID = "";
+    private string prevToken = "";
+    private string prevCallExternalEndpointID = "";
+    private int prevPNum = 1;
+    
     private string expID = "";
     private string token = "";
     private string callExternalEndpointID = "";
     private int pNum = 1;
+    
     private string filePath;
     private bool isSubscribed = false;
     private const string formPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/Questionnaire/Questionnaire.prefab";
@@ -23,40 +29,50 @@ public class ExpIdentifierConfigTab : EditorWindow
         {
             LoadExpIdentifiers();
         }
-
-        if (!isSubscribed)
-        {
-            LuidaConfigWindow.OnEditorClosed += SaveExpIdentifiers;
-            LuidaConfigWindow.OnEditorClosed += OnDisable;
-            LuidaConfigWindow.OnItemsManagerTabLostFocus += SaveExpIdentifiers;
-            isSubscribed = true;
-        }
-    }
-
-    public void OnDisable()
-    {
-        if (isSubscribed)
-        {
-            LuidaConfigWindow.OnEditorClosed -= SaveExpIdentifiers;
-            LuidaConfigWindow.OnEditorClosed -= OnDisable;
-            LuidaConfigWindow.OnItemsManagerTabLostFocus -= SaveExpIdentifiers;
-            isSubscribed = false;
-        }
     }
 
     public void OnGUI()
     {
-        GUILayout.Label("Experiment Identifiers", EditorStyles.boldLabel);
+        string newExpID = EditorGUILayout.TextField("Experiment ID", expID);
+        string newToken = EditorGUILayout.TextField("Verify Token", token);
+        string newCallExternalEndpointID = EditorGUILayout.TextField("callExternal Endpoint ID", callExternalEndpointID);
+        int newPNum = EditorGUILayout.IntField("Number of Participants", pNum);
 
-        expID = EditorGUILayout.TextField("Experiment ID", expID);
-        token = EditorGUILayout.TextField("Verify Token", token);
-        callExternalEndpointID = EditorGUILayout.TextField("callExternal Endpoint ID", callExternalEndpointID);
-        pNum = EditorGUILayout.IntField("Number of Participants", pNum);
+        bool hasChanged = false;
 
-        // if (GUILayout.Button("Save Identifiers"))
-        // {
-        //     SaveExpIdentifiers();
-        // }
+        if (newExpID != prevExpID)
+        {
+            expID = newExpID;
+            prevExpID = newExpID;
+            hasChanged = true;
+        }
+
+        if (newToken != prevToken)
+        {
+            token = newToken;
+            prevToken = newToken;
+            hasChanged = true;
+        }
+
+        if (newCallExternalEndpointID != prevCallExternalEndpointID)
+        {
+            callExternalEndpointID = newCallExternalEndpointID;
+            prevCallExternalEndpointID = newCallExternalEndpointID;
+            hasChanged = true;
+        }
+
+        if (newPNum != prevPNum)
+        {
+            pNum = newPNum;
+            prevPNum = newPNum;
+            hasChanged = true;
+            UpdateQuestionnaireObjects();
+        }
+
+        if (hasChanged)
+        {
+            SaveExpIdentifiers();
+        }
     }
 
     private void LoadExpIdentifiers()
@@ -104,8 +120,6 @@ public class ExpIdentifierConfigTab : EditorWindow
         AssetDatabase.Refresh();
 
         Debug.Log($"Experiment identifiers saved to {filePath}");
-
-        UpdateQuestionnaireObjects();
     }
 
     private void UpdateQuestionnaireObjects()

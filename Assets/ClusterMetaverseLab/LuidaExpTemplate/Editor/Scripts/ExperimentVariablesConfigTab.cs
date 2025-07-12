@@ -11,12 +11,13 @@ using UnityEditorInternal; // Required for ReorderableList
 
 public class ExperimentVariablesConfigTab : EditorWindow
 {
+    public static bool IsApplyingVariableUpdates = false;
+    
     private JavaScriptAsset variablesAsset;
     private JavaScriptAsset betweenSubjectsConditionSetterAsset;
     private JavaScriptAsset conditionManagerScript;
     private string conditionManagerScriptPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/ConditionManagement/ConditionManager.js";
-
-
+    
     // Use List<T> instead of array for easy modification with ReorderableList
     private List<ExperimentVariable> withinSubjectsVariables = new List<ExperimentVariable>();
     private List<ExperimentVariable> betweenSubjectsVariables = new List<ExperimentVariable>();
@@ -39,7 +40,7 @@ public class ExperimentVariablesConfigTab : EditorWindow
         {
             LuidaConfigWindow.OnEditorClosed += ApplyVariableUpdates;
             LuidaConfigWindow.OnEditorClosed += OnDisable;
-            LuidaConfigWindow.OnItemsManagerTabLostFocus += ApplyVariableUpdates;
+            LuidaConfigWindow.OnTabSwitched += ApplyVariableUpdates;
             isSubscribed = true;
         }
     }
@@ -50,7 +51,7 @@ public class ExperimentVariablesConfigTab : EditorWindow
         {
             LuidaConfigWindow.OnEditorClosed -= ApplyVariableUpdates;
             LuidaConfigWindow.OnEditorClosed -= OnDisable;
-            LuidaConfigWindow.OnItemsManagerTabLostFocus -= ApplyVariableUpdates;
+            LuidaConfigWindow.OnTabSwitched -= ApplyVariableUpdates;
             isSubscribed = false;
         }
     }
@@ -362,6 +363,7 @@ public class ExperimentVariablesConfigTab : EditorWindow
 
     private void ApplyVariableUpdates()
     {
+        IsApplyingVariableUpdates = true;
         GenerateJavaScript();
         var scriptAssets = new List<JavaScriptAsset>();
         if (betweenSubjectsConditionSetterAsset != null)
@@ -373,6 +375,7 @@ public class ExperimentVariablesConfigTab : EditorWindow
         UpdateScriptableClusterScriptCombiner(scriptAssets.ToArray());
 
         Debug.Log($"Experiment variables saved to {variablesAssetPath}");
+        IsApplyingVariableUpdates = false;
     }
 
     private void UpdateScriptableClusterScriptCombiner(JavaScriptAsset[] scriptAssets)

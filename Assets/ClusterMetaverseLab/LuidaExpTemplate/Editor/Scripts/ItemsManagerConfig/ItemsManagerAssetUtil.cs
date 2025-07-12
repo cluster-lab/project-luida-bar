@@ -25,6 +25,8 @@ public static class ItemsManagerAssetUtil
 // $.onPhysicsUpdate((deltaTime) => { });
 // $.onReceive((messageType, arg, sender) => { });
 ";
+    
+    public static bool IsApplyingAssetsToScripts = false;
 
     #region Data Refreshing
     
@@ -241,14 +243,18 @@ public static class ItemsManagerAssetUtil
 
     public static void ApplyAssetsToScripts(ItemsManagerConfigTab editor)
     {
+        IsApplyingAssetsToScripts = true;
         SaveAllItemsToAssets(editor);
+        IsApplyingAssetsToScripts = false;
 
+        /*
         Type csCombinerType = Type.GetType("Assets.KaomoLab.CSCombiner.CSCombiner, Assembly-CSharp-Editor");
         if (csCombinerType != null)
         {
             var method = csCombinerType.GetMethod("CombineAll", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
             method?.Invoke(null, null);
         }
+        */
     }
 
     private static void SaveAllItemsToAssets(ItemsManagerConfigTab editor)

@@ -9,7 +9,7 @@ public class LuidaConfigWindow : EditorWindow
 {
     public static LuidaConfigWindow Instance { get; private set; }
     public static event Action OnEditorClosed;
-    public static event Action OnItemsManagerTabLostFocus;
+    public static event Action OnTabSwitched;
 
     private int currentTab = 0;
     private string[] tabNames = { "Experiment Identifiers", "Experiment Variables", "State Machine (& Questionnaires)", "State-listening Items", "Data Collector" };
@@ -28,10 +28,10 @@ public class LuidaConfigWindow : EditorWindow
     
     public StateMachineConfigTab StateTab => stateMachineConfigTab;
     
-    [MenuItem("LUIDA/Config Window")]
+    [MenuItem("LUIDA/Configure experiment automation")]
     public static void ShowWindow()
     {
-        GetWindow<LuidaConfigWindow>("LUIDA Config Window");
+        GetWindow<LuidaConfigWindow>("LUIDA Experiment Automation Config Window");
     }
 
     private void OnEnable()
@@ -164,7 +164,7 @@ public class LuidaConfigWindow : EditorWindow
             if (newTab != currentTab)
             {
                 Debug.Log("LuidaConfigWindow tab switched from " + currentTab + " to " + newTab);
-                OnItemsManagerTabLostFocus?.Invoke();
+                OnTabSwitched?.Invoke();
                 currentTab = newTab;
             }
 
