@@ -124,7 +124,7 @@ public class LuidaConfigWindow : EditorWindow
 
     private void DrawActivationUI()
     {
-        EditorGUILayout.HelpBox("This scene is not yet configured for LUIDA experiment automation. Press the button below to generate the necessary assets.", MessageType.Info);
+        EditorGUILayout.HelpBox("LUIDA experiment automation feature is not activated yet for this scene. Press the button below if you choose to activate it.", MessageType.Info);
         if (GUILayout.Button("Activate Experiment Automation Feature", GUILayout.Height(40)))
         {
             CreateStateListAssetForCurrentScene();

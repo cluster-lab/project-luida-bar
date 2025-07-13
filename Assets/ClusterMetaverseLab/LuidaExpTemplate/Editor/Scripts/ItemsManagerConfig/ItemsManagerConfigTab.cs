@@ -34,7 +34,7 @@ public class ItemsManagerConfigTab : LuidaAutomationConfigTab
     public Vector2 docScrollPositionY;
     public Vector2 _horizontalScrollPosition;
 
-    private bool isSubscribed = false;
+    private bool isInitialized = false;
 
     #region Unity Callbacks & Event Handling
 
@@ -47,26 +47,11 @@ public class ItemsManagerConfigTab : LuidaAutomationConfigTab
     {
         _needsRebuild = true;
 
-        if (!isSubscribed)
+        if (!isInitialized)
         {
-            EditorApplication.hierarchyChanged += OnHierarchyChanged;
-            EditorApplication.projectChanged += OnProjectChanged;
-            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            ItemsManagerAssetUtil.RefreshStateList(this);
+            ItemsManagerAssetUtil.RefreshExperimentVariablesCache(this);
             
-            LuidaConfigWindow.OnEditorClosed += HandleCloseOrFocusLost;
-            LuidaConfigWindow.OnEditorClosed += OnDisable;
-            LuidaConfigWindow.OnTabSwitched += HandleTabSwitched;
-            isSubscribed = true;
-        }
-        
-        ItemsManagerAssetUtil.RefreshStateList(this);
-        ItemsManagerAssetUtil.RefreshExperimentVariablesCache(this);
-    }
-
-    public void OnDisable()
-    {
-        if (isSubscribed)
-        {
             EditorApplication.hierarchyChanged -= OnHierarchyChanged;
             EditorApplication.projectChanged -= OnProjectChanged;
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
@@ -74,8 +59,27 @@ public class ItemsManagerConfigTab : LuidaAutomationConfigTab
             LuidaConfigWindow.OnEditorClosed -= HandleCloseOrFocusLost;
             LuidaConfigWindow.OnEditorClosed -= OnDisable;
             LuidaConfigWindow.OnTabSwitched -= HandleTabSwitched;
-            isSubscribed = false;
+            
+            EditorApplication.hierarchyChanged += OnHierarchyChanged;
+            EditorApplication.projectChanged += OnProjectChanged;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            
+            LuidaConfigWindow.OnEditorClosed += HandleCloseOrFocusLost;
+            LuidaConfigWindow.OnEditorClosed += OnDisable;
+            LuidaConfigWindow.OnTabSwitched += HandleTabSwitched;
+            isInitialized = true;
         }
+    }
+
+    public void OnDisable()
+    {
+        EditorApplication.hierarchyChanged -= OnHierarchyChanged;
+        EditorApplication.projectChanged -= OnProjectChanged;
+        EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+
+        LuidaConfigWindow.OnEditorClosed -= HandleCloseOrFocusLost;
+        LuidaConfigWindow.OnEditorClosed -= OnDisable;
+        LuidaConfigWindow.OnTabSwitched -= HandleTabSwitched;
     }
 
     private void HandleCloseOrFocusLost() => ItemsManagerAssetUtil.ApplyAssetsToScripts(this);

@@ -42,6 +42,8 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
         {
             previousStates = new StateList.State[0];
         }
+
+        FindOrCreateStatesContainer();
     }
 
     private void LoadStateList()
@@ -974,6 +976,7 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
             GameObject statesObject = new GameObject("States");
             Undo.RegisterCreatedObjectUndo(statesObject, "Create States Container");
             statesObject.transform.SetParent(expManagersWrapper.transform, false);
+            UpdateSceneObjects();
             return statesObject;
         }
         return statesObjectTransform.gameObject;
@@ -1059,15 +1062,5 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
             }
         }
         return trialsCountForEachUniqueCondition * product;
-    }
-
-    public GameObject FindStateObject(string stateName)
-    {
-        var wrapper = FindExpManagersWrapperInstance();
-        if (wrapper == null) return null;
-        var statesContainer = wrapper.transform.Find("States");
-        if (statesContainer == null) return null;
-        var stateTransform = statesContainer.Find(stateName);
-        return stateTransform?.gameObject;
     }
 }

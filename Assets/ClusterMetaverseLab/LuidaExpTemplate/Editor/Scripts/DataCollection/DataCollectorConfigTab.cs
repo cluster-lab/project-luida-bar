@@ -18,7 +18,7 @@ public class DataCollectorConfigTab : EditorWindow
     private const string DataCollectorScriptFolderPath = "Assets/_Experiment_/Scripts/DataCollectors/";
 
     private GameObject dataCollector; // Only one instance allowed
-    private ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset calculatorAsset;
+    private JavaScriptAsset calculatorAsset;
     private Vector2 scrollPosition;
 
     // Store custom data list names and their corresponding calculation scripts

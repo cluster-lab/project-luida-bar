@@ -31,31 +31,33 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
 
     private string variablesAssetPath;
     private string betweenSubjectsConditionSetterPath;
-    private bool isSubscribed = false;
+    
+    private static bool isInitialized = false;
 
     public void OnEnable()
     {
-        RetrieveJavaScriptAsset();
-        SetupReorderableLists(); // Setup lists after retrieving data
-
-        if (!isSubscribed)
+        if (!isInitialized)
         {
+            isInitialized = true;
+            
+            RetrieveJavaScriptAsset();
+            SetupReorderableLists();
+            
+            LuidaConfigWindow.OnEditorClosed -= ApplyVariableUpdates;
+            LuidaConfigWindow.OnEditorClosed -= OnDisable;
+            LuidaConfigWindow.OnTabSwitched -= HandleTabSwitched;
+        
             LuidaConfigWindow.OnEditorClosed += ApplyVariableUpdates;
             LuidaConfigWindow.OnEditorClosed += OnDisable;
             LuidaConfigWindow.OnTabSwitched += HandleTabSwitched;
-            isSubscribed = true;
         }
     }
 
     public void OnDisable()
     {
-        if (isSubscribed)
-        {
-            LuidaConfigWindow.OnEditorClosed -= ApplyVariableUpdates;
-            LuidaConfigWindow.OnEditorClosed -= OnDisable;
-            LuidaConfigWindow.OnTabSwitched -= HandleTabSwitched;
-            isSubscribed = false;
-        }
+        LuidaConfigWindow.OnEditorClosed -= ApplyVariableUpdates;
+        LuidaConfigWindow.OnEditorClosed -= OnDisable;
+        LuidaConfigWindow.OnTabSwitched -= HandleTabSwitched;
     }
 
     private void HandleTabSwitched(LuidaConfigWindow.TabIndex prevTab, LuidaConfigWindow.TabIndex nextTab)

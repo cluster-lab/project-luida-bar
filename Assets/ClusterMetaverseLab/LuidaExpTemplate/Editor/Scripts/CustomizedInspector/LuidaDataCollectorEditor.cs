@@ -65,8 +65,8 @@ public class LuidaDataCollectorEditor : Editor
         var dataCollector = (LuidaDataCollector)target;
 
         EditorGUILayout.Space();
-        EditorGUILayout.LabelField("Calculation Script", EditorStyles.boldLabel);
-        EditorGUILayout.HelpBox("This script defines the custom data to be collected. Double-click the field below to open and edit the script asset.", MessageType.Info);
+        EditorGUILayout.LabelField("Double-click the script below to edit what and how to save your custom data", EditorStyles.boldLabel);
+        // EditorGUILayout.HelpBox("This script defines the custom data to be collected. Double-click the field below to open and edit the script asset.", MessageType.Info);
 
         // Display the object field, but disable it to make it non-editable.
         GUI.enabled = false;

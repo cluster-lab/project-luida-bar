@@ -12,6 +12,8 @@ public static class LuidaSceneUtility
 {
     private const string scenePath = "Assets/_Experiment_/Scenes/";
     private const string templateScenePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scenes/Template.unity";
+    private const string CalculatorTemplateAssetPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/CustomDataCollection/CustomDataCalculatorTemplate.js";
+    private const string DataCollectorScriptFolderPath = "Assets/_Experiment_/Scripts/DataCollectors/";
 
     /// <summary>
     /// Creates a new, "inactive" experiment scene from the template.
@@ -25,15 +27,14 @@ public static class LuidaSceneUtility
             EditorUtility.DisplayDialog("Error", "A scene with that name already exists!", "OK");
             return;
         }
-        
+
         Directory.CreateDirectory(scenePath);
         File.Copy(templateScenePath, newScenePath);
         AssetDatabase.Refresh();
-
-        if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
-        {
-            EditorSceneManager.OpenScene(newScenePath);
-        }
+        EditorSceneManager.OpenScene(newScenePath);
+        
+        // After opening the new scene, update the script references within it.
+        UpdateDataCollectorScriptCombiner(newSceneName);
     }
 
     /// <summary>
@@ -55,10 +56,9 @@ public static class LuidaSceneUtility
         EditorSceneManager.OpenScene(newScenePath);
         
         // After opening the new scene, update the script references within it.
-        string newStateListenersFolder = $"Assets/_Experiment_/Scripts/StateManagement/{newSceneName}/StateListeners";
-        string newDataCollectorScriptPath = $"Assets/_Experiment_/Scripts/DataCollectors/{newSceneName}.js";
-        UpdateScriptableClusterScriptCombiners(newSceneName, newStateListenersFolder);
-        UpdateDataCollectorScriptCombiner(newSceneName, newDataCollectorScriptPath);
+        string newStateListenerScriptsFolder = $"Assets/_Experiment_/Scripts/StateManagement/{newSceneName}";
+        UpdateScriptableClusterScriptCombiners(newSceneName, newStateListenerScriptsFolder);
+        UpdateDataCollectorScriptCombiner(newSceneName);
     }
     
     private static void DuplicateSceneAndAssets(string currentScenePath, string newSceneName)
@@ -96,6 +96,20 @@ public static class LuidaSceneUtility
             }
         }
 
+        // Duplicate StateListenersItemData scripts
+        string stateListenerScriptsFolder = $"Assets/_Experiment_/Scripts/StateManagement/{currentSceneName}";
+        string newStateListenerScriptsFolder = $"Assets/_Experiment_/Scripts/StateManagement/{newSceneName}";
+        if (Directory.Exists(stateListenerScriptsFolder))
+        {
+            Directory.CreateDirectory(newStateListenerScriptsFolder);
+            foreach (string file in Directory.GetFiles(stateListenerScriptsFolder, "*.*", SearchOption.AllDirectories))
+            {
+                string newFilePath = file.Replace(stateListenerScriptsFolder, newStateListenerScriptsFolder);
+                Directory.CreateDirectory(Path.GetDirectoryName(newFilePath));
+                File.Copy(file, newFilePath, true);
+            }
+        }
+
         // Duplicate DataCollector script
         string dataCollectorScriptPath = $"Assets/_Experiment_/Scripts/DataCollectors/{currentSceneName}.js";
         if (File.Exists(dataCollectorScriptPath))
@@ -104,10 +118,8 @@ public static class LuidaSceneUtility
         }
     }
     
-    private static void UpdateScriptableClusterScriptCombiners(string newSceneName, string newStateListenersFolder)
+    private static void UpdateScriptableClusterScriptCombiners(string newSceneName, string newStateListenerScriptsFolder)
     {
-        // Find all LuidaStateListeningItem objects in the newly opened scene.
-        // Note: You need to define the LuidaStateListeningItem class or ensure it's available.
         var stateListeningItems = GameObject.FindObjectsOfType<LuidaStateListeningItem>();
 
         foreach (var item in stateListeningItems)
@@ -116,7 +128,7 @@ public static class LuidaSceneUtility
             if (scriptCombiner == null) continue;
 
             string itemName = item.name;
-            string newScriptPath = Path.Combine(newStateListenersFolder, $"{itemName}.js").Replace("\\", "/");
+            string newScriptPath = Path.Combine(newStateListenerScriptsFolder, $"{itemName}.js").Replace("\\", "/");
 
             var newScriptAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(newScriptPath);
             if (newScriptAsset == null) continue;
@@ -128,18 +140,35 @@ public static class LuidaSceneUtility
         AssetDatabase.SaveAssets();
     }
     
-    private static void UpdateDataCollectorScriptCombiner(string newSceneName, string newDataCollectorScriptPath)
+    private static void UpdateDataCollectorScriptCombiner(string newSceneName)
     {
-        // Note: You need to define the LuidaDataCollector class or ensure it's available.
         var dataCollector = GameObject.FindObjectOfType<LuidaDataCollector>();
         if (dataCollector == null) return;
 
         var scriptCombiner = dataCollector.GetComponent<ScriptableClusterScriptCombiner>();
         if (scriptCombiner == null) return;
 
-        var newScriptAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(newDataCollectorScriptPath);
-        if (newScriptAsset == null) return;
+        var newScriptPath = $"{DataCollectorScriptFolderPath}{newSceneName}.js";
+        var newScriptAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(newScriptPath);
+        if (newScriptAsset == null)
+        {
+            var calculatorTemplateAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(CalculatorTemplateAssetPath);
+            if (calculatorTemplateAsset == null)
+            {
+                Debug.LogError("Failed to load Identifiers or Calculator Template assets.");
+                return;
+            }
 
+            if (!Directory.Exists(DataCollectorScriptFolderPath))
+            {
+                Directory.CreateDirectory(DataCollectorScriptFolderPath);
+            }
+
+            AssetDatabase.CopyAsset(CalculatorTemplateAssetPath, newScriptPath);
+            AssetDatabase.Refresh();
+        }
+
+        dataCollector.calculationScript = newScriptAsset;
         scriptCombiner.ReplaceScript(newScriptAsset, 2, null, 0, false);
         scriptCombiner.CombineScripts();
         EditorUtility.SetDirty(scriptCombiner);
