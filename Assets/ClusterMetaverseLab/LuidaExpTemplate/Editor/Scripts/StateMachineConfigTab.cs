@@ -10,8 +10,10 @@ using System.Text;
 using ClusterVR.CreatorKit.Gimmick.Implements;
 using ClusterVR.CreatorKit.Item.Implements;
 
-public class StateMachineConfigTab : EditorWindow
+public class StateMachineConfigTab : LuidaAutomationConfigTab
 {
+    protected override LuidaConfigWindow.TabIndex TabIndex => LuidaConfigWindow.TabIndex.StateMachine;
+    
     public StateList stateList;
     private StateList.State[] previousStates;
     private SerializedObject serializedStateList;

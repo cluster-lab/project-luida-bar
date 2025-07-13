@@ -35,7 +35,6 @@ public class DataCollectorConfigTab : EditorWindow
         {
             LuidaConfigWindow.OnEditorClosed += SaveChangesToScript;
             LuidaConfigWindow.OnEditorClosed += OnDisable;
-            LuidaConfigWindow.OnTabSwitched += SaveChangesToScript;
             isSubscribed = true;
         }
     }
@@ -46,7 +45,6 @@ public class DataCollectorConfigTab : EditorWindow
         {
             LuidaConfigWindow.OnEditorClosed -= SaveChangesToScript;
             LuidaConfigWindow.OnEditorClosed -= OnDisable;
-            LuidaConfigWindow.OnTabSwitched -= SaveChangesToScript;
             isSubscribed = false;
         }
     }

@@ -3,15 +3,21 @@ using UnityEngine;
 using UnityEditor.SceneManagement;
 using System;
 using System.IO;
-using ClusterVR.CreatorKit.Item.Implements;
 
 public class LuidaConfigWindow : EditorWindow
 {
     public static LuidaConfigWindow Instance { get; private set; }
     public static event Action OnEditorClosed;
-    public static event Action OnTabSwitched;
+    public static event Action<TabIndex, TabIndex> OnTabSwitched;
 
-    private int currentTab = 0;
+    public enum TabIndex
+    {
+        ExperimentVariables,
+        StateMachine,
+        StateListeningItems
+    }
+
+    private TabIndex currentTab = TabIndex.ExperimentVariables;
     private string[] tabNames = { "Experiment Variables", "State Machine (& Questionnaires)", "State-listening Items" };
 
     private StateMachineConfigTab stateMachineConfigTab;
@@ -20,10 +26,11 @@ public class LuidaConfigWindow : EditorWindow
 
     private string newSceneName = "";
     private const string scenePath = "Assets/_Experiment_/Scenes/";
-    private const string templateScenePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scenes/Template.unity";
     private const string expIdentifiersPath = "Assets/_Experiment_/Settings/ExpIdentifiers.js";
     private const string templateExpIdentifiersPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/ExpIdentifiers.js";
     
+    private bool isAutomationFeatureActive = false;
+
     public StateMachineConfigTab StateTab => stateMachineConfigTab;
     
     [MenuItem("LUIDA/Configure experiment automation")]
@@ -34,6 +41,18 @@ public class LuidaConfigWindow : EditorWindow
 
     private void OnEnable()
     {
+        CheckAutomationFeatureStatus();
+        if (isAutomationFeatureActive)
+        {
+            InitializeTabs();
+        }
+
+        CheckAndCreateExpIdentifiers();
+        Instance = this;
+    }
+
+    private void InitializeTabs()
+    {
         experimentVariablesConfigTab = new ExperimentVariablesConfigTab();
         stateMachineConfigTab = new StateMachineConfigTab();
         itemsManagerEditor = new ItemsManagerConfigTab();
@@ -42,138 +61,105 @@ public class LuidaConfigWindow : EditorWindow
         stateMachineConfigTab.OnEnable();
         itemsManagerEditor.OnEnable();
 
-        CheckAndCreateExpIdentifiers();
-        
-        Instance = this;
+        isAutomationFeatureActive = true;
     }
 
+    private void CheckAutomationFeatureStatus()
+    {
+        string sceneName = EditorSceneManager.GetActiveScene().name;
+        if (string.IsNullOrEmpty(sceneName)) {
+            isAutomationFeatureActive = false;
+            return;
+        }
+
+        string stateListPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
+        string variablesAssetPath = $"Assets/_Experiment_/Settings/ExperimentVariables/{sceneName}.js";
+        isAutomationFeatureActive = File.Exists(stateListPath) && File.Exists(variablesAssetPath);
+    }
+    
     private void OnGUI()
     {
         string currentScenePath = EditorSceneManager.GetActiveScene().path;
 
-        // Check if the current scene is inside Assets/_Experiment_/Scenes/
         if (!currentScenePath.StartsWith(scenePath))
         {
-            GUILayout.Label("No valid experiment scene is currently active.", EditorStyles.boldLabel);
-            GUILayout.Label("Please use the form below to create a scene for your experiment.", EditorStyles.wordWrappedLabel);
-
-            GUILayout.Label("Create New Experiment Scene", EditorStyles.boldLabel);
-            newSceneName = EditorGUILayout.TextField("New Scene Name", newSceneName);
-
-            if (GUILayout.Button("Create and Open Scene"))
-            {
-                if (!string.IsNullOrEmpty(newSceneName))
-                {
-                    string newScenePath = scenePath + newSceneName + ".unity";
-
-                    if (!File.Exists(newScenePath))
-                    {
-                        File.Copy(templateScenePath, newScenePath);
-                        AssetDatabase.Refresh();
-                        EditorSceneManager.OpenScene(newScenePath);
-                    }
-                    else
-                    {
-                        EditorUtility.DisplayDialog("Error", "A scene with that name already exists!", "OK");
-                    }
-                }
-                else
-                {
-                    EditorUtility.DisplayDialog("Error", "Please enter a valid scene name.", "OK");
-                }
-            }
+            DrawInvalidSceneUI();
         }
         else
         {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Current Active Scene: " + currentScenePath, EditorStyles.boldLabel);
+            CheckAutomationFeatureStatus();
 
-            // --- New Scene Creation Form
-            GUILayout.FlexibleSpace();
-            newSceneName = EditorGUILayout.TextField("New Experiment Name", newSceneName, GUILayout.Width(250));
-
-            if (GUILayout.Button("Create and Switch Scene"))
+            if (!isAutomationFeatureActive)
             {
-                if (!string.IsNullOrEmpty(newSceneName))
-                {
-                    string newScenePath = scenePath + newSceneName + ".unity";
-
-                    if (!File.Exists(newScenePath))
-                    {
-                        // Save current scene if it has been modified
-                        if (EditorSceneManager.GetActiveScene().isDirty)
-                        {
-                            EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
-                        }
-                        File.Copy(templateScenePath, newScenePath);
-                        AssetDatabase.Refresh();
-                        EditorSceneManager.OpenScene(newScenePath);
-                        RefreshAllTabs(); // Force refresh all tabs
-                    }
-                    else
-                    {
-                        EditorUtility.DisplayDialog("Error", "A scene with that name already exists!", "OK");
-                    }
-                }
-                else
-                {
-                    EditorUtility.DisplayDialog("Error", "Please enter a valid scene name.", "OK");
-                }
+                DrawActivationUI();
             }
-            
-            if (GUILayout.Button("Duplicate And Switch Scene"))
+            else
             {
-                if (!string.IsNullOrEmpty(newSceneName))
-                {
-                    string newScenePath = scenePath + newSceneName + ".unity";
-
-                    if (!File.Exists(newScenePath))
-                    {
-                        DuplicateSceneAndAssets(currentScenePath, newSceneName);
-                        AssetDatabase.Refresh();
-                        EditorSceneManager.OpenScene(newScenePath);
-                        RefreshAllTabs(); // Force refresh all tabs
-                        var newStateListenersFolder = $"Assets/_Experiment_/Scripts/StateManagement/{newSceneName}";
-                        var newDataCollectorScriptPath = $"Assets/_Experiment_/Scripts/DataCollectors/{newSceneName}.js";
-                        UpdateScriptableClusterScriptCombiners(newSceneName, newStateListenersFolder);
-                        UpdateDataCollectorScriptCombiner(newSceneName, newDataCollectorScriptPath);
-                    }
-                    else
-                    {
-                        EditorUtility.DisplayDialog("Error", "A scene with that name already exists!", "OK");
-                    }
-                }
-                else
-                {
-                    EditorUtility.DisplayDialog("Error", "Please enter a valid scene name.", "OK");
-                }
+                DrawMainConfigurationUI();
             }
-            
-            GUILayout.EndHorizontal();
+        }
+    }
+    
+    private void DrawInvalidSceneUI()
+    {
+        GUILayout.Label("No valid experiment scene is currently active.", EditorStyles.boldLabel);
+        GUILayout.Label("Please use the form below to create a scene for your experiment.", EditorStyles.wordWrappedLabel);
 
-            // draw toolbar
-            int newTab = GUILayout.Toolbar(currentTab, tabNames);
+        GUILayout.Label("Create New Experiment Scene", EditorStyles.boldLabel);
+        newSceneName = EditorGUILayout.TextField("New Scene Name", newSceneName);
 
-            // detect switching away from the ItemsManager tab:
-            if (newTab != currentTab)
+        if (GUILayout.Button("Create and Open Scene"))
+        {
+            if (!string.IsNullOrEmpty(newSceneName))
             {
-                Debug.Log("LuidaConfigWindow tab switched from " + currentTab + " to " + newTab);
-                OnTabSwitched?.Invoke();
-                currentTab = newTab;
+                LuidaSceneUtility.CreateNewSceneFromTemplate(newSceneName);
+                // After scene is created, this window will show the activation button
             }
-
-            switch (currentTab)
+            else
             {
-                case 0:
-                    experimentVariablesConfigTab.OnGUI();
-                    break;
-                case 1:
-                    stateMachineConfigTab.OnGUI();
-                    break;
-                case 2:
-                    itemsManagerEditor.OnGUI();
-                    break;
+                EditorUtility.DisplayDialog("Error", "Please enter a valid scene name.", "OK");
             }
+        }
+    }
+
+    private void DrawActivationUI()
+    {
+        EditorGUILayout.HelpBox("This scene is not yet configured for LUIDA experiment automation. Press the button below to generate the necessary assets.", MessageType.Info);
+        if (GUILayout.Button("Activate Experiment Automation Feature", GUILayout.Height(40)))
+        {
+            CreateStateListAssetForCurrentScene();
+            CreateExperimentVariablesAssetForCurrentScene();
+            AssetDatabase.Refresh();
+            InitializeTabs(); // This will set isAutomationFeatureActive to true and init tabs
+        }
+    }
+
+    private void DrawMainConfigurationUI()
+    {
+        if (stateMachineConfigTab == null) InitializeTabs();
+
+        string currentScenePath = EditorSceneManager.GetActiveScene().path;
+
+        GUILayout.Label("Current Active Scene: " + currentScenePath, EditorStyles.boldLabel);
+
+        int newTab = GUILayout.Toolbar((int)currentTab, tabNames);
+        if (newTab != (int)currentTab)
+        {
+            OnTabSwitched?.Invoke(currentTab, (TabIndex)newTab);
+            currentTab = (TabIndex)newTab;
+        }
+
+        switch (currentTab)
+        {
+            case TabIndex.ExperimentVariables:
+                experimentVariablesConfigTab.OnGUI();
+                break;
+            case TabIndex.StateMachine:
+                stateMachineConfigTab.OnGUI();
+                break;
+            case TabIndex.StateListeningItems:
+                itemsManagerEditor.OnGUI();
+                break;
         }
     }
 
@@ -187,6 +173,7 @@ public class LuidaConfigWindow : EditorWindow
     {
         if (!File.Exists(expIdentifiersPath))
         {
+            Directory.CreateDirectory(Path.GetDirectoryName(expIdentifiersPath));
             File.Copy(templateExpIdentifiersPath, expIdentifiersPath);
             AssetDatabase.Refresh();
         }
@@ -198,132 +185,35 @@ public class LuidaConfigWindow : EditorWindow
         stateMachineConfigTab.OnEnable();
         itemsManagerEditor.OnEnable();
     }
-
-    private void DuplicateSceneAndAssets(string currentScenePath, string newSceneName)
+    
+    private void CreateStateListAssetForCurrentScene()
     {
-        string newScenePath = scenePath + newSceneName + ".unity";
-        File.Copy(currentScenePath, newScenePath);
-
-        string currentSceneName = Path.GetFileNameWithoutExtension(currentScenePath);
-
-        // Duplicate StateList asset
-        string stateListPath = $"Assets/_Experiment_/Settings/StateList/{currentSceneName}.asset";
-        string newStateListPath = $"Assets/_Experiment_/Settings/StateList/{newSceneName}.asset";
-        if (File.Exists(stateListPath))
+        string sceneName = EditorSceneManager.GetActiveScene().name;
+        string stateListPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
+        const string templatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/StateList/Template.asset";
+        
+        if (!File.Exists(stateListPath))
         {
-            File.Copy(stateListPath, newStateListPath);
+            Directory.CreateDirectory(Path.GetDirectoryName(stateListPath));
+            AssetDatabase.CopyAsset(templatePath, stateListPath);
+            Debug.Log($"Created StateList asset at {stateListPath}");
         }
-
-        // Duplicate ExperimentVariables asset
-        string experimentVariablesPath = $"Assets/_Experiment_/Settings/ExperimentVariables/{currentSceneName}.js";
-        string newExperimentVariablesPath = $"Assets/_Experiment_/Settings/ExperimentVariables/{newSceneName}.js";
-        if (File.Exists(experimentVariablesPath))
-        {
-            File.Copy(experimentVariablesPath, newExperimentVariablesPath);
-        }
-
-        // Duplicate StateListenersItemData assets
-        string stateListenersFolder = $"Assets/_Experiment_/Scripts/StateManagement/{currentSceneName}/StateListeners";
-        string newStateListenersFolder = $"Assets/_Experiment_/Scripts/StateManagement/{newSceneName}/StateListeners";
-        if (Directory.Exists(stateListenersFolder))
-        {
-            Directory.CreateDirectory(newStateListenersFolder);
-            foreach (string file in Directory.GetFiles(stateListenersFolder))
-            {
-                string newFilePath = Path.Combine(newStateListenersFolder, Path.GetFileName(file));
-                File.Copy(file, newFilePath);
-            }
-        }
-
-        // Duplicate DataCollector script
-        string dataCollectorScriptPath = $"Assets/_Experiment_/Scripts/DataCollectors/{currentSceneName}.js";
-        string newDataCollectorScriptPath = $"Assets/_Experiment_/Scripts/DataCollectors/{newSceneName}.js";
-        if (File.Exists(dataCollectorScriptPath))
-        {
-            File.Copy(dataCollectorScriptPath, newDataCollectorScriptPath);
-        }
-
-        // Open the new scene
-        AssetDatabase.Refresh();
-        EditorSceneManager.OpenScene(newScenePath);
     }
     
-    private void UpdateScriptableClusterScriptCombiners(string newSceneName, string newStateListenersFolder)
+    private void CreateExperimentVariablesAssetForCurrentScene()
     {
-        // Find all LuidaStateListeningItem objects in the scene
-        LuidaStateListeningItem[] stateListeningItems = FindObjectsOfType<LuidaStateListeningItem>();
-
-        foreach (var item in stateListeningItems)
+        string sceneName = EditorSceneManager.GetActiveScene().name;
+        string variablesAssetPath = $"Assets/_Experiment_/Settings/ExperimentVariables/{sceneName}.js";
+        const string templatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/VariablesTemplate.js";
+        
+        if (!File.Exists(variablesAssetPath))
         {
-            // Get the ScriptableClusterScriptCombiner component
-            var scriptCombiner = item.GetComponent<ScriptableClusterScriptCombiner>();
-            if (scriptCombiner == null)
-            {
-                Debug.LogWarning($"No ScriptableClusterScriptCombiner found on {item.name}");
-                continue;
-            }
-
-            // Find the corresponding JavaScript asset for this StateListeningItem
-            string itemName = item.name;
-            string newScriptPath = Path.Combine(newStateListenersFolder, $"{itemName}.js").Replace("\\", "/");
-
-            var newScriptAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(newScriptPath);
-            if (newScriptAsset == null)
-            {
-                Debug.LogWarning($"JavaScript asset not found for {itemName} at {newScriptPath}");
-                continue;
-            }
-
-            // Update the ScriptableClusterScriptCombiner's reference
-            // scriptCombiner.ClearScripts();
-            scriptCombiner.ReplaceScript(newScriptAsset, 1, null, 0, false);
-            scriptCombiner.CombineScripts();
-            
-            // Mark the component as dirty
-            EditorUtility.SetDirty(scriptCombiner);
+            string directoryPath = Path.GetDirectoryName(variablesAssetPath);
+            Directory.CreateDirectory(directoryPath);
+            File.Copy(templatePath, variablesAssetPath);
+            AssetDatabase.Refresh();
+            AssetDatabase.ImportAsset(variablesAssetPath);
+            Debug.Log($"Created ExperimentVariables asset at {variablesAssetPath}");
         }
-
-        // Save changes to the asset database
-        AssetDatabase.SaveAssets();
-        Debug.Log("ScriptableClusterScriptCombiners updated successfully.");
-    }
-    
-    private void UpdateDataCollectorScriptCombiner(string newSceneName, string newDataCollectorScriptPath)
-    {
-        // Find the LuidaDataCollector object in the scene
-        LuidaDataCollector dataCollector = FindObjectOfType<LuidaDataCollector>();
-        if (dataCollector == null)
-        {
-            Debug.LogWarning("No LuidaDataCollector found in the scene.");
-            return;
-        }
-
-        // Get the ScriptableClusterScriptCombiner component
-        var scriptCombiner = dataCollector.GetComponent<ScriptableClusterScriptCombiner>();
-        if (scriptCombiner == null)
-        {
-            Debug.LogWarning("No ScriptableClusterScriptCombiner found on LuidaDataCollector.");
-            return;
-        }
-
-        // Load the new JavaScript asset
-        var newScriptAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(newDataCollectorScriptPath);
-        if (newScriptAsset == null)
-        {
-            Debug.LogWarning($"JavaScript asset not found at {newDataCollectorScriptPath}");
-            return;
-        }
-
-        // Update the ScriptableClusterScriptCombiner's reference
-        // scriptCombiner.ClearScripts();
-        scriptCombiner.ReplaceScript(newScriptAsset, 2, null, 0, false);
-        scriptCombiner.CombineScripts();
-
-        // Mark the component as dirty
-        EditorUtility.SetDirty(scriptCombiner);
-
-        // Save changes to the asset database
-        AssetDatabase.SaveAssets();
-        Debug.Log("LuidaDataCollector ScriptableClusterScriptCombiner updated successfully.");
     }
 }

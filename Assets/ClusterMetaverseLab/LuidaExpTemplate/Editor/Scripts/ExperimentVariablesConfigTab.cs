@@ -9,8 +9,10 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditorInternal; // Required for ReorderableList
 
-public class ExperimentVariablesConfigTab : EditorWindow
+public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
 {
+    protected override LuidaConfigWindow.TabIndex TabIndex => LuidaConfigWindow.TabIndex.ExperimentVariables;
+    
     public static bool IsApplyingVariableUpdates = false;
     
     private JavaScriptAsset variablesAsset;
@@ -40,7 +42,7 @@ public class ExperimentVariablesConfigTab : EditorWindow
         {
             LuidaConfigWindow.OnEditorClosed += ApplyVariableUpdates;
             LuidaConfigWindow.OnEditorClosed += OnDisable;
-            LuidaConfigWindow.OnTabSwitched += ApplyVariableUpdates;
+            LuidaConfigWindow.OnTabSwitched += HandleTabSwitched;
             isSubscribed = true;
         }
     }
@@ -51,9 +53,14 @@ public class ExperimentVariablesConfigTab : EditorWindow
         {
             LuidaConfigWindow.OnEditorClosed -= ApplyVariableUpdates;
             LuidaConfigWindow.OnEditorClosed -= OnDisable;
-            LuidaConfigWindow.OnTabSwitched -= ApplyVariableUpdates;
+            LuidaConfigWindow.OnTabSwitched -= HandleTabSwitched;
             isSubscribed = false;
         }
+    }
+
+    private void HandleTabSwitched(LuidaConfigWindow.TabIndex prevTab, LuidaConfigWindow.TabIndex nextTab)
+    {
+        if (prevTab == TabIndex && nextTab != TabIndex) ApplyVariableUpdates();
     }
 
     private void SetupReorderableLists()
