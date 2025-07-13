@@ -22,21 +22,20 @@ public class DataCollectorConfigTab : EditorWindow
     private Vector2 scrollPosition;
 
     // Store custom data list names and their corresponding calculation scripts
-    private List<string> customDataListNames = new List<string>();
-    private List<string> customDataCalculationScripts = new List<string>();
+    private string customDataCalculationScript = "return { foo: 'bar' };";
     private bool isSubscribed = false;
 
     public void OnEnable()
     {
         // Find or create the Custom Data Collector on window enable
         FindOrCreateCustomDataCollector();
-        LoadCustomDataScripts();
+        LoadCustomDataScript();
 
         if (!isSubscribed)
         {
-            LuidaConfigWindow.OnEditorClosed += TrySaveChangesToScript;
+            LuidaConfigWindow.OnEditorClosed += SaveChangesToScript;
             LuidaConfigWindow.OnEditorClosed += OnDisable;
-            LuidaConfigWindow.OnTabSwitched += TrySaveChangesToScript;
+            LuidaConfigWindow.OnTabSwitched += SaveChangesToScript;
             isSubscribed = true;
         }
     }
@@ -45,17 +44,17 @@ public class DataCollectorConfigTab : EditorWindow
     {
         if (isSubscribed)
         {
-            LuidaConfigWindow.OnEditorClosed -= TrySaveChangesToScript;
+            LuidaConfigWindow.OnEditorClosed -= SaveChangesToScript;
             LuidaConfigWindow.OnEditorClosed -= OnDisable;
-            LuidaConfigWindow.OnTabSwitched -= TrySaveChangesToScript;
+            LuidaConfigWindow.OnTabSwitched -= SaveChangesToScript;
             isSubscribed = false;
         }
     }
 
     public void OnGUI()
     {
-        GUILayout.Label("Data Collector Config", EditorStyles.largeLabel);
-        
+        GUILayout.Label("Here you can edit the script to define what and how to save custom data", EditorStyles.largeLabel);
+
         if (dataCollector == null)
         {
             FindOrCreateCustomDataCollector();
@@ -63,93 +62,29 @@ public class DataCollectorConfigTab : EditorWindow
         else
         {
             EditorGUILayout.Space();
-            // EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+            EditorGUILayout.LabelField("Double click this field to edit the script:");
+            GUI.enabled = false; // Disable GUI interaction for the next control
+            EditorGUILayout.ObjectField(calculatorAsset, typeof(ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset), false);
+            GUI.enabled = true; // Re-enable GUI interaction
+            EditorGUILayout.Space();
 
-            // Display existing custom data entries
-            scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
-            if (customDataListNames.Count == 0 && customDataCalculationScripts.Count == 0)
-            {
-                customDataListNames.Add("");
-                customDataCalculationScripts.Add("");
-            }
-            for (int i = 0; i < customDataListNames.Count; i++)
-            {
-                EditorGUILayout.BeginHorizontal();
-
-                EditorGUILayout.BeginVertical();
-                EditorGUILayout.BeginHorizontal();
-                customDataListNames[i] = "data"; // EditorGUILayout.TextField(customDataListNames[i], GUILayout.Width(100));
-                // EditorGUILayout.LabelField("List Name to save custom data", GUILayout.Width(180));
-                // GUILayout.FlexibleSpace();
-                /*
-                if (GUILayout.Button("Remove this Collected Data Entry", GUILayout.Width(250)))
-                {
-                    // Show warning before removing
-                    if (EditorUtility.DisplayDialog("Remove Colected Data Entry",
-                            "Are you sure you want to remove this collected data entry?",
-                            "Remove", "Cancel"))
-                    {
-                        customDataListNames.RemoveAt(i);
-                        customDataCalculationScripts.RemoveAt(i);
-                        break; // Exit the loop after removing
-                    }
-                }
-                */
-                EditorGUILayout.EndHorizontal();
-                
-                EditorGUILayout.LabelField("Script to define what and how to save custom data:");
-                customDataCalculationScripts[i] = EditorGUILayout.TextArea(customDataCalculationScripts[i], GUILayout.Height(300));
-                EditorGUILayout.EndVertical();
-
-                EditorGUILayout.BeginVertical(GUILayout.Width(250));
-                EditorGUILayout.LabelField("Available variables in code blocks: ", GUILayout.Width(200));
-                EditorGUILayout.LabelField("CONDITION", EditorStyles.boldLabel, GUILayout.Width(100));
-                EditorGUILayout.HelpBox("⋅ Values are determined by your configured experimental variables and vary across trials.\n⋅ Use CONDITION[\"condition_name\"] to reference a specific condition within the current trial.", MessageType.Info);
-                
-                EditorGUILayout.BeginVertical();
-                EditorGUILayout.LabelField("PARTICIPANTS", EditorStyles.boldLabel);
-                EditorGUILayout.HelpBox(
-                    "⋅ An array of PlayerHandle of the participants joining this experiment.\n" +
-                    "⋅ Use `PARTICIPANTS[0]` to retrieve the first participant, `PARTICIPANTS[1]` to retrieve the second participant, and so on.",
-                    MessageType.Info);
-                EditorGUILayout.EndVertical();
-                
-                EditorGUILayout.BeginVertical();
-                EditorGUILayout.LabelField("COLLECTED_DATA", EditorStyles.boldLabel);
-                EditorGUILayout.HelpBox(
-                    "⋅ The collected data you send to the LUIDA data collector using the SendDataToCollector action/function.\n" +
-                    "⋅ Use `COLLECTED_DATA[your_data_label]` to retrieve the value.",
-                    MessageType.Info);
-                EditorGUILayout.EndVertical();
-
-                EditorGUILayout.Space(30);
-                EditorGUILayout.HelpBox("Ensure returning something in the end of the code block.\ne.g., `return { score: 100 };", MessageType.Warning);
-                EditorGUILayout.EndVertical();
-
-                EditorGUILayout.EndHorizontal();
-                // EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-            }
-
-            /*
-            // Button to add a new custom data entry
-            if (GUILayout.Button("Add Custom Data Entry"))
-            {
-                int entryNumber = customDataListNames.Count + 1;
-                string defaultListName = $"customData{entryNumber}";
-                string defaultScript = "// Return an object with your custom data fields\nreturn {\n//  cond: CONDITION['sampleVariable'],\n//  ans: $.getStateCompat('global', 'sampleAnswer', 'boolean'),\n  value: 0\n};";
-                customDataListNames.Add(defaultListName);
-                customDataCalculationScripts.Add(defaultScript);
-            }
-            */
-            EditorGUILayout.EndScrollView();
+            EditorGUILayout.LabelField("Or edit it directly in the textarea below:");
+            customDataCalculationScript = EditorGUILayout.TextArea(customDataCalculationScript, GUILayout.Height(300));
 
             EditorGUILayout.Space();
 
-            // Save Changes button
-            // if (GUILayout.Button("SAVE CHANGES"))
-            // {
-            //     TrySaveChangesToScript();
-            // }
+            EditorGUILayout.LabelField("Available variables within the script: ", GUILayout.Width(200));
+            EditorGUILayout.LabelField("CONDITION", EditorStyles.boldLabel, GUILayout.Width(100));
+            EditorGUILayout.HelpBox("⋅ Values are determined by your configured experimental variables and vary across trials.\n⋅ Only available during the trial states if you have enabled the LUIDA experiment progress automation feature.\n⋅ Use CONDITION[\"variable_name\"] to reference a specific condition within the current trial.", MessageType.Info);
+
+            EditorGUILayout.LabelField("PARTICIPANTS", EditorStyles.boldLabel);
+            EditorGUILayout.HelpBox("⋅ An array of PlayerHandle of the participants joining this experiment.\n⋅ Use `PARTICIPANTS[0]` to retrieve the first participant, `PARTICIPANTS[1]` to retrieve the second participant, and so on.", MessageType.Info);
+
+            EditorGUILayout.LabelField("COLLECTED_DATA", EditorStyles.boldLabel);
+            EditorGUILayout.HelpBox("⋅ The collected data you send to the LUIDA data collector using the SendDataToCollector action/function.\n⋅ Use `COLLECTED_DATA[your_data_label]` to retrieve the value.", MessageType.Info);
+
+            EditorGUILayout.Space(30);
+            EditorGUILayout.HelpBox("Ensure returning something in the end of the code block.\ne.g., `return { score: 100 };", MessageType.Warning);
         }
     }
 
@@ -258,29 +193,6 @@ public class DataCollectorConfigTab : EditorWindow
         }
     }
 
-    private void TrySaveChangesToScript()
-    {
-        // Check for empty list names
-        bool hasEmptyName = false;
-        foreach (string name in customDataListNames)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                hasEmptyName = true;
-                break;
-            }
-        }
-
-        if (hasEmptyName)
-        {
-            EditorUtility.DisplayDialog("Error", "List Name cannot be empty.", "OK");
-        }
-        else
-        {
-            SaveChangesToScript();
-        }
-    }
-
     private void SaveChangesToScript()
     {
         if (calculatorAsset == null)
@@ -295,45 +207,11 @@ public class DataCollectorConfigTab : EditorWindow
             return;
         }
 
-        // Construct the JavaScript script content
-        StringBuilder scriptBuilder = new StringBuilder();
-        scriptBuilder.Append("function calculateData () {\n");
-        scriptBuilder.Append("  let returnData = $.state.customData;\n");
-        scriptBuilder.Append("  const CONDITION = $.groupState.currentCondition;\n");
-        scriptBuilder.Append("  const PARTICIPANTS = $.groupState.participants;\n");
-        scriptBuilder.Append("  const COLLECTED_DATA = $.groupState.collectedData;\n\n");
-        
-        for (int i = 0; i < customDataListNames.Count; i++)
-        {
-            string listName = customDataListNames[i];
-            string calculationScript = customDataCalculationScripts[i];
-
-            // Sanitize the list name to be a valid JavaScript function name
-            string functionName = "saveData_" + Regex.Replace(listName, "[^a-zA-Z0-9_]", "");
-
-            scriptBuilder.Append($"  function {functionName}() {{\n");
-            scriptBuilder.Append(calculationScript);
-            scriptBuilder.Append($"\n    return {{}};\n  }}\n");
-            scriptBuilder.Append($"  const newRecord_{listName} = {functionName}();\n");
-
-            scriptBuilder.Append($"  if (\"{listName}\" in returnData && Array.isArray(returnData[\"{listName}\"])) {{\n");
-            scriptBuilder.Append($"    returnData[\"{listName}\"].push(newRecord_{listName});\n");
-            scriptBuilder.Append($"  }} else {{\n");
-            scriptBuilder.Append($"    returnData[\"{listName}\"] = [newRecord_{listName}];\n");
-            scriptBuilder.Append($"  }}\n\n");
-        }
-
-        scriptBuilder.Append("  return returnData;\n");
-        scriptBuilder.Append("}\n");
-
-        string scriptContent = scriptBuilder.ToString();
-
         // Write the script content to the file
         string path = AssetDatabase.GetAssetPath(calculatorAsset);
-        File.WriteAllText(path, scriptContent);
+        File.WriteAllText(path, customDataCalculationScript);
         AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
 
-        // Update the script
         var scriptCombiner = dataCollector.GetComponent<ScriptableClusterScriptCombiner>();
         if (scriptCombiner != null)
         {
@@ -343,8 +221,6 @@ public class DataCollectorConfigTab : EditorWindow
         {
             Debug.LogError("ScriptableClusterScriptCombiner component not found on: " + dataCollector.name);
         }
-
-        LoadCustomDataScripts();
 
         Debug.Log($"Custom data collector's script saved to {path}");
     }
@@ -376,36 +252,17 @@ public class DataCollectorConfigTab : EditorWindow
         }
     }
 
-    private void LoadCustomDataScripts()
+    private void LoadCustomDataScript()
     {
         if (calculatorAsset == null)
         {
             return;
         }
 
-        customDataListNames.Clear();
-        customDataCalculationScripts.Clear();
-
         string path = AssetDatabase.GetAssetPath(calculatorAsset);
         if (File.Exists(path))
         {
-            string scriptContent = File.ReadAllText(path);
-
-            // Regular expression to find function definitions and their names
-            var functionRegex = new Regex(@"function\s+saveData_(\w+)\s*\(\s*\)\s*\{([\s\S]*?)return\s*\{\s*\};\s*\n\s*\ }", RegexOptions.Multiline);
-            var matches = functionRegex.Matches(scriptContent);
-
-            foreach (Match match in matches)
-            {
-                string functionName = match.Groups[1].Value;
-                string functionBody = match.Groups[2].Value;
-
-                // Remove 'saveData_' prefix for display
-                string listName = Regex.Replace(functionName, "^saveData_", "");
-
-                customDataListNames.Add(listName);
-                customDataCalculationScripts.Add(functionBody.Trim('\n').Trim());
-            }
+            customDataCalculationScript = File.ReadAllText(path);
         }
         else
         {
