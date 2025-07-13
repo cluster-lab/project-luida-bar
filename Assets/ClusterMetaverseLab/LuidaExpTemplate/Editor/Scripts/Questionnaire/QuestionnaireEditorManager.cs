@@ -23,18 +23,18 @@ public static class QuestionnaireEditorManager
         QuestionnaireDialog.ShowWindow();
     }
 
-    public static void CreateQuestionnaireDirectly(int qIDToSet)
+    public static void CreateQuestionnaireDirectly(int qIDToSet, int pNum = -1)
     {
         GameObject stateContainer = new GameObject($"Questionnaire_{qIDToSet}");
         Undo.RegisterCreatedObjectUndo(stateContainer, "Create Questionnaire Object");
 
-        // Add the sync component ONLY for menu-created questionnaires.
         LuidaQuestionnaire idSync = stateContainer.AddComponent<LuidaQuestionnaire>();
         idSync.qId = qIDToSet;
-
-        int pNum = GetPNum();
+        
         GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(formPrefabPath);
         if (prefab == null) return;
+        
+        if (pNum <= 0) pNum = GetPNum();
 
         float horizontalSpacing = 3f;
         float startX = -((pNum - 1) * horizontalSpacing) / 2f;
@@ -69,7 +69,7 @@ public static class QuestionnaireEditorManager
         Debug.Log($"Successfully created a new questionnaire object named '{stateContainer.name}' with qID {qIDToSet} at the scene root.");
     }
 
-    public static void AddOrEnableQuestionnaireForm(StateList stateList, int stateId, string stateNameInAsset)
+    public static void AddOrEnableQuestionnaireForm(StateList stateList, int stateId, string stateNameInAsset, int pNum = -1)
     {
         GameObject questionnairesContainer = FindOrCreateContainer(StateQuestionnaireRootName);
         GameObject stateContainer = FindOrCreateStateContainer(questionnairesContainer, stateNameInAsset);
@@ -87,11 +87,10 @@ public static class QuestionnaireEditorManager
         stateList.States[stateId].qID = qIDToSet;
         EditorUtility.SetDirty(stateList);
 
-        // REMOVED: The IdSync component is no longer added here.
-
-        int pNum = GetPNum();
         GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(formPrefabPath);
         if (prefab == null) return;
+        
+        if (pNum <= 0) pNum = GetPNum();
 
         float horizontalSpacing = 3f;
         float startX = -((pNum - 1) * horizontalSpacing) / 2f;

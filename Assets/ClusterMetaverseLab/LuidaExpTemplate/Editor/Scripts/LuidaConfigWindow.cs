@@ -12,13 +12,11 @@ public class LuidaConfigWindow : EditorWindow
     public static event Action OnTabSwitched;
 
     private int currentTab = 0;
-    private string[] tabNames = { "Experiment Identifiers", "Experiment Variables", "State Machine (& Questionnaires)", "State-listening Items" };
+    private string[] tabNames = { "Experiment Variables", "State Machine (& Questionnaires)", "State-listening Items" };
 
-    private ExpIdentifierConfigTab expIdentifierConfigTab;
     private StateMachineConfigTab stateMachineConfigTab;
     private ItemsManagerConfigTab itemsManagerEditor;
     private ExperimentVariablesConfigTab experimentVariablesConfigTab;
-    // private DataCollectorConfigTab dataCollectorConfigTab;
 
     private string newSceneName = "";
     private const string scenePath = "Assets/_Experiment_/Scenes/";
@@ -36,17 +34,13 @@ public class LuidaConfigWindow : EditorWindow
 
     private void OnEnable()
     {
-        expIdentifierConfigTab = new ExpIdentifierConfigTab();
         experimentVariablesConfigTab = new ExperimentVariablesConfigTab();
         stateMachineConfigTab = new StateMachineConfigTab();
         itemsManagerEditor = new ItemsManagerConfigTab();
-        // dataCollectorConfigTab = new DataCollectorConfigTab();
 
-        expIdentifierConfigTab.OnEnable();
         experimentVariablesConfigTab.OnEnable();
         stateMachineConfigTab.OnEnable();
         itemsManagerEditor.OnEnable();
-        // dataCollectorConfigTab.OnEnable();
 
         CheckAndCreateExpIdentifiers();
         
@@ -171,20 +165,14 @@ public class LuidaConfigWindow : EditorWindow
             switch (currentTab)
             {
                 case 0:
-                    expIdentifierConfigTab.OnGUI();
-                    break;
-                case 1:
                     experimentVariablesConfigTab.OnGUI();
                     break;
-                case 2:
+                case 1:
                     stateMachineConfigTab.OnGUI();
                     break;
-                case 3:
+                case 2:
                     itemsManagerEditor.OnGUI();
                     break;
-                // case 4:
-                    // dataCollectorConfigTab.OnGUI();
-                    // break;
             }
         }
     }
@@ -206,11 +194,9 @@ public class LuidaConfigWindow : EditorWindow
     
     private void RefreshAllTabs()
     {
-        expIdentifierConfigTab.OnEnable();
         experimentVariablesConfigTab.OnEnable();
         stateMachineConfigTab.OnEnable();
         itemsManagerEditor.OnEnable();
-        // dataCollectorConfigTab.OnEnable();
     }
 
     private void DuplicateSceneAndAssets(string currentScenePath, string newSceneName)
