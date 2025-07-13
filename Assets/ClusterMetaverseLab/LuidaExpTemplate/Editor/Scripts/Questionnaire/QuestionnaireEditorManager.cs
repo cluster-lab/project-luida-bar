@@ -1,12 +1,9 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using ClusterVR.CreatorKit.Gimmick.Implements;
-using ClusterVR.CreatorKit.Item;
 using ClusterVR.CreatorKit.Item.Implements;
 using ClusterVR.CreatorKit.Operation.Implements;
 
@@ -62,6 +59,7 @@ public static class QuestionnaireEditorManager
                         EditorUtility.SetDirty(combiner);
                     }
                 }
+                RemoveStateTransitionTriggers(formController);
                 UpdateID(formController, "qID", qIDToSet);
                 UpdateID(formController, "pID", i);
                 AddControllerManagerToWorldItemReferenceList(formController);
@@ -122,20 +120,6 @@ public static class QuestionnaireEditorManager
                 AddControllerManagerToWorldItemReferenceList(formController);
             }
         }
-    }
-
-    private static GameObject GetFormController(string stateName)
-    {
-        var root = GameObject.Find(StateQuestionnaireRootName);
-        if (root == null) return null;
-        var stateContainer = root.transform.Find(stateName);
-        if (stateContainer == null) return null;
-        foreach (Transform child in stateContainer)
-        {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == formPrefabPath)
-                return child.Find("FormController")?.gameObject;
-        }
-        return null;
     }
 
     public static void UpdateID(GameObject formController, string idLabel, int id)
@@ -230,6 +214,65 @@ public static class QuestionnaireEditorManager
             if (path == formPrefabPath) return true;
         }
         return false;
+    }
+
+    public static void SyncQuestionnaireContainers(StateList.State[] previous, StateList.State[] current)
+    {
+        var root = GameObject.Find(StateQuestionnaireRootName);
+        if (root == null) return;
+        var currentNames = new HashSet<string>(current.Select(s => s.StateName));
+        var previousNames = new HashSet<string>(previous.Select(s => s.StateName));
+        for (int i = 0; i < Mathf.Min(previous.Length, current.Length); i++)
+        {
+            string oldName = previous[i].StateName;
+            string newName = current[i].StateName;
+            if (oldName != newName && !string.IsNullOrEmpty(oldName) && !string.IsNullOrEmpty(newName))
+            {
+                var oldTrans = root.transform.Find(oldName);
+                if (oldTrans != null)
+                {
+                    Undo.RecordObject(oldTrans.gameObject, "Rename Questionnaire Container");
+                    oldTrans.name = newName;
+                }
+            }
+        }
+        foreach (var prevName in previousNames)
+        {
+            if (!string.IsNullOrEmpty(prevName) && !currentNames.Contains(prevName))
+            {
+                var t = root.transform.Find(prevName);
+                if (t) Undo.DestroyObjectImmediate(t.gameObject);
+            }
+        }
+    }
+    
+    private static void RemoveStateTransitionTriggers(GameObject formController)
+    {
+        var globalLogics = formController.GetComponents<GlobalLogic>();
+        if (globalLogics.Length == 0) return;
+
+        var keysToRemove = new HashSet<string> { "state_isTransitionTriggered", "state_triggerTransition" };
+
+        foreach (var logic in globalLogics)
+        {
+            SerializedObject serializedLogic = new SerializedObject(logic);
+            SerializedProperty triggersProperty = serializedLogic.FindProperty("logic.statements");
+            
+            if (triggersProperty == null || !triggersProperty.isArray) continue;
+
+            // Iterate backwards when removing from a list to avoid index shifting issues.
+            for (int i = triggersProperty.arraySize - 1; i >= 0; i--)
+            {
+                SerializedProperty triggerElement = triggersProperty.GetArrayElementAtIndex(i);
+                SerializedProperty keyProperty = triggerElement.FindPropertyRelative("singleStatement.targetState.key");
+
+                if (keyProperty != null && keysToRemove.Contains(keyProperty.stringValue))
+                {
+                    triggersProperty.DeleteArrayElementAtIndex(i);
+                }
+            }
+            serializedLogic.ApplyModifiedProperties();
+        }
     }
 
     private static void RemoveFormInstance(string stateName)
@@ -346,35 +389,5 @@ public static class QuestionnaireEditorManager
             return stateContainer;
         }
         return stateContainerTransform.gameObject;
-    }
-
-    public static void SyncQuestionnaireContainers(StateList.State[] previous, StateList.State[] current)
-    {
-        var root = GameObject.Find(StateQuestionnaireRootName);
-        if (root == null) return;
-        var currentNames = new HashSet<string>(current.Select(s => s.StateName));
-        var previousNames = new HashSet<string>(previous.Select(s => s.StateName));
-        for (int i = 0; i < Mathf.Min(previous.Length, current.Length); i++)
-        {
-            string oldName = previous[i].StateName;
-            string newName = current[i].StateName;
-            if (oldName != newName && !string.IsNullOrEmpty(oldName) && !string.IsNullOrEmpty(newName))
-            {
-                var oldTrans = root.transform.Find(oldName);
-                if (oldTrans != null)
-                {
-                    Undo.RecordObject(oldTrans.gameObject, "Rename Questionnaire Container");
-                    oldTrans.name = newName;
-                }
-            }
-        }
-        foreach (var prevName in previousNames)
-        {
-            if (!string.IsNullOrEmpty(prevName) && !currentNames.Contains(prevName))
-            {
-                var t = root.transform.Find(prevName);
-                if (t) Undo.DestroyObjectImmediate(t.gameObject);
-            }
-        }
     }
 }

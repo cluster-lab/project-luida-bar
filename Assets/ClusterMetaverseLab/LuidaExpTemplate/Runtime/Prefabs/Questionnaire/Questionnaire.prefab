@@ -388,7 +388,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5697374075333026450}
-  - component: {fileID: 4638974438188513649}
+  - component: {fileID: 8687207363812630812}
   m_Layer: 0
   m_Name: Questionnaire
   m_TagString: Untagged
@@ -414,7 +414,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4638974438188513649
+--- !u!114 &8687207363812630812
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
