@@ -253,119 +253,140 @@ PrefabInstance:
     - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: sourceCode
-      value: "let timer = 0;\nlet CONDITION;\n\n$.onStart(() => {\n    $.state.last_state_id
-        = 0;\n    $.state.state_id = 0;\n    $.state.stateEnterActionID = -1;\n   
-        $.state.stateExitActionID = -1;\n    $.state.duringStateActionID = -1;\n   
-        Start();\n})\n\n$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\",
-        \"state_exit\", \"boolean\")) {\n        $.state.stateExitActionID = 0;\n       
-        $.state.last_state_id = $.state.state_id;\n        $.setStateCompat(\"this\",
-        \"state_exit\", false);\n    }\n    if ($.state.stateExitActionID >= 0) OnStateExit(deltaTime);\n\n   
-        if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\n       
-        $.setStateCompat(\"this\", \"state_enter\", false);\n        $.state.state_id
-        = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
-        $.state.stateEnterActionID = 0;\n        $.state.duringStateActionID = 0;\n   
-        }\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\n\n   
-        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\n\n    Update(deltaTime);\n})\n\nfunction
-        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
-        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
-        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
-        SetText(text) {\n    try {\n      $.subNode(\"Text\").setText(`${text}`);\n   
-        } catch (e) {\n      $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
-        exists and has setText method.`);\n    }\n}\n\nfunction SetPosition(x, y,
-        z) {\n    try {\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
-        parseFloat(z)));\n    } catch (e) {\n        $.log(`Error in SetPosition:
-        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
-        }\n}\n\nfunction AddPosition(x, y, z) {\n    try {\n        const currentPos
-        = $.getPosition();\n        $.setPosition(currentPos.add(new Vector3(parseFloat(x),
-        parseFloat(y), parseFloat(z))));\n    } catch (e) {\n        $.log(`Error
-        in AddPosition: ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
-        }\n}\n\nfunction SetRotation(x, y, z) {\n    try {\n        $.setRotation(new
+      value: "let timer = 0;\r\nlet CONDITION;\r\n\r\n$.onStart(() => {\r\n    $.state.last_state_id
+        = 0;\r\n    $.state.state_id = 0;\r\n    $.state.stateEnterActionID = -1;\r\n   
+        $.state.stateExitActionID = -1;\r\n    $.state.duringStateActionID = -1;\r\n   
+        Start();\r\n})\r\n\r\n$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\",
+        \"state_exit\", \"boolean\")) {\r\n        $.state.stateExitActionID = 0;\r\n       
+        $.state.last_state_id = $.state.state_id;\r\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\r\n    }\r\n    if ($.state.stateExitActionID >=
+        0) OnStateExit(deltaTime);\r\n\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
+        $.state.stateEnterActionID = 0;\r\n        $.state.duringStateActionID =
+        0;\r\n    }\r\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\r\n\r\n   
+        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\r\n\r\n   
+        Update(deltaTime);\r\n})\r\n\r\nfunction ShowItem() {\r\n    $.setStateCompat(\"this\",
+        \"exp_showItem\", true);\r\n}\r\n\r\nfunction HideItem() {\r\n    $.setStateCompat(\"this\",
+        \"exp_showItem\", false);\r\n}\r\n\r\nfunction SetPosition(x, y, z) {\r\n   
+        try {\r\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)));\r\n    } catch (e) {\r\n        $.log(`Error in SetPosition:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\r\n   
+        }\r\n}\r\n\r\nfunction AddPosition(x, y, z) {\r\n    try {\r\n        $.setPosition($.getPosition().add(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))))\r\n    } catch (e)
+        {\r\n        $.log(`Error in AddPosition: ${e}. Ensure MovableItem is present
+        and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction SetRotation(x,
+        y, z) {\r\n    try {\r\n        $.setRotation(new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetRotation: ${e}. Ensure MovableItem is present
+        and x,y,z are valid numbers (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction
+        AddRotation(x, y, z) {\r\n    try {\r\n        $.setRotation($.getRotation().multiply(new
         Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
-        parseFloat(z))));\n    } catch (e) {\n        $.log(`Error in SetRotation:
-        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\n   
-        }\n}\n\nfunction AddRotation(x, y, z) {\n    try {\n        const currentRot
-        = $.getRotation();\n        const offsetRot = new Quaternion().setFromEulerAngles(new
-        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\n        $.setRotation(currentRot.multiply(offsetRot));\n   
-        } catch (e) {\n        $.log(`Error in AddRotation: ${e}. Ensure MovableItem
-        is present and x,y,z are valid numbers (Euler degrees).`);\n    }\n}\n\nfunction
-        SendDataToCollector(label, value) {\n    if (!$.groupState.collectedData)
-        $.groupState.collectedData = {};\n    let collectedData = $.groupState.collectedData;\n   
-        collectedData[label] = value;\n    $.groupState.collectedData = collectedData;\n}\n\nfunction
-        ProcessAndSaveCollectedData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
-        UploadCollectedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
-        SendHaptics(target, frequency, amplitude, duration) {\n    try {\n       
-        if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\n       
-        if ($.state.player) {\n            let hapticsTarget = target;\n           
-        if (typeof target === 'string') {\n                const lowerTarget = target.toLowerCase();\n               
-        if (lowerTarget === 'null' || lowerTarget === 'undefined' || lowerTarget
-        === \"\") {\n                    hapticsTarget = null; // Use JS null for
-        \"both\" or unspecified\n                } else if (lowerTarget === '\"left\"'
-        || lowerTarget === \"'left'\") {\n                    hapticsTarget = \"left\";\n               
-        } else if (lowerTarget === '\"right\"' || lowerTarget === \"'right'\") {\n                    
-        hapticsTarget = \"right\";\n                }\n                // else assume
-        target is already \"left\", \"right\", or a valid direct value.\n           
-        }\n\n            $.state.player.send(\"haptics\", {\n                target:
-        hapticsTarget,\n                frequency: parseFloat(frequency),\n               
-        amplitude: parseFloat(amplitude),\n                duration: parseFloat(duration)
-        // Duration in seconds\n            });\n        } else {\n            $.log(\"SendHaptics:
-        No player found nearby.\");\n        }\n    } catch (e) {\n        $.log(`Error
-        in SendHaptics: ${e}`);\n    }\n}\n\nfunction OnStateEnter(deltaTime) {\n   
-        CONDITION = $.groupState.currentCondition;\n    PARTICIPANTS = $.groupState.participants;\n   
-        if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >=
-        stateEnterActions[$.state.state_id].length) return;\n    \n    while ($.state.stateEnterActionID
-        < stateEnterActions[$.state.state_id].length && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
-        !== \"sleep\") {\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\n       
-        $.state.stateEnterActionID += 1;\n    }\n\n    if ($.state.stateEnterActionID
-        >= stateEnterActions[$.state.state_id].length) {\n        $.state.stateEnterActionID
-        = -1;\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
-        === \"sleep\") {\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
-        {\n            $.state.stateEnterActionID += 1;\n            timer = 0;\n       
-        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
-        OnStateExit(deltaTime) {\n    if (!stateExitActions[$.state.last_state_id]
+        parseFloat(z)))))\r\n    } catch (e) {\r\n        $.log(`Error in AddRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\r\n   
+        }\r\n}\r\n\r\nfunction ShowChild(childName) {\r\n    $.subNode(childName).setEnabled(true);\r\n}\r\n\r\nfunction
+        HideChild(childName) {\r\n    $.subNode(childName).setEnabled(false);\r\n}\r\n\r\nfunction
+        SetChildPosition(childName, x, y, z) {\r\n    try {\r\n        $.subNode(childName).setPosition(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetChildPosition: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction AddChildPosition(childName,
+        x, y, z) {\r\n    try {\r\n        $.subNode(childName).setPosition($.subNode(childName).getPosition().add(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))))\r\n    } catch (e)
+        {\r\n        $.log(`Error in AddChildPosition: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction SetChildRotation(childName,
+        x, y, z) {\r\n    try {\r\n        $.subNode(childName).setRotation(new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetChildRotation: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction
+        AddChildRotation(childName, x, y, z) {\r\n    try {\r\n        $.subNode(childName).setRotation($.subNode(childName).getRotation().multiply(new
+        Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)))))\r\n    } catch (e) {\r\n        $.log(`Error in AddChildRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\r\n   
+        }\r\n}\r\n\r\nfunction ToNextState() {\r\n    $.sendSignalCompat(\"this\",
+        \"state_triggerTransition\");\r\n}\r\n\r\nfunction SendDataToCollector(label,
+        value) {\r\n    if (!$.groupState.collectedData) $.groupState.collectedData
+        = {};\r\n    let collectedData = $.groupState.collectedData;\r\n    collectedData[label]
+        = value;\r\n    $.groupState.collectedData = collectedData;\r\n}\r\n\r\nfunction
+        ProcessAndSaveCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
+        UploadCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
+        SetText(text) {\r\n    try {\r\n        $.subNode(\"Text\").setText(`${text}`);\r\n   
+        } catch (e) {\r\n        $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
+        exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(target,
+        frequency, amplitude, duration) {\r\n    try {\r\n        if (!$.state.player)
+        $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\r\n       
+        if ($.state.player) {\r\n            let hapticsTarget = target;\r\n           
+        if (typeof target === 'string') {\r\n                const lowerTarget =
+        target.toLowerCase();\r\n                if (lowerTarget === 'null' || lowerTarget
+        === 'undefined' || lowerTarget === \"\") {\r\n                    hapticsTarget
+        = null; // Use JS null for \"both\" or unspecified\r\n                } else
+        if (lowerTarget === '\"left\"' || lowerTarget === \"'left'\") {\r\n                   
+        hapticsTarget = \"left\";\r\n                } else if (lowerTarget === '\"right\"'
+        || lowerTarget === \"'right'\") {\r\n                    hapticsTarget =
+        \"right\";\r\n                }\r\n                // else assume target
+        is already \"left\", \"right\", or a valid direct value.\r\n            }\r\n\r\n           
+        $.state.player.send(\"haptics\", {\r\n                target: hapticsTarget,\r\n               
+        frequency: parseFloat(frequency),\r\n                amplitude: parseFloat(amplitude),\r\n               
+        duration: parseFloat(duration) // Duration in seconds\r\n            });\r\n       
+        } else {\r\n            $.log(\"SendHaptics: No player found nearby.\");\r\n       
+        }\r\n    } catch (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n   
+        }\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n    CONDITION = $.groupState.currentCondition;\r\n   
+        PARTICIPANTS = $.groupState.participants;\r\n    if (!stateEnterActions[$.state.state_id]
+        || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
+        return;\r\n    \r\n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
+        && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !==
+        \"sleep\") {\r\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\r\n       
+        $.state.stateEnterActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateEnterActionID
+        >= stateEnterActions[$.state.state_id].length) {\r\n        $.state.stateEnterActionID
+        = -1;\r\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
+        === \"sleep\") {\r\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
+        {\r\n            $.state.stateEnterActionID += 1;\r\n            timer =
+        0;\r\n        } else {\r\n            timer += deltaTime;\r\n        }\r\n   
+        }\r\n}\r\n\r\nfunction OnStateExit(deltaTime) {\r\n    if (!stateExitActions[$.state.last_state_id]
         || $.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
-        return;\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
+        return;\r\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
         && stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
-        !== \"sleep\") {\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\n       
-        $.state.stateExitActionID += 1;\n    }\n\n    if ($.state.stateExitActionID
-        >= stateExitActions[$.state.last_state_id].length) {\n        $.state.stateExitActionID
-        = -1;\n        $.state.last_state_id = $.state.state_id;\n    } else if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
-        === \"sleep\") {\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
-        {\n            $.state.stateExitActionID += 1;\n            timer = 0;\n           
+        !== \"sleep\") {\r\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\r\n       
+        $.state.stateExitActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateExitActionID
+        >= stateExitActions[$.state.last_state_id].length) {\r\n        $.state.stateExitActionID
+        = -1;\r\n        $.state.last_state_id = $.state.state_id;\r\n    } else
+        if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        === \"sleep\") {\r\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
+        {\r\n            $.state.stateExitActionID += 1;\r\n            timer = 0;\r\n           
         if ($.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
-        {\n                $.state.stateExitActionID = -1;\n            }\n       
-        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
-        DuringState(deltaTime) {\n    if (!duringStateActions[$.state.state_id] ||
-        !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\n   
-        \n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
-        {\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
-        === \"sleep\") {\n            $.state.duringStateActionID += 1;\n       
-        } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\n           
-        $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
-        = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\n    3: [\n        { type: \"exec\", action: () =>
+        {\r\n                $.state.stateExitActionID = -1;\r\n            }\r\n       
+        } else {\r\n            timer += deltaTime;\r\n        }\r\n    }\r\n}\r\n\r\nfunction
+        DuringState(deltaTime) {\r\n    if (!duringStateActions[$.state.state_id]
+        || !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\r\n   
+        \r\n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
+        {\r\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
+        === \"sleep\") {\r\n            $.state.duringStateActionID += 1;\r\n       
+        } else {\r\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\r\n           
+        $.state.duringStateActionID += 1;\r\n        }\r\n    }\r\n    $.state.duringStateActionID
+        = 0;\r\n}\r\n\r\nfunction Start() {}\r\nfunction Update(deltaTime) {}\r\n\r\nconst
+        stateEnterActions = {\r\n    3: [\n        { type: \"exec\", action: () =>
         {\n            if (CONDITION['depth'] === 'near') {\n              $.setPosition(new
-        Vector3(0, 1.5, 1))\n            }\n        } },\n        { type: \"exec\",
+        Vector3(0, 1.5, 1))\n            }\n        } },\r\n        { type: \"exec\",
         action: () => {\n            if (CONDITION['depth'] === 'far') {\n             
-        $.setPosition(new Vector3(0, 1.5, 3))\n            }\n        } },\n       
+        $.setPosition(new Vector3(0, 1.5, 3))\n            }\n        } },\r\n       
         { type: \"exec\", action: () => {\n            if (CONDITION['text'] ===
         'Red') {\n              $.subNode('Text').setText(`Red`);\n            }\n       
-        } },\n        { type: \"exec\", action: () => {\n            if (CONDITION['text']
+        } },\r\n        { type: \"exec\", action: () => {\n            if (CONDITION['text']
         === 'Blue') {\n              $.subNode('Text').setText(`Blue`);\n           
-        }\n        } },\n        { type: \"exec\", action: () => {\n            if
-        (CONDITION['font'] === 'R') {\n              $.setStateCompat('this', 'exp_showItem',
-        true);\n            }\n        } }\n    ]\n};\n\nconst duringStateActions
-        = {\n};\n\nconst stateExitActions = {\n    3: [\n        { type: \"exec\",
-        action: () => {\n            $.setStateCompat('this', 'exp_showItem', false);\n       
-        } }\n    ]\n};\n\n\n// function Start() { }\n// function Update(deltaTime)
-        { }\n// $.onCollide((collision) => { });\n// $.onGrab((isGrab, isLeftHand,
-        player) => { });\n// $.onInteract((player) => { });\n// $.onUse((isDown,
+        }\n        } },\r\n        { type: \"exec\", action: () => {\n           
+        if (CONDITION['font'] === 'R') {\n              $.setStateCompat('this',
+        'exp_showItem', true);\n            }\n        } }\r\n    ]\r\n};\n\r\nconst
+        duringStateActions = {\r\n};\n\r\nconst stateExitActions = {\r\n    3: [\n       
+        { type: \"exec\", action: () => {\n            $.setStateCompat('this', 'exp_showItem',
+        false);\n        } }\r\n    ]\r\n};\r\n\n\n// function Start() { }\n// function
+        Update(deltaTime) { }\n// $.onCollide((collision) => { });\n// $.onGrab((isGrab,
+        isLeftHand, player) => { });\n// $.onInteract((player) => { });\n// $.onUse((isDown,
         player) => { });\n// $.onPhysicsUpdate((deltaTime) => { });\n// $.onReceive((messageType,
         arg, sender) => { });"
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -690,100 +711,121 @@ PrefabInstance:
     - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: sourceCode
-      value: "let timer = 0;\nlet CONDITION;\n\n$.onStart(() => {\n    $.state.last_state_id
-        = 0;\n    $.state.state_id = 0;\n    $.state.stateEnterActionID = -1;\n   
-        $.state.stateExitActionID = -1;\n    $.state.duringStateActionID = -1;\n   
-        Start();\n})\n\n$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\",
-        \"state_exit\", \"boolean\")) {\n        $.state.stateExitActionID = 0;\n       
-        $.state.last_state_id = $.state.state_id;\n        $.setStateCompat(\"this\",
-        \"state_exit\", false);\n    }\n    if ($.state.stateExitActionID >= 0) OnStateExit(deltaTime);\n\n   
-        if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\n       
-        $.setStateCompat(\"this\", \"state_enter\", false);\n        $.state.state_id
-        = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
-        $.state.stateEnterActionID = 0;\n        $.state.duringStateActionID = 0;\n   
-        }\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\n\n   
-        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\n\n    Update(deltaTime);\n})\n\nfunction
-        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
-        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
-        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
-        SetText(text) {\n    try {\n      $.subNode(\"Text\").setText(`${text}`);\n   
-        } catch (e) {\n      $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
-        exists and has setText method.`);\n    }\n}\n\nfunction SetPosition(x, y,
-        z) {\n    try {\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
-        parseFloat(z)));\n    } catch (e) {\n        $.log(`Error in SetPosition:
-        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
-        }\n}\n\nfunction AddPosition(x, y, z) {\n    try {\n        const currentPos
-        = $.getPosition();\n        $.setPosition(currentPos.add(new Vector3(parseFloat(x),
-        parseFloat(y), parseFloat(z))));\n    } catch (e) {\n        $.log(`Error
-        in AddPosition: ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
-        }\n}\n\nfunction SetRotation(x, y, z) {\n    try {\n        $.setRotation(new
+      value: "let timer = 0;\r\nlet CONDITION;\r\n\r\n$.onStart(() => {\r\n    $.state.last_state_id
+        = 0;\r\n    $.state.state_id = 0;\r\n    $.state.stateEnterActionID = -1;\r\n   
+        $.state.stateExitActionID = -1;\r\n    $.state.duringStateActionID = -1;\r\n   
+        Start();\r\n})\r\n\r\n$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\",
+        \"state_exit\", \"boolean\")) {\r\n        $.state.stateExitActionID = 0;\r\n       
+        $.state.last_state_id = $.state.state_id;\r\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\r\n    }\r\n    if ($.state.stateExitActionID >=
+        0) OnStateExit(deltaTime);\r\n\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
+        $.state.stateEnterActionID = 0;\r\n        $.state.duringStateActionID =
+        0;\r\n    }\r\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\r\n\r\n   
+        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\r\n\r\n   
+        Update(deltaTime);\r\n})\r\n\r\nfunction ShowItem() {\r\n    $.setStateCompat(\"this\",
+        \"exp_showItem\", true);\r\n}\r\n\r\nfunction HideItem() {\r\n    $.setStateCompat(\"this\",
+        \"exp_showItem\", false);\r\n}\r\n\r\nfunction SetPosition(x, y, z) {\r\n   
+        try {\r\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)));\r\n    } catch (e) {\r\n        $.log(`Error in SetPosition:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\r\n   
+        }\r\n}\r\n\r\nfunction AddPosition(x, y, z) {\r\n    try {\r\n        $.setPosition($.getPosition().add(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))))\r\n    } catch (e)
+        {\r\n        $.log(`Error in AddPosition: ${e}. Ensure MovableItem is present
+        and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction SetRotation(x,
+        y, z) {\r\n    try {\r\n        $.setRotation(new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetRotation: ${e}. Ensure MovableItem is present
+        and x,y,z are valid numbers (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction
+        AddRotation(x, y, z) {\r\n    try {\r\n        $.setRotation($.getRotation().multiply(new
         Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
-        parseFloat(z))));\n    } catch (e) {\n        $.log(`Error in SetRotation:
-        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\n   
-        }\n}\n\nfunction AddRotation(x, y, z) {\n    try {\n        const currentRot
-        = $.getRotation();\n        const offsetRot = new Quaternion().setFromEulerAngles(new
-        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\n        $.setRotation(currentRot.multiply(offsetRot));\n   
-        } catch (e) {\n        $.log(`Error in AddRotation: ${e}. Ensure MovableItem
-        is present and x,y,z are valid numbers (Euler degrees).`);\n    }\n}\n\nfunction
-        SendDataToCollector(label, value) {\n    if (!$.groupState.collectedData)
-        $.groupState.collectedData = {};\n    let collectedData = $.groupState.collectedData;\n   
-        collectedData[label] = value;\n    $.groupState.collectedData = collectedData;\n}\n\nfunction
-        ProcessAndSaveCollectedData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
-        UploadCollectedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
-        SendHaptics(target, frequency, amplitude, duration) {\n    try {\n       
-        if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\n       
-        if ($.state.player) {\n            let hapticsTarget = target;\n           
-        if (typeof target === 'string') {\n                const lowerTarget = target.toLowerCase();\n               
-        if (lowerTarget === 'null' || lowerTarget === 'undefined' || lowerTarget
-        === \"\") {\n                    hapticsTarget = null; // Use JS null for
-        \"both\" or unspecified\n                } else if (lowerTarget === '\"left\"'
-        || lowerTarget === \"'left'\") {\n                    hapticsTarget = \"left\";\n               
-        } else if (lowerTarget === '\"right\"' || lowerTarget === \"'right'\") {\n                    
-        hapticsTarget = \"right\";\n                }\n                // else assume
-        target is already \"left\", \"right\", or a valid direct value.\n           
-        }\n\n            $.state.player.send(\"haptics\", {\n                target:
-        hapticsTarget,\n                frequency: parseFloat(frequency),\n               
-        amplitude: parseFloat(amplitude),\n                duration: parseFloat(duration)
-        // Duration in seconds\n            });\n        } else {\n            $.log(\"SendHaptics:
-        No player found nearby.\");\n        }\n    } catch (e) {\n        $.log(`Error
-        in SendHaptics: ${e}`);\n    }\n}\n\nfunction OnStateEnter(deltaTime) {\n   
-        CONDITION = $.groupState.currentCondition;\n    PARTICIPANTS = $.groupState.participants;\n   
-        if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >=
-        stateEnterActions[$.state.state_id].length) return;\n    \n    while ($.state.stateEnterActionID
-        < stateEnterActions[$.state.state_id].length && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
-        !== \"sleep\") {\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\n       
-        $.state.stateEnterActionID += 1;\n    }\n\n    if ($.state.stateEnterActionID
-        >= stateEnterActions[$.state.state_id].length) {\n        $.state.stateEnterActionID
-        = -1;\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
-        === \"sleep\") {\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
-        {\n            $.state.stateEnterActionID += 1;\n            timer = 0;\n       
-        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
-        OnStateExit(deltaTime) {\n    if (!stateExitActions[$.state.last_state_id]
+        parseFloat(z)))))\r\n    } catch (e) {\r\n        $.log(`Error in AddRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\r\n   
+        }\r\n}\r\n\r\nfunction ShowChild(childName) {\r\n    $.subNode(childName).setEnabled(true);\r\n}\r\n\r\nfunction
+        HideChild(childName) {\r\n    $.subNode(childName).setEnabled(false);\r\n}\r\n\r\nfunction
+        SetChildPosition(childName, x, y, z) {\r\n    try {\r\n        $.subNode(childName).setPosition(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetChildPosition: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction AddChildPosition(childName,
+        x, y, z) {\r\n    try {\r\n        $.subNode(childName).setPosition($.subNode(childName).getPosition().add(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))))\r\n    } catch (e)
+        {\r\n        $.log(`Error in AddChildPosition: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction SetChildRotation(childName,
+        x, y, z) {\r\n    try {\r\n        $.subNode(childName).setRotation(new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetChildRotation: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction
+        AddChildRotation(childName, x, y, z) {\r\n    try {\r\n        $.subNode(childName).setRotation($.subNode(childName).getRotation().multiply(new
+        Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)))))\r\n    } catch (e) {\r\n        $.log(`Error in AddChildRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\r\n   
+        }\r\n}\r\n\r\nfunction ToNextState() {\r\n    $.sendSignalCompat(\"this\",
+        \"state_triggerTransition\");\r\n}\r\n\r\nfunction SendDataToCollector(label,
+        value) {\r\n    if (!$.groupState.collectedData) $.groupState.collectedData
+        = {};\r\n    let collectedData = $.groupState.collectedData;\r\n    collectedData[label]
+        = value;\r\n    $.groupState.collectedData = collectedData;\r\n}\r\n\r\nfunction
+        ProcessAndSaveCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
+        UploadCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
+        SetText(text) {\r\n    try {\r\n        $.subNode(\"Text\").setText(`${text}`);\r\n   
+        } catch (e) {\r\n        $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
+        exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(target,
+        frequency, amplitude, duration) {\r\n    try {\r\n        if (!$.state.player)
+        $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\r\n       
+        if ($.state.player) {\r\n            let hapticsTarget = target;\r\n           
+        if (typeof target === 'string') {\r\n                const lowerTarget =
+        target.toLowerCase();\r\n                if (lowerTarget === 'null' || lowerTarget
+        === 'undefined' || lowerTarget === \"\") {\r\n                    hapticsTarget
+        = null; // Use JS null for \"both\" or unspecified\r\n                } else
+        if (lowerTarget === '\"left\"' || lowerTarget === \"'left'\") {\r\n                   
+        hapticsTarget = \"left\";\r\n                } else if (lowerTarget === '\"right\"'
+        || lowerTarget === \"'right'\") {\r\n                    hapticsTarget =
+        \"right\";\r\n                }\r\n                // else assume target
+        is already \"left\", \"right\", or a valid direct value.\r\n            }\r\n\r\n           
+        $.state.player.send(\"haptics\", {\r\n                target: hapticsTarget,\r\n               
+        frequency: parseFloat(frequency),\r\n                amplitude: parseFloat(amplitude),\r\n               
+        duration: parseFloat(duration) // Duration in seconds\r\n            });\r\n       
+        } else {\r\n            $.log(\"SendHaptics: No player found nearby.\");\r\n       
+        }\r\n    } catch (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n   
+        }\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n    CONDITION = $.groupState.currentCondition;\r\n   
+        PARTICIPANTS = $.groupState.participants;\r\n    if (!stateEnterActions[$.state.state_id]
+        || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
+        return;\r\n    \r\n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
+        && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !==
+        \"sleep\") {\r\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\r\n       
+        $.state.stateEnterActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateEnterActionID
+        >= stateEnterActions[$.state.state_id].length) {\r\n        $.state.stateEnterActionID
+        = -1;\r\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
+        === \"sleep\") {\r\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
+        {\r\n            $.state.stateEnterActionID += 1;\r\n            timer =
+        0;\r\n        } else {\r\n            timer += deltaTime;\r\n        }\r\n   
+        }\r\n}\r\n\r\nfunction OnStateExit(deltaTime) {\r\n    if (!stateExitActions[$.state.last_state_id]
         || $.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
-        return;\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
+        return;\r\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
         && stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
-        !== \"sleep\") {\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\n       
-        $.state.stateExitActionID += 1;\n    }\n\n    if ($.state.stateExitActionID
-        >= stateExitActions[$.state.last_state_id].length) {\n        $.state.stateExitActionID
-        = -1;\n        $.state.last_state_id = $.state.state_id;\n    } else if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
-        === \"sleep\") {\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
-        {\n            $.state.stateExitActionID += 1;\n            timer = 0;\n           
+        !== \"sleep\") {\r\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\r\n       
+        $.state.stateExitActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateExitActionID
+        >= stateExitActions[$.state.last_state_id].length) {\r\n        $.state.stateExitActionID
+        = -1;\r\n        $.state.last_state_id = $.state.state_id;\r\n    } else
+        if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        === \"sleep\") {\r\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
+        {\r\n            $.state.stateExitActionID += 1;\r\n            timer = 0;\r\n           
         if ($.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
-        {\n                $.state.stateExitActionID = -1;\n            }\n       
-        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
-        DuringState(deltaTime) {\n    if (!duringStateActions[$.state.state_id] ||
-        !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\n   
-        \n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
-        {\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
-        === \"sleep\") {\n            $.state.duringStateActionID += 1;\n       
-        } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\n           
-        $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
-        = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\n    3: [\n        { type: \"exec\", action: () =>
+        {\r\n                $.state.stateExitActionID = -1;\r\n            }\r\n       
+        } else {\r\n            timer += deltaTime;\r\n        }\r\n    }\r\n}\r\n\r\nfunction
+        DuringState(deltaTime) {\r\n    if (!duringStateActions[$.state.state_id]
+        || !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\r\n   
+        \r\n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
+        {\r\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
+        === \"sleep\") {\r\n            $.state.duringStateActionID += 1;\r\n       
+        } else {\r\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\r\n           
+        $.state.duringStateActionID += 1;\r\n        }\r\n    }\r\n    $.state.duringStateActionID
+        = 0;\r\n}\r\n\r\nfunction Start() {}\r\nfunction Update(deltaTime) {}\r\n\r\nconst
+        stateEnterActions = {\r\n    3: [\n        { type: \"exec\", action: () =>
         {\n            $.setStateCompat('this', 'exp_showItem', true);\n        }
-        }\n    ]\n};\n\nconst duringStateActions = {\n};\n\nconst stateExitActions
-        = {\n    3: [\n        { type: \"exec\", action: () => {\n            $.setStateCompat('this',
-        'exp_showItem', false);\n        } }\n    ]\n};\n\n\n// function Start()
+        }\r\n    ]\r\n};\n\r\nconst duringStateActions = {\r\n};\n\r\nconst stateExitActions
+        = {\r\n    3: [\n        { type: \"exec\", action: () => {\n            $.setStateCompat('this',
+        'exp_showItem', false);\n        } }\r\n    ]\r\n};\r\n\n\n// function Start()
         { }\n// function Update(deltaTime) { }\n// $.onCollide((collision) => { });\n//
         $.onGrab((isGrab, isLeftHand, player) => { });\n// $.onInteract((player)
         => { });\n// $.onUse((isDown, player) => { });\n// $.onPhysicsUpdate((deltaTime)
@@ -792,7 +834,7 @@ PrefabInstance:
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -1191,7 +1233,7 @@ PrefabInstance:
     - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
@@ -1294,28 +1336,27 @@ PrefabInstance:
         () {\r\n    let returnData = $.state.customData;\r\n    if (!Array.isArray(returnData))
         returnData = [];\r\n    const CONDITION = $.groupState.currentCondition;\r\n   
         const PARTICIPANTS = $.groupState.participants;\r\n    const COLLECTED_DATA
-        = $.groupState.collectedData;\r\n    function saveData() {\r\n/*\r\n# Available
-        variables:\r\n  PARTICIPANTS\r\n    - An array of PlayerHandle of the participants
-        joining this experiment.\r\n    - Use `PARTICIPANTS[0]` to retrieve the first
-        participant, `PARTICIPANTS[1]` to retrieve the second participant, etc.\r\n\r\n#
-        Available variables only if you have enabled the LUIDA experiment progress
-        automation feature:\r\n  CONDITION\r\n    - Values are determined by your
-        configured experimental variables and vary across trials.\r\n    - Only available
-        during Trial states. Use `CONDITION[\"variable_name\"]` to reference a specific
-        condition within the current trial.\r\n  COLLECTED_DATA\r\n    - The collected
-        data you send to the LUIDA data collector using the SendDataToCollector action/function.\r\n   
-        - Use `COLLECTED_DATA[your_data_label]` to retrieve the value.\r\n\r\n# Warning:
-        Ensure returning something in the end of the code block.\r\n    e.g., `return
-        { score: 100 };`\r\n    e.g., `const answer = $.getStateCompat('global',
-        'count', 'integer') > 5; return { isLarger: answer }`\r\n*/\r\nreturn { foo:
-        'bar' };\r\n    return {};\r\n  }\r\n  returnData.push(saveData());\r\n 
-        return returnData;\r\n}\r\n"
+        = $.groupState.collectedData;\r\n    function saveData() {\r\n\r\nreturn
+        {\r\n    d: CONDITION['depth'], // \u8A72\u5F53\u8A66\u884C\u306Edepth\u6761\u4EF6\uFF08\u53C2\u52A0\u8005\u9593\u5909\u6570depth\u306E\u8A72\u5F53\u8A66\u884C\u306B\u304A\u3051\u308B\u5024\uFF09\r\n   
+        req: CONDITION['request'], // \u8A72\u5F53\u8A66\u884C\u306Erequest\u6761\u4EF6\uFF08\u53C2\u52A0\u8005\u5185\u5909\u6570request\u306E\u8A72\u5F53\u8A66\u884C\u306B\u304A\u3051\u308B\u5024\uFF09\r\n   
+        font: CONDITION['font'], // \u8A72\u5F53\u8A66\u884C\u306Efont\u6761\u4EF6\uFF08\u53C2\u52A0\u8005\u5185\u5909\u6570font\u306E\u8A72\u5F53\u8A66\u884C\u306B\u304A\u3051\u308B\u5024\uFF09\r\n   
+        text: CONDITION['text'], // \u8A72\u5F53\u8A66\u884C\u306Etext\u6761\u4EF6\uFF08\u53C2\u52A0\u8005\u5185\u5909\u6570text\u306E\u8A72\u5F53\u8A66\u884C\u306B\u304A\u3051\u308B\u5024\uFF09\r\n   
+        ans: $.getStateCompat('this', 'isRed', 'boolean') ? \"R\" : \"B\",\u3000//
+        \u56DE\u7B54\uFF08\u8D64\u304B\u9752\uFF09\r\n    time: COLLECTED_DATA['timer']\u3000//
+        \u7B54\u3048\u308B\u306E\u306B\u4F7F\u3063\u305F\u6642\u9593\r\n};\r\n   
+        return {};\r\n  }\r\n  returnData.push(saveData());\r\n  return returnData;\r\n}\r\n"
       objectReference: {fileID: 0}
     - target: {fileID: 8273925800708392170, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
       propertyPath: host
       value: 
       objectReference: {fileID: 930668818}
+    - target: {fileID: 8901108051797212556, guid: 964d6187f971a8f43b4ee67279f1ef90,
+        type: 3}
+      propertyPath: calculationScript
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 69b9439fc571acc45907fd10a38093bd,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 964d6187f971a8f43b4ee67279f1ef90, type: 3}
 --- !u!1 &611389520
@@ -1451,122 +1492,143 @@ PrefabInstance:
     - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: sourceCode
-      value: "let timer = 0;\nlet CONDITION;\n\n$.onStart(() => {\n    $.state.last_state_id
-        = 0;\n    $.state.state_id = 0;\n    $.state.stateEnterActionID = -1;\n   
-        $.state.stateExitActionID = -1;\n    $.state.duringStateActionID = -1;\n   
-        Start();\n})\n\n$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\",
-        \"state_exit\", \"boolean\")) {\n        $.state.stateExitActionID = 0;\n       
-        $.state.last_state_id = $.state.state_id;\n        $.setStateCompat(\"this\",
-        \"state_exit\", false);\n    }\n    if ($.state.stateExitActionID >= 0) OnStateExit(deltaTime);\n\n   
-        if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\n       
-        $.setStateCompat(\"this\", \"state_enter\", false);\n        $.state.state_id
-        = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
-        $.state.stateEnterActionID = 0;\n        $.state.duringStateActionID = 0;\n   
-        }\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\n\n   
-        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\n\n    Update(deltaTime);\n})\n\nfunction
-        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
-        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
-        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
-        SetText(text) {\n    try {\n      $.subNode(\"Text\").setText(`${text}`);\n   
-        } catch (e) {\n      $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
-        exists and has setText method.`);\n    }\n}\n\nfunction SetPosition(x, y,
-        z) {\n    try {\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
-        parseFloat(z)));\n    } catch (e) {\n        $.log(`Error in SetPosition:
-        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
-        }\n}\n\nfunction AddPosition(x, y, z) {\n    try {\n        const currentPos
-        = $.getPosition();\n        $.setPosition(currentPos.add(new Vector3(parseFloat(x),
-        parseFloat(y), parseFloat(z))));\n    } catch (e) {\n        $.log(`Error
-        in AddPosition: ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
-        }\n}\n\nfunction SetRotation(x, y, z) {\n    try {\n        $.setRotation(new
+      value: "let timer = 0;\r\nlet CONDITION;\r\n\r\n$.onStart(() => {\r\n    $.state.last_state_id
+        = 0;\r\n    $.state.state_id = 0;\r\n    $.state.stateEnterActionID = -1;\r\n   
+        $.state.stateExitActionID = -1;\r\n    $.state.duringStateActionID = -1;\r\n   
+        Start();\r\n})\r\n\r\n$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\",
+        \"state_exit\", \"boolean\")) {\r\n        $.state.stateExitActionID = 0;\r\n       
+        $.state.last_state_id = $.state.state_id;\r\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\r\n    }\r\n    if ($.state.stateExitActionID >=
+        0) OnStateExit(deltaTime);\r\n\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
+        $.state.stateEnterActionID = 0;\r\n        $.state.duringStateActionID =
+        0;\r\n    }\r\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\r\n\r\n   
+        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\r\n\r\n   
+        Update(deltaTime);\r\n})\r\n\r\nfunction ShowItem() {\r\n    $.setStateCompat(\"this\",
+        \"exp_showItem\", true);\r\n}\r\n\r\nfunction HideItem() {\r\n    $.setStateCompat(\"this\",
+        \"exp_showItem\", false);\r\n}\r\n\r\nfunction SetPosition(x, y, z) {\r\n   
+        try {\r\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)));\r\n    } catch (e) {\r\n        $.log(`Error in SetPosition:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\r\n   
+        }\r\n}\r\n\r\nfunction AddPosition(x, y, z) {\r\n    try {\r\n        $.setPosition($.getPosition().add(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))))\r\n    } catch (e)
+        {\r\n        $.log(`Error in AddPosition: ${e}. Ensure MovableItem is present
+        and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction SetRotation(x,
+        y, z) {\r\n    try {\r\n        $.setRotation(new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetRotation: ${e}. Ensure MovableItem is present
+        and x,y,z are valid numbers (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction
+        AddRotation(x, y, z) {\r\n    try {\r\n        $.setRotation($.getRotation().multiply(new
         Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
-        parseFloat(z))));\n    } catch (e) {\n        $.log(`Error in SetRotation:
-        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\n   
-        }\n}\n\nfunction AddRotation(x, y, z) {\n    try {\n        const currentRot
-        = $.getRotation();\n        const offsetRot = new Quaternion().setFromEulerAngles(new
-        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\n        $.setRotation(currentRot.multiply(offsetRot));\n   
-        } catch (e) {\n        $.log(`Error in AddRotation: ${e}. Ensure MovableItem
-        is present and x,y,z are valid numbers (Euler degrees).`);\n    }\n}\n\nfunction
-        SendDataToCollector(label, value) {\n    if (!$.groupState.collectedData)
-        $.groupState.collectedData = {};\n    let collectedData = $.groupState.collectedData;\n   
-        collectedData[label] = value;\n    $.groupState.collectedData = collectedData;\n}\n\nfunction
-        ProcessAndSaveCollectedData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
-        UploadCollectedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
-        SendHaptics(target, frequency, amplitude, duration) {\n    try {\n       
-        if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\n       
-        if ($.state.player) {\n            let hapticsTarget = target;\n           
-        if (typeof target === 'string') {\n                const lowerTarget = target.toLowerCase();\n               
-        if (lowerTarget === 'null' || lowerTarget === 'undefined' || lowerTarget
-        === \"\") {\n                    hapticsTarget = null; // Use JS null for
-        \"both\" or unspecified\n                } else if (lowerTarget === '\"left\"'
-        || lowerTarget === \"'left'\") {\n                    hapticsTarget = \"left\";\n               
-        } else if (lowerTarget === '\"right\"' || lowerTarget === \"'right'\") {\n                    
-        hapticsTarget = \"right\";\n                }\n                // else assume
-        target is already \"left\", \"right\", or a valid direct value.\n           
-        }\n\n            $.state.player.send(\"haptics\", {\n                target:
-        hapticsTarget,\n                frequency: parseFloat(frequency),\n               
-        amplitude: parseFloat(amplitude),\n                duration: parseFloat(duration)
-        // Duration in seconds\n            });\n        } else {\n            $.log(\"SendHaptics:
-        No player found nearby.\");\n        }\n    } catch (e) {\n        $.log(`Error
-        in SendHaptics: ${e}`);\n    }\n}\n\nfunction OnStateEnter(deltaTime) {\n   
-        CONDITION = $.groupState.currentCondition;\n    PARTICIPANTS = $.groupState.participants;\n   
-        if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >=
-        stateEnterActions[$.state.state_id].length) return;\n    \n    while ($.state.stateEnterActionID
-        < stateEnterActions[$.state.state_id].length && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
-        !== \"sleep\") {\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\n       
-        $.state.stateEnterActionID += 1;\n    }\n\n    if ($.state.stateEnterActionID
-        >= stateEnterActions[$.state.state_id].length) {\n        $.state.stateEnterActionID
-        = -1;\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
-        === \"sleep\") {\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
-        {\n            $.state.stateEnterActionID += 1;\n            timer = 0;\n       
-        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
-        OnStateExit(deltaTime) {\n    if (!stateExitActions[$.state.last_state_id]
+        parseFloat(z)))))\r\n    } catch (e) {\r\n        $.log(`Error in AddRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\r\n   
+        }\r\n}\r\n\r\nfunction ShowChild(childName) {\r\n    $.subNode(childName).setEnabled(true);\r\n}\r\n\r\nfunction
+        HideChild(childName) {\r\n    $.subNode(childName).setEnabled(false);\r\n}\r\n\r\nfunction
+        SetChildPosition(childName, x, y, z) {\r\n    try {\r\n        $.subNode(childName).setPosition(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetChildPosition: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction AddChildPosition(childName,
+        x, y, z) {\r\n    try {\r\n        $.subNode(childName).setPosition($.subNode(childName).getPosition().add(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))))\r\n    } catch (e)
+        {\r\n        $.log(`Error in AddChildPosition: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction SetChildRotation(childName,
+        x, y, z) {\r\n    try {\r\n        $.subNode(childName).setRotation(new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetChildRotation: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction
+        AddChildRotation(childName, x, y, z) {\r\n    try {\r\n        $.subNode(childName).setRotation($.subNode(childName).getRotation().multiply(new
+        Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)))))\r\n    } catch (e) {\r\n        $.log(`Error in AddChildRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\r\n   
+        }\r\n}\r\n\r\nfunction ToNextState() {\r\n    $.sendSignalCompat(\"this\",
+        \"state_triggerTransition\");\r\n}\r\n\r\nfunction SendDataToCollector(label,
+        value) {\r\n    if (!$.groupState.collectedData) $.groupState.collectedData
+        = {};\r\n    let collectedData = $.groupState.collectedData;\r\n    collectedData[label]
+        = value;\r\n    $.groupState.collectedData = collectedData;\r\n}\r\n\r\nfunction
+        ProcessAndSaveCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
+        UploadCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
+        SetText(text) {\r\n    try {\r\n        $.subNode(\"Text\").setText(`${text}`);\r\n   
+        } catch (e) {\r\n        $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
+        exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(target,
+        frequency, amplitude, duration) {\r\n    try {\r\n        if (!$.state.player)
+        $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\r\n       
+        if ($.state.player) {\r\n            let hapticsTarget = target;\r\n           
+        if (typeof target === 'string') {\r\n                const lowerTarget =
+        target.toLowerCase();\r\n                if (lowerTarget === 'null' || lowerTarget
+        === 'undefined' || lowerTarget === \"\") {\r\n                    hapticsTarget
+        = null; // Use JS null for \"both\" or unspecified\r\n                } else
+        if (lowerTarget === '\"left\"' || lowerTarget === \"'left'\") {\r\n                   
+        hapticsTarget = \"left\";\r\n                } else if (lowerTarget === '\"right\"'
+        || lowerTarget === \"'right'\") {\r\n                    hapticsTarget =
+        \"right\";\r\n                }\r\n                // else assume target
+        is already \"left\", \"right\", or a valid direct value.\r\n            }\r\n\r\n           
+        $.state.player.send(\"haptics\", {\r\n                target: hapticsTarget,\r\n               
+        frequency: parseFloat(frequency),\r\n                amplitude: parseFloat(amplitude),\r\n               
+        duration: parseFloat(duration) // Duration in seconds\r\n            });\r\n       
+        } else {\r\n            $.log(\"SendHaptics: No player found nearby.\");\r\n       
+        }\r\n    } catch (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n   
+        }\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n    CONDITION = $.groupState.currentCondition;\r\n   
+        PARTICIPANTS = $.groupState.participants;\r\n    if (!stateEnterActions[$.state.state_id]
+        || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
+        return;\r\n    \r\n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
+        && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !==
+        \"sleep\") {\r\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\r\n       
+        $.state.stateEnterActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateEnterActionID
+        >= stateEnterActions[$.state.state_id].length) {\r\n        $.state.stateEnterActionID
+        = -1;\r\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
+        === \"sleep\") {\r\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
+        {\r\n            $.state.stateEnterActionID += 1;\r\n            timer =
+        0;\r\n        } else {\r\n            timer += deltaTime;\r\n        }\r\n   
+        }\r\n}\r\n\r\nfunction OnStateExit(deltaTime) {\r\n    if (!stateExitActions[$.state.last_state_id]
         || $.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
-        return;\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
+        return;\r\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
         && stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
-        !== \"sleep\") {\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\n       
-        $.state.stateExitActionID += 1;\n    }\n\n    if ($.state.stateExitActionID
-        >= stateExitActions[$.state.last_state_id].length) {\n        $.state.stateExitActionID
-        = -1;\n        $.state.last_state_id = $.state.state_id;\n    } else if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
-        === \"sleep\") {\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
-        {\n            $.state.stateExitActionID += 1;\n            timer = 0;\n           
+        !== \"sleep\") {\r\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\r\n       
+        $.state.stateExitActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateExitActionID
+        >= stateExitActions[$.state.last_state_id].length) {\r\n        $.state.stateExitActionID
+        = -1;\r\n        $.state.last_state_id = $.state.state_id;\r\n    } else
+        if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        === \"sleep\") {\r\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
+        {\r\n            $.state.stateExitActionID += 1;\r\n            timer = 0;\r\n           
         if ($.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
-        {\n                $.state.stateExitActionID = -1;\n            }\n       
-        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
-        DuringState(deltaTime) {\n    if (!duringStateActions[$.state.state_id] ||
-        !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\n   
-        \n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
-        {\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
-        === \"sleep\") {\n            $.state.duringStateActionID += 1;\n       
-        } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\n           
-        $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
-        = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\n    1: [\n        { type: \"exec\", action: () =>
+        {\r\n                $.state.stateExitActionID = -1;\r\n            }\r\n       
+        } else {\r\n            timer += deltaTime;\r\n        }\r\n    }\r\n}\r\n\r\nfunction
+        DuringState(deltaTime) {\r\n    if (!duringStateActions[$.state.state_id]
+        || !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\r\n   
+        \r\n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
+        {\r\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
+        === \"sleep\") {\r\n            $.state.duringStateActionID += 1;\r\n       
+        } else {\r\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\r\n           
+        $.state.duringStateActionID += 1;\r\n        }\r\n    }\r\n    $.state.duringStateActionID
+        = 0;\r\n}\r\n\r\nfunction Start() {}\r\nfunction Update(deltaTime) {}\r\n\r\nconst
+        stateEnterActions = {\r\n    1: [\n        { type: \"exec\", action: () =>
         {\n            $.setStateCompat('this', 'exp_showItem', true);\n        }
-        },\n        { type: \"exec\", action: () => {\n            $.subNode('Text').setText(`This
-        experiment...`);\n        } }\n    ],\n    3: [\n        { type: \"exec\",
+        },\r\n        { type: \"exec\", action: () => {\n            $.subNode('Text').setText(`This
+        experiment...`);\n        } }\r\n    ],\r\n    3: [\n        { type: \"exec\",
         action: () => {\n            $.setStateCompat('this', 'exp_showItem', true);\n       
-        } },\n        { type: \"exec\", action: () => {\n            if (CONDITION['request']
+        } },\r\n        { type: \"exec\", action: () => {\n            if (CONDITION['request']
         === 'font') {\n              $.subNode('Text').setText(`Click the button
         that\n              matches the text's font color`);\n            }\n       
-        } },\n        { type: \"exec\", action: () => {\n            if (CONDITION['request']
+        } },\r\n        { type: \"exec\", action: () => {\n            if (CONDITION['request']
         === 'meaning') {\n              $.subNode('Text').setText(`Click the button
         that\n              matches the text's meaning`);\n            }\n       
-        } }\n    ],\n    4: [\n        { type: \"exec\", action: () => {\n           
-        $.subNode('Text').setText(`Take a break for 3 seconds`);\n        } }\n   
-        ]\n};\n\nconst duringStateActions = {\n};\n\nconst stateExitActions = {\n   
-        1: [\n        { type: \"exec\", action: () => {\n            $.setStateCompat('this',
-        'exp_showItem', false);\n        } }\n    ],\n    4: [\n        { type: \"exec\",
-        action: () => {\n            $.setStateCompat('this', 'exp_showItem', false);\n       
-        } }\n    ]\n};\n\n\n// function Start() { }\n// function Update(deltaTime)
-        { }\n// $.onCollide((collision) => { });\n// $.onGrab((isGrab, isLeftHand,
-        player) => { });\n// $.onInteract((player) => { });\n// $.onUse((isDown,
+        } }\r\n    ],\r\n    4: [\n        { type: \"exec\", action: () => {\n           
+        $.subNode('Text').setText(`Take a break for 3 seconds`);\n        } }\r\n   
+        ]\r\n};\n\r\nconst duringStateActions = {\r\n};\n\r\nconst stateExitActions
+        = {\r\n    1: [\n        { type: \"exec\", action: () => {\n            $.setStateCompat('this',
+        'exp_showItem', false);\n        } }\r\n    ],\r\n    4: [\n        { type:
+        \"exec\", action: () => {\n            $.setStateCompat('this', 'exp_showItem',
+        false);\n        } }\r\n    ]\r\n};\r\n\n\n// function Start() { }\n// function
+        Update(deltaTime) { }\n// $.onCollide((collision) => { });\n// $.onGrab((isGrab,
+        isLeftHand, player) => { });\n// $.onInteract((player) => { });\n// $.onUse((isDown,
         player) => { });\n// $.onPhysicsUpdate((deltaTime) => { });\n// $.onReceive((messageType,
         arg, sender) => { });"
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -1667,109 +1729,132 @@ PrefabInstance:
     - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: sourceCode
-      value: "let timer = 0;\nlet CONDITION;\n\n$.onStart(() => {\n    $.state.last_state_id
-        = 0;\n    $.state.state_id = 0;\n    $.state.stateEnterActionID = -1;\n   
-        $.state.stateExitActionID = -1;\n    $.state.duringStateActionID = -1;\n   
-        Start();\n})\n\n$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\",
-        \"state_exit\", \"boolean\")) {\n        $.state.stateExitActionID = 0;\n       
-        $.state.last_state_id = $.state.state_id;\n        $.setStateCompat(\"this\",
-        \"state_exit\", false);\n    }\n    if ($.state.stateExitActionID >= 0) OnStateExit(deltaTime);\n\n   
-        if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\n       
-        $.setStateCompat(\"this\", \"state_enter\", false);\n        $.state.state_id
-        = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
-        $.state.stateEnterActionID = 0;\n        $.state.duringStateActionID = 0;\n   
-        }\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\n\n   
-        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\n\n    Update(deltaTime);\n})\n\nfunction
-        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
-        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
-        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
-        SetText(text) {\n    try {\n      $.subNode(\"Text\").setText(`${text}`);\n   
-        } catch (e) {\n      $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
-        exists and has setText method.`);\n    }\n}\n\nfunction SetPosition(x, y,
-        z) {\n    try {\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
-        parseFloat(z)));\n    } catch (e) {\n        $.log(`Error in SetPosition:
-        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
-        }\n}\n\nfunction AddPosition(x, y, z) {\n    try {\n        const currentPos
-        = $.getPosition();\n        $.setPosition(currentPos.add(new Vector3(parseFloat(x),
-        parseFloat(y), parseFloat(z))));\n    } catch (e) {\n        $.log(`Error
-        in AddPosition: ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
-        }\n}\n\nfunction SetRotation(x, y, z) {\n    try {\n        $.setRotation(new
+      value: "let timer = 0;\r\nlet CONDITION;\r\n\r\n$.onStart(() => {\r\n    $.state.last_state_id
+        = 0;\r\n    $.state.state_id = 0;\r\n    $.state.stateEnterActionID = -1;\r\n   
+        $.state.stateExitActionID = -1;\r\n    $.state.duringStateActionID = -1;\r\n   
+        Start();\r\n})\r\n\r\n$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\",
+        \"state_exit\", \"boolean\")) {\r\n        $.state.stateExitActionID = 0;\r\n       
+        $.state.last_state_id = $.state.state_id;\r\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\r\n    }\r\n    if ($.state.stateExitActionID >=
+        0) OnStateExit(deltaTime);\r\n\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
+        $.state.stateEnterActionID = 0;\r\n        $.state.duringStateActionID =
+        0;\r\n    }\r\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\r\n\r\n   
+        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\r\n\r\n   
+        Update(deltaTime);\r\n})\r\n\r\nfunction ShowItem() {\r\n    $.setStateCompat(\"this\",
+        \"exp_showItem\", true);\r\n}\r\n\r\nfunction HideItem() {\r\n    $.setStateCompat(\"this\",
+        \"exp_showItem\", false);\r\n}\r\n\r\nfunction SetPosition(x, y, z) {\r\n   
+        try {\r\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)));\r\n    } catch (e) {\r\n        $.log(`Error in SetPosition:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\r\n   
+        }\r\n}\r\n\r\nfunction AddPosition(x, y, z) {\r\n    try {\r\n        $.setPosition($.getPosition().add(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))))\r\n    } catch (e)
+        {\r\n        $.log(`Error in AddPosition: ${e}. Ensure MovableItem is present
+        and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction SetRotation(x,
+        y, z) {\r\n    try {\r\n        $.setRotation(new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetRotation: ${e}. Ensure MovableItem is present
+        and x,y,z are valid numbers (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction
+        AddRotation(x, y, z) {\r\n    try {\r\n        $.setRotation($.getRotation().multiply(new
         Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
-        parseFloat(z))));\n    } catch (e) {\n        $.log(`Error in SetRotation:
-        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\n   
-        }\n}\n\nfunction AddRotation(x, y, z) {\n    try {\n        const currentRot
-        = $.getRotation();\n        const offsetRot = new Quaternion().setFromEulerAngles(new
-        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\n        $.setRotation(currentRot.multiply(offsetRot));\n   
-        } catch (e) {\n        $.log(`Error in AddRotation: ${e}. Ensure MovableItem
-        is present and x,y,z are valid numbers (Euler degrees).`);\n    }\n}\n\nfunction
-        SendDataToCollector(label, value) {\n    if (!$.groupState.collectedData)
-        $.groupState.collectedData = {};\n    let collectedData = $.groupState.collectedData;\n   
-        collectedData[label] = value;\n    $.groupState.collectedData = collectedData;\n}\n\nfunction
-        ProcessAndSaveCollectedData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
-        UploadCollectedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
-        SendHaptics(target, frequency, amplitude, duration) {\n    try {\n       
-        if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\n       
-        if ($.state.player) {\n            let hapticsTarget = target;\n           
-        if (typeof target === 'string') {\n                const lowerTarget = target.toLowerCase();\n               
-        if (lowerTarget === 'null' || lowerTarget === 'undefined' || lowerTarget
-        === \"\") {\n                    hapticsTarget = null; // Use JS null for
-        \"both\" or unspecified\n                } else if (lowerTarget === '\"left\"'
-        || lowerTarget === \"'left'\") {\n                    hapticsTarget = \"left\";\n               
-        } else if (lowerTarget === '\"right\"' || lowerTarget === \"'right'\") {\n                    
-        hapticsTarget = \"right\";\n                }\n                // else assume
-        target is already \"left\", \"right\", or a valid direct value.\n           
-        }\n\n            $.state.player.send(\"haptics\", {\n                target:
-        hapticsTarget,\n                frequency: parseFloat(frequency),\n               
-        amplitude: parseFloat(amplitude),\n                duration: parseFloat(duration)
-        // Duration in seconds\n            });\n        } else {\n            $.log(\"SendHaptics:
-        No player found nearby.\");\n        }\n    } catch (e) {\n        $.log(`Error
-        in SendHaptics: ${e}`);\n    }\n}\n\nfunction OnStateEnter(deltaTime) {\n   
-        CONDITION = $.groupState.currentCondition;\n    PARTICIPANTS = $.groupState.participants;\n   
-        if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >=
-        stateEnterActions[$.state.state_id].length) return;\n    \n    while ($.state.stateEnterActionID
-        < stateEnterActions[$.state.state_id].length && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
-        !== \"sleep\") {\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\n       
-        $.state.stateEnterActionID += 1;\n    }\n\n    if ($.state.stateEnterActionID
-        >= stateEnterActions[$.state.state_id].length) {\n        $.state.stateEnterActionID
-        = -1;\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
-        === \"sleep\") {\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
-        {\n            $.state.stateEnterActionID += 1;\n            timer = 0;\n       
-        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
-        OnStateExit(deltaTime) {\n    if (!stateExitActions[$.state.last_state_id]
+        parseFloat(z)))))\r\n    } catch (e) {\r\n        $.log(`Error in AddRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\r\n   
+        }\r\n}\r\n\r\nfunction ShowChild(childName) {\r\n    $.subNode(childName).setEnabled(true);\r\n}\r\n\r\nfunction
+        HideChild(childName) {\r\n    $.subNode(childName).setEnabled(false);\r\n}\r\n\r\nfunction
+        SetChildPosition(childName, x, y, z) {\r\n    try {\r\n        $.subNode(childName).setPosition(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetChildPosition: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction AddChildPosition(childName,
+        x, y, z) {\r\n    try {\r\n        $.subNode(childName).setPosition($.subNode(childName).getPosition().add(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))))\r\n    } catch (e)
+        {\r\n        $.log(`Error in AddChildPosition: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction SetChildRotation(childName,
+        x, y, z) {\r\n    try {\r\n        $.subNode(childName).setRotation(new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetChildRotation: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction
+        AddChildRotation(childName, x, y, z) {\r\n    try {\r\n        $.subNode(childName).setRotation($.subNode(childName).getRotation().multiply(new
+        Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)))))\r\n    } catch (e) {\r\n        $.log(`Error in AddChildRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\r\n   
+        }\r\n}\r\n\r\nfunction ToNextState() {\r\n    $.sendSignalCompat(\"this\",
+        \"state_triggerTransition\");\r\n}\r\n\r\nfunction SendDataToCollector(label,
+        value) {\r\n    if (!$.groupState.collectedData) $.groupState.collectedData
+        = {};\r\n    let collectedData = $.groupState.collectedData;\r\n    collectedData[label]
+        = value;\r\n    $.groupState.collectedData = collectedData;\r\n}\r\n\r\nfunction
+        ProcessAndSaveCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
+        UploadCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
+        SetText(text) {\r\n    try {\r\n        $.subNode(\"Text\").setText(`${text}`);\r\n   
+        } catch (e) {\r\n        $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
+        exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(target,
+        frequency, amplitude, duration) {\r\n    try {\r\n        if (!$.state.player)
+        $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\r\n       
+        if ($.state.player) {\r\n            let hapticsTarget = target;\r\n           
+        if (typeof target === 'string') {\r\n                const lowerTarget =
+        target.toLowerCase();\r\n                if (lowerTarget === 'null' || lowerTarget
+        === 'undefined' || lowerTarget === \"\") {\r\n                    hapticsTarget
+        = null; // Use JS null for \"both\" or unspecified\r\n                } else
+        if (lowerTarget === '\"left\"' || lowerTarget === \"'left'\") {\r\n                   
+        hapticsTarget = \"left\";\r\n                } else if (lowerTarget === '\"right\"'
+        || lowerTarget === \"'right'\") {\r\n                    hapticsTarget =
+        \"right\";\r\n                }\r\n                // else assume target
+        is already \"left\", \"right\", or a valid direct value.\r\n            }\r\n\r\n           
+        $.state.player.send(\"haptics\", {\r\n                target: hapticsTarget,\r\n               
+        frequency: parseFloat(frequency),\r\n                amplitude: parseFloat(amplitude),\r\n               
+        duration: parseFloat(duration) // Duration in seconds\r\n            });\r\n       
+        } else {\r\n            $.log(\"SendHaptics: No player found nearby.\");\r\n       
+        }\r\n    } catch (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n   
+        }\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n    CONDITION = $.groupState.currentCondition;\r\n   
+        PARTICIPANTS = $.groupState.participants;\r\n    if (!stateEnterActions[$.state.state_id]
+        || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
+        return;\r\n    \r\n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
+        && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !==
+        \"sleep\") {\r\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\r\n       
+        $.state.stateEnterActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateEnterActionID
+        >= stateEnterActions[$.state.state_id].length) {\r\n        $.state.stateEnterActionID
+        = -1;\r\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
+        === \"sleep\") {\r\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
+        {\r\n            $.state.stateEnterActionID += 1;\r\n            timer =
+        0;\r\n        } else {\r\n            timer += deltaTime;\r\n        }\r\n   
+        }\r\n}\r\n\r\nfunction OnStateExit(deltaTime) {\r\n    if (!stateExitActions[$.state.last_state_id]
         || $.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
-        return;\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
+        return;\r\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
         && stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
-        !== \"sleep\") {\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\n       
-        $.state.stateExitActionID += 1;\n    }\n\n    if ($.state.stateExitActionID
-        >= stateExitActions[$.state.last_state_id].length) {\n        $.state.stateExitActionID
-        = -1;\n        $.state.last_state_id = $.state.state_id;\n    } else if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
-        === \"sleep\") {\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
-        {\n            $.state.stateExitActionID += 1;\n            timer = 0;\n           
+        !== \"sleep\") {\r\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\r\n       
+        $.state.stateExitActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateExitActionID
+        >= stateExitActions[$.state.last_state_id].length) {\r\n        $.state.stateExitActionID
+        = -1;\r\n        $.state.last_state_id = $.state.state_id;\r\n    } else
+        if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        === \"sleep\") {\r\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
+        {\r\n            $.state.stateExitActionID += 1;\r\n            timer = 0;\r\n           
         if ($.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
-        {\n                $.state.stateExitActionID = -1;\n            }\n       
-        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
-        DuringState(deltaTime) {\n    if (!duringStateActions[$.state.state_id] ||
-        !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\n   
-        \n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
-        {\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
-        === \"sleep\") {\n            $.state.duringStateActionID += 1;\n       
-        } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\n           
-        $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
-        = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\n    3: [\n        { type: \"exec\", action: () =>
+        {\r\n                $.state.stateExitActionID = -1;\r\n            }\r\n       
+        } else {\r\n            timer += deltaTime;\r\n        }\r\n    }\r\n}\r\n\r\nfunction
+        DuringState(deltaTime) {\r\n    if (!duringStateActions[$.state.state_id]
+        || !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\r\n   
+        \r\n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
+        {\r\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
+        === \"sleep\") {\r\n            $.state.duringStateActionID += 1;\r\n       
+        } else {\r\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\r\n           
+        $.state.duringStateActionID += 1;\r\n        }\r\n    }\r\n    $.state.duringStateActionID
+        = 0;\r\n}\r\n\r\nfunction Start() {}\r\nfunction Update(deltaTime) {}\r\n\r\nconst
+        stateEnterActions = {\r\n    3: [\n        { type: \"exec\", action: () =>
         {\n            $.state.isInTrial = true;\n            $.state.timer = 0;\n       
-        } }\n    ]\n};\n\nconst duringStateActions = {\n};\n\nconst stateExitActions
-        = {\n    3: [\n        { type: \"exec\", action: () => {\n            $.state.isInTrial
-        = false;\n            SendDataToCollector(\"timer\", $.state.timer);\n       
-        } },\n        { type: \"exec\", action: () => {\n            $.sendSignalCompat('this',
-        'exp_recordCustomData');\n        } }\n    ]\n};\n\n\nfunction Start() {
-        $.state.timer = 0; }\nfunction Update(deltaTime) {\n  if ($.state.isInTrial)
+        } }\r\n    ],\r\n    5: [\n        { type: \"exec\", action: () => {\n           
+        $.sendSignalCompat('this', 'exp_uploadCustomData');\n        } }\r\n    ]\r\n};\n\r\nconst
+        duringStateActions = {\r\n};\n\r\nconst stateExitActions = {\r\n    3: [\n       
+        { type: \"exec\", action: () => {\n            $.state.isInTrial = false;\n           
+        SendDataToCollector(\n                \"timer\", $.state.timer);\n       
+        } },\r\n        { type: \"exec\", action: () => {\n            $.sendSignalCompat('this',
+        'exp_recordCustomData');\n        } }\r\n    ]\r\n};\r\n\n\nfunction Start()
+        { $.state.timer = 0; }\nfunction Update(deltaTime) {\n  if ($.state.isInTrial)
         $.state.timer += deltaTime;\n}"
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -2411,65 +2496,66 @@ PrefabInstance:
     - target: {fileID: 320188938653792925, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"67a05c0278f2295ce64877b3\";\ntoken = \"d98822e9-add2-4e0b-bb40-c6e7c5bb9d82\";\ncallExternalEndpointID
-        = \"ea278de3-2d03-4beb-b160-a97181d39ef6\";\npNum = 1;\n\r\n$.onStart(()
-        => {\n  $.groupState.isParticipantsEnough = false;\n  $.groupState.sessionID
-        = Date.now() + \"_\" +  (Math.random() + 1).toString(36).substring(7);\n 
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
+        = \"callExternalEndpointID_example\";\npNum = 1;\n\r\n$.onStart(() => {\r\n 
+        $.groupState.isParticipantsEnough = false;\r\n  $.groupState.sessionID =
+        Date.now() + \"_\" +  (Math.random() + 1).toString(36).substring(7);\r\n 
         $.groupState.participants = []; // array of PlayerHandle who are currently
-        in the experiment\n  $.state.participantsEnvInfo = [];\n  $.state.timer =
-        0;\n  \n  // TODO: load exp info so that we can check later what environments
-        this experiment requires\n})\n\n$.onUpdate((deltaTime) => {\n    if (!$.groupState.isParticipantsEnough)
-        {\n        $.state.timer += deltaTime;\n        if ($.state.timer >= 1){\n           
-        $.state.timer = 0;\n            let pIdfcs = $.groupState.participants.map(p
-        => p.idfc);\n            const newPlayers = $.getPlayersNear($.getPosition(),
-        Infinity)\n                .filter(p => !pIdfcs.includes(p.idfc));\n           
-        if (newPlayers.length > 0) {\n                for (const newPlayer of newPlayers)
-        {\n                    // TODO: Check if the player is eligible to join the
-        experiment before adding them to $.groupState.participants.\n                   
-        $.groupState.participants = [ ...$.groupState.participants, newPlayer ];\n                   
-        $.setPlayerScript(newPlayer);\n                    newPlayer.send(\"initializeParticipant\",
-        true);\n                }\n            }\n            if (!$.groupState.isParticipantsEnough
-        && $.groupState.participants.length >= pNum) {\n                HandleParticipantsEnough();\n           
-        }\n        }\n    }\n/*\n  if ($.getStateCompat(\"this\", \"exp_checkJoinEligibility\",
-        \"boolean\")) {\n    $.setStateCompat(\"this\", \"exp_checkJoinEligibility\",
-        false);\n\n    let pIdfcs = $.groupState.participants.map(p => p.idfc);\n   
-        const newPlayers = $.getPlayersNear($.getPosition(), 1)\n      .filter(p
-        => !pIDFCs.includes(p.idfc));\n    \n    if (newPlayers.length > 0) {\n     
-        $.state.newPlayers = newPlayers;\n      $.log(newPlayers[0].idfc);\n\n     
-        const request = {\n        type: \"checkJoinEligibility\",\n        token:
-        token || \"\",\n        eID: expID || \"\",\n        idfcs: newPlayers.map(p
-        => p.idfc).join(\"|\")\n      };\n      $.callExternal(new ExternalEndpointId(callExternalEndpointID),
-        JSON.stringify(request), \"joinEligibilityChecked\");\n    }\n  }\n*/\n})\n\n$.onReceive((messageType,
-        arg, sender) => {\n    switch (messageType) {\n        case \"envInfoResponse\":\n           
-        $.state.participantsEnvInfo = [\n              ...$.state.participantsEnvInfo,\n             
-        {\n                idfc: sender.idfc,\n                envInfo: arg\n             
-        }\n            ]\n            if ($.state.participantsEnvInfo.length >= pNum)
-        {\n              let request = {\n                  type: \"uploadCustomData\",\n                 
-        data: { envInfo: $.state.participantsEnvInfo },\n                  token:
-        token || \"\",\n                  eID: expID || \"\",\n                 
-        pID: $.groupState.sessionID, // TODO: change 'pID' to 'sessionID' \n             
-        };\n              $.callExternal(new ExternalEndpointId(callExternalEndpointID),
-        JSON.stringify(request), \"customDataUploaded\");\n            }\n           
-        break;\n        default:\n            break;\n    }\n}, { item: true, player:
-        true });\n\nfunction HandleParticipantsEnough() {\n  $.log(\"Participants
-        are enough to start the experiment.\");\n  $.groupState.isParticipantsEnough
-        = true;\n    $.sendSignalCompat(\"this\", \"exp_playersAreEnough\");\n   
-        $.sendSignalCompat(\"this\", \"exp_StartStateTransition\");\n\n  const conditionManager
-        = $.worldItemReference(\"ConditionManager\");\n  if (conditionManager) {\n   
-        conditionManager.send(\"luida_participants_info\", {\n      participants:
-        $.groupState.participants,\n      sessionID: $.groupState.sessionID\n   
-        });\n  }\n}\n\n/*\n$.onExternalCallEnd((res, meta, err) =>\n{\n  if (res
-        == null) {\n    $.log(\"callExternal ERROR: \" + err);\n    return;\n  }\n\n 
-        if (meta === \"joinEligibilityChecked\") {\n    const parsedRes = JSON.parse(res);\n   
-        $.state.newPlayers.forEach(newPlayer => {\n      if (parsedRes.ineligibleIdfcs.includes(newPlayer.idfc))
-        {\n        // TODO: Show message about that this player is not eligible to
-        join this experiment, and teleport the player back to LUIDA bar world.\n     
-        } else {\n        newPlayer.setMoveSpeedRate(1);\n        $.groupState.participants
-        = [ ...$.groupState.participants, newPlayer ];\n        // TODO: Instead
-        of enabling move, teleport the player from the checking area to the task
-        area.\n      }\n    });\n    \n    $.state.newPlayers = [];\n    $.log(\"Only
-        users who have not joined this experiment before are allowed to proceed to
-        the experiment.\");\n  }\n});\n*/\n"
+        in the experiment\r\n  $.state.participantsEnvInfo = [];\r\n  $.state.timer
+        = 0;\r\n  \r\n  // TODO: load exp info so that we can check later what environments
+        this experiment requires\r\n})\r\n\r\n$.onUpdate((deltaTime) => {\r\n   
+        if (!$.groupState.isParticipantsEnough) {\r\n        $.state.timer += deltaTime;\r\n       
+        if ($.state.timer >= 1){\r\n            $.state.timer = 0;\r\n           
+        let pIdfcs = $.groupState.participants.map(p => p.idfc);\r\n            const
+        newPlayers = $.getPlayersNear($.getPosition(), Infinity)\r\n               
+        .filter(p => !pIdfcs.includes(p.idfc));\r\n            if (newPlayers.length
+        > 0) {\r\n                for (const newPlayer of newPlayers) {\r\n                   
+        // TODO: Check if the player is eligible to join the experiment before adding
+        them to $.groupState.participants.\r\n                    $.groupState.participants
+        = [ ...$.groupState.participants, newPlayer ];\r\n                    $.setPlayerScript(newPlayer);\r\n                   
+        newPlayer.send(\"initializeParticipant\", true);\r\n                }\r\n           
+        }\r\n            if (!$.groupState.isParticipantsEnough && $.groupState.participants.length
+        >= pNum) {\r\n                HandleParticipantsEnough();\r\n           
+        }\r\n        }\r\n    }\r\n/*\r\n  if ($.getStateCompat(\"this\", \"exp_checkJoinEligibility\",
+        \"boolean\")) {\r\n    $.setStateCompat(\"this\", \"exp_checkJoinEligibility\",
+        false);\r\n\r\n    let pIdfcs = $.groupState.participants.map(p => p.idfc);\r\n   
+        const newPlayers = $.getPlayersNear($.getPosition(), 1)\r\n      .filter(p
+        => !pIDFCs.includes(p.idfc));\r\n    \r\n    if (newPlayers.length > 0) {\r\n     
+        $.state.newPlayers = newPlayers;\r\n      $.log(newPlayers[0].idfc);\r\n\r\n     
+        const request = {\r\n        type: \"checkJoinEligibility\",\r\n        token:
+        token || \"\",\r\n        eID: expID || \"\",\r\n        idfcs: newPlayers.map(p
+        => p.idfc).join(\"|\")\r\n      };\r\n      $.callExternal(new ExternalEndpointId(callExternalEndpointID),
+        JSON.stringify(request), \"joinEligibilityChecked\");\r\n    }\r\n  }\r\n*/\r\n})\r\n\r\n$.onReceive((messageType,
+        arg, sender) => {\r\n    switch (messageType) {\r\n        case \"envInfoResponse\":\r\n           
+        $.state.participantsEnvInfo = [\r\n              ...$.state.participantsEnvInfo,\r\n             
+        {\r\n                idfc: sender.idfc,\r\n                envInfo: arg\r\n             
+        }\r\n            ]\r\n            if ($.state.participantsEnvInfo.length
+        >= pNum) {\r\n              let request = {\r\n                  type: \"uploadCustomData\",\r\n                 
+        data: { envInfo: $.state.participantsEnvInfo },\r\n                  token:
+        token || \"\",\r\n                  eID: expID || \"\",\r\n                 
+        pID: $.groupState.sessionID, // TODO: change 'pID' to 'sessionID' \r\n             
+        };\r\n              $.callExternal(new ExternalEndpointId(callExternalEndpointID),
+        JSON.stringify(request), \"customDataUploaded\");\r\n            }\r\n           
+        break;\r\n        default:\r\n            break;\r\n    }\r\n}, { item: true,
+        player: true });\r\n\r\nfunction HandleParticipantsEnough() {\r\n  $.log(\"Participants
+        are enough to start the experiment.\");\r\n  $.groupState.isParticipantsEnough
+        = true;\r\n    $.sendSignalCompat(\"this\", \"exp_playersAreEnough\");\r\n   
+        $.sendSignalCompat(\"this\", \"exp_StartStateTransition\");\r\n\r\n  const
+        conditionManager = $.worldItemReference(\"ConditionManager\");\r\n  if (conditionManager)
+        {\r\n    conditionManager.send(\"luida_participants_info\", {\r\n      participants:
+        $.groupState.participants,\r\n      sessionID: $.groupState.sessionID\r\n   
+        });\r\n  }\r\n}\r\n\r\n/*\r\n$.onExternalCallEnd((res, meta, err) =>\r\n{\r\n 
+        if (res == null) {\r\n    $.log(\"callExternal ERROR: \" + err);\r\n    return;\r\n 
+        }\r\n\r\n  if (meta === \"joinEligibilityChecked\") {\r\n    const parsedRes
+        = JSON.parse(res);\r\n    $.state.newPlayers.forEach(newPlayer => {\r\n     
+        if (parsedRes.ineligibleIdfcs.includes(newPlayer.idfc)) {\r\n        // TODO:
+        Show message about that this player is not eligible to join this experiment,
+        and teleport the player back to LUIDA bar world.\r\n      } else {\r\n       
+        newPlayer.setMoveSpeedRate(1);\r\n        $.groupState.participants = [ ...$.groupState.participants,
+        newPlayer ];\r\n        // TODO: Instead of enabling move, teleport the player
+        from the checking area to the task area.\r\n      }\r\n    });\r\n    \r\n   
+        $.state.newPlayers = [];\r\n    $.log(\"Only users who have not joined this
+        experiment before are allowed to proceed to the experiment.\");\r\n  }\r\n});\r\n*/\r\n"
       objectReference: {fileID: 0}
     - target: {fileID: 908684358854966727, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
@@ -2577,36 +2663,38 @@ PrefabInstance:
     - target: {fileID: 3321547682731800438, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: sourceCode
-      value: "const haptics = _.hapticsHandle;\n\n_.onReceive((id, body, sender)
-        => {\n    switch (id) {\n        case \"haptics\":\n            if (haptics.isAvailable())
-        {\n                const effect = new HapticsEffect();\n                effect.frequency
-        = body.frequency;\n                effect.amplitude = body.amplitude;\n               
-        effect.duration = body.duration;\n                haptics.playEffect(effect,
-        body.target);\n            }\n            break;\n        case \"initializeParticipant\":\n           
-        _.setMoveSpeedRate(1);\n            _.sendTo(sender, \"envInfoResponse\",
-        {\n                isAndroid: _.isAndroid,\n                isDesktop: _.isDesktop,\n               
-        isIos: _.isIos,\n                isMacOs: _.isMacOs,\n                isMobile:
-        _.isMobile,\n                isVr: _.isVr,\n                isWindows: _.isWindows\n           
-        });\n            break;\n        case \"setQuestionnaireUI\":\n           
-        setQuestionnaireUI(body.n,\n                (body.hasOwnProperty(\"e\") ?
-        body.e : null),\n                body.p, body.r,\n                (body.hasOwnProperty(\"t\")
-        ? body.t.toString() : null));\n            break;\n        case \"setQuestionnaireUIs\":\n           
-        for (const ui of body) {\n                setQuestionnaireUI(ui.n,\n                   
-        (ui.hasOwnProperty(\"e\") ? ui.e : null),\n                    ui.p, ui.r,\n                   
-        (ui.hasOwnProperty(\"t\") ? ui.t.toString() : null));\n            }\n           
-        break;\n        case \"clearQuestionnaireAnswerUIs\":\n            let targetUI
-        = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(\"AnsText\");\n           
-        targetUI.setEnabled(false);\n            for (let i = 0; i < 20; i++) {\n               
+      value: "const haptics = _.hapticsHandle;\r\n\r\n_.onReceive((id, body, sender)
+        => {\r\n    switch (id) {\r\n        case \"haptics\":\r\n            if
+        (haptics.isAvailable()) {\r\n                const effect = new HapticsEffect();\r\n               
+        effect.frequency = body.frequency;\r\n                effect.amplitude =
+        body.amplitude;\r\n                effect.duration = body.duration;\r\n               
+        haptics.playEffect(effect, body.target);\r\n            }\r\n           
+        break;\r\n        case \"initializeParticipant\":\r\n            _.setMoveSpeedRate(1);\r\n           
+        _.sendTo(sender, \"envInfoResponse\", {\r\n                isAndroid: _.isAndroid,\r\n               
+        isDesktop: _.isDesktop,\r\n                isIos: _.isIos,\r\n               
+        isMacOs: _.isMacOs,\r\n                isMobile: _.isMobile,\r\n               
+        isVr: _.isVr,\r\n                isWindows: _.isWindows\r\n            });\r\n           
+        break;\r\n        case \"setQuestionnaireUI\":\r\n            setQuestionnaireUI(body.n,\r\n               
+        (body.hasOwnProperty(\"e\") ? body.e : null),\r\n                body.p,
+        body.r,\r\n                (body.hasOwnProperty(\"t\") ? body.t.toString()
+        : null));\r\n            break;\r\n        case \"setQuestionnaireUIs\":\r\n           
+        for (const ui of body) {\r\n                setQuestionnaireUI(ui.n,\r\n                   
+        (ui.hasOwnProperty(\"e\") ? ui.e : null),\r\n                    ui.p, ui.r,\r\n                   
+        (ui.hasOwnProperty(\"t\") ? ui.t.toString() : null));\r\n            }\r\n           
+        break;\r\n        case \"clearQuestionnaireAnswerUIs\":\r\n            let
+        targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(\"AnsText\");\r\n           
+        targetUI.setEnabled(false);\r\n            for (let i = 0; i < 20; i++) {\r\n               
         targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(\"AnsOptLabel_\"
-        + i);\n                if (targetUI) {\n                    targetUI.setEnabled(false);\n               
-        } else {\n                    break;\n                }\n            }\n           
-        break;\n        default:\n            break;\n    }\n});\n\nfunction setQuestionnaireUI(targetName,
-        isEnabled, position, rotation, text) {\n    let targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(targetName);\n   
-        if (!targetUI) return;\n    if (isEnabled !== null) targetUI.setEnabled(isEnabled);\n   
+        + i);\r\n                if (targetUI) {\r\n                    targetUI.setEnabled(false);\r\n               
+        } else {\r\n                    break;\r\n                }\r\n           
+        }\r\n            break;\r\n        default:\r\n            break;\r\n   
+        }\r\n});\r\n\r\nfunction setQuestionnaireUI(targetName, isEnabled, position,
+        rotation, text) {\r\n    let targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(targetName);\r\n   
+        if (!targetUI) return;\r\n    if (isEnabled !== null) targetUI.setEnabled(isEnabled);\r\n   
         if (position) targetUI.getUnityComponent(\"Transform\").unityProp.localPosition
-        = position;\n    if (rotation) targetUI.getUnityComponent(\"Transform\").unityProp.localRotation
-        = rotation;\n    if (text !== null) targetUI.findObject(\"Text\").getUnityComponent(\"Text\").unityProp.text
-        = text;\n}\n"
+        = position;\r\n    if (rotation) targetUI.getUnityComponent(\"Transform\").unityProp.localRotation
+        = rotation;\r\n    if (text !== null) targetUI.findObject(\"Text\").getUnityComponent(\"Text\").unityProp.text
+        = text;\r\n}\r\n"
       objectReference: {fileID: 0}
     - target: {fileID: 3660925819112729135, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
@@ -2803,100 +2891,121 @@ PrefabInstance:
     - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: sourceCode
-      value: "let timer = 0;\nlet CONDITION;\n\n$.onStart(() => {\n    $.state.last_state_id
-        = 0;\n    $.state.state_id = 0;\n    $.state.stateEnterActionID = -1;\n   
-        $.state.stateExitActionID = -1;\n    $.state.duringStateActionID = -1;\n   
-        Start();\n})\n\n$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\",
-        \"state_exit\", \"boolean\")) {\n        $.state.stateExitActionID = 0;\n       
-        $.state.last_state_id = $.state.state_id;\n        $.setStateCompat(\"this\",
-        \"state_exit\", false);\n    }\n    if ($.state.stateExitActionID >= 0) OnStateExit(deltaTime);\n\n   
-        if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\n       
-        $.setStateCompat(\"this\", \"state_enter\", false);\n        $.state.state_id
-        = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
-        $.state.stateEnterActionID = 0;\n        $.state.duringStateActionID = 0;\n   
-        }\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\n\n   
-        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\n\n    Update(deltaTime);\n})\n\nfunction
-        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
-        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
-        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
-        SetText(text) {\n    try {\n      $.subNode(\"Text\").setText(`${text}`);\n   
-        } catch (e) {\n      $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
-        exists and has setText method.`);\n    }\n}\n\nfunction SetPosition(x, y,
-        z) {\n    try {\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
-        parseFloat(z)));\n    } catch (e) {\n        $.log(`Error in SetPosition:
-        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
-        }\n}\n\nfunction AddPosition(x, y, z) {\n    try {\n        const currentPos
-        = $.getPosition();\n        $.setPosition(currentPos.add(new Vector3(parseFloat(x),
-        parseFloat(y), parseFloat(z))));\n    } catch (e) {\n        $.log(`Error
-        in AddPosition: ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
-        }\n}\n\nfunction SetRotation(x, y, z) {\n    try {\n        $.setRotation(new
+      value: "let timer = 0;\r\nlet CONDITION;\r\n\r\n$.onStart(() => {\r\n    $.state.last_state_id
+        = 0;\r\n    $.state.state_id = 0;\r\n    $.state.stateEnterActionID = -1;\r\n   
+        $.state.stateExitActionID = -1;\r\n    $.state.duringStateActionID = -1;\r\n   
+        Start();\r\n})\r\n\r\n$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\",
+        \"state_exit\", \"boolean\")) {\r\n        $.state.stateExitActionID = 0;\r\n       
+        $.state.last_state_id = $.state.state_id;\r\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\r\n    }\r\n    if ($.state.stateExitActionID >=
+        0) OnStateExit(deltaTime);\r\n\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
+        $.state.stateEnterActionID = 0;\r\n        $.state.duringStateActionID =
+        0;\r\n    }\r\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\r\n\r\n   
+        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\r\n\r\n   
+        Update(deltaTime);\r\n})\r\n\r\nfunction ShowItem() {\r\n    $.setStateCompat(\"this\",
+        \"exp_showItem\", true);\r\n}\r\n\r\nfunction HideItem() {\r\n    $.setStateCompat(\"this\",
+        \"exp_showItem\", false);\r\n}\r\n\r\nfunction SetPosition(x, y, z) {\r\n   
+        try {\r\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)));\r\n    } catch (e) {\r\n        $.log(`Error in SetPosition:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\r\n   
+        }\r\n}\r\n\r\nfunction AddPosition(x, y, z) {\r\n    try {\r\n        $.setPosition($.getPosition().add(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))))\r\n    } catch (e)
+        {\r\n        $.log(`Error in AddPosition: ${e}. Ensure MovableItem is present
+        and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction SetRotation(x,
+        y, z) {\r\n    try {\r\n        $.setRotation(new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetRotation: ${e}. Ensure MovableItem is present
+        and x,y,z are valid numbers (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction
+        AddRotation(x, y, z) {\r\n    try {\r\n        $.setRotation($.getRotation().multiply(new
         Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
-        parseFloat(z))));\n    } catch (e) {\n        $.log(`Error in SetRotation:
-        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\n   
-        }\n}\n\nfunction AddRotation(x, y, z) {\n    try {\n        const currentRot
-        = $.getRotation();\n        const offsetRot = new Quaternion().setFromEulerAngles(new
-        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\n        $.setRotation(currentRot.multiply(offsetRot));\n   
-        } catch (e) {\n        $.log(`Error in AddRotation: ${e}. Ensure MovableItem
-        is present and x,y,z are valid numbers (Euler degrees).`);\n    }\n}\n\nfunction
-        SendDataToCollector(label, value) {\n    if (!$.groupState.collectedData)
-        $.groupState.collectedData = {};\n    let collectedData = $.groupState.collectedData;\n   
-        collectedData[label] = value;\n    $.groupState.collectedData = collectedData;\n}\n\nfunction
-        ProcessAndSaveCollectedData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
-        UploadCollectedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
-        SendHaptics(target, frequency, amplitude, duration) {\n    try {\n       
-        if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\n       
-        if ($.state.player) {\n            let hapticsTarget = target;\n           
-        if (typeof target === 'string') {\n                const lowerTarget = target.toLowerCase();\n               
-        if (lowerTarget === 'null' || lowerTarget === 'undefined' || lowerTarget
-        === \"\") {\n                    hapticsTarget = null; // Use JS null for
-        \"both\" or unspecified\n                } else if (lowerTarget === '\"left\"'
-        || lowerTarget === \"'left'\") {\n                    hapticsTarget = \"left\";\n               
-        } else if (lowerTarget === '\"right\"' || lowerTarget === \"'right'\") {\n                    
-        hapticsTarget = \"right\";\n                }\n                // else assume
-        target is already \"left\", \"right\", or a valid direct value.\n           
-        }\n\n            $.state.player.send(\"haptics\", {\n                target:
-        hapticsTarget,\n                frequency: parseFloat(frequency),\n               
-        amplitude: parseFloat(amplitude),\n                duration: parseFloat(duration)
-        // Duration in seconds\n            });\n        } else {\n            $.log(\"SendHaptics:
-        No player found nearby.\");\n        }\n    } catch (e) {\n        $.log(`Error
-        in SendHaptics: ${e}`);\n    }\n}\n\nfunction OnStateEnter(deltaTime) {\n   
-        CONDITION = $.groupState.currentCondition;\n    PARTICIPANTS = $.groupState.participants;\n   
-        if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >=
-        stateEnterActions[$.state.state_id].length) return;\n    \n    while ($.state.stateEnterActionID
-        < stateEnterActions[$.state.state_id].length && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
-        !== \"sleep\") {\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\n       
-        $.state.stateEnterActionID += 1;\n    }\n\n    if ($.state.stateEnterActionID
-        >= stateEnterActions[$.state.state_id].length) {\n        $.state.stateEnterActionID
-        = -1;\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
-        === \"sleep\") {\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
-        {\n            $.state.stateEnterActionID += 1;\n            timer = 0;\n       
-        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
-        OnStateExit(deltaTime) {\n    if (!stateExitActions[$.state.last_state_id]
+        parseFloat(z)))))\r\n    } catch (e) {\r\n        $.log(`Error in AddRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\r\n   
+        }\r\n}\r\n\r\nfunction ShowChild(childName) {\r\n    $.subNode(childName).setEnabled(true);\r\n}\r\n\r\nfunction
+        HideChild(childName) {\r\n    $.subNode(childName).setEnabled(false);\r\n}\r\n\r\nfunction
+        SetChildPosition(childName, x, y, z) {\r\n    try {\r\n        $.subNode(childName).setPosition(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetChildPosition: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction AddChildPosition(childName,
+        x, y, z) {\r\n    try {\r\n        $.subNode(childName).setPosition($.subNode(childName).getPosition().add(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))))\r\n    } catch (e)
+        {\r\n        $.log(`Error in AddChildPosition: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction SetChildRotation(childName,
+        x, y, z) {\r\n    try {\r\n        $.subNode(childName).setRotation(new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetChildRotation: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction
+        AddChildRotation(childName, x, y, z) {\r\n    try {\r\n        $.subNode(childName).setRotation($.subNode(childName).getRotation().multiply(new
+        Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)))))\r\n    } catch (e) {\r\n        $.log(`Error in AddChildRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\r\n   
+        }\r\n}\r\n\r\nfunction ToNextState() {\r\n    $.sendSignalCompat(\"this\",
+        \"state_triggerTransition\");\r\n}\r\n\r\nfunction SendDataToCollector(label,
+        value) {\r\n    if (!$.groupState.collectedData) $.groupState.collectedData
+        = {};\r\n    let collectedData = $.groupState.collectedData;\r\n    collectedData[label]
+        = value;\r\n    $.groupState.collectedData = collectedData;\r\n}\r\n\r\nfunction
+        ProcessAndSaveCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
+        UploadCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
+        SetText(text) {\r\n    try {\r\n        $.subNode(\"Text\").setText(`${text}`);\r\n   
+        } catch (e) {\r\n        $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
+        exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(target,
+        frequency, amplitude, duration) {\r\n    try {\r\n        if (!$.state.player)
+        $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\r\n       
+        if ($.state.player) {\r\n            let hapticsTarget = target;\r\n           
+        if (typeof target === 'string') {\r\n                const lowerTarget =
+        target.toLowerCase();\r\n                if (lowerTarget === 'null' || lowerTarget
+        === 'undefined' || lowerTarget === \"\") {\r\n                    hapticsTarget
+        = null; // Use JS null for \"both\" or unspecified\r\n                } else
+        if (lowerTarget === '\"left\"' || lowerTarget === \"'left'\") {\r\n                   
+        hapticsTarget = \"left\";\r\n                } else if (lowerTarget === '\"right\"'
+        || lowerTarget === \"'right'\") {\r\n                    hapticsTarget =
+        \"right\";\r\n                }\r\n                // else assume target
+        is already \"left\", \"right\", or a valid direct value.\r\n            }\r\n\r\n           
+        $.state.player.send(\"haptics\", {\r\n                target: hapticsTarget,\r\n               
+        frequency: parseFloat(frequency),\r\n                amplitude: parseFloat(amplitude),\r\n               
+        duration: parseFloat(duration) // Duration in seconds\r\n            });\r\n       
+        } else {\r\n            $.log(\"SendHaptics: No player found nearby.\");\r\n       
+        }\r\n    } catch (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n   
+        }\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n    CONDITION = $.groupState.currentCondition;\r\n   
+        PARTICIPANTS = $.groupState.participants;\r\n    if (!stateEnterActions[$.state.state_id]
+        || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
+        return;\r\n    \r\n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
+        && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !==
+        \"sleep\") {\r\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\r\n       
+        $.state.stateEnterActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateEnterActionID
+        >= stateEnterActions[$.state.state_id].length) {\r\n        $.state.stateEnterActionID
+        = -1;\r\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
+        === \"sleep\") {\r\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
+        {\r\n            $.state.stateEnterActionID += 1;\r\n            timer =
+        0;\r\n        } else {\r\n            timer += deltaTime;\r\n        }\r\n   
+        }\r\n}\r\n\r\nfunction OnStateExit(deltaTime) {\r\n    if (!stateExitActions[$.state.last_state_id]
         || $.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
-        return;\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
+        return;\r\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
         && stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
-        !== \"sleep\") {\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\n       
-        $.state.stateExitActionID += 1;\n    }\n\n    if ($.state.stateExitActionID
-        >= stateExitActions[$.state.last_state_id].length) {\n        $.state.stateExitActionID
-        = -1;\n        $.state.last_state_id = $.state.state_id;\n    } else if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
-        === \"sleep\") {\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
-        {\n            $.state.stateExitActionID += 1;\n            timer = 0;\n           
+        !== \"sleep\") {\r\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\r\n       
+        $.state.stateExitActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateExitActionID
+        >= stateExitActions[$.state.last_state_id].length) {\r\n        $.state.stateExitActionID
+        = -1;\r\n        $.state.last_state_id = $.state.state_id;\r\n    } else
+        if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        === \"sleep\") {\r\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
+        {\r\n            $.state.stateExitActionID += 1;\r\n            timer = 0;\r\n           
         if ($.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
-        {\n                $.state.stateExitActionID = -1;\n            }\n       
-        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
-        DuringState(deltaTime) {\n    if (!duringStateActions[$.state.state_id] ||
-        !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\n   
-        \n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
-        {\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
-        === \"sleep\") {\n            $.state.duringStateActionID += 1;\n       
-        } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\n           
-        $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
-        = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\n    3: [\n        { type: \"exec\", action: () =>
+        {\r\n                $.state.stateExitActionID = -1;\r\n            }\r\n       
+        } else {\r\n            timer += deltaTime;\r\n        }\r\n    }\r\n}\r\n\r\nfunction
+        DuringState(deltaTime) {\r\n    if (!duringStateActions[$.state.state_id]
+        || !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\r\n   
+        \r\n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
+        {\r\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
+        === \"sleep\") {\r\n            $.state.duringStateActionID += 1;\r\n       
+        } else {\r\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\r\n           
+        $.state.duringStateActionID += 1;\r\n        }\r\n    }\r\n    $.state.duringStateActionID
+        = 0;\r\n}\r\n\r\nfunction Start() {}\r\nfunction Update(deltaTime) {}\r\n\r\nconst
+        stateEnterActions = {\r\n    3: [\n        { type: \"exec\", action: () =>
         {\n            $.setStateCompat('this', 'exp_showItem', true);\n        }
-        }\n    ]\n};\n\nconst duringStateActions = {\n};\n\nconst stateExitActions
-        = {\n    3: [\n        { type: \"exec\", action: () => {\n            $.setStateCompat('this',
-        'exp_showItem', false);\n        } }\n    ]\n};\n\n\n// function Start()
+        }\r\n    ]\r\n};\n\r\nconst duringStateActions = {\r\n};\n\r\nconst stateExitActions
+        = {\r\n    3: [\n        { type: \"exec\", action: () => {\n            $.setStateCompat('this',
+        'exp_showItem', false);\n        } }\r\n    ]\r\n};\r\n\n\n// function Start()
         { }\n// function Update(deltaTime) { }\n// $.onCollide((collision) => { });\n//
         $.onGrab((isGrab, isLeftHand, player) => { });\n// $.onInteract((player)
         => { });\n// $.onUse((isDown, player) => { });\n// $.onPhysicsUpdate((deltaTime)
@@ -2905,7 +3014,7 @@ PrefabInstance:
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -3271,6 +3380,129 @@ PrefabInstance:
       propertyPath: m_Name
       value: ExitPortal
       objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: sourceCode
+      value: "let timer = 0;\r\nlet CONDITION;\r\n\r\n$.onStart(() => {\r\n    $.state.last_state_id
+        = 0;\r\n    $.state.state_id = 0;\r\n    $.state.stateEnterActionID = -1;\r\n   
+        $.state.stateExitActionID = -1;\r\n    $.state.duringStateActionID = -1;\r\n   
+        Start();\r\n})\r\n\r\n$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\",
+        \"state_exit\", \"boolean\")) {\r\n        $.state.stateExitActionID = 0;\r\n       
+        $.state.last_state_id = $.state.state_id;\r\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\r\n    }\r\n    if ($.state.stateExitActionID >=
+        0) OnStateExit(deltaTime);\r\n\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
+        $.state.stateEnterActionID = 0;\r\n        $.state.duringStateActionID =
+        0;\r\n    }\r\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\r\n\r\n   
+        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\r\n\r\n   
+        Update(deltaTime);\r\n})\r\n\r\nfunction ShowItem() {\r\n    $.setStateCompat(\"this\",
+        \"exp_showItem\", true);\r\n}\r\n\r\nfunction HideItem() {\r\n    $.setStateCompat(\"this\",
+        \"exp_showItem\", false);\r\n}\r\n\r\nfunction SetPosition(x, y, z) {\r\n   
+        try {\r\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)));\r\n    } catch (e) {\r\n        $.log(`Error in SetPosition:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\r\n   
+        }\r\n}\r\n\r\nfunction AddPosition(x, y, z) {\r\n    try {\r\n        $.setPosition($.getPosition().add(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))))\r\n    } catch (e)
+        {\r\n        $.log(`Error in AddPosition: ${e}. Ensure MovableItem is present
+        and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction SetRotation(x,
+        y, z) {\r\n    try {\r\n        $.setRotation(new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetRotation: ${e}. Ensure MovableItem is present
+        and x,y,z are valid numbers (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction
+        AddRotation(x, y, z) {\r\n    try {\r\n        $.setRotation($.getRotation().multiply(new
+        Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)))))\r\n    } catch (e) {\r\n        $.log(`Error in AddRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\r\n   
+        }\r\n}\r\n\r\nfunction ShowChild(childName) {\r\n    $.subNode(childName).setEnabled(true);\r\n}\r\n\r\nfunction
+        HideChild(childName) {\r\n    $.subNode(childName).setEnabled(false);\r\n}\r\n\r\nfunction
+        SetChildPosition(childName, x, y, z) {\r\n    try {\r\n        $.subNode(childName).setPosition(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetChildPosition: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction AddChildPosition(childName,
+        x, y, z) {\r\n    try {\r\n        $.subNode(childName).setPosition($.subNode(childName).getPosition().add(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))))\r\n    } catch (e)
+        {\r\n        $.log(`Error in AddChildPosition: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction SetChildRotation(childName,
+        x, y, z) {\r\n    try {\r\n        $.subNode(childName).setRotation(new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetChildRotation: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction
+        AddChildRotation(childName, x, y, z) {\r\n    try {\r\n        $.subNode(childName).setRotation($.subNode(childName).getRotation().multiply(new
+        Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)))))\r\n    } catch (e) {\r\n        $.log(`Error in AddChildRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\r\n   
+        }\r\n}\r\n\r\nfunction ToNextState() {\r\n    $.sendSignalCompat(\"this\",
+        \"state_triggerTransition\");\r\n}\r\n\r\nfunction SendDataToCollector(label,
+        value) {\r\n    if (!$.groupState.collectedData) $.groupState.collectedData
+        = {};\r\n    let collectedData = $.groupState.collectedData;\r\n    collectedData[label]
+        = value;\r\n    $.groupState.collectedData = collectedData;\r\n}\r\n\r\nfunction
+        ProcessAndSaveCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
+        UploadCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
+        SetText(text) {\r\n    try {\r\n        $.subNode(\"Text\").setText(`${text}`);\r\n   
+        } catch (e) {\r\n        $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
+        exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(target,
+        frequency, amplitude, duration) {\r\n    try {\r\n        if (!$.state.player)
+        $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\r\n       
+        if ($.state.player) {\r\n            let hapticsTarget = target;\r\n           
+        if (typeof target === 'string') {\r\n                const lowerTarget =
+        target.toLowerCase();\r\n                if (lowerTarget === 'null' || lowerTarget
+        === 'undefined' || lowerTarget === \"\") {\r\n                    hapticsTarget
+        = null; // Use JS null for \"both\" or unspecified\r\n                } else
+        if (lowerTarget === '\"left\"' || lowerTarget === \"'left'\") {\r\n                   
+        hapticsTarget = \"left\";\r\n                } else if (lowerTarget === '\"right\"'
+        || lowerTarget === \"'right'\") {\r\n                    hapticsTarget =
+        \"right\";\r\n                }\r\n                // else assume target
+        is already \"left\", \"right\", or a valid direct value.\r\n            }\r\n\r\n           
+        $.state.player.send(\"haptics\", {\r\n                target: hapticsTarget,\r\n               
+        frequency: parseFloat(frequency),\r\n                amplitude: parseFloat(amplitude),\r\n               
+        duration: parseFloat(duration) // Duration in seconds\r\n            });\r\n       
+        } else {\r\n            $.log(\"SendHaptics: No player found nearby.\");\r\n       
+        }\r\n    } catch (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n   
+        }\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n    CONDITION = $.groupState.currentCondition;\r\n   
+        PARTICIPANTS = $.groupState.participants;\r\n    if (!stateEnterActions[$.state.state_id]
+        || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
+        return;\r\n    \r\n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
+        && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !==
+        \"sleep\") {\r\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\r\n       
+        $.state.stateEnterActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateEnterActionID
+        >= stateEnterActions[$.state.state_id].length) {\r\n        $.state.stateEnterActionID
+        = -1;\r\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
+        === \"sleep\") {\r\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
+        {\r\n            $.state.stateEnterActionID += 1;\r\n            timer =
+        0;\r\n        } else {\r\n            timer += deltaTime;\r\n        }\r\n   
+        }\r\n}\r\n\r\nfunction OnStateExit(deltaTime) {\r\n    if (!stateExitActions[$.state.last_state_id]
+        || $.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
+        return;\r\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
+        && stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        !== \"sleep\") {\r\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\r\n       
+        $.state.stateExitActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateExitActionID
+        >= stateExitActions[$.state.last_state_id].length) {\r\n        $.state.stateExitActionID
+        = -1;\r\n        $.state.last_state_id = $.state.state_id;\r\n    } else
+        if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        === \"sleep\") {\r\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
+        {\r\n            $.state.stateExitActionID += 1;\r\n            timer = 0;\r\n           
+        if ($.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
+        {\r\n                $.state.stateExitActionID = -1;\r\n            }\r\n       
+        } else {\r\n            timer += deltaTime;\r\n        }\r\n    }\r\n}\r\n\r\nfunction
+        DuringState(deltaTime) {\r\n    if (!duringStateActions[$.state.state_id]
+        || !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\r\n   
+        \r\n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
+        {\r\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
+        === \"sleep\") {\r\n            $.state.duringStateActionID += 1;\r\n       
+        } else {\r\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\r\n           
+        $.state.duringStateActionID += 1;\r\n        }\r\n    }\r\n    $.state.duringStateActionID
+        = 0;\r\n}\r\n\r\nfunction Start() {}\r\nfunction Update(deltaTime) {}\r\n\r\nconst
+        stateEnterActions = {\r\n    6: [\n        { type: \"exec\", action: () =>
+        {\n            $.setStateCompat('this', 'exp_showItem', true);\n        }
+        }\r\n    ]\r\n};\n\r\nconst duringStateActions = {\r\n};\n\r\nconst stateExitActions
+        = {\r\n    6: [\n        { type: \"exec\", action: () => {\n            $.setStateCompat('this',
+        'exp_showItem', false);\n        } }\r\n    ]\r\n};\r\n\n\n// function Start()
+        { }\n// function Update(deltaTime) { }\n// $.onCollide((collision) => { });\n//
+        $.onGrab((isGrab, isLeftHand, player) => { });\n// $.onInteract((player)
+        => { });\n// $.onUse((isDown, player) => { });\n// $.onPhysicsUpdate((deltaTime)
+        => { });\n// $.onReceive((messageType, arg, sender) => { });"
+      objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: m_RootOrder
@@ -3600,10 +3832,10 @@ PrefabInstance:
         ($.groupState.qCompletedCount >= $.groupState.participants.length) {\r\n           
         $.log(\"All participants have completed the questionnaire!\");\r\n           
         $.groupState.qCompletedCount = 0;\r\n            $.sendSignalCompat(\"this\",
-        \"state_triggerTransition\");\r\n            $.groupState.participants.forEach(p
-        => {\r\n                p.send(\"setQuestionnaireUI\", {\r\n                   
-        n: \"WaitingText\",\r\n                    e: false\r\n                });\r\n           
-        });\r\n        }\r\n        reset();\r\n    }\r\n});\r\n"
+        \"form_allPlayersCompleted\"); // state_triggerTransition\r\n           
+        $.groupState.participants.forEach(p => {\r\n                p.send(\"setQuestionnaireUI\",
+        {\r\n                    n: \"WaitingText\",\r\n                    e: false\r\n               
+        });\r\n            });\r\n        }\r\n        reset();\r\n    }\r\n});\r\n"
       objectReference: {fileID: 0}
     - target: {fileID: 8437594677551052287, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
@@ -4265,10 +4497,10 @@ PrefabInstance:
         ($.groupState.qCompletedCount >= $.groupState.participants.length) {\r\n           
         $.log(\"All participants have completed the questionnaire!\");\r\n           
         $.groupState.qCompletedCount = 0;\r\n            $.sendSignalCompat(\"this\",
-        \"state_triggerTransition\");\r\n            $.groupState.participants.forEach(p
-        => {\r\n                p.send(\"setQuestionnaireUI\", {\r\n                   
-        n: \"WaitingText\",\r\n                    e: false\r\n                });\r\n           
-        });\r\n        }\r\n        reset();\r\n    }\r\n});\r\n"
+        \"form_allPlayersCompleted\"); // state_triggerTransition\r\n           
+        $.groupState.participants.forEach(p => {\r\n                p.send(\"setQuestionnaireUI\",
+        {\r\n                    n: \"WaitingText\",\r\n                    e: false\r\n               
+        });\r\n            });\r\n        }\r\n        reset();\r\n    }\r\n});\r\n"
       objectReference: {fileID: 0}
     - target: {fileID: 8437594677551052287, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
@@ -4373,119 +4605,140 @@ PrefabInstance:
     - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: sourceCode
-      value: "let timer = 0;\nlet CONDITION;\n\n$.onStart(() => {\n    $.state.last_state_id
-        = 0;\n    $.state.state_id = 0;\n    $.state.stateEnterActionID = -1;\n   
-        $.state.stateExitActionID = -1;\n    $.state.duringStateActionID = -1;\n   
-        Start();\n})\n\n$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\",
-        \"state_exit\", \"boolean\")) {\n        $.state.stateExitActionID = 0;\n       
-        $.state.last_state_id = $.state.state_id;\n        $.setStateCompat(\"this\",
-        \"state_exit\", false);\n    }\n    if ($.state.stateExitActionID >= 0) OnStateExit(deltaTime);\n\n   
-        if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\n       
-        $.setStateCompat(\"this\", \"state_enter\", false);\n        $.state.state_id
-        = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
-        $.state.stateEnterActionID = 0;\n        $.state.duringStateActionID = 0;\n   
-        }\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\n\n   
-        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\n\n    Update(deltaTime);\n})\n\nfunction
-        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
-        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
-        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
-        SetText(text) {\n    try {\n      $.subNode(\"Text\").setText(`${text}`);\n   
-        } catch (e) {\n      $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
-        exists and has setText method.`);\n    }\n}\n\nfunction SetPosition(x, y,
-        z) {\n    try {\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
-        parseFloat(z)));\n    } catch (e) {\n        $.log(`Error in SetPosition:
-        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
-        }\n}\n\nfunction AddPosition(x, y, z) {\n    try {\n        const currentPos
-        = $.getPosition();\n        $.setPosition(currentPos.add(new Vector3(parseFloat(x),
-        parseFloat(y), parseFloat(z))));\n    } catch (e) {\n        $.log(`Error
-        in AddPosition: ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
-        }\n}\n\nfunction SetRotation(x, y, z) {\n    try {\n        $.setRotation(new
+      value: "let timer = 0;\r\nlet CONDITION;\r\n\r\n$.onStart(() => {\r\n    $.state.last_state_id
+        = 0;\r\n    $.state.state_id = 0;\r\n    $.state.stateEnterActionID = -1;\r\n   
+        $.state.stateExitActionID = -1;\r\n    $.state.duringStateActionID = -1;\r\n   
+        Start();\r\n})\r\n\r\n$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\",
+        \"state_exit\", \"boolean\")) {\r\n        $.state.stateExitActionID = 0;\r\n       
+        $.state.last_state_id = $.state.state_id;\r\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\r\n    }\r\n    if ($.state.stateExitActionID >=
+        0) OnStateExit(deltaTime);\r\n\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
+        $.state.stateEnterActionID = 0;\r\n        $.state.duringStateActionID =
+        0;\r\n    }\r\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\r\n\r\n   
+        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\r\n\r\n   
+        Update(deltaTime);\r\n})\r\n\r\nfunction ShowItem() {\r\n    $.setStateCompat(\"this\",
+        \"exp_showItem\", true);\r\n}\r\n\r\nfunction HideItem() {\r\n    $.setStateCompat(\"this\",
+        \"exp_showItem\", false);\r\n}\r\n\r\nfunction SetPosition(x, y, z) {\r\n   
+        try {\r\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)));\r\n    } catch (e) {\r\n        $.log(`Error in SetPosition:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\r\n   
+        }\r\n}\r\n\r\nfunction AddPosition(x, y, z) {\r\n    try {\r\n        $.setPosition($.getPosition().add(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))))\r\n    } catch (e)
+        {\r\n        $.log(`Error in AddPosition: ${e}. Ensure MovableItem is present
+        and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction SetRotation(x,
+        y, z) {\r\n    try {\r\n        $.setRotation(new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetRotation: ${e}. Ensure MovableItem is present
+        and x,y,z are valid numbers (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction
+        AddRotation(x, y, z) {\r\n    try {\r\n        $.setRotation($.getRotation().multiply(new
         Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
-        parseFloat(z))));\n    } catch (e) {\n        $.log(`Error in SetRotation:
-        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\n   
-        }\n}\n\nfunction AddRotation(x, y, z) {\n    try {\n        const currentRot
-        = $.getRotation();\n        const offsetRot = new Quaternion().setFromEulerAngles(new
-        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\n        $.setRotation(currentRot.multiply(offsetRot));\n   
-        } catch (e) {\n        $.log(`Error in AddRotation: ${e}. Ensure MovableItem
-        is present and x,y,z are valid numbers (Euler degrees).`);\n    }\n}\n\nfunction
-        SendDataToCollector(label, value) {\n    if (!$.groupState.collectedData)
-        $.groupState.collectedData = {};\n    let collectedData = $.groupState.collectedData;\n   
-        collectedData[label] = value;\n    $.groupState.collectedData = collectedData;\n}\n\nfunction
-        ProcessAndSaveCollectedData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
-        UploadCollectedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
-        SendHaptics(target, frequency, amplitude, duration) {\n    try {\n       
-        if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\n       
-        if ($.state.player) {\n            let hapticsTarget = target;\n           
-        if (typeof target === 'string') {\n                const lowerTarget = target.toLowerCase();\n               
-        if (lowerTarget === 'null' || lowerTarget === 'undefined' || lowerTarget
-        === \"\") {\n                    hapticsTarget = null; // Use JS null for
-        \"both\" or unspecified\n                } else if (lowerTarget === '\"left\"'
-        || lowerTarget === \"'left'\") {\n                    hapticsTarget = \"left\";\n               
-        } else if (lowerTarget === '\"right\"' || lowerTarget === \"'right'\") {\n                    
-        hapticsTarget = \"right\";\n                }\n                // else assume
-        target is already \"left\", \"right\", or a valid direct value.\n           
-        }\n\n            $.state.player.send(\"haptics\", {\n                target:
-        hapticsTarget,\n                frequency: parseFloat(frequency),\n               
-        amplitude: parseFloat(amplitude),\n                duration: parseFloat(duration)
-        // Duration in seconds\n            });\n        } else {\n            $.log(\"SendHaptics:
-        No player found nearby.\");\n        }\n    } catch (e) {\n        $.log(`Error
-        in SendHaptics: ${e}`);\n    }\n}\n\nfunction OnStateEnter(deltaTime) {\n   
-        CONDITION = $.groupState.currentCondition;\n    PARTICIPANTS = $.groupState.participants;\n   
-        if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >=
-        stateEnterActions[$.state.state_id].length) return;\n    \n    while ($.state.stateEnterActionID
-        < stateEnterActions[$.state.state_id].length && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
-        !== \"sleep\") {\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\n       
-        $.state.stateEnterActionID += 1;\n    }\n\n    if ($.state.stateEnterActionID
-        >= stateEnterActions[$.state.state_id].length) {\n        $.state.stateEnterActionID
-        = -1;\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
-        === \"sleep\") {\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
-        {\n            $.state.stateEnterActionID += 1;\n            timer = 0;\n       
-        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
-        OnStateExit(deltaTime) {\n    if (!stateExitActions[$.state.last_state_id]
+        parseFloat(z)))))\r\n    } catch (e) {\r\n        $.log(`Error in AddRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\r\n   
+        }\r\n}\r\n\r\nfunction ShowChild(childName) {\r\n    $.subNode(childName).setEnabled(true);\r\n}\r\n\r\nfunction
+        HideChild(childName) {\r\n    $.subNode(childName).setEnabled(false);\r\n}\r\n\r\nfunction
+        SetChildPosition(childName, x, y, z) {\r\n    try {\r\n        $.subNode(childName).setPosition(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetChildPosition: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction AddChildPosition(childName,
+        x, y, z) {\r\n    try {\r\n        $.subNode(childName).setPosition($.subNode(childName).getPosition().add(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))))\r\n    } catch (e)
+        {\r\n        $.log(`Error in AddChildPosition: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction SetChildRotation(childName,
+        x, y, z) {\r\n    try {\r\n        $.subNode(childName).setRotation(new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetChildRotation: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction
+        AddChildRotation(childName, x, y, z) {\r\n    try {\r\n        $.subNode(childName).setRotation($.subNode(childName).getRotation().multiply(new
+        Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)))))\r\n    } catch (e) {\r\n        $.log(`Error in AddChildRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\r\n   
+        }\r\n}\r\n\r\nfunction ToNextState() {\r\n    $.sendSignalCompat(\"this\",
+        \"state_triggerTransition\");\r\n}\r\n\r\nfunction SendDataToCollector(label,
+        value) {\r\n    if (!$.groupState.collectedData) $.groupState.collectedData
+        = {};\r\n    let collectedData = $.groupState.collectedData;\r\n    collectedData[label]
+        = value;\r\n    $.groupState.collectedData = collectedData;\r\n}\r\n\r\nfunction
+        ProcessAndSaveCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
+        UploadCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
+        SetText(text) {\r\n    try {\r\n        $.subNode(\"Text\").setText(`${text}`);\r\n   
+        } catch (e) {\r\n        $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
+        exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(target,
+        frequency, amplitude, duration) {\r\n    try {\r\n        if (!$.state.player)
+        $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\r\n       
+        if ($.state.player) {\r\n            let hapticsTarget = target;\r\n           
+        if (typeof target === 'string') {\r\n                const lowerTarget =
+        target.toLowerCase();\r\n                if (lowerTarget === 'null' || lowerTarget
+        === 'undefined' || lowerTarget === \"\") {\r\n                    hapticsTarget
+        = null; // Use JS null for \"both\" or unspecified\r\n                } else
+        if (lowerTarget === '\"left\"' || lowerTarget === \"'left'\") {\r\n                   
+        hapticsTarget = \"left\";\r\n                } else if (lowerTarget === '\"right\"'
+        || lowerTarget === \"'right'\") {\r\n                    hapticsTarget =
+        \"right\";\r\n                }\r\n                // else assume target
+        is already \"left\", \"right\", or a valid direct value.\r\n            }\r\n\r\n           
+        $.state.player.send(\"haptics\", {\r\n                target: hapticsTarget,\r\n               
+        frequency: parseFloat(frequency),\r\n                amplitude: parseFloat(amplitude),\r\n               
+        duration: parseFloat(duration) // Duration in seconds\r\n            });\r\n       
+        } else {\r\n            $.log(\"SendHaptics: No player found nearby.\");\r\n       
+        }\r\n    } catch (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n   
+        }\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n    CONDITION = $.groupState.currentCondition;\r\n   
+        PARTICIPANTS = $.groupState.participants;\r\n    if (!stateEnterActions[$.state.state_id]
+        || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
+        return;\r\n    \r\n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
+        && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !==
+        \"sleep\") {\r\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\r\n       
+        $.state.stateEnterActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateEnterActionID
+        >= stateEnterActions[$.state.state_id].length) {\r\n        $.state.stateEnterActionID
+        = -1;\r\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
+        === \"sleep\") {\r\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
+        {\r\n            $.state.stateEnterActionID += 1;\r\n            timer =
+        0;\r\n        } else {\r\n            timer += deltaTime;\r\n        }\r\n   
+        }\r\n}\r\n\r\nfunction OnStateExit(deltaTime) {\r\n    if (!stateExitActions[$.state.last_state_id]
         || $.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
-        return;\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
+        return;\r\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
         && stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
-        !== \"sleep\") {\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\n       
-        $.state.stateExitActionID += 1;\n    }\n\n    if ($.state.stateExitActionID
-        >= stateExitActions[$.state.last_state_id].length) {\n        $.state.stateExitActionID
-        = -1;\n        $.state.last_state_id = $.state.state_id;\n    } else if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
-        === \"sleep\") {\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
-        {\n            $.state.stateExitActionID += 1;\n            timer = 0;\n           
+        !== \"sleep\") {\r\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\r\n       
+        $.state.stateExitActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateExitActionID
+        >= stateExitActions[$.state.last_state_id].length) {\r\n        $.state.stateExitActionID
+        = -1;\r\n        $.state.last_state_id = $.state.state_id;\r\n    } else
+        if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        === \"sleep\") {\r\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
+        {\r\n            $.state.stateExitActionID += 1;\r\n            timer = 0;\r\n           
         if ($.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
-        {\n                $.state.stateExitActionID = -1;\n            }\n       
-        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
-        DuringState(deltaTime) {\n    if (!duringStateActions[$.state.state_id] ||
-        !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\n   
-        \n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
-        {\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
-        === \"sleep\") {\n            $.state.duringStateActionID += 1;\n       
-        } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\n           
-        $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
-        = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\n    3: [\n        { type: \"exec\", action: () =>
+        {\r\n                $.state.stateExitActionID = -1;\r\n            }\r\n       
+        } else {\r\n            timer += deltaTime;\r\n        }\r\n    }\r\n}\r\n\r\nfunction
+        DuringState(deltaTime) {\r\n    if (!duringStateActions[$.state.state_id]
+        || !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\r\n   
+        \r\n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
+        {\r\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
+        === \"sleep\") {\r\n            $.state.duringStateActionID += 1;\r\n       
+        } else {\r\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\r\n           
+        $.state.duringStateActionID += 1;\r\n        }\r\n    }\r\n    $.state.duringStateActionID
+        = 0;\r\n}\r\n\r\nfunction Start() {}\r\nfunction Update(deltaTime) {}\r\n\r\nconst
+        stateEnterActions = {\r\n    3: [\n        { type: \"exec\", action: () =>
         {\n            if (CONDITION['depth'] === 'near') {\n              $.setPosition(new
-        Vector3(0, 1.5, 1))\n            }\n        } },\n        { type: \"exec\",
+        Vector3(0, 1.5, 1))\n            }\n        } },\r\n        { type: \"exec\",
         action: () => {\n            if (CONDITION['depth'] === 'far') {\n             
-        $.setPosition(new Vector3(0, 1.5, 3))\n            }\n        } },\n       
+        $.setPosition(new Vector3(0, 1.5, 3))\n            }\n        } },\r\n       
         { type: \"exec\", action: () => {\n            if (CONDITION['text'] ===
         'Red') {\n              $.subNode('Text').setText(`Red`);\n            }\n       
-        } },\n        { type: \"exec\", action: () => {\n            if (CONDITION['text']
+        } },\r\n        { type: \"exec\", action: () => {\n            if (CONDITION['text']
         === 'Blue') {\n              $.subNode('Text').setText(`Blue`);\n           
-        }\n        } },\n        { type: \"exec\", action: () => {\n            if
-        (CONDITION['font'] === 'B') {\n              $.setStateCompat('this', 'exp_showItem',
-        true);\n            }\n        } }\n    ]\n};\n\nconst duringStateActions
-        = {\n};\n\nconst stateExitActions = {\n    3: [\n        { type: \"exec\",
-        action: () => {\n            $.setStateCompat('this', 'exp_showItem', false);\n       
-        } }\n    ]\n};\n\n\n// function Start() { }\n// function Update(deltaTime)
-        { }\n// $.onCollide((collision) => { });\n// $.onGrab((isGrab, isLeftHand,
-        player) => { });\n// $.onInteract((player) => { });\n// $.onUse((isDown,
+        }\n        } },\r\n        { type: \"exec\", action: () => {\n           
+        if (CONDITION['font'] === 'B') {\n              $.setStateCompat('this',
+        'exp_showItem', true);\n            }\n        } }\r\n    ]\r\n};\n\r\nconst
+        duringStateActions = {\r\n};\n\r\nconst stateExitActions = {\r\n    3: [\n       
+        { type: \"exec\", action: () => {\n            $.setStateCompat('this', 'exp_showItem',
+        false);\n        } }\r\n    ]\r\n};\r\n\n\n// function Start() { }\n// function
+        Update(deltaTime) { }\n// $.onCollide((collision) => { });\n// $.onGrab((isGrab,
+        isLeftHand, player) => { });\n// $.onInteract((player) => { });\n// $.onUse((isDown,
         player) => { });\n// $.onPhysicsUpdate((deltaTime) => { });\n// $.onReceive((messageType,
         arg, sender) => { });"
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -4634,100 +4887,121 @@ PrefabInstance:
     - target: {fileID: 5660514857068071926, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: sourceCode
-      value: "let timer = 0;\nlet CONDITION;\n\n$.onStart(() => {\n    $.state.last_state_id
-        = 0;\n    $.state.state_id = 0;\n    $.state.stateEnterActionID = -1;\n   
-        $.state.stateExitActionID = -1;\n    $.state.duringStateActionID = -1;\n   
-        Start();\n})\n\n$.onUpdate((deltaTime) => {\n    if ($.getStateCompat(\"this\",
-        \"state_exit\", \"boolean\")) {\n        $.state.stateExitActionID = 0;\n       
-        $.state.last_state_id = $.state.state_id;\n        $.setStateCompat(\"this\",
-        \"state_exit\", false);\n    }\n    if ($.state.stateExitActionID >= 0) OnStateExit(deltaTime);\n\n   
-        if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\n       
-        $.setStateCompat(\"this\", \"state_enter\", false);\n        $.state.state_id
-        = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\n       
-        $.state.stateEnterActionID = 0;\n        $.state.duringStateActionID = 0;\n   
-        }\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\n\n   
-        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\n\n    Update(deltaTime);\n})\n\nfunction
-        ShowItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\n}\n\nfunction
-        HideItem() {\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\n}\n\nfunction
-        ToNextState() {\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\n}\n\nfunction
-        SetText(text) {\n    try {\n      $.subNode(\"Text\").setText(`${text}`);\n   
-        } catch (e) {\n      $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
-        exists and has setText method.`);\n    }\n}\n\nfunction SetPosition(x, y,
-        z) {\n    try {\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
-        parseFloat(z)));\n    } catch (e) {\n        $.log(`Error in SetPosition:
-        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
-        }\n}\n\nfunction AddPosition(x, y, z) {\n    try {\n        const currentPos
-        = $.getPosition();\n        $.setPosition(currentPos.add(new Vector3(parseFloat(x),
-        parseFloat(y), parseFloat(z))));\n    } catch (e) {\n        $.log(`Error
-        in AddPosition: ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\n   
-        }\n}\n\nfunction SetRotation(x, y, z) {\n    try {\n        $.setRotation(new
+      value: "let timer = 0;\r\nlet CONDITION;\r\n\r\n$.onStart(() => {\r\n    $.state.last_state_id
+        = 0;\r\n    $.state.state_id = 0;\r\n    $.state.stateEnterActionID = -1;\r\n   
+        $.state.stateExitActionID = -1;\r\n    $.state.duringStateActionID = -1;\r\n   
+        Start();\r\n})\r\n\r\n$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\",
+        \"state_exit\", \"boolean\")) {\r\n        $.state.stateExitActionID = 0;\r\n       
+        $.state.last_state_id = $.state.state_id;\r\n        $.setStateCompat(\"this\",
+        \"state_exit\", false);\r\n    }\r\n    if ($.state.stateExitActionID >=
+        0) OnStateExit(deltaTime);\r\n\r\n    if ($.getStateCompat(\"this\", \"state_enter\",
+        \"boolean\")) {\r\n        $.setStateCompat(\"this\", \"state_enter\", false);\r\n       
+        $.state.state_id = $.getStateCompat(\"global\", \"state_currentID\", \"integer\");\r\n       
+        $.state.stateEnterActionID = 0;\r\n        $.state.duringStateActionID =
+        0;\r\n    }\r\n    if ($.state.stateEnterActionID >= 0) OnStateEnter(deltaTime);\r\n\r\n   
+        if ($.state.duringStateActionID >= 0) DuringState(deltaTime);\r\n\r\n   
+        Update(deltaTime);\r\n})\r\n\r\nfunction ShowItem() {\r\n    $.setStateCompat(\"this\",
+        \"exp_showItem\", true);\r\n}\r\n\r\nfunction HideItem() {\r\n    $.setStateCompat(\"this\",
+        \"exp_showItem\", false);\r\n}\r\n\r\nfunction SetPosition(x, y, z) {\r\n   
+        try {\r\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)));\r\n    } catch (e) {\r\n        $.log(`Error in SetPosition:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\r\n   
+        }\r\n}\r\n\r\nfunction AddPosition(x, y, z) {\r\n    try {\r\n        $.setPosition($.getPosition().add(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))))\r\n    } catch (e)
+        {\r\n        $.log(`Error in AddPosition: ${e}. Ensure MovableItem is present
+        and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction SetRotation(x,
+        y, z) {\r\n    try {\r\n        $.setRotation(new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetRotation: ${e}. Ensure MovableItem is present
+        and x,y,z are valid numbers (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction
+        AddRotation(x, y, z) {\r\n    try {\r\n        $.setRotation($.getRotation().multiply(new
         Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
-        parseFloat(z))));\n    } catch (e) {\n        $.log(`Error in SetRotation:
-        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\n   
-        }\n}\n\nfunction AddRotation(x, y, z) {\n    try {\n        const currentRot
-        = $.getRotation();\n        const offsetRot = new Quaternion().setFromEulerAngles(new
-        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\n        $.setRotation(currentRot.multiply(offsetRot));\n   
-        } catch (e) {\n        $.log(`Error in AddRotation: ${e}. Ensure MovableItem
-        is present and x,y,z are valid numbers (Euler degrees).`);\n    }\n}\n\nfunction
-        SendDataToCollector(label, value) {\n    if (!$.groupState.collectedData)
-        $.groupState.collectedData = {};\n    let collectedData = $.groupState.collectedData;\n   
-        collectedData[label] = value;\n    $.groupState.collectedData = collectedData;\n}\n\nfunction
-        ProcessAndSaveCollectedData() {\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\n}\n\nfunction
-        UploadCollectedData() {\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\n}\n\nfunction
-        SendHaptics(target, frequency, amplitude, duration) {\n    try {\n       
-        if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\n       
-        if ($.state.player) {\n            let hapticsTarget = target;\n           
-        if (typeof target === 'string') {\n                const lowerTarget = target.toLowerCase();\n               
-        if (lowerTarget === 'null' || lowerTarget === 'undefined' || lowerTarget
-        === \"\") {\n                    hapticsTarget = null; // Use JS null for
-        \"both\" or unspecified\n                } else if (lowerTarget === '\"left\"'
-        || lowerTarget === \"'left'\") {\n                    hapticsTarget = \"left\";\n               
-        } else if (lowerTarget === '\"right\"' || lowerTarget === \"'right'\") {\n                    
-        hapticsTarget = \"right\";\n                }\n                // else assume
-        target is already \"left\", \"right\", or a valid direct value.\n           
-        }\n\n            $.state.player.send(\"haptics\", {\n                target:
-        hapticsTarget,\n                frequency: parseFloat(frequency),\n               
-        amplitude: parseFloat(amplitude),\n                duration: parseFloat(duration)
-        // Duration in seconds\n            });\n        } else {\n            $.log(\"SendHaptics:
-        No player found nearby.\");\n        }\n    } catch (e) {\n        $.log(`Error
-        in SendHaptics: ${e}`);\n    }\n}\n\nfunction OnStateEnter(deltaTime) {\n   
-        CONDITION = $.groupState.currentCondition;\n    PARTICIPANTS = $.groupState.participants;\n   
-        if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >=
-        stateEnterActions[$.state.state_id].length) return;\n    \n    while ($.state.stateEnterActionID
-        < stateEnterActions[$.state.state_id].length && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
-        !== \"sleep\") {\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\n       
-        $.state.stateEnterActionID += 1;\n    }\n\n    if ($.state.stateEnterActionID
-        >= stateEnterActions[$.state.state_id].length) {\n        $.state.stateEnterActionID
-        = -1;\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
-        === \"sleep\") {\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
-        {\n            $.state.stateEnterActionID += 1;\n            timer = 0;\n       
-        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
-        OnStateExit(deltaTime) {\n    if (!stateExitActions[$.state.last_state_id]
+        parseFloat(z)))))\r\n    } catch (e) {\r\n        $.log(`Error in AddRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\r\n   
+        }\r\n}\r\n\r\nfunction ShowChild(childName) {\r\n    $.subNode(childName).setEnabled(true);\r\n}\r\n\r\nfunction
+        HideChild(childName) {\r\n    $.subNode(childName).setEnabled(false);\r\n}\r\n\r\nfunction
+        SetChildPosition(childName, x, y, z) {\r\n    try {\r\n        $.subNode(childName).setPosition(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z)));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetChildPosition: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction AddChildPosition(childName,
+        x, y, z) {\r\n    try {\r\n        $.subNode(childName).setPosition($.subNode(childName).getPosition().add(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))))\r\n    } catch (e)
+        {\r\n        $.log(`Error in AddChildPosition: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction SetChildRotation(childName,
+        x, y, z) {\r\n    try {\r\n        $.subNode(childName).setRotation(new Quaternion().setFromEulerAngles(new
+        Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));\r\n    } catch (e)
+        {\r\n        $.log(`Error in SetChildRotation: ${e}. Ensure MovableItem is
+        present and x,y,z are valid numbers (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction
+        AddChildRotation(childName, x, y, z) {\r\n    try {\r\n        $.subNode(childName).setRotation($.subNode(childName).getRotation().multiply(new
+        Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y),
+        parseFloat(z)))))\r\n    } catch (e) {\r\n        $.log(`Error in AddChildRotation:
+        ${e}. Ensure MovableItem is present and x,y,z are valid numbers (Euler degrees).`);\r\n   
+        }\r\n}\r\n\r\nfunction ToNextState() {\r\n    $.sendSignalCompat(\"this\",
+        \"state_triggerTransition\");\r\n}\r\n\r\nfunction SendDataToCollector(label,
+        value) {\r\n    if (!$.groupState.collectedData) $.groupState.collectedData
+        = {};\r\n    let collectedData = $.groupState.collectedData;\r\n    collectedData[label]
+        = value;\r\n    $.groupState.collectedData = collectedData;\r\n}\r\n\r\nfunction
+        ProcessAndSaveCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
+        UploadCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
+        SetText(text) {\r\n    try {\r\n        $.subNode(\"Text\").setText(`${text}`);\r\n   
+        } catch (e) {\r\n        $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
+        exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(target,
+        frequency, amplitude, duration) {\r\n    try {\r\n        if (!$.state.player)
+        $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\r\n       
+        if ($.state.player) {\r\n            let hapticsTarget = target;\r\n           
+        if (typeof target === 'string') {\r\n                const lowerTarget =
+        target.toLowerCase();\r\n                if (lowerTarget === 'null' || lowerTarget
+        === 'undefined' || lowerTarget === \"\") {\r\n                    hapticsTarget
+        = null; // Use JS null for \"both\" or unspecified\r\n                } else
+        if (lowerTarget === '\"left\"' || lowerTarget === \"'left'\") {\r\n                   
+        hapticsTarget = \"left\";\r\n                } else if (lowerTarget === '\"right\"'
+        || lowerTarget === \"'right'\") {\r\n                    hapticsTarget =
+        \"right\";\r\n                }\r\n                // else assume target
+        is already \"left\", \"right\", or a valid direct value.\r\n            }\r\n\r\n           
+        $.state.player.send(\"haptics\", {\r\n                target: hapticsTarget,\r\n               
+        frequency: parseFloat(frequency),\r\n                amplitude: parseFloat(amplitude),\r\n               
+        duration: parseFloat(duration) // Duration in seconds\r\n            });\r\n       
+        } else {\r\n            $.log(\"SendHaptics: No player found nearby.\");\r\n       
+        }\r\n    } catch (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n   
+        }\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n    CONDITION = $.groupState.currentCondition;\r\n   
+        PARTICIPANTS = $.groupState.participants;\r\n    if (!stateEnterActions[$.state.state_id]
+        || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
+        return;\r\n    \r\n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
+        && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !==
+        \"sleep\") {\r\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\r\n       
+        $.state.stateEnterActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateEnterActionID
+        >= stateEnterActions[$.state.state_id].length) {\r\n        $.state.stateEnterActionID
+        = -1;\r\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
+        === \"sleep\") {\r\n        if (timer >= stateEnterActions[$.state.state_id][$.state.stateEnterActionID].value)
+        {\r\n            $.state.stateEnterActionID += 1;\r\n            timer =
+        0;\r\n        } else {\r\n            timer += deltaTime;\r\n        }\r\n   
+        }\r\n}\r\n\r\nfunction OnStateExit(deltaTime) {\r\n    if (!stateExitActions[$.state.last_state_id]
         || $.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
-        return;\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
+        return;\r\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
         && stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
-        !== \"sleep\") {\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\n       
-        $.state.stateExitActionID += 1;\n    }\n\n    if ($.state.stateExitActionID
-        >= stateExitActions[$.state.last_state_id].length) {\n        $.state.stateExitActionID
-        = -1;\n        $.state.last_state_id = $.state.state_id;\n    } else if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
-        === \"sleep\") {\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
-        {\n            $.state.stateExitActionID += 1;\n            timer = 0;\n           
+        !== \"sleep\") {\r\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\r\n       
+        $.state.stateExitActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateExitActionID
+        >= stateExitActions[$.state.last_state_id].length) {\r\n        $.state.stateExitActionID
+        = -1;\r\n        $.state.last_state_id = $.state.state_id;\r\n    } else
+        if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
+        === \"sleep\") {\r\n        if (timer >= stateExitActions[$.state.last_state_id][$.state.stateExitActionID].value)
+        {\r\n            $.state.stateExitActionID += 1;\r\n            timer = 0;\r\n           
         if ($.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
-        {\n                $.state.stateExitActionID = -1;\n            }\n       
-        } else {\n            timer += deltaTime;\n        }\n    }\n}\n\nfunction
-        DuringState(deltaTime) {\n    if (!duringStateActions[$.state.state_id] ||
-        !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\n   
-        \n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
-        {\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
-        === \"sleep\") {\n            $.state.duringStateActionID += 1;\n       
-        } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\n           
-        $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
-        = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\n    2: [\n        { type: \"exec\", action: () =>
+        {\r\n                $.state.stateExitActionID = -1;\r\n            }\r\n       
+        } else {\r\n            timer += deltaTime;\r\n        }\r\n    }\r\n}\r\n\r\nfunction
+        DuringState(deltaTime) {\r\n    if (!duringStateActions[$.state.state_id]
+        || !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;\r\n   
+        \r\n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
+        {\r\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
+        === \"sleep\") {\r\n            $.state.duringStateActionID += 1;\r\n       
+        } else {\r\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\r\n           
+        $.state.duringStateActionID += 1;\r\n        }\r\n    }\r\n    $.state.duringStateActionID
+        = 0;\r\n}\r\n\r\nfunction Start() {}\r\nfunction Update(deltaTime) {}\r\n\r\nconst
+        stateEnterActions = {\r\n    2: [\n        { type: \"exec\", action: () =>
         {\n            PARTICIPANTS[0].requestTextInput(\n              \"ask_to_calculate\",\n             
         getRandomInt(100) + \"+\" + getRandomInt(100) + \"=?\"\n            );\n       
-        } }\n    ]\n};\n\nconst duringStateActions = {\n};\n\nconst stateExitActions
-        = {\n};\n\n\nfunction getRandomInt(max) { // \u4E71\u6570\u306E\u6574\u6570\u3092\u751F\u6210\u3059\u308B\u95A2\u6570\u3092\u5B9A\u7FA9\u3059\u308B\n 
+        } }\r\n    ]\r\n};\n\r\nconst duringStateActions = {\r\n};\n\r\nconst stateExitActions
+        = {\r\n};\r\n\n\nfunction getRandomInt(max) { // \u4E71\u6570\u306E\u6574\u6570\u3092\u751F\u6210\u3059\u308B\u95A2\u6570\u3092\u5B9A\u7FA9\u3059\u308B\n 
         return Math.floor(Math.random() * max);\n}\n$.onTextInput((text, meta, status)
         => {\n  if (status === TextInputStatus.Success) {\n    ToNextState(); //
         \u53C2\u52A0\u8005\u304B\u3089\u306E\u30C6\u30AD\u30B9\u30C8\u5165\u529B\u3092\u53D7\u3051\u4ED8\u3051\u305F\u3089\u6B21\u306E\u30B9\u30C6\u30FC\u30C8\u3078\u9077\u79FB\u3055\u305B\u308B\n   
@@ -4911,7 +5185,7 @@ Transform:
   - {fileID: 787405257}
   - {fileID: 1604143552}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2030643357
 GameObject:

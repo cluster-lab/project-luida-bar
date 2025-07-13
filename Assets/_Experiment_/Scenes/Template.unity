@@ -293,8 +293,8 @@ PrefabInstance:
     - target: {fileID: 5964733846762761526, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\ncallExternalEndpointID
-        = \"callExternalEndpointID_example\";\r\npNum = 1;\r\n\r\nconst uploadInterval
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
+        = \"callExternalEndpointID_example\";\npNum = 1;\n\r\nconst uploadInterval
         = 1;\r\nconst dataLengthPerUpload = 100;\r\nconst dataByteLengthPerUpload
         = 100000; // 102400\r\n\r\n$.onStart(() => {\r\n    $.state.customData =
         [];\r\n    $.state.uploadIndex = 0;\r\n    $.state.elapsedTime = 0;\r\n   
@@ -639,10 +639,10 @@ PrefabInstance:
     - target: {fileID: 320188938653792925, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\ncallExternalEndpointID
-        = \"callExternalEndpointID_example\";\r\npNum = 1;\r\n\r\n$.onStart(() =>
-        {\r\n  $.groupState.isParticipantsEnough = false;\r\n  $.groupState.sessionID
-        = Date.now() + \"_\" +  (Math.random() + 1).toString(36).substring(7);\r\n 
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
+        = \"callExternalEndpointID_example\";\npNum = 1;\n\r\n$.onStart(() => {\r\n 
+        $.groupState.isParticipantsEnough = false;\r\n  $.groupState.sessionID =
+        Date.now() + \"_\" +  (Math.random() + 1).toString(36).substring(7);\r\n 
         $.groupState.participants = []; // array of PlayerHandle who are currently
         in the experiment\r\n  $.state.participantsEnvInfo = [];\r\n  $.state.timer
         = 0;\r\n  \r\n  // TODO: load exp info so that we can check later what environments
@@ -715,33 +715,17 @@ PrefabInstance:
       propertyPath: id.value
       value: 7924656228234659285
       objectReference: {fileID: 0}
-    - target: {fileID: 2948447358681182120, guid: c429a845517c96a419988cd638c846f1,
-        type: 3}
-      propertyPath: clusterScripts.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2948447358681182120, guid: c429a845517c96a419988cd638c846f1,
-        type: 3}
-      propertyPath: clusterScripts.Array.data[0]
-      value: 
-      objectReference: {fileID: 5022602860645237092, guid: 8821fb654779949b38c61e01b3dae4b5,
-        type: 3}
-    - target: {fileID: 2948447358681182120, guid: c429a845517c96a419988cd638c846f1,
-        type: 3}
-      propertyPath: clusterScripts.Array.data[1]
-      value: 
-      objectReference: {fileID: 5022602860645237092, guid: 8821fb654779949b38c61e01b3dae4b5,
-        type: 3}
     - target: {fileID: 2963938157378484328, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: sourceCode
-      value: "$.onStart(() => {\r\n  initializeRandomBetweenSubjectsConditions();\r\n 
-        reset();\r\n});\r\n\r\n$.onUpdate(() => {\r\n  if (\r\n    $.state.trialID
-        !== $.getStateCompat(\"global\", \"exp_trialID\", \"integer\") &&\r\n     
-        $.getStateCompat(\"global\", \"exp_trialID\", \"integer\") >= 0\r\n  ) {\r\n   
-        $.state.trialID = $.getStateCompat(\"global\", \"exp_trialID\", \"integer\");\r\n   
-        updateCondition();\r\n  }\r\n});\r\n\r\n$.onReceive((messageType, arg, sender)
-        => {\r\n  switch (messageType) {\r\n    case \"luida_participants_info\":\r\n     
+      value: "const trialsCountForEachUniqueCondition = 1;\r\nconst within_subjects_variables
+        = [\r\n];\r\nconst between_subjects_variables = [\r\n];\r\n\r\n$.onStart(()
+        => {\r\n  initializeRandomBetweenSubjectsConditions();\r\n  reset();\r\n});\r\n\r\n$.onUpdate(()
+        => {\r\n  if (\r\n    $.state.trialID !== $.getStateCompat(\"global\", \"exp_trialID\",
+        \"integer\") &&\r\n      $.getStateCompat(\"global\", \"exp_trialID\", \"integer\")
+        >= 0\r\n  ) {\r\n    $.state.trialID = $.getStateCompat(\"global\", \"exp_trialID\",
+        \"integer\");\r\n    updateCondition();\r\n  }\r\n});\r\n\r\n$.onReceive((messageType,
+        arg, sender) => {\r\n  switch (messageType) {\r\n    case \"luida_participants_info\":\r\n     
         $.groupState.participants = arg.participants;\r\n      $.groupState.sessionID
         = arg.sessionID;\r\n      break;\r\n    // case \"exp_questionnaire_answer\":\r\n   
         //     $.state.betweenSubjectsConditions = GetBetweenSubjectsCondition(arg);\r\n   

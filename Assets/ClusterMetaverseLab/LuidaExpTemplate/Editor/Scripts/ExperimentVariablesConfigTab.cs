@@ -159,53 +159,46 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
     {
         if (variablesAsset == null)
         {
-            GUILayout.Label("Variables Asset not found at path:", EditorStyles.boldLabel);
-            GUILayout.Label(variablesAssetPath, EditorStyles.wordWrappedLabel);
-            if (GUILayout.Button("Create New Variables Asset"))
+            RetrieveOrCreateVariablesAsset();
+            ApplyVariableUpdates();
+        }
+        
+        EditorGUILayout.HelpBox("For fields `Values`, remember to separate multiple values using a comma.", MessageType.Info);
+            
+        // Ensure lists are initialized, in case of an assembly reload
+        if (withinSubjectsList == null || betweenSubjectsList == null) {
+            SetupReorderableLists();
+        }
+
+        trialsCountForEachUniqueCondition = EditorGUILayout.IntField("Trials Count per Condition", trialsCountForEachUniqueCondition);
+
+        EditorGUILayout.Space();
+
+        // Draw the reorderable lists
+        withinSubjectsList.DoLayoutList();
+            
+        EditorGUILayout.Space();
+            
+        betweenSubjectsList.DoLayoutList();
+
+        /*
+        if (betweenSubjectsConditionSetterAsset == null)
+        {
+            if (GUILayout.Button("Retrieve/Create Between-Subject Condition Setter"))
             {
-                RetrieveOrCreateVariablesAsset();
-                ApplyVariableUpdates();
+                RetrieveOrCreateBetweenSubjectsConditionSetter();
             }
         }
         else
         {
-            EditorGUILayout.HelpBox("For fields `Values`, remember to separate multiple values using a comma.", MessageType.Info);
-            
-            // Ensure lists are initialized, in case of an assembly reload
-            if (withinSubjectsList == null || betweenSubjectsList == null) {
-                SetupReorderableLists();
-            }
-
-            trialsCountForEachUniqueCondition = EditorGUILayout.IntField("Trials Count per Condition", trialsCountForEachUniqueCondition);
-
-            EditorGUILayout.Space();
-
-            // Draw the reorderable lists
-            withinSubjectsList.DoLayoutList();
-            
-            EditorGUILayout.Space();
-            
-            betweenSubjectsList.DoLayoutList();
-
-            /*
-            if (betweenSubjectsConditionSetterAsset == null)
-            {
-                if (GUILayout.Button("Retrieve/Create Between-Subject Condition Setter"))
-                {
-                    RetrieveOrCreateBetweenSubjectsConditionSetter();
-                }
-            }
-            else
-            {
-                EditorGUILayout.LabelField("Between Subjects Condition Setter Asset", betweenSubjectsConditionSetterPath, EditorStyles.textField);
-            }
-
-            if (GUILayout.Button("Apply Updated Variables"))
-            {
-                ApplyVariableUpdates();
-            }
-            */
+            EditorGUILayout.LabelField("Between Subjects Condition Setter Asset", betweenSubjectsConditionSetterPath, EditorStyles.textField);
         }
+
+        if (GUILayout.Button("Apply Updated Variables"))
+        {
+            ApplyVariableUpdates();
+        }
+        */
     }
     
     // The old DrawVariables method is no longer needed and has been removed.

@@ -7,6 +7,7 @@ using ClusterVR.CreatorKit.Operation.Implements;
 [CustomEditor(typeof(LuidaDataCollector))]
 public class LuidaDataCollectorEditor : Editor
 {
+    private string markdownFilePath = "Assets/Doc/LUIDA-DataCollectorScriptDoc.md";
     private static readonly System.Type[] TypesToHide =
     {
         typeof(ItemLogic),
@@ -65,13 +66,19 @@ public class LuidaDataCollectorEditor : Editor
         var dataCollector = (LuidaDataCollector)target;
 
         EditorGUILayout.Space();
-        EditorGUILayout.LabelField("Double-click the script below to edit what and how to save your custom data", EditorStyles.boldLabel);
-        // EditorGUILayout.HelpBox("This script defines the custom data to be collected. Double-click the field below to open and edit the script asset.", MessageType.Info);
-
-        // Display the object field, but disable it to make it non-editable.
+        EditorGUILayout.LabelField("Double-click the script below to edit what and how to save your custom data:", EditorStyles.boldLabel);
         GUI.enabled = false;
         EditorGUILayout.ObjectField("Script Asset", dataCollector.calculationScript, typeof(JavaScriptAsset), false);
         GUI.enabled = true;
+        
+        /*
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("Documentation of available variables are in the markdown file below:", EditorStyles.boldLabel);
+        TextAsset markdownAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(markdownFilePath);
+        GUI.enabled = false;
+        EditorGUILayout.ObjectField("Documentation", markdownAsset, typeof(TextAsset), false);
+        GUI.enabled = true;
+        */
     }
 
     private JavaScriptAsset FindExistingCalculatorScript()

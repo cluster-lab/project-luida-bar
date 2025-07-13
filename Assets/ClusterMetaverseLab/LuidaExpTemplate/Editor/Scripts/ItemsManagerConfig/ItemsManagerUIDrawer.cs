@@ -9,19 +9,11 @@ using ClusterVR.CreatorKit.World.Implements.TextView;
 
 public static class ItemsManagerUIDrawer
 {
+    private static string docFilePath = "Assets/Doc/LUIDA-StateListeningItemScriptDoc.md";
     private static readonly StateListeningAction[] AvailableStateListeningActions =
     {
         new StateListeningAction("Show item", "$.setStateCompat('this', 'exp_showItem', true);"),
         new StateListeningAction("Hide item", "$.setStateCompat('this', 'exp_showItem', false);"),
-        new StateListeningAction("To next state", "$.sendSignalCompat('this', 'state_triggerTransition');"),
-        new StateListeningAction("Send data to collector", "if (!$.groupState.collectedData) $.groupState.collectedData = {};\n    let collectedData = $.groupState.collectedData;\n    collectedData['{_label_}'] = {_value_};\n    $.groupState.collectedData = collectedData;", new[] { "label", "value" }),
-        new StateListeningAction("Process and save collected data", "$.sendSignalCompat('this', 'exp_recordCustomData');"),
-        new StateListeningAction("Upload collected data", "$.sendSignalCompat('this', 'exp_uploadCustomData');"),
-        new StateListeningAction("Set text", "$.subNode('Text').setText(`{_text_}`);", new[] { "text" }),
-        new StateListeningAction("Sleep", "{_seconds_}", new[] { "seconds" }),
-        new StateListeningAction("Send Haptics",
-            "if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0]; \n $.state.player.send('haptics', {target: {_target_}, frequency: {_frequency_}, amplitude: {_amplitude_}, duration: {_duration_}});",
-            new[] { "target", "frequency", "amplitude", "duration" }),
         new StateListeningAction("Set position", "$.setPosition(new Vector3({_x_}, {_y_}, {_z_}))", new[] { "x", "y", "z" }),
         new StateListeningAction("Add position", "$.setPosition($.getPosition().add(new Vector3({_x_}, {_y_}, {_z_})))",
             new[] { "x", "y", "z" }),
@@ -30,16 +22,25 @@ public static class ItemsManagerUIDrawer
         new StateListeningAction("Add rotation",
             "$.setRotation($.getRotation().multiply(new Quaternion().setFromEulerAngles(new Vector3({_x_}, {_y_}, {_z_}))))",
             new[] { "x", "y", "z" }),
-        new StateListeningAction("Show child", "$.subNode('{_childName_}').setEnabled(true)"),
-        new StateListeningAction("Hide child", "$.subNode('{_childName_}').setEnabled(false)"),
-        new StateListeningAction("Set child's position", "$.subNode('{_childName_}').setPosition(new Vector3({_x_}, {_y_}, {_z_}))", new[] { "childName", "x", "y", "z" }),
-        new StateListeningAction("Add child's position", "$.subNode('{_childName_}').setPosition($.subNode('{_childName_}').getPosition().add(new Vector3({_x_}, {_y_}, {_z_})))",
+        new StateListeningAction("Show child", "$.subNode('{_childName_}').setEnabled(true)", new[] { "childName" }),
+        new StateListeningAction("Hide child", "$.subNode('{_childName_}').setEnabled(false)", new[] { "childName" }),
+        new StateListeningAction("Set child position", "$.subNode('{_childName_}').setPosition(new Vector3({_x_}, {_y_}, {_z_}))", new[] { "childName", "x", "y", "z" }),
+        new StateListeningAction("Add child position", "$.subNode('{_childName_}').setPosition($.subNode('{_childName_}').getPosition().add(new Vector3({_x_}, {_y_}, {_z_})))",
             new[] { "childName", "x", "y", "z" }),
-        new StateListeningAction("Set child's rotation",
+        new StateListeningAction("Set child rotation",
             "$.subNode('{_childName_}').setRotation(new Quaternion().setFromEulerAngles(new Vector3({_x_}, {_y_}, {_z_})))", new[] { "childName", "x", "y", "z" }),
-        new StateListeningAction("Add child's rotation",
+        new StateListeningAction("Add child rotation",
             "$.subNode('{_childName_}').setRotation($.subNode('{_childName_}').getRotation().multiply(new Quaternion().setFromEulerAngles(new Vector3({_x_}, {_y_}, {_z_}))))",
             new[] { "childName", "x", "y", "z" }),
+        new StateListeningAction("To next state", "$.sendSignalCompat('this', 'state_triggerTransition');"),
+        new StateListeningAction("Send data to collector", "if (!$.groupState.collectedData) $.groupState.collectedData = {};\n    let collectedData = $.groupState.collectedData;\n    collectedData['{_label_}'] = {_value_};\n    $.groupState.collectedData = collectedData;", new[] { "label", "value" }),
+        new StateListeningAction("Process and save collected data", "$.sendSignalCompat('this', 'exp_recordCustomData');"),
+        new StateListeningAction("Upload collected data", "$.sendSignalCompat('this', 'exp_uploadCustomData');"),
+        new StateListeningAction("Set text", "$.subNode('Text').setText(`{_text_}`);", new[] { "text" }),
+        new StateListeningAction("Send Haptics",
+            "if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0]; \n $.state.player.send('haptics', {target: {_target_}, frequency: {_frequency_}, amplitude: {_amplitude_}, duration: {_duration_}});",
+            new[] { "target", "frequency", "amplitude", "duration" }),
+        new StateListeningAction("Sleep", "{_seconds_}", new[] { "seconds" }),
     };
 
     public static void DrawGUI(ItemsManagerConfigTab editor)
@@ -50,9 +51,19 @@ public static class ItemsManagerUIDrawer
 
         EditorGUILayout.BeginHorizontal();
         DrawMainGrid(editor);
-        DrawDocumentation(editor);
+        
+        EditorGUILayout.Space(10);
+        
+        EditorGUILayout.BeginVertical();
+        TextAsset markdownAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(docFilePath);
+        EditorGUILayout.HelpBox("Script Doc\n↓↓↓↓↓", MessageType.Info);
+        GUI.enabled = false;
+        EditorGUILayout.ObjectField(markdownAsset, typeof(TextAsset), false, GUILayout.Width(100));
+        GUI.enabled = true;
+        EditorGUILayout.EndVertical();
+        
         EditorGUILayout.EndHorizontal();
-
+        
         if (EditorGUI.EndChangeCheck())
         {
             // Changes are primarily saved via Undo/SetDirty and explicit save calls.
@@ -75,6 +86,7 @@ public static class ItemsManagerUIDrawer
         }
 
         EditorGUI.EndDisabledGroup();
+        
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.Space(10);
     }
@@ -89,7 +101,7 @@ public static class ItemsManagerUIDrawer
         DrawItemHeaders(editor, removeButtonStyle);
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         
-        editor.scrollPositionY = EditorGUILayout.BeginScrollView(editor.scrollPositionY, false, true, GUILayout.ExpandHeight(true));
+        editor.scrollPositionY = EditorGUILayout.BeginScrollView(editor.scrollPositionY, false, true, GUIStyle.none, GUI.skin.verticalScrollbar, GUIStyle.none, GUILayout.ExpandHeight(true));
 
         DrawOtherImplementationRow(editor);
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
@@ -104,7 +116,7 @@ public static class ItemsManagerUIDrawer
     private static void DrawItemHeaders(ItemsManagerConfigTab editor, GUIStyle removeButtonStyle)
     {
         EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("State Name | Item Name", EditorStyles.boldLabel, GUILayout.Width(215));
+        EditorGUILayout.LabelField("State Name \\ Item Name", EditorStyles.boldLabel, GUILayout.Width(215));
         GUILayout.Space(5);
 
         bool isHeaderDarkColumn = true;
@@ -138,12 +150,13 @@ public static class ItemsManagerUIDrawer
 
     private static void DrawOtherImplementationRow(ItemsManagerConfigTab editor)
     {
-        EditorGUILayout.LabelField("Custom implementation not listening to any state", EditorStyles.largeLabel);
+        EditorGUILayout.LabelField("Functions, events, variables not listening to the state machine", EditorStyles.largeLabel);
         EditorGUILayout.BeginHorizontal();
 
         EditorGUILayout.BeginVertical(GUILayout.Width(215));
-        EditorGUILayout.HelpBox("Implement ClusterScript callbacks (e.g., $.onInteract, $.onGrab, ...) or your custom functions here.", MessageType.Info);
-        EditorGUILayout.HelpBox("DON'T use $.onUpdate here! Implement function Update instead.", MessageType.Warning);
+        
+        // EditorGUILayout.HelpBox("Implement ClusterScript callbacks (e.g., $.onInteract, $.onGrab, ...) or your custom functions here.", MessageType.Info);
+        EditorGUILayout.HelpBox("DON'T use $.onStart and $.onUpdate here! Implement function Start and Update instead.", MessageType.Warning);
         EditorGUILayout.EndVertical();
         GUILayout.Space(5);
 
@@ -151,8 +164,8 @@ public static class ItemsManagerUIDrawer
         foreach (var item in editor._cachedItems)
         {
             if (item == null) continue;
-            Color cellBgColor = isCellDark ? new Color(0.25f, 0.25f, 0.25f, 0.5f) : new Color(0.75f, 0.75f, 0.75f, 0.5f);
-            Rect cellRect = EditorGUILayout.BeginVertical("box", GUILayout.Width(240), GUILayout.MinHeight(75));
+            Color cellBgColor = isCellDark ? new Color(0.15f, 0.15f, 0.15f, 0.5f) : new Color(0.75f, 0.75f, 0.75f, 0.5f);
+            Rect cellRect = EditorGUILayout.BeginVertical("box", GUILayout.Width(238.5f), GUILayout.MinHeight(80));
             EditorGUI.DrawRect(cellRect, cellBgColor);
 
             string itemDataAssetPath = ItemsManagerAssetUtil.GetItemDataAssetPath(item);
@@ -162,7 +175,7 @@ public static class ItemsManagerUIDrawer
             {
                 string currentOtherImpl = itemDataAsset.otherImplementation ?? string.Empty;
                 EditorGUI.BeginChangeCheck();
-                string newOtherImpl = EditorGUILayout.TextArea(currentOtherImpl, GUILayout.Width(235), GUILayout.MaxHeight(75));
+                string newOtherImpl = EditorGUILayout.TextArea(currentOtherImpl, GUILayout.Width(233.5f), GUILayout.MaxHeight(75));
                 if (EditorGUI.EndChangeCheck())
                 {
                     Undo.RecordObject(itemDataAsset, "Edit Other Implementation for " + item.name);
@@ -185,10 +198,11 @@ public static class ItemsManagerUIDrawer
 
     private static void DrawStateRows(ItemsManagerConfigTab editor, GUIStyle removeButtonStyle)
     {
-        EditorGUILayout.LabelField("Pre-defined or customized actions listening to states", EditorStyles.largeLabel);
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.HelpBox("Select available actions to run when entering/during/exiting any state. You can also write your custom scripts by selecting the 'Customized action' option.", MessageType.Info);
-        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.LabelField("Actions listening to the state machine", EditorStyles.largeLabel, GUILayout.Width(300));
+        
+        // EditorGUILayout.BeginHorizontal();
+        // EditorGUILayout.HelpBox("Select available actions to run when entering/during/exiting any state. You can also write your custom scripts by selecting the 'Customized action' option.", MessageType.Info);
+        // EditorGUILayout.EndHorizontal();
 
         GUI.backgroundColor = Color.white;
         bool isBlueRow = true;
@@ -649,109 +663,6 @@ public static class ItemsManagerUIDrawer
         EditorGUILayout.EndVertical();
         EditorGUILayout.EndHorizontal();
         GUILayout.Space(3);
-    }
-    
-    private static void DrawDocumentation(ItemsManagerConfigTab editor)
-    {
-        EditorGUILayout.BeginVertical("box", GUILayout.Width(380), GUILayout.ExpandHeight(true));
-        EditorGUILayout.LabelField("Documentation for Customized Actions or Other Implementation", EditorStyles.largeLabel);
-        EditorGUILayout.HelpBox("Guidance for predefined actions and custom JavaScript functions available in this item manager.", MessageType.None);
-        EditorGUILayout.Space();
-        
-        EditorGUILayout.LabelField("--------------- Variables ---------------", EditorStyles.boldLabel);
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Space(20);
-        EditorGUILayout.BeginVertical();
-        EditorGUILayout.LabelField("CONDITION", EditorStyles.boldLabel);
-        EditorGUILayout.HelpBox(
-            "⋅ Contains values from your configured experimental variables for the current trial.\n" +
-            "⋅ Use `CONDITION[\"your_variable_name\"]` in 'Customized Action' code blocks of trial-related states (e.g., Trial - Start).",
-            MessageType.Info);
-        EditorGUILayout.EndVertical();
-        EditorGUILayout.EndHorizontal();
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Space(20);
-        EditorGUILayout.BeginVertical();
-        EditorGUILayout.LabelField("PARTICIPANTS", EditorStyles.boldLabel);
-        EditorGUILayout.HelpBox(
-            "⋅ An array of PlayerHandle of the participants joining this experiment.\n" +
-            "⋅ Use `PARTICIPANTS[0]` to retrieve the first participant, `PARTICIPANTS[1]` to retrieve the second participant, and so on.",
-            MessageType.Info);
-        EditorGUILayout.EndVertical();
-        EditorGUILayout.EndHorizontal();
-        EditorGUILayout.Space();
-        
-        EditorGUILayout.LabelField("--- Predefined Actions & Equivalent ClusterScript Functions ---", EditorStyles.boldLabel);
-        EditorGUILayout.HelpBox("Below are predefined actions selectable from dropdowns, and their equivalent ClusterScript functions you can use in 'Customized Action' code blocks.", MessageType.Info);
-
-        editor.docScrollPositionY = EditorGUILayout.BeginScrollView(editor.docScrollPositionY, false, true, GUILayout.ExpandHeight(true));
-
-        Func<StateListeningAction, string> getJsSignature = (action) => {
-            if (action.actionType == "Sleep") return null;
-            string funcName = string.Concat(action.actionType.Split(' ').Select(word => char.ToUpper(word[0]) + word.Substring(1)));
-            return action.variables != null && action.variables.Length > 0 ? $"{funcName}({string.Join(", ", action.variables)})" : $"{funcName}()";
-        };
-
-        Func<StateListeningAction, string> getParamsInfoForUI = (action) => {
-            return action.variables != null && action.variables.Length > 0 ? string.Join(", ", action.variables.Select(v => $"`{v}`")) : "None";
-        };
-
-        EditorGUILayout.LabelField("Item Visibility", EditorStyles.boldLabel);
-        foreach(var action in AvailableStateListeningActions.Where(a => a.actionType.Contains("Show item") || a.actionType.Contains("Hide item")))
-        {
-            DrawDocEntry(action.actionType, action.actionType.Contains("Show") ? "Makes the item visible." : "Makes the item invisible.", getParamsInfoForUI(action), false, getJsSignature(action));
-        }
-        
-        EditorGUILayout.LabelField("State Flow Control", EditorStyles.boldLabel);
-        foreach(var action in AvailableStateListeningActions.Where(a => a.actionType == "To next state"))
-        {
-            DrawDocEntry(action.actionType, "Triggers a transition to the next experiment state.", getParamsInfoForUI(action), false, getJsSignature(action));
-        }
-
-        EditorGUILayout.LabelField("Item Manipulation", EditorStyles.boldLabel);
-        foreach(var action in AvailableStateListeningActions.Where(a => new[] {"Set text", "Set position", "Add position", "Set rotation", "Add rotation"}.Contains(a.actionType)))
-        {
-            string desc = "";
-            bool needsMovable = false;
-            if (action.actionType == "Set text") desc = "Sets text on a child 'Text' sub-node.";
-            else {
-                needsMovable = true;
-                if (action.actionType == "Set position") desc = "Sets item's world position.";
-                else if (action.actionType == "Add position") desc = "Offsets item's world position.";
-                else if (action.actionType == "Set rotation") desc = "Sets item's world rotation (Euler degrees).";
-                else if (action.actionType == "Add rotation") desc = "Adds to item's world rotation (Euler degrees).";
-            }
-            DrawDocEntry(action.actionType, desc, getParamsInfoForUI(action), needsMovable, getJsSignature(action));
-        }
-        
-        EditorGUILayout.LabelField("Data Logging", EditorStyles.boldLabel);
-        foreach(var action in AvailableStateListeningActions.Where(a => a.actionType.Contains("data")))
-        {
-            if (action.actionType == "Send data to collector")
-            {
-                DrawDocEntry(action.actionType, "Send data to LUIDA's Data Collector.", getParamsInfoForUI(action), false, getJsSignature(action));
-            }
-            if (action.actionType == "Process and save collected data")
-            {
-                DrawDocEntry(action.actionType, "Signals LUIDA's Data Collector to process and save the collected data as configured in the LUIDA Config Window's 'Data Collector' tab.", getParamsInfoForUI(action), false, getJsSignature(action));
-            }
-            if (action.actionType == "Upload collected data")
-            {
-                DrawDocEntry(action.actionType, "Signals LUIDA's Data Collector to upload the saved data collection.", getParamsInfoForUI(action), false, getJsSignature(action));
-            }
-        }
-
-        EditorGUILayout.LabelField("User Feedback & Utilities", EditorStyles.boldLabel);
-        foreach(var action in AvailableStateListeningActions.Where(a => a.actionType == "Send Haptics" || a.actionType == "Sleep"))
-        {
-            string desc = (action.actionType == "Send Haptics")
-                ? "Sends haptic feedback to the player. Target can be \"left\", \"right\", or null (for both hands). Duration is in seconds."
-                : "Pauses execution of subsequent actions in the current list for the specified duration in seconds.";
-            DrawDocEntry(action.actionType, desc, getParamsInfoForUI(action), false, getJsSignature(action));
-        }
-    
-        EditorGUILayout.EndScrollView();
-        EditorGUILayout.EndVertical();
     }
     
     #endregion

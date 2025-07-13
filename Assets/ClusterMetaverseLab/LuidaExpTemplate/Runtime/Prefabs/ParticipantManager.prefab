@@ -225,8 +225,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\ncallExternalEndpointID
-    = \"callExternalEndpointID_example\";\r\npNum = 1;\r\n\r\n$.onStart(() => {\r\n 
+  sourceCode: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
+    = \"callExternalEndpointID_example\";\npNum = 1;\n\r\n$.onStart(() => {\r\n 
     $.groupState.isParticipantsEnough = false;\r\n  $.groupState.sessionID = Date.now()
     + \"_\" +  (Math.random() + 1).toString(36).substring(7);\r\n  $.groupState.participants
     = []; // array of PlayerHandle who are currently in the experiment\r\n  $.state.participantsEnvInfo
