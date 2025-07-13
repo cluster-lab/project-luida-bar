@@ -150,7 +150,7 @@ public class ExpIdentifierConfigTab : EditorWindow
 
             if (existingCount != newPNum)
             {
-                wnd.StateTab.AddOrEnableQuestionnaireForm(i, state.StateName);
+                QuestionnaireEditorManager.AddOrEnableQuestionnaireForm(wnd.StateTab.stateList, i, state.StateName);
             }
         }
     }

@@ -388,7 +388,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5697374075333026450}
-  - component: {fileID: 7664818469197687928}
+  - component: {fileID: 4638974438188513649}
   m_Layer: 0
   m_Name: Questionnaire
   m_TagString: Untagged
@@ -414,7 +414,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7664818469197687928
+--- !u!114 &4638974438188513649
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -797,10 +797,11 @@ MonoBehaviour:
     recorded!\");\r\n        $.groupState.qCompletedCount += 1;\r\n        if ($.groupState.qCompletedCount
     >= $.groupState.participants.length) {\r\n            $.log(\"All participants
     have completed the questionnaire!\");\r\n            $.groupState.qCompletedCount
-    = 0;\r\n            $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n           
-    $.groupState.participants.forEach(p => {\r\n                p.send(\"setQuestionnaireUI\",
-    {\r\n                    n: \"WaitingText\",\r\n                    e: false\r\n               
-    });\r\n            });\r\n        }\r\n        reset();\r\n    }\r\n});\r\n"
+    = 0;\r\n            $.sendSignalCompat(\"this\", \"form_allPlayersCompleted\");
+    // state_triggerTransition\r\n            $.groupState.participants.forEach(p
+    => {\r\n                p.send(\"setQuestionnaireUI\", {\r\n                   
+    n: \"WaitingText\",\r\n                    e: false\r\n                });\r\n           
+    });\r\n        }\r\n        reset();\r\n    }\r\n});\r\n"
 --- !u!114 &5697374075709122382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -921,10 +922,50 @@ MonoBehaviour:
   globalGimmickKey:
     key:
       target: 0
-      key: state_triggerTransition
+      key: form_allPlayersCompleted
     item: {fileID: 5697374075709122387}
   logic:
     statements:
+    - singleStatement:
+        targetState:
+          target: 2
+          key: exp_questionnaireCompleted
+          parameterType: 0
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 1
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
     - singleStatement:
         targetState:
           target: 2
