@@ -1,0 +1,194 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acb8c4c8a0a4dc6418e2f4d59454f5e3, type: 3}
+  m_Name: TaskManager
+  m_EditorClassIdentifier: 
+  stateListeners:
+  - stateID: 0
+    onStateStartedActions:
+    - predefinedAction:
+        actionType: Hide item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
+      customAction: 
+      showCustomActionFoldout: 0
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: '$.state.practiceGains = [1, 0.75, 1.25];
+
+        $.state.practiceGainID
+        = 0;'
+      showCustomActionFoldout: 1
+    onStateStartedFoldout: 1
+    duringStateActions: []
+    duringStateFoldout: 0
+    onStateExitedActions: []
+    onStateExitedFoldout: 0
+  - stateID: 3
+    onStateStartedActions:
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: Reset();
+      showCustomActionFoldout: 1
+    - predefinedAction:
+        actionType: Show item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
+      customAction: 
+      showCustomActionFoldout: 0
+    onStateStartedFoldout: 1
+    duringStateActions:
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: UpdateHandTransform($.state.practiceGains[$.state.practiceGainID]);
+      showCustomActionFoldout: 1
+    duringStateFoldout: 1
+    onStateExitedActions:
+    - predefinedAction:
+        actionType: Hide item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
+      customAction: 
+      showCustomActionFoldout: 0
+    onStateExitedFoldout: 1
+  - stateID: 7
+    onStateStartedActions:
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: Reset();
+      showCustomActionFoldout: 1
+    - predefinedAction:
+        actionType: Show item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
+      customAction: 
+      showCustomActionFoldout: 0
+    onStateStartedFoldout: 1
+    duringStateActions:
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: UpdateHandTransform(parseFloat(CONDITION["gain"]));
+      showCustomActionFoldout: 1
+    duringStateFoldout: 1
+    onStateExitedActions:
+    - predefinedAction:
+        actionType: Hide item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
+      customAction: 
+      showCustomActionFoldout: 0
+    onStateExitedFoldout: 1
+  - stateID: 10
+    onStateStartedActions:
+    - predefinedAction:
+        actionType: Upload recorded data
+        codeSnippet: $.sendSignalCompat('this', 'exp_uploadCustomData');
+      customAction: 
+      showCustomActionFoldout: 0
+    onStateStartedFoldout: 1
+    duringStateActions: []
+    duringStateFoldout: 0
+    onStateExitedActions: []
+    onStateExitedFoldout: 0
+  - stateID: 5
+    onStateStartedActions: []
+    onStateStartedFoldout: 0
+    duringStateActions:
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: UpdateHandTransform($.state.practiceGains[$.state.practiceGainID]);
+      showCustomActionFoldout: 1
+    duringStateFoldout: 1
+    onStateExitedActions:
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: $.state.practiceGainID = $.state.practiceGainID + 1;
+      showCustomActionFoldout: 1
+    onStateExitedFoldout: 1
+  - stateID: 9
+    onStateStartedActions: []
+    onStateStartedFoldout: 1
+    duringStateActions:
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: UpdateHandTransform(parseFloat(CONDITION["gain"]));
+      showCustomActionFoldout: 1
+    duringStateFoldout: 1
+    onStateExitedActions: []
+    onStateExitedFoldout: 0
+  - stateID: 4
+    onStateStartedActions: []
+    onStateStartedFoldout: 0
+    duringStateActions:
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: UpdateHandTransform($.state.practiceGains[$.state.practiceGainID]);
+      showCustomActionFoldout: 1
+    duringStateFoldout: 1
+    onStateExitedActions: []
+    onStateExitedFoldout: 0
+  - stateID: 8
+    onStateStartedActions: []
+    onStateStartedFoldout: 1
+    duringStateActions:
+    - predefinedAction:
+        actionType: 
+        codeSnippet: 
+      customAction: UpdateHandTransform(parseFloat(CONDITION["gain"]));
+      showCustomActionFoldout: 1
+    duringStateFoldout: 1
+    onStateExitedActions:
+    - predefinedAction:
+        actionType: Record custom data
+        codeSnippet: $.sendSignalCompat('this', 'exp_recordCustomData');
+      customAction: 
+      showCustomActionFoldout: 0
+    onStateExitedFoldout: 1
+  otherImplementation: "function Reset() { // \u30EA\u30BB\u30C3\u30C8\u51E6\u7406\n 
+    // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u521D\u671F\u72B6\u614B\u3092\u8A2D\u5B9A\n 
+    $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\n  $.state.handOriginalPos
+    = $.subNode(\"RightHandAnchor\").getPosition().clone();\n  $.state.isReaching
+    = false;\n  $.state.coolingTimer = 0;\n\n  // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u5B9F\u969B\u306E\u624B\uFF08\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC\uFF09\u3068\u4EEE\u60F3\u624B\u306E\u56DE\u8EE2\u306E\u305A\u308C\u3092\u88DC\u6B63\u3059\u308B\u305F\u3081\u306E\u30AA\u30D5\u30BB\u30C3\u30C8\u3092\u8A2D\u5B9A\n 
+    $.state.handOffset = new Quaternion().setFromEulerAngles(new Vector3(0, 90, 0));\n\n 
+    // \u539F\u70B9 (StartingPoint) \u3092\u8868\u793A\u3057\u3001\u30BF\u30FC\u30B2\u30C3\u30C8
+    (TargetPoint) \u3092\u975E\u8868\u793A\u306B\u3059\u308B\n  $.subNode(\"StartingPoint\").setEnabled(true);\n 
+    $.subNode(\"TargetPoint\").setEnabled(false);\n\n  // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u982D\u90E8\u4F4D\u7F6E\u3092\u57FA\u6E96\u306B\u3001\u539F\u70B9\u3092\u982D\u306E35cm\u624B\u524D\uFF0B30cm\u4E0B\u306B\u914D\u7F6E\n 
+    $.subNode(\"StartingPoint\").setPosition(\n    $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new
+    Vector3(0, -0.3, 0.35)));\n\n  // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u982D\u90E8\u4F4D\u7F6E\u3092\u57FA\u6E96\u306B\u3001\u30BF\u30FC\u30B2\u30C3\u30C8\u3092\u982D\u306E65cm\u624B\u524D\uFF0B30cm\u4E0B\u306B\u914D\u7F6E\n 
+    $.subNode(\"TargetPoint\").setPosition(\n    $.state.player.getHumanoidBonePosition(HumanoidBone.Head).clone().add(new
+    Vector3(0, -0.3, 0.65)));\n}\n\n// \u53F3\u624B\u30A2\u30F3\u30AB\u30FC\uFF08\u53F3\u624B\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8\u306EParent
+    Constraints\u304C\u53C2\u7167\u3057\u3066\u3044\u308B\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8\uFF09\u306E\u4F4D\u7F6E\u3092\u3001\n//
+    \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u53F3\u624B\u4F4D\u7F6E\u306B\u540C\u671F\u3055\u305B\u3001\u3055\u3089\u306B\u30B2\u30A4\u30F3\u3092\u9069\u7528\u3059\u308B\nfunction
+    UpdateHandTransform(gain) {\n  if (!$.state.player || !$.state.handOriginalPos)
+    return;\n\n  // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u53F3\u624B\u4F4D\u7F6E\u3068\u30AA\u30EA\u30B8\u30CA\u30EB\u4F4D\u7F6E\u306E\u5DEE\u5206\u306B\u30B2\u30A4\u30F3\u3092\u639B\u3051\u3001\u53F3\u624B\u30A2\u30F3\u30AB\u30FC\u3092\u79FB\u52D5\n 
+    $.subNode(\"RightHandAnchor\").setPosition(\n    $.state.handOriginalPos.clone()\n     
+    .add($.state.player.getHumanoidBonePosition(HumanoidBone.RightHand).clone()\n       
+    .sub($.state.handOriginalPos).multiplyScalar($.state.isReaching ? gain : 1)));\n\n 
+    // \u30D7\u30EC\u30A4\u30E4\u30FC\u306E\u53F3\u624B\u306E\u56DE\u8EE2\u306B\u88DC\u6B63\u30AA\u30D5\u30BB\u30C3\u30C8\u3092\u9069\u7528\u3057\u3066\u3001\u53F3\u624B\u30A2\u30F3\u30AB\u30FC\u3092\u56DE\u8EE2\n 
+    $.subNode(\"RightHandAnchor\")\n    .setRotation($.state.player.getHumanoidBoneRotation(HumanoidBone.RightHand)\n     
+    .clone().multiply($.state.handOffset));\n}\n\n// \u885D\u7A81\u30A4\u30D9\u30F3\u30C8\u304C\u767A\u751F\u3057\u305F\u969B\u306B\u5B9F\u884C\u3055\u308C\u308B\u51E6\u7406\n$.onCollide(collision
+    => {\n  // \u885D\u7A81\u5BFE\u8C61\u304C\u5B58\u5728\u3057\u306A\u3044\u3001\u307E\u305F\u306F
+    \"RightHand\" \u30AA\u30D6\u30B8\u30A7\u30AF\u30C8\u3067\u306F\u306A\u3044\u5834\u5408\u306F\u51E6\u7406\u3092\u4E2D\u65AD\n 
+    if ($.state.coolingTimer < 0.5 || !collision.handle || !$.worldItemReference(\"RightHand\")
+    || collision.handle.id !== $.worldItemReference(\"RightHand\").id) return;\n\n 
+    if ($.state.isReaching) {\n    // \u3059\u3067\u306B\u30EA\u30FC\u30C1\u30F3\u30B0\u72B6\u614B\u306E\u5834\u5408\u3001\u73FE\u5728\u306E\u8A66\u884C\u3092\u7D42\u4E86\u3059\u308B\n   
+    $.subNode(\"TargetPoint\").setEnabled(false);\n    ToNextState(); // \u6B21\u306E\u72B6\u614B\u3078\u9077\u79FB\n 
+    } else {\n    // \u30EA\u30FC\u30C1\u30F3\u30B0\u304C\u958B\u59CB\u3055\u308C\u3066\u3044\u306A\u3044\u5834\u5408\u3001\u30BF\u30FC\u30B2\u30C3\u30C8\u3092\u8868\u793A\u3057\u3001\u539F\u70B9\u3092\u975E\u8868\u793A\u306B\u3059\u308B\n   
+    $.subNode(\"StartingPoint\").setEnabled(false);\n    $.subNode(\"TargetPoint\").setEnabled(true);\n   
+    // \u73FE\u5728\u306E\u53F3\u624B\u30A2\u30F3\u30AB\u30FC\u306E\u4F4D\u7F6E\u3092\u8A18\u9332\n   
+    $.state.handOriginalPos = $.subNode(\"RightHandAnchor\").getPosition().clone();\n   
+    $.state.isReaching = true;\n  }\n});\n\nfunction Update(deltaTime) {\n  if (!$.state.coolingTimer)
+    $.state.coolingTimer = 0;\n  $.state.coolingTimer += deltaTime;\n}"
