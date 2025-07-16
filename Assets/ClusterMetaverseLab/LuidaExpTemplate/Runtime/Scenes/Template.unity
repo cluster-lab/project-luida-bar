@@ -217,160 +217,6 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!1001 &148780430
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2627616726396763139, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: clusterScripts.Array.data[2]
-      value: 
-      objectReference: {fileID: 5022602860645237092, guid: 7527d2d71b242614a8d9f7e1b0bec398,
-        type: 3}
-    - target: {fileID: 5964733846762761523, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_Name
-      value: LUIDA-DataCollector
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761524, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5964733846762761526, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
-        = \"callExternalEndpointID_example\";\npNum = 1;\n\r\nconst uploadInterval
-        = 1;\r\nconst dataLengthPerUpload = 100;\r\nconst dataByteLengthPerUpload
-        = 100000; // 102400\r\n\r\n$.onStart(() => {\r\n    $.state.customData =
-        [];\r\n    $.state.uploadIndex = 0;\r\n    $.state.elapsedTime = 0;\r\n   
-        // $.state.dataLength = 0;\r\n    $.state.steps = 0;\r\n    $.state.isUploading
-        = false;\r\n})\r\n\r\n$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\",
-        \"exp_recordCustomData\", \"boolean\")) {\r\n        $.setStateCompat(\"this\",
-        \"exp_recordCustomData\", false);\r\n        recordData();\r\n    }\r\n   
-        if ($.getStateCompat(\"this\", \"exp_uploadCustomData\", \"boolean\")) {\r\n       
-        if ($.state.uploadIndex === 0) {\r\n            uploadDataInit();\r\n           
-        $.setStateCompat(\"this\", \"exp_uploadCustomData\", false);\r\n        }\r\n   
-        }\r\n    if ($.state.isUploading) {\r\n        $.state.elapsedTime = $.state.elapsedTime
-        + deltaTime;\r\n        if ($.state.elapsedTime >= uploadInterval && $.state.uploadIndex
-        < $.state.steps) {\r\n            $.state.elapsedTime = 0;\r\n           
-        uploadDataStep();\r\n        }\r\n    }\r\n})\r\n\r\n$.onExternalCallEnd((res,
-        meta, err) =>\r\n{\r\n    if (res == null) {\r\n        $.log(\"callExternal
-        ERROR: \" + err);\r\n        return;\r\n    }\r\n\r\n    if (meta === \"customDataUploaded\")
-        {\r\n        $.log(\"Response after customDataUploaded called: \" + JSON.stringify(res));\r\n   
-        }\r\n});\r\n\r\nfunction recordData () {\r\n    $.state.customData = calculateData();\r\n}\r\n\r\nfunction
-        uploadDataInit() {\r\n    $.state.uploadIndex = 0;\r\n    $.state.elapsedTime
-        = 0;\r\n    $.state.isUploading = true;\r\n\r\n    let dataByteLength = utf8ByteLength(JSON.stringify($.state.customData));\r\n   
-        $.log(\"Data byte length: \" + dataByteLength);\r\n    $.state.steps = Math.ceil(dataByteLength
-        / dataByteLengthPerUpload);\r\n}\r\n\r\nfunction uploadDataStep() {\r\n   
-        $.log(\"Upload data step: \" + $.state.uploadIndex);\r\n    if ($.state.uploadIndex
-        < $.state.steps) {\r\n        let request = {\r\n            type: \"uploadCustomData\",\r\n           
-        token: token || \"\",\r\n            data: { data: $.state.customData.slice($.state.uploadIndex
-        * dataLengthPerUpload, ($.state.uploadIndex + 1) * dataLengthPerUpload) },\r\n           
-        eID: expID || \"\",\r\n            pID: $.groupState.participants[0].idfc
-        // TODO: replace with `sessionID: $.groupState.sessionID`\r\n        };\r\n       
-        $.log(JSON.stringify(request));\r\n        $.callExternal(\r\n           
-        new ExternalEndpointId(callExternalEndpointID),\r\n            JSON.stringify(request),\r\n           
-        \"customDataUploaded\");\r\n        $.state.uploadIndex = $.state.uploadIndex
-        + 1;\r\n\r\n        if ($.state.uploadIndex >= $.state.steps) {\r\n           
-        $.state.uploadIndex = 0;\r\n            $.state.isUploading = false;\r\n           
-        $.state.customData = [];\r\n        }\r\n    }\r\n}\r\n\r\nfunction utf8ByteLength(str)
-        {\r\n    let bytes = 0;\r\n    for (let i = 0; i < str.length; i++) {\r\n       
-        const code = str.charCodeAt(i);\r\n\r\n        if (code <= 0x7F)                     
-        bytes += 1; // U+0000 \u2013 U+007F\r\n        else if (code <= 0x7FF)               
-        bytes += 2; // U+0080 \u2013 U+07FF\r\n        else if (code >= 0xD800 &&
-        code <= 0xDBFF) {\r\n            // Surrogate pair (astral plane)\r\n           
-        bytes += 4;                          // Whole pair is 4 bytes\r\n           
-        i++;                                 // Skip the next surrogate\r\n       
-        }\r\n        else                                   bytes += 3; // U+0800
-        \u2013 U+FFFF\r\n    }\r\n    return bytes;\r\n}\r\n\r\nfunction calculateData
-        () {\r\n    let returnData = $.state.customData;\r\n    if (!Array.isArray(returnData))
-        returnData = [];\r\n    const CONDITION = $.groupState.currentCondition;\r\n   
-        const PARTICIPANTS = $.groupState.participants;\r\n    const COLLECTED_DATA
-        = $.groupState.collectedData;\r\n    function saveData() {\r\n\r\n/*\r\n#
-        Available variables:\r\n  PARTICIPANTS\r\n    - An array of PlayerHandle
-        of the participants joining this experiment.\r\n    - Use `PARTICIPANTS[0]`
-        to retrieve the first participant, `PARTICIPANTS[1]` to retrieve the second
-        participant, etc.\r\n\r\n# Available variables only if you have enabled the
-        LUIDA experiment progress automation feature:\r\n  CONDITION\r\n    - Values
-        are determined by your configured experimental variables and vary across
-        trials.\r\n    - Only available during Trial states. Use `CONDITION[\"variable_name\"]`
-        to reference a specific condition within the current trial.\r\n  COLLECTED_DATA\r\n   
-        - The collected data you send to the LUIDA data collector using the SendDataToCollector
-        action/function.\r\n    - Use `COLLECTED_DATA[your_data_label]` to retrieve
-        the value.\r\n\r\n# Warning: Ensure returning something in the end of the
-        code block.\r\n    e.g., `return { score: 100 };`\r\n    e.g., `const answer
-        = $.getStateCompat('global', 'count', 'integer') > 5; return { isLarger:
-        answer }`\r\n*/\r\nreturn { foo: 'bar' };\r\n    return {};\r\n  }\r\n  returnData.push(saveData());\r\n 
-        return returnData;\r\n}\r\n"
-      objectReference: {fileID: 0}
-    - target: {fileID: 8273925800708392170, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: host
-      value: 
-      objectReference: {fileID: 930668818}
-    - target: {fileID: 8901108051797212556, guid: 964d6187f971a8f43b4ee67279f1ef90,
-        type: 3}
-      propertyPath: calculationScript
-      value: 
-      objectReference: {fileID: 5022602860645237092, guid: 7527d2d71b242614a8d9f7e1b0bec398,
-        type: 3}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 964d6187f971a8f43b4ee67279f1ef90, type: 3}
 --- !u!1 &411973250 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7045208590533207111, guid: c429a845517c96a419988cd638c846f1,
@@ -392,7 +238,7 @@ PrefabInstance:
     - target: {fileID: 2263574305700755212, guid: 5475fa3e27333b2419a0bb8086303137,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2263574305700755212, guid: 5475fa3e27333b2419a0bb8086303137,
         type: 3}
@@ -930,18 +776,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c429a845517c96a419988cd638c846f1, type: 3}
---- !u!114 &930668818 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7022389377809828575, guid: c429a845517c96a419988cd638c846f1,
-    type: 3}
-  m_PrefabInstance: {fileID: 930668817}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6487efbf7339493cb3e1fa581f53b763, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &997367276
 GameObject:
   m_ObjectHideFlags: 0
@@ -1176,7 +1010,7 @@ Transform:
   - {fileID: 1434940727}
   - {fileID: 814595608}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2029845014
 GameObject:
@@ -1210,5 +1044,5 @@ Transform:
   - {fileID: 787405257}
   - {fileID: 1604143552}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

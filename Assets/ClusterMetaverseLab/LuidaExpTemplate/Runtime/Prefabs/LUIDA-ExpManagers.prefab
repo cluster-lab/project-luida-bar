@@ -458,10 +458,10 @@ PrefabInstance:
     - target: {fileID: 3933797981565559285, guid: d54fd1885b76d47d9bd9a3a2f0675afb,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
-        = \"callExternalEndpointID_example\";\npNum = 1;\n\r\n$.onStart(() => {\r\n 
-        $.groupState.isParticipantsEnough = false;\r\n  $.groupState.sessionID =
-        Date.now() + \"_\" +  (Math.random() + 1).toString(36).substring(7);\r\n 
+      value: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\ncallExternalEndpointID
+        = \"callExternalEndpointID_example\";\r\npNum = 1;\r\n\r\n$.onStart(() =>
+        {\r\n  $.groupState.isParticipantsEnough = false;\r\n  $.groupState.sessionID
+        = Date.now() + \"_\" +  (Math.random() + 1).toString(36).substring(7);\r\n 
         $.groupState.participants = []; // array of PlayerHandle who are currently
         in the experiment\r\n  $.state.participantsEnvInfo = [];\r\n  $.state.timer
         = 0;\r\n  \r\n  // TODO: load exp info so that we can check later what environments
