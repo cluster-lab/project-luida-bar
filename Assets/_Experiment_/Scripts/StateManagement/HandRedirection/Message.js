@@ -62,7 +62,7 @@ $.subNode("Text").setText(sentences.join("\n"));
 "「次へ」ボタンをクリックして進んでください。"];
 $.subNode("Text").setText(sentences.join("\n"));
   }
-  if (STATE_ID === 13) {
+  if (STATE_ID === 12) {
     $.setStateCompat('this', 'exp_showItem', true);
     let sentences = ["実験は以上になります。",
 "ご参加いただきありがとうございました。",

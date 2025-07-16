@@ -25,7 +25,7 @@ MonoBehaviour:
     duringStateFoldout: 0
     onStateExitedActions: []
     onStateExitedFoldout: 0
-  - stateID: 10
+  - stateID: 9
     onStateStartedActions:
     - predefinedAction:
         actionType: Show item

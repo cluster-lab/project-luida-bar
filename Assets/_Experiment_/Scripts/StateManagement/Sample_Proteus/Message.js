@@ -6,10 +6,8 @@ function OnStateEnter() {
     $.setStateCompat('this', 'exp_showItem', true);
     $.subNode("Text").setText(`本実験では、
 アフリカンジャンベドラムという楽器を用いて、
-4分間のセッションを2回演奏していただきます。
-まず、雰囲気をつかんでいただくために、
-ジャンベドラムの演奏動画を再生しますので、
-最後までご視聴ください。`);
+30秒間のセッションを2回演奏していただきます。
+まずはアンケートにご記入ください。`);
   }
   if (STATE_ID === 3) {
     $.setStateCompat('this', 'exp_showItem', true);
@@ -17,7 +15,7 @@ function OnStateEnter() {
 試しに叩いてみてください。
 その後「次へ」ボタンを押し、
 先程の動画の中の演奏者と同様の気分で、
-4分間の演奏を始めてください。`);
+30秒間の演奏を始めてください。`);
   }
   if (STATE_ID === 5) {
     $.setStateCompat('this', 'exp_showItem', true);

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ExitGate
   m_EditorClassIdentifier: 
   stateListeners:
-  - stateID: 13
+  - stateID: 12
     onStateStartedActions:
     - predefinedAction:
         actionType: Show item

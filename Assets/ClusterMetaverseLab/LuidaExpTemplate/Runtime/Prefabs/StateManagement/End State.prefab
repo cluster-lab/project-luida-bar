@@ -121,7 +121,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\n\r\n$.onUpdate(()
+  sourceCode: "expID = \"expID_example\";\ntoken = \"token_example\";\n\r\n$.onUpdate(()
     => {\r\n  if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\r\n     
     $.setStateCompat(\"this\", \"state_enter\", false);\r\n      // OnStateEnter();\r\n 
     }\r\n})\r\n\r\nfunction OnStateEnter() {\r\n  const request = {\r\n    type:
