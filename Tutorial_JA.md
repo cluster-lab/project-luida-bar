@@ -205,8 +205,7 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 4. **試行のステート**：`Trial - Start`の行は特に設定なし。
 5. **試行の休憩ステートを3秒で自動的に飛ばす**：`Trial - Rest`の行の`Has Exit Time`をチェックし、`Exit Time`に`3`と入力します。
 6. **試行終了後のステートを質問紙と紐付ける**：`Outro`の行で
-    1. `Add State After Trials`ボタンを押し、ステートを追加します。`Questionnaire`と名前を変えてあげます。
-    2. `Add Questionnaire`ボタンを押し、`qID`に`2`と入力します。
+    1. `Add Questionnaire`ボタンを押し、`qID`に`2`と入力します。
 
 設定後、画面が下の図の通りになっているか確認しましょう。
 
