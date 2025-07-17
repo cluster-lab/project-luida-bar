@@ -167,6 +167,7 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
     -  Name: `request`　　Values: `material,text`　　isRandom: □
     -  Name: `font`　　Values: `R,B`　　isRandom: ☑
     -  Name: `text`　　Values: `Red,Blue`　　isRandom: ☑
+    -  _* ver1.1.0と1.1.1でバグ確認：ファイルを新規作成したらそのまま変数を追加するとUIに反映されない。一回設定画面を閉じてまた開くと治る。_
 3.  **参加者間変数の設定**：`Variables for Between-Subject Conditions`に1つの項目を追加し、以下の通りに設定します：
     -  Name: `depth`　　Values: `near,far`
 4.  `Trials Count per Condition` に、`2`を入力します。すると各条件（変数の組み合わせ）を持つ試行は2回ずつになります。
