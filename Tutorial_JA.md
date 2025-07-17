@@ -195,8 +195,7 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 <summary><h3>こちらの手順に従って設定してください</h3></summary>
 
 1. **最初のステートを質問紙と紐付ける**：`Start`の行で
-    1. `Add State After Trials`ボタンを押し、ステートを追加します。`Questionnaire`と名前を変えてあげます。
-    2. `Add Questionnaire`ボタンを押し、`qID`に`1`と入力します。
+    1. `Add Questionnaire`ボタンを押し、`qID`に`1`と入力します。
 2. **説明のステートを30秒で自動的に飛ばす**：`Intro`の行の`Has Exit Time`をチェックし、`Exit Time`に`30`と入力します。
 3. **計算タスクのステートを追加し、5回繰り返す**：
     1. `Add State Before Trials`ボタンを押し、ステートを追加します。`CalculationTask`と名前を変えてあげます。
