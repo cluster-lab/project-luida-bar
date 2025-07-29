@@ -4,12 +4,14 @@ using UnityEditorInternal;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Text.RegularExpressions;
 using ClusterVR.CreatorKit.Item.Implements;
 using ClusterVR.CreatorKit.World.Implements.TextView;
 
 public static class ItemsManagerUIDrawer
 {
     private static string docFilePath = "Assets/Doc/LUIDA-StateListeningItemScriptDoc.md";
+    private static readonly string codeFontPath = "Assets/Fonts/FiraCode-Regular.ttf";
     private static readonly StateListeningAction[] AvailableStateListeningActions =
     {
         new StateListeningAction("Show item", "$.setStateCompat('this', 'exp_showItem', true);"),
@@ -42,7 +44,10 @@ public static class ItemsManagerUIDrawer
             new[] { "target", "frequency", "amplitude", "duration" }),
         new StateListeningAction("Sleep", "{_seconds_}", new[] { "seconds" }),
     };
+    
+    private static GUIStyle _codeTextAreaStyle; // Custom style for monospaced font
 
+    // ... (Other methods like DrawGUI, DrawHeader, etc. remain the same) ...
     public static void DrawGUI(ItemsManagerConfigTab editor)
     {
         EditorGUI.BeginChangeCheck();
@@ -51,9 +56,9 @@ public static class ItemsManagerUIDrawer
 
         EditorGUILayout.BeginHorizontal();
         DrawMainGrid(editor);
-        
+
         EditorGUILayout.Space(10);
-        
+
         EditorGUILayout.BeginVertical();
         TextAsset markdownAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(docFilePath);
         EditorGUILayout.HelpBox("Script Doc\n↓↓↓↓↓", MessageType.Info);
@@ -61,9 +66,9 @@ public static class ItemsManagerUIDrawer
         EditorGUILayout.ObjectField(markdownAsset, typeof(TextAsset), false, GUILayout.Width(100));
         GUI.enabled = true;
         EditorGUILayout.EndVertical();
-        
+
         EditorGUILayout.EndHorizontal();
-        
+
         if (EditorGUI.EndChangeCheck())
         {
             // Changes are primarily saved via Undo/SetDirty and explicit save calls.
@@ -86,7 +91,7 @@ public static class ItemsManagerUIDrawer
         }
 
         EditorGUI.EndDisabledGroup();
-        
+
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.Space(10);
     }
@@ -100,7 +105,7 @@ public static class ItemsManagerUIDrawer
 
         DrawItemHeaders(editor, removeButtonStyle);
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-        
+
         editor.scrollPositionY = EditorGUILayout.BeginScrollView(editor.scrollPositionY, false, true, GUIStyle.none, GUI.skin.verticalScrollbar, GUIStyle.none, GUILayout.ExpandHeight(true));
 
         DrawOtherImplementationRow(editor);
@@ -147,15 +152,14 @@ public static class ItemsManagerUIDrawer
         EditorGUILayout.EndHorizontal();
         GUI.backgroundColor = Color.white;
     }
-
+    
     private static void DrawOtherImplementationRow(ItemsManagerConfigTab editor)
     {
         EditorGUILayout.LabelField("Functions, events, variables not listening to the state machine", EditorStyles.largeLabel);
         EditorGUILayout.BeginHorizontal();
 
         EditorGUILayout.BeginVertical(GUILayout.Width(215));
-        
-        // EditorGUILayout.HelpBox("Implement ClusterScript callbacks (e.g., $.onInteract, $.onGrab, ...) or your custom functions here.", MessageType.Info);
+
         EditorGUILayout.HelpBox("DON'T use $.onStart and $.onUpdate here! Implement function Start and Update instead.", MessageType.Warning);
         EditorGUILayout.EndVertical();
         GUILayout.Space(5);
@@ -174,14 +178,15 @@ public static class ItemsManagerUIDrawer
             if (itemDataAsset != null)
             {
                 string currentOtherImpl = itemDataAsset.otherImplementation ?? string.Empty;
-                EditorGUI.BeginChangeCheck();
-                string newOtherImpl = EditorGUILayout.TextArea(currentOtherImpl, GUILayout.Width(233.5f), GUILayout.MaxHeight(75));
-                if (EditorGUI.EndChangeCheck())
+
+                Rect taRect = EditorGUILayout.GetControlRect(false, 75, GUILayout.Width(233.5f), GUILayout.MaxHeight(75));
+                // MODIFIED CALL: Pass 'isColored: true' for JS code
+                DrawHoverableTextArea(taRect, currentOtherImpl, (newValue) =>
                 {
                     Undo.RecordObject(itemDataAsset, "Edit Other Implementation for " + item.name);
-                    itemDataAsset.otherImplementation = newOtherImpl;
+                    itemDataAsset.otherImplementation = newValue;
                     EditorUtility.SetDirty(itemDataAsset);
-                }
+                }, editor, isColored: true);
             }
             else
             {
@@ -199,10 +204,6 @@ public static class ItemsManagerUIDrawer
     private static void DrawStateRows(ItemsManagerConfigTab editor, GUIStyle removeButtonStyle)
     {
         EditorGUILayout.LabelField("Actions listening to the state machine", EditorStyles.largeLabel, GUILayout.Width(300));
-        
-        // EditorGUILayout.BeginHorizontal();
-        // EditorGUILayout.HelpBox("Select available actions to run when entering/during/exiting any state. You can also write your custom scripts by selecting the 'Customized action' option.", MessageType.Info);
-        // EditorGUILayout.EndHorizontal();
 
         GUI.backgroundColor = Color.white;
         bool isBlueRow = true;
@@ -217,7 +218,7 @@ public static class ItemsManagerUIDrawer
 
             EditorGUILayout.LabelField(stateName, EditorStyles.boldLabel, GUILayout.Width(200), GUILayout.ExpandHeight(true));
             GUILayout.Space(15);
-            
+
             bool isCellDarkColumn = true;
             foreach (var item in editor._cachedItems)
             {
@@ -225,7 +226,7 @@ public static class ItemsManagerUIDrawer
                 DrawCell(editor, item, stateName, stateID, isCellDarkColumn, removeButtonStyle);
                 isCellDarkColumn = !isCellDarkColumn;
             }
-            
+
             EditorGUILayout.EndHorizontal();
             isBlueRow = !isBlueRow;
         }
@@ -267,13 +268,13 @@ public static class ItemsManagerUIDrawer
                 GUIUtility.ExitGUI();
             }
         }
-        
+
         EditorGUILayout.EndVertical();
         GUILayout.Space(10);
     }
     
     #region ReorderableList UI
-
+    
     public static void SetupReorderableLists(ItemsManagerConfigTab editor)
     {
         editor._reorderableLists.Clear();
@@ -316,31 +317,31 @@ public static class ItemsManagerUIDrawer
                 float ifButtonAndSpacingWidth = isCurrentStateTrialRelated ? 35 + spacing : 0;
                 float dropdownWidth = availableWidth - ifButtonAndSpacingWidth;
                 Rect dropdownRect = new Rect(currentX, currentY, dropdownWidth, lineHeight);
-                
+
                 var options = AvailableStateListeningActions.Select(a => a.actionType).ToList();
                 options.Insert(0, "Select Action");
                 options.Add("Customized Action");
 
-                int selectedIndex = 0; 
+                int selectedIndex = 0;
                 if (!string.IsNullOrEmpty(action.predefinedActionTemplate.actionType)) {
                     selectedIndex = (action.predefinedActionTemplate.actionType == "Customized Action")
                         ? options.Count - 1
                         : AvailableStateListeningActions.ToList().FindIndex(a => a.actionType == action.predefinedActionTemplate.actionType) + 1;
-                    if (selectedIndex < 0) selectedIndex = 0; 
+                    if (selectedIndex < 0) selectedIndex = 0;
                 }
-                
+
                 int newIndex = EditorGUI.Popup(dropdownRect, selectedIndex, options.ToArray());
                 currentX += dropdownWidth + spacing;
 
                 if (isCurrentStateTrialRelated)
                 {
-                    Rect ifToggleRect = new Rect(currentX, currentY, 35, lineHeight); 
+                    Rect ifToggleRect = new Rect(currentX, currentY, 35, lineHeight);
                     bool newIsConditional = GUI.Toggle(ifToggleRect, action.isConditional, "If", GUI.skin.button);
                     if (newIsConditional != action.isConditional)
                     {
                         Undo.RecordObject(itemDataAsset, "Toggle Conditional Action");
                         action.isConditional = newIsConditional;
-                        if (!action.isConditional) 
+                        if (!action.isConditional)
                         {
                             action.conditionVariable = null;
                             action.conditionValue = null;
@@ -361,10 +362,10 @@ public static class ItemsManagerUIDrawer
                     {
                         conditionVarNames.AddRange(editor._cachedExperimentVariables.Select(v => v.name).Distinct());
                     }
-                    
+
                     int selectedVarIndex = string.IsNullOrEmpty(action.conditionVariable) ? 0 : conditionVarNames.IndexOf(action.conditionVariable);
-                    if (selectedVarIndex == -1) selectedVarIndex = 0; 
-                    
+                    if (selectedVarIndex == -1) selectedVarIndex = 0;
+
                     int newSelectedVarIndex = EditorGUI.Popup(varDropdownRect, selectedVarIndex, conditionVarNames.ToArray());
                     currentY += lineHeight + spacing;
 
@@ -372,7 +373,7 @@ public static class ItemsManagerUIDrawer
                     {
                         Undo.RecordObject(itemDataAsset, "Change Condition Variable");
                         action.conditionVariable = (newSelectedVarIndex > 0) ? conditionVarNames[newSelectedVarIndex] : null;
-                        action.conditionValue = null; 
+                        action.conditionValue = null;
                         EditorUtility.SetDirty(itemDataAsset);
                     }
 
@@ -390,7 +391,7 @@ public static class ItemsManagerUIDrawer
 
                             int selectedValIndex = action.conditionValue == null ? 0 : conditionValOptions.IndexOf(action.conditionValue);
                             if (selectedValIndex == -1) selectedValIndex = 0;
-                            
+
                             int newSelectedValIndex = EditorGUI.Popup(valDropdownRect, selectedValIndex, conditionValOptions.ToArray());
                             currentY += lineHeight + spacing;
 
@@ -409,7 +410,7 @@ public static class ItemsManagerUIDrawer
                         }
                     }
                 }
-                
+
                 if (newIndex != selectedIndex)
                 {
                     Undo.RecordObject(itemDataAsset, "Change Action Type");
@@ -437,7 +438,7 @@ public static class ItemsManagerUIDrawer
                                 action.variableValues[varName] = new StateListenerAction(action.predefinedActionTemplate).variableValues[varName];
                             }
                         }
-                        
+
                         if (action.predefinedActionTemplate.actionType == "Set text")
                         {
                             var textChild = itemGO.transform.Find("Text");
@@ -456,11 +457,11 @@ public static class ItemsManagerUIDrawer
                     }
                     EditorUtility.SetDirty(itemDataAsset);
                 }
-                
+
                 bool requiresMovableItem = new[] { "Set position", "Add position", "Set rotation", "Add rotation" }.Contains(action.predefinedActionTemplate.actionType);
                 if (requiresMovableItem && itemGO.GetComponent<MovableItem>() == null)
                 {
-                    Rect warningRect = new Rect(rect.x, currentY, rect.width, lineHeight * 2); 
+                    Rect warningRect = new Rect(rect.x, currentY, rect.width, lineHeight * 2);
                     EditorGUI.HelpBox(warningRect, $"Warning: '{action.predefinedActionTemplate.actionType}' requires a MovableItem component on '{itemGO.name}'.", MessageType.Warning);
                     currentY += lineHeight * 2 + spacing;
                 }
@@ -468,13 +469,12 @@ public static class ItemsManagerUIDrawer
                 if (action.predefinedActionTemplate.actionType == "Customized Action")
                 {
                     Rect textAreaRect = new Rect(rect.x + 15, currentY, rect.width - 15, lineHeight * 3);
-                    string newCustomAction = EditorGUI.TextArea(textAreaRect, action.customAction ?? ""); 
-                    if (newCustomAction != action.customAction)
-                    {
+                    // MODIFIED CALL: Pass 'isColored: true' for JS code
+                    DrawHoverableTextArea(textAreaRect, action.customAction ?? "", (newValue) => {
                         Undo.RecordObject(itemDataAsset, "Edit Custom Action");
-                        action.customAction = newCustomAction;
+                        action.customAction = newValue;
                         EditorUtility.SetDirty(itemDataAsset);
-                    }
+                    }, editor, isColored: true);
                     currentY += lineHeight * 3 + spacing;
                 }
                 else if (action.predefinedActionTemplate.variables != null && action.predefinedActionTemplate.variables.Length > 0)
@@ -514,13 +514,14 @@ public static class ItemsManagerUIDrawer
                                 currentY += lineHeight + spacing;
                                 float textAreaHeight = lineHeight * 2;
                                 Rect textAreaRect = new Rect(rect.x + 15, currentY, rect.width - 15, textAreaHeight);
-                                string newValue = EditorGUI.TextArea(textAreaRect, currentValue);
-                                if (newValue != currentValue)
-                                {
+                                
+                                // MODIFIED CALL: Pass 'isColored: false' for plain text
+                                DrawHoverableTextArea(textAreaRect, currentValue, (newValue) => {
                                     Undo.RecordObject(itemDataAsset, "Edit Variable " + variableName);
                                     action.variableValues[variableName] = newValue;
                                     EditorUtility.SetDirty(itemDataAsset);
-                                }
+                                }, editor, isColored: false);
+
                                 currentY += textAreaHeight + spacing;
                             }
                             else
@@ -561,16 +562,16 @@ public static class ItemsManagerUIDrawer
                         }
                     }
                 }
-                
+
                 bool requiresMovableItem = new[] { "Set position", "Add position", "Set rotation", "Add rotation" }.Contains(action.predefinedActionTemplate.actionType);
                 if (requiresMovableItem && itemGO.GetComponent<MovableItem>() == null)
                 {
-                     height += lineHeight * 2 + spacing; 
+                     height += lineHeight * 2 + spacing;
                 }
-                
+
                 if (action.predefinedActionTemplate.actionType == "Customized Action")
                 {
-                    height += lineHeight * 3 + spacing; 
+                    height += lineHeight * 3 + spacing;
                 }
                 else if (action.predefinedActionTemplate.variables != null && action.predefinedActionTemplate.variables.Length > 0)
                 {
@@ -629,11 +630,100 @@ public static class ItemsManagerUIDrawer
             rl.DoLayoutList();
         }
     }
-
+    
     #endregion
 
-    #region Documentation
+    #region Hover-to-Zoom TextArea Feature
+
+    private static void InitializeStyles()
+    {
+        _codeTextAreaStyle = new GUIStyle(EditorStyles.textArea);
+        Font codeFont = AssetDatabase.LoadAssetAtPath<Font>(codeFontPath);
+        if (codeFont != null)
+        {
+            _codeTextAreaStyle.font = codeFont;
+        }
+        
+        // NEW: Enable rich text for the style to render color tags.
+        _codeTextAreaStyle.richText = true;
+    }
     
+    private static void DrawHoverableTextArea(Rect rect, string text, Action<string> onUpdate, ItemsManagerConfigTab editor, bool isColored)
+    {
+        if (_codeTextAreaStyle == null)
+        {
+            InitializeStyles();
+        }
+
+        // Apply syntax highlighting if requested
+        string displayText = (isColored && !string.IsNullOrEmpty(text)) ? HighlightJsSyntax(text) : text;
+
+        if (GUI.Button(rect, displayText, _codeTextAreaStyle))
+        {
+            if (!EditorWindow.HasOpenInstances<TextAreaOverlayWindow>())
+            {
+                Rect screenRect = GUIUtility.GUIToScreenRect(rect);
+                float zoomWidth = Math.Max(450f, screenRect.width * 2f);
+                float zoomHeight = Math.Max(200f, screenRect.height * 3f);
+                Rect popupRect = new Rect(screenRect.x, screenRect.y, zoomWidth, zoomHeight);
+
+                // Show the popup with the *original, uncolored* text for editing
+                TextAreaOverlayWindow.Show(popupRect, text, onUpdate, _codeTextAreaStyle);
+            }
+        }
+    }
+
+    #endregion
+    
+    #region Syntax Highlighting
+    
+    // Color definitions (VSCode Dark+ theme inspired)
+    private const string JsKeywordColor = "#569CD6";
+    private const string JsStringColor = "#CE9178";
+    private const string JsCommentColor = "#6A9955";
+    private const string JsNumberColor = "#B5CEA8";
+    private const string JsFunctionColor = "#DCDCAA";
+    private const string JsPunctuationColor = "#D4D4D4";
+
+    // Regex to find different parts of JS syntax using named capture groups
+    private static readonly Regex JsSyntaxRegex = new Regex(
+        @"(?<comment>//.*|/\*[\s\S]*?\*/)|" +
+        @"(?<string>"".*?""|'.*?'|`.*?`)|" +
+        @"(?<keyword>\b(if|else|for|while|var|let|const|function|return|new|true|false|null|this|try|catch|finally|switch|case|default|break|continue|delete|typeof|instanceof|in|void)\b)|" +
+        @"(?<number>\b\d+(\.\d+)?([eE][+-]?\d+)?\b)|" +
+        @"(?<function>\b[a-zA-Z_]\w*(?=\s*\())|" +
+        @"(?<punctuation>[{}\[\]();,.=+\-*/%&|<>!~?:]+)",
+        RegexOptions.Compiled | RegexOptions.Multiline
+    );
+    
+    public static string HighlightJsSyntax(string code)
+    {
+        // First, escape any existing angle brackets to prevent them from being treated as rich text tags.
+        // code = code.Replace("<", "<noparse><</noparse>").Replace(">", "<noparse>></noparse>");
+
+        return JsSyntaxRegex.Replace(code, match =>
+        {
+            if (match.Groups["comment"].Success)
+                return $"<color={JsCommentColor}>{match.Value}</color>";
+            if (match.Groups["string"].Success)
+                return $"<color={JsStringColor}>{match.Value}</color>";
+            if (match.Groups["keyword"].Success)
+                return $"<color={JsKeywordColor}>{match.Value}</color>";
+            if (match.Groups["number"].Success)
+                return $"<color={JsNumberColor}>{match.Value}</color>";
+            if (match.Groups["function"].Success)
+                return $"<color={JsFunctionColor}>{match.Value}</color>";
+            if (match.Groups["punctuation"].Success)
+                return $"<color={JsPunctuationColor}>{match.Value}</color>";
+            
+            return match.Value; // Return original value if no group matches (shouldn't happen)
+        });
+    }
+
+    #endregion
+    
+    #region Documentation
+
     private static void DrawDocEntry(string actionName, string description, string parametersInfo = null, bool requiresMovableItem = false, string jsFunctionSignature = null)
     {
         EditorGUILayout.BeginHorizontal();
@@ -664,6 +754,6 @@ public static class ItemsManagerUIDrawer
         EditorGUILayout.EndHorizontal();
         GUILayout.Space(3);
     }
-    
+
     #endregion
 }
