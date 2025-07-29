@@ -45,7 +45,10 @@ MonoBehaviour:
         actionType: Customized Action
         codeSnippet: 
         variables: []
-      customAction: $.state.originPos = $.getPosition().clone();
+      customAction: '$.state.originPos = $.getPosition().clone();
+
+        $.log(''gain:
+        '' + CONDITION[''gain'']);'
       isConditional: 0
       conditionVariable: 
       conditionValue: 

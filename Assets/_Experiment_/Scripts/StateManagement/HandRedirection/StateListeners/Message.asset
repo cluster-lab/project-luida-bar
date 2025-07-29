@@ -37,36 +37,10 @@ MonoBehaviour:
       _variableKeys:
       - text
       _variableValuesList:
-      - 'In this experiment,
-
-        you will be asked to repeat touching a green
-        ball.
-
-        After touching it once, the ball moves forward, and you need
-        to reach your arm to touch it again.
-
-        Then, you should answer whether
-        you hand moved faster or slower than your real hand during the reaching.
-
-        Press
-        the button to get started.'
-    duringStateActions: []
-    onStateExitedActions: []
-  - stateID: -1
-    onStateStartedActions:
-    - predefinedActionTemplate:
-        actionType: Set text
-        codeSnippet: $.subNode('Text').setText(`{_text_}`);
-        variables:
-        - text
-      customAction: 
-      isConditional: 0
-      conditionVariable: 
-      conditionValue: 
-      _variableKeys:
-      - text
-      _variableValuesList:
-      - Touch the green ball in front of you.
+      - "You will be asked to repeat touching a green ball.\nAfter touching it once,
+        the ball moves forward, \nand you need to reach your arm to touch it again.\nThen,
+        you should answer whether you hand moved \nfaster or slower than your real
+        hand during the reaching.\nPress the button to get started."
     duringStateActions: []
     onStateExitedActions: []
   - stateID: 2
@@ -84,59 +58,6 @@ MonoBehaviour:
       - text
       _variableValuesList:
       - Touch the green ball in front of you.
-    duringStateActions: []
-    onStateExitedActions: []
-  - stateID: -1
-    onStateStartedActions:
-    - predefinedActionTemplate:
-        actionType: Set text
-        codeSnippet: $.subNode('Text').setText(`{_text_}`);
-        variables:
-        - text
-      customAction: 
-      isConditional: 0
-      conditionVariable: 
-      conditionValue: 
-      _variableKeys:
-      - text
-      _variableValuesList:
-      - Reach your arm to touch the green ball again.
-    duringStateActions: []
-    onStateExitedActions: []
-  - stateID: -1
-    onStateStartedActions:
-    - predefinedActionTemplate:
-        actionType: Set text
-        codeSnippet: $.subNode('Text').setText(`{_text_}`);
-        variables:
-        - text
-      customAction: 
-      isConditional: 0
-      conditionVariable: 
-      conditionValue: 
-      _variableKeys:
-      - text
-      _variableValuesList:
-      - Put your hand down
-    duringStateActions: []
-    onStateExitedActions: []
-  - stateID: -1
-    onStateStartedActions:
-    - predefinedActionTemplate:
-        actionType: Set text
-        codeSnippet: $.subNode('Text').setText(`{_text_}`);
-        variables:
-        - text
-      customAction: 
-      isConditional: 0
-      conditionVariable: 
-      conditionValue: 
-      _variableKeys:
-      - text
-      _variableValuesList:
-      - 'The practice session is over.
-
-        Click the button to start the task.'
     duringStateActions: []
     onStateExitedActions: []
   - stateID: 3

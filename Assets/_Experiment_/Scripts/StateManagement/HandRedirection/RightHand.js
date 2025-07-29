@@ -7,6 +7,7 @@ const stateEnterActions = {
     3: [
         { type: "exec", action: () => {
             $.state.originPos = $.getPosition().clone();
+            $.log('gain: ' + CONDITION['gain']);
         } }
     ],
     6: [

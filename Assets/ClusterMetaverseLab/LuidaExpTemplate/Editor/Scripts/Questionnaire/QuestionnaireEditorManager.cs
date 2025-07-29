@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
 using ClusterVR.CreatorKit.Operation.Implements;
+using ClusterVR.CreatorKit.Gimmick.Implements;
 
 public static class QuestionnaireEditorManager
 {
@@ -74,6 +75,46 @@ public static class QuestionnaireEditorManager
         GameObject questionnairesContainer = FindOrCreateContainer(StateQuestionnaireRootName);
         GameObject stateContainer = FindOrCreateStateContainer(questionnairesContainer, stateNameInAsset);
 
+        GameObject expManagersWrapper = null;
+        foreach (var root in SceneManager.GetActiveScene().GetRootGameObjects())
+        {
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(root) == ExpManagersWrapperPrefabPath)
+            {
+                expManagersWrapper = root;
+                break;
+            }
+        }
+
+        if (expManagersWrapper != null)
+        {
+            Transform statesObject = expManagersWrapper.transform.Find("States");
+            if (statesObject != null)
+            {
+                Transform specificStateObject = statesObject.transform.Find(stateList.States[stateId].StateName);
+                if (specificStateObject != null)
+                {
+                    Transform objectsContainer = specificStateObject.transform.Find("Objects");
+                    if (objectsContainer != null)
+                    {
+                        var sourceGimmick = objectsContainer.GetComponent<SetGameObjectActiveGimmick>();
+                        if (sourceGimmick != null)
+                        {
+                            if (UnityEditorInternal.ComponentUtility.CopyComponent(sourceGimmick))
+                            {
+                                var existingGimmick = stateContainer.GetComponent<SetGameObjectActiveGimmick>();
+                                if (existingGimmick != null)
+                                {
+                                    Undo.DestroyObjectImmediate(existingGimmick);
+                                }
+
+                                UnityEditorInternal.ComponentUtility.PasteComponentAsNew(stateContainer);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
         for (int i = stateContainer.transform.childCount - 1; i >= 0; i--)
         {
             var child = stateContainer.transform.GetChild(i).gameObject;

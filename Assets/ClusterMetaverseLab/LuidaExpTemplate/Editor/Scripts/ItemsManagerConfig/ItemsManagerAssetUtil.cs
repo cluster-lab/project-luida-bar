@@ -311,23 +311,59 @@ public static class ItemsManagerAssetUtil
     private static string GenerateActionsObjectsForItem(GameObject item, ItemsManagerConfigTab editor)
     {
         if (item == null) return string.Empty;
-        if (!editor.stateListenersByItem.TryGetValue(item, out var listeners))
+        if (!editor.stateListenersByItem.TryGetValue(item, out var originalListeners))
         {
-            listeners = new List<StateListener>();
+            originalListeners = new List<StateListener>();
+        }
+        
+        var cleanedListeners = new List<StateListener>();
+        var stateIdsSeen = new HashSet<int>();
+        bool wasModified = false;
+    
+        for (int i = originalListeners.Count - 1; i >= 0; i--)
+        {
+            var listener = originalListeners[i];
+    
+            if (listener.stateID >= 0 && stateIdsSeen.Add(listener.stateID))
+            {
+                cleanedListeners.Add(listener);
+            }
+        }
+        
+        cleanedListeners.Reverse();
+    
+        if (cleanedListeners.Count != originalListeners.Count)
+        {
+            wasModified = true;
+        }
+    
+        if (wasModified)
+        {
+            editor.stateListenersByItem[item] = cleanedListeners;
+    
+            string assetPath = GetItemDataAssetPath(item);
+            var data = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(assetPath);
+            if (data != null)
+            {
+                Undo.RecordObject(data, "Clean Up and Deduplicate State Listeners");
+                data.stateListeners = cleanedListeners.ToArray();
+                EditorUtility.SetDirty(data);
+                AssetDatabase.SaveAssets();
+            }
         }
 
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
         sb.AppendLine("const stateEnterActions = {");
-        AppendActionsForType(sb, listeners, l => l.onStateStartedActions);
+        AppendActionsForType(sb, cleanedListeners, l => l.onStateStartedActions);
         sb.AppendLine("};\n");
 
         sb.AppendLine("const duringStateActions = {");
-        AppendActionsForType(sb, listeners, l => l.duringStateActions);
+        AppendActionsForType(sb, cleanedListeners, l => l.duringStateActions);
         sb.AppendLine("};\n");
 
         sb.AppendLine("const stateExitActions = {");
-        AppendActionsForType(sb, listeners, l => l.onStateExitedActions);
+        AppendActionsForType(sb, cleanedListeners, l => l.onStateExitedActions);
         sb.AppendLine("};");
 
         return sb.ToString();

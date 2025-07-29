@@ -1,34 +1,14 @@
 const stateEnterActions = {
-    -1: [
-        { type: "exec", action: () => {
-            $.subNode('Text').setText(`Touch the green ball in front of you.`);
-        } }
-    ],
-    -1: [
-        { type: "exec", action: () => {
-            $.subNode('Text').setText(`Reach your arm to touch the green ball again.`);
-        } }
-    ],
-    -1: [
-        { type: "exec", action: () => {
-            $.subNode('Text').setText(`Put your hand down`);
-        } }
-    ],
-    -1: [
-        { type: "exec", action: () => {
-            $.subNode('Text').setText(`The practice session is over.
-            Click the button to start the task.`);
-        } }
-    ],
     1: [
         { type: "exec", action: () => {
             $.setStateCompat('this', 'exp_showItem', true);
         } },
         { type: "exec", action: () => {
-            $.subNode('Text').setText(`In this experiment,
-            you will be asked to repeat touching a green ball.
-            After touching it once, the ball moves forward, and you need to reach your arm to touch it again.
-            Then, you should answer whether you hand moved faster or slower than your real hand during the reaching.
+            $.subNode('Text').setText(`You will be asked to repeat touching a green ball.
+            After touching it once, the ball moves forward, 
+            and you need to reach your arm to touch it again.
+            Then, you should answer whether you hand moved 
+            faster or slower than your real hand during the reaching.
             Press the button to get started.`);
         } }
     ],

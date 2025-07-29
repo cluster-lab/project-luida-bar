@@ -15,12 +15,12 @@ MonoBehaviour:
   States:
   - StateName: Start
     DestStateName: Intro
-    HasExitTime: 1
-    ExitTime: 3
+    HasExitTime: 0
+    ExitTime: 0
     IsRepeated: 0
     RepeatDestStateName: Start
     RepeatCount: 1
-    qID: 0
+    qID: 1
   - StateName: Intro
     DestStateName: Trial - Start
     HasExitTime: 0

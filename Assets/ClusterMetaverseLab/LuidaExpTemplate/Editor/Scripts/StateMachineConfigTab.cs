@@ -378,8 +378,6 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
 
             GUILayout.Space(50);
             
-            // ### MODIFICATION START ###
-            // The questionnaire UI logic is now handled by the QuestionnaireEditorManager class.
             EditorGUILayout.BeginVertical(GUILayout.MinWidth(180));
             string stateNameValFromProp = stateNameProp.stringValue;
             if (QuestionnaireEditorManager.HasEnabledFormInstance(stateNameValFromProp))
@@ -397,7 +395,6 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
                 }
             }
             EditorGUILayout.EndVertical();
-            // ### MODIFICATION END ###
 
             EditorGUILayout.EndHorizontal();
             GUILayout.Space(20);
@@ -549,8 +546,6 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
 
             if (currentStateData.qID > 0)
             {
-                // ### MODIFICATION ###
-                // Re-create the questionnaire form using the new manager.
                 QuestionnaireEditorManager.AddOrEnableQuestionnaireForm(stateList, i, expectedName);
             }
         }
@@ -812,19 +807,6 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
             {
                 EditorUtility.SetDirty(data);
                 anyDataDirtied = true;
-                string itemName = Path.GetFileNameWithoutExtension(assetFile);
-                string scriptDir = Path.GetDirectoryName(assetFile);
-                if (!Directory.Exists(scriptDir)) Directory.CreateDirectory(scriptDir);
-                string scriptPath = Path.Combine(scriptDir, itemName + ".js");
-
-
-                var sb = new StringBuilder();
-                sb.AppendLine(GenerateOnStateEnterFunction(data.stateListeners));
-                sb.AppendLine(GenerateDuringStateFunction(data.stateListeners));
-                sb.AppendLine(GenerateOnStateExitFunction(data.stateListeners));
-                sb.AppendLine(data.otherImplementation ?? string.Empty);
-
-                File.WriteAllText(scriptPath, sb.ToString());
             }
         }
 
@@ -847,57 +829,6 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
             }
         }
         return null;
-    }
-
-    private string GenerateStateFunction(StateListener[] listeners, string functionName, Func<StateListener, List<StateListenerAction>> actionSelector, string extraParameters = "")
-    {
-        var sb = new StringBuilder();
-        sb.AppendLine($"function {functionName}({extraParameters}) {{");
-        sb.AppendLine("  const STATE_ID = $.state.state_id;");
-        sb.AppendLine("  const CONDITION = $.groupState.currentCondition;");
-        sb.AppendLine("  const PARTICIPANTS = $.groupState.participants;");
-        sb.AppendLine("");
-
-        var groupedListeners = listeners
-            .Where(l => l != null && l.stateID >= 0)
-            .GroupBy(l => l.stateID);
-
-        foreach (var group in groupedListeners)
-        {
-            sb.AppendLine($"  if (STATE_ID === {group.Key}) {{");
-            foreach (var listenerData in group)
-            {
-                if (listenerData == null) continue;
-                var actions = actionSelector(listenerData);
-                if (actions != null)
-                {
-                    foreach (var action in actions)
-                    {
-                        if (action != null)
-                            sb.AppendLine($"    {action.GetActionContent()}");
-                    }
-                }
-            }
-            sb.AppendLine("  }");
-        }
-        sb.AppendLine("}");
-        sb.AppendLine("");
-        return sb.ToString();
-    }
-
-    private string GenerateOnStateEnterFunction(StateListener[] listeners)
-    {
-        return GenerateStateFunction(listeners, "OnStateEnter", listener => listener.onStateStartedActions);
-    }
-
-    private string GenerateDuringStateFunction(StateListener[] listeners)
-    {
-        return GenerateStateFunction(listeners, "DuringState", listener => listener.duringStateActions, "deltaTime");
-    }
-
-    private string GenerateOnStateExitFunction(StateListener[] listeners)
-    {
-        return GenerateStateFunction(listeners, "OnStateExit", listener => listener.onStateExitedActions);
     }
 
     private void InsertStateGameObjectAtIndex(int index)
