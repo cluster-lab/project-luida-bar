@@ -116,6 +116,8 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 <details>
 <summary><h3>こちらの手順に従って登録・設定してください</h3></summary>
+＊こちらの手順の一部は今後自動化する予定です。現状はお手数ですが一通りおこなってください。
+
 
 1.  [最新リリースの実装テンプレート](https://github.com/cluster-lab/project-luida-bar/releases)をダウンロードします。
 2.  ダウンロードしたUnityプロジェクトをUnity Hubから開きます。プロジェクトを開いた際にコンソールにエラーが表示されることがありますが、まずは無視して進み、以下の必須パッケージをUnityにインポートしてください。
@@ -141,6 +143,9 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 6.  `Window > Luida Editor`の`Experiment Identifiers`タブに、先ほどウェブコンソールでコピーした実験IDを `Experiment ID` フィールドに入力します。
     ![Luida Editor 実験ID登録画面](https://github.com/user-attachments/assets/53f7eba3-de7e-48bf-910d-cdea16cf1886)
+
+7. `Window > かおもラボ > CSEmulator`の`callExternal用Endpoint`設定フィールドに、先ほどの `Endpoint ID` と `https://luida-web-next.vercel.app/api/cluster`で埋めます。
+    <img width="928" height="290" alt="image" src="https://github.com/user-attachments/assets/31b160e0-e1cd-4dbf-a8fd-8c907de48015" />
 
 </details>
 
