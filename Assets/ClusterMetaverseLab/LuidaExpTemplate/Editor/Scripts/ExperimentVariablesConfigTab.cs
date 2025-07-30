@@ -12,45 +12,36 @@ using UnityEditorInternal; // Required for ReorderableList
 public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
 {
     protected override LuidaConfigWindow.TabIndex TabIndex => LuidaConfigWindow.TabIndex.ExperimentVariables;
-    
+
     public static bool IsApplyingVariableUpdates = false;
-    
+
     private JavaScriptAsset variablesAsset;
     private JavaScriptAsset betweenSubjectsConditionSetterAsset;
     private JavaScriptAsset conditionManagerScript;
     private string conditionManagerScriptPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/ConditionManagement/ConditionManager.js";
-    
-    // Use List<T> instead of array for easy modification with ReorderableList
+
     private List<ExperimentVariable> withinSubjectsVariables = new List<ExperimentVariable>();
     private List<ExperimentVariable> betweenSubjectsVariables = new List<ExperimentVariable>();
     private int trialsCountForEachUniqueCondition;
 
-    // ReorderableList fields
     private ReorderableList withinSubjectsList;
     private ReorderableList betweenSubjectsList;
 
     private string variablesAssetPath;
     private string betweenSubjectsConditionSetterPath;
-    
-    private static bool isInitialized = false;
 
     public void OnEnable()
     {
-        if (!isInitialized)
-        {
-            isInitialized = true;
-            
-            RetrieveJavaScriptAsset();
-            SetupReorderableLists();
-            
-            LuidaConfigWindow.OnEditorClosed -= ApplyVariableUpdates;
-            LuidaConfigWindow.OnEditorClosed -= OnDisable;
-            LuidaConfigWindow.OnTabSwitched -= HandleTabSwitched;
-        
-            LuidaConfigWindow.OnEditorClosed += ApplyVariableUpdates;
-            LuidaConfigWindow.OnEditorClosed += OnDisable;
-            LuidaConfigWindow.OnTabSwitched += HandleTabSwitched;
-        }
+        RetrieveJavaScriptAsset();
+        SetupReorderableLists();
+
+        LuidaConfigWindow.OnEditorClosed -= ApplyVariableUpdates;
+        LuidaConfigWindow.OnEditorClosed -= OnDisable;
+        LuidaConfigWindow.OnTabSwitched -= HandleTabSwitched;
+
+        LuidaConfigWindow.OnEditorClosed += ApplyVariableUpdates;
+        LuidaConfigWindow.OnEditorClosed += OnDisable;
+        LuidaConfigWindow.OnTabSwitched += HandleTabSwitched;
     }
 
     public void OnDisable()
@@ -62,7 +53,10 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
 
     private void HandleTabSwitched(LuidaConfigWindow.TabIndex prevTab, LuidaConfigWindow.TabIndex nextTab)
     {
-        if (prevTab == TabIndex && nextTab != TabIndex) ApplyVariableUpdates();
+        if (prevTab == TabIndex && nextTab != TabIndex)
+        {
+            ApplyVariableUpdates();
+        }
     }
 
     private void SetupReorderableLists()
@@ -75,17 +69,18 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
         };
 
         withinSubjectsList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => {
+            if (index >= withinSubjectsVariables.Count) return;
+            
             var element = withinSubjectsVariables[index];
-            rect.y += 2; // Add a little vertical padding
+            rect.y += 2;
             float singleLineHeight = EditorGUIUtility.singleLineHeight;
 
-            // Adjusted Rects for more space between Name and Values
             var nameRect = new Rect(rect.x, rect.y, rect.width * 0.35f, singleLineHeight);
             var valuesRect = new Rect(rect.x + rect.width * 0.4f, rect.y, rect.width * 0.4f, singleLineHeight);
             var randomLabelRect = new Rect(rect.x + rect.width * 0.82f, rect.y, 70, singleLineHeight);
             var randomToggleRect = new Rect(randomLabelRect.xMax, rect.y, 20, singleLineHeight);
 
-            float labelWidth = 40f; // <-- Adjust this width as needed
+            float labelWidth = 40f;
             var nameLabelRect = new Rect(nameRect.x, nameRect.y, labelWidth, nameRect.height);
             var nameFieldRect = new Rect(nameRect.x + labelWidth, nameRect.y, nameRect.width - labelWidth, nameRect.height);
             EditorGUI.LabelField(nameLabelRect, new GUIContent("Name:", "Variable name..."));
@@ -106,7 +101,7 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
         withinSubjectsList.onAddCallback = (ReorderableList list) => {
             withinSubjectsVariables.Add(new ExperimentVariable { 
                 name = "NewVariable", 
-                values = new[] { "value1", "value2", "value3" }, 
+                values = new[] { "value1", "value2" }, 
                 isRandom = false 
             });
         };
@@ -119,16 +114,17 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
         };
 
         betweenSubjectsList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => {
+            if (index >= betweenSubjectsVariables.Count) return;
+
             var element = betweenSubjectsVariables[index];
-            rect.y += 2; // Add a little vertical padding
+            rect.y += 2;
             float singleLineHeight = EditorGUIUtility.singleLineHeight;
             
-            // Adjusted Rects for more space between Name and Values
             var nameRect = new Rect(rect.x, rect.y, rect.width * 0.35f, singleLineHeight);
             var valuesRect = new Rect(rect.x + rect.width * 0.4f, rect.y, rect.width * 0.4f, singleLineHeight);
             var randomLabelRect = new Rect(rect.x + rect.width * 0.82f, rect.y, rect.width * 0.18f, singleLineHeight);
 
-            float labelWidth = 40f; // <-- Adjust this width as needed
+            float labelWidth = 40f;
             var nameLabelRect = new Rect(nameRect.x, nameRect.y, labelWidth, nameRect.height);
             var nameFieldRect = new Rect(nameRect.x + labelWidth, nameRect.y, nameRect.width - labelWidth, nameRect.height);
             EditorGUI.LabelField(nameLabelRect, new GUIContent("Name:", "Variable name..."));
@@ -149,7 +145,7 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
         betweenSubjectsList.onAddCallback = (ReorderableList list) => {
             betweenSubjectsVariables.Add(new ExperimentVariable { 
                 name = "NewVariable", 
-                values = new[] { "value1", "value2", "value3" }, 
+                values = new[] { "value1", "value2" }, 
                 isRandom = true 
             });
         };
@@ -160,56 +156,27 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
         if (variablesAsset == null)
         {
             RetrieveOrCreateVariablesAsset();
-            ApplyVariableUpdates();
+            ApplyVariableUpdates(); 
         }
         
         EditorGUILayout.HelpBox("For fields `Values`, remember to separate multiple values using a comma.", MessageType.Info);
             
-        // Ensure lists are initialized, in case of an assembly reload
         if (withinSubjectsList == null || betweenSubjectsList == null) {
             SetupReorderableLists();
         }
 
         trialsCountForEachUniqueCondition = EditorGUILayout.IntField("Trials Count per Condition", trialsCountForEachUniqueCondition);
-
         EditorGUILayout.Space();
 
-        // Draw the reorderable lists
         withinSubjectsList.DoLayoutList();
-            
         EditorGUILayout.Space();
-            
         betweenSubjectsList.DoLayoutList();
-
-        /*
-        if (betweenSubjectsConditionSetterAsset == null)
-        {
-            if (GUILayout.Button("Retrieve/Create Between-Subject Condition Setter"))
-            {
-                RetrieveOrCreateBetweenSubjectsConditionSetter();
-            }
-        }
-        else
-        {
-            EditorGUILayout.LabelField("Between Subjects Condition Setter Asset", betweenSubjectsConditionSetterPath, EditorStyles.textField);
-        }
-
-        if (GUILayout.Button("Apply Updated Variables"))
-        {
-            ApplyVariableUpdates();
-        }
-        */
     }
     
-    // The old DrawVariables method is no longer needed and has been removed.
-
     private void GenerateJavaScript()
     {
-        if (variablesAsset == null)
-        {
-            return;
-        }
-
+        if (variablesAsset == null) return;
+        
         string withinSubjectsVariablesJs = GenerateJavaScriptArray("within_subjects_variables", withinSubjectsVariables);
         string betweenSubjectsVariablesJs = GenerateJavaScriptArray("between_subjects_variables", betweenSubjectsVariables);
 
@@ -226,10 +193,8 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
         EditorUtility.SetDirty(variablesAsset);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
-        AssetDatabase.ImportAsset(variablesAssetPath);
     }
 
-    // Updated to accept a List instead of an array
     private string GenerateJavaScriptArray(string variableName, List<ExperimentVariable> variables)
     {
         string js = $"const {variableName} = [\n";
@@ -260,9 +225,8 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
     {
         string sceneName = SceneManager.GetActiveScene().name;
         variablesAssetPath = $"Assets/_Experiment_/Settings/ExperimentVariables/{sceneName}.js";
-        string templatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/VariablesTemplate.js";
-
         variablesAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(variablesAssetPath);
+
         if (variablesAsset == null)
         {
             string directoryPath = Path.GetDirectoryName(variablesAssetPath);
@@ -271,20 +235,18 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
                 Directory.CreateDirectory(directoryPath);
             }
             
+            string templatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/VariablesTemplate.js";
             if (File.Exists(templatePath))
             {
-                File.Copy(templatePath, variablesAssetPath);
+                AssetDatabase.CopyAsset(templatePath, variablesAssetPath);
                 AssetDatabase.Refresh();
                 variablesAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(variablesAssetPath);
-                AssetDatabase.ImportAsset(variablesAssetPath);
             }
             else
             {
-                Debug.LogWarning("Template JavaScript asset not found.");
+                Debug.LogWarning("Template JavaScript asset not found at: " + templatePath);
             }
         }
-
-        RetrieveJavaScriptAsset();
     }
 
     private void ParseJavaScriptAsset(string jsContent)
@@ -298,17 +260,13 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
         betweenSubjectsVariables = ParseJavaScriptArray("between_subjects_variables", jsContent);
     }
 
-    // Updated to return a List instead of an array
     private List<ExperimentVariable> ParseJavaScriptArray(string variableName, string jsContent)
     {
         string pattern = $@"const {variableName} = \[(.*?)\];";
         Match match = Regex.Match(jsContent, pattern, RegexOptions.Singleline);
 
-        if (!match.Success)
-        {
-            return new List<ExperimentVariable>();
-        }
-
+        if (!match.Success) return new List<ExperimentVariable>();
+        
         string arrayContent = match.Groups[1].Value;
         var variableMatches = Regex.Matches(arrayContent, @"\{(.*?)\}", RegexOptions.Singleline);
 
@@ -320,59 +278,34 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
             string name = Regex.Match(variableContent, @"name: ""(.*?)""").Groups[1].Value;
             string valuesString = Regex.Match(variableContent, @"values: \[(.*?)\]").Groups[1].Value;
             bool isRandom = Regex.Match(variableContent, @"isRandom: (true|false)").Groups[1].Value == "true";
+            
+            // defensive check for empty values array
+            string[] values = string.IsNullOrEmpty(valuesString)
+                ? new string[0]
+                : valuesString.Split(',').Select(v => v.Trim().Trim('"')).ToArray();
 
-            string[] values = valuesString.Split(',').Select(v => v.Trim().Trim('"')).ToArray();
-
-            ExperimentVariable variable = new ExperimentVariable
-            {
-                name = name,
-                values = values,
-                isRandom = isRandom
-            };
-            variables.Add(variable);
+            variables.Add(new ExperimentVariable { name = name, values = values, isRandom = isRandom });
         }
-
         return variables;
-    }
-
-    private void RetrieveOrCreateBetweenSubjectsConditionSetter()
-    {
-        string sceneName = SceneManager.GetActiveScene().name;
-        betweenSubjectsConditionSetterPath = $"Assets/_Experiment_/Settings/BetweenSubjectsConditionSetter/{sceneName}.js";
-        string templatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/BetweenSubjectsConditionSetterTemplate.js";
-
-        betweenSubjectsConditionSetterAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(betweenSubjectsConditionSetterPath);
-        if (betweenSubjectsConditionSetterAsset == null)
-        {
-            string directoryPath = Path.GetDirectoryName(betweenSubjectsConditionSetterPath);
-            if (!Directory.Exists(directoryPath))
-            {
-                Directory.CreateDirectory(directoryPath);
-            }
-
-            if (File.Exists(templatePath))
-            {
-                File.Copy(templatePath, betweenSubjectsConditionSetterPath);
-                AssetDatabase.Refresh();
-                betweenSubjectsConditionSetterAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(betweenSubjectsConditionSetterPath);
-            }
-            else
-            {
-                Debug.LogWarning("Template JavaScript asset not found.");
-            }
-        }
     }
 
     private void ApplyVariableUpdates()
     {
+        if (IsApplyingVariableUpdates) return; // Prevent re-entry
+
         IsApplyingVariableUpdates = true;
+        
         GenerateJavaScript();
+        
         var scriptAssets = new List<JavaScriptAsset>();
         if (betweenSubjectsConditionSetterAsset != null)
         {
             scriptAssets.Add(betweenSubjectsConditionSetterAsset);
         }
-        scriptAssets.Add(variablesAsset);
+        if(variablesAsset != null)
+        {
+             scriptAssets.Add(variablesAsset);
+        }
         
         UpdateScriptableClusterScriptCombiner(scriptAssets.ToArray());
 
@@ -393,7 +326,11 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
                 {
                     if(asset != null) scriptCombiner.AppendScript(asset, null, false);
                 }
-                scriptCombiner.AppendScript(conditionManagerScript, null, true);
+                
+                if (conditionManagerScript != null)
+                {
+                    scriptCombiner.AppendScript(conditionManagerScript, null, true);
+                }
 
                 EditorUtility.SetDirty(scriptCombiner);
                 EditorSceneManager.MarkSceneDirty(conditionManager.scene);
