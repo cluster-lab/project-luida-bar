@@ -326,6 +326,7 @@ _*特定のステートに依存しないオブジェクトや動作は、この
     - Trigger（トリガー）とGimmick（ギミック）の関係はCCKのドキュメントをご参照ください：https://docs.cluster.mu/creatorkit/world/trigger-gimmick/
         - 予想される動作（例えばAnswer_Red場合）：
             1. クリックされたら`Interact Item Trigger`が動作し、`LUIDA-DataCollector`（データ記録用のオブジェクト、詳細は後述）宛に`isRed=true`のメッセージ、次にThis（自分自身）宛に`toNextState`というメッセージが送信されます。
+                -  ゲームオブジェクト `LUIDA-DataCollector` が存在しない場合、Hierarchyで右クリックして `LUIDA > Data Collector` を選ぶことで `LUIDA-DataCollector` を作成してください：<img width="471" height="752" alt="image" src="https://github.com/user-attachments/assets/66a310c7-6cc6-49df-90fa-875c4820b22d" />
             2. This（自分自身）宛に`toNextState`というメッセージが届いたら`Luida To Next State Gimmick`が動作し、ステート遷移を発火させます。
     - _`Luida To Next State Gimmick`はLuida専用のCCKギミックです。他にも`Luida Process Data And Save To Collection Gimmick`と`Luida Update Collected Data Gimmick`があります。_
 
@@ -341,16 +342,16 @@ _*特定のステートに依存しないオブジェクトや動作は、この
 
 0. `LUIDA > Configure experiment automation > State-listening Items`を開きます。
 1. `New Item Name`に`TimeRecorder`と名前を入れて`Add state-listening item`ボタンをクリックします。
-2. `TimeRecorder`の列と、`Custom implementation not listening to any State`、`Trial - Start`、`Outro`の行が交差するセルで、`Add Listener`ボタンをクリックし、以下のテーブルにある図の通りに設定します。
+2. `TimeRecorder`の列と、`Functions, events, variables not listening to the state machine`、`Trial - Start`、`Outro`の行が交差するセルで、`Add Listener`ボタンをクリックし、以下のテーブルにある図の通りに設定します。
 
-| Custom implementation not listening to any State | Trial - Start | Outro |
+| Functions, events, variables not listening to the state machine | Trial - Start | Outro |
 | :---: | :---: | :---: |
 | ![Instruction GameObject](https://github.com/user-attachments/assets/47dbd2d3-e382-45f2-bc0a-9ceb410e0db6) | ![TimerRecorder-TrialStart](https://github.com/user-attachments/assets/837fab63-e31c-47d3-a62a-a24a8bdcd5bf) | ![TimeRecorder-Outro](https://github.com/user-attachments/assets/ea250246-4c3a-4aca-b94b-7feecde4c41e) |
-| スクリプトとその説明は↓の`▶ Custom implementation`にあります | スクリプトとその説明は↓の`▶ Trial - Start`にあります | 全試行が終了した後、記録してきたデータをアップロードさせます。 |
+| スクリプトとその説明は、下の`▶ Functions, events, variables not listening to the state machine`にあります | スクリプトとその説明は↓の`▶ Trial - Start`にあります | 全試行が終了した後、記録してきたデータをアップロードさせます。 |
 
 <details>
 
-<summary>Custom implementation</summary>
+<summary>Functions, events, variables not listening to the state machine</summary>
 
 タイマーを初期化し、試行中であればタイマーをかける：
 ```javascript
@@ -392,7 +393,7 @@ SendDataToCollector("timer", $.state.timer); // 回答に使った時間をLUIDA
 
 1. `LUIDA > Configure experiment automation > State-listening Items`を開きます。
 2. `New Item Name`に`CalculationTextInput`と名前を入れて`Add state-listening item`ボタンをクリックします。
-3. `CalculationTextInput`の列の`Custom implementation not listening to any State`のコードブロックに、以下のスクリプトをコピペします：
+3. `CalculationTextInput`の列の`Functions, events, variables not listening to the state machine`のコードブロックに、以下のスクリプトをコピペします：
 ```javascript
 function getRandomInt(max) { // 乱数の整数を生成する関数を定義する
   return Math.floor(Math.random() * max);
@@ -413,7 +414,7 @@ PARTICIPANTS[0].requestTextInput(
 );
 ```
 
-| Custom implementation not listening to any State | Trial - Start |
+| Functions, events, variables not listening to the state machine | Trial - Start |
 | :---: | :---: |
 | ![calculation-task-code](https://github.com/user-attachments/assets/891b2e76-1fc2-4e44-9c7d-54e3989549ec) | ![calculation-task-code-during-task](https://github.com/user-attachments/assets/dc5343c8-d54a-4f6e-93bf-5bfb7c342bc6) |
 
