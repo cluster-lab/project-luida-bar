@@ -406,8 +406,8 @@ $.onTextInput((text, meta, status) => {
 ```
 4. `CalculationTextInput`の列と、`CalculationTask`の行が交差するセルで、`Add Listener`ボタンをクリックし、Customized Action動作を一つ追加し、コードブロックに以下のスクリプトをコピペします
 ```javascript
-// PARTICIPANTS[0]で一人目の参加者（1人しかいないけど）を特定する
-PARTICIPANTS[0].requestTextInput(
+// PARTICIPANTS[1]で一人目の参加者（1人しかいないけど）を特定する
+PARTICIPANTS[1].requestTextInput(
   "ask_to_calculate",
   getRandomInt(100) + "+" + getRandomInt(100) + "=?"
 );
