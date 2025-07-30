@@ -78,7 +78,7 @@ Inspectorからその`Script Asset`をダブルクリックすると、スクリ
 
 以下はDataCollectorでスクリプトを書く際の注意事項です：
 - `CONDITION['変数の名前']`で、`Process and save collected data`が実行される際の実験変数の値を参照できます。
-- `PARTICIPANTS[1や1以上の整数]`で、n番目の参加者のPlayerHandleを参照できます。
+- `PARTICIPANTS[1や1以上の整数]`で、1-based indexingを使用しています。たとえば、`PARTICIPANTS[1]`は最初の参加者のPlayerHandleを参照し、`PARTICIPANTS[2]`は2番目の参加者のPlayerHandleを参照します。
 - 必ず `return { ... };` のような形式で、JavaScriptのObjectを一つ返すようにしてください。たとえば：
 ```JavaScript
 return {
