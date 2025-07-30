@@ -89,51 +89,64 @@ MonoBehaviour:
     0) DuringState(deltaTime);\r\n\r\n    Update(deltaTime);\r\n})\r\n\r\nfunction
     ShowItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", true);\r\n}\r\n\r\nfunction
     HideItem() {\r\n    $.setStateCompat(\"this\", \"exp_showItem\", false);\r\n}\r\n\r\nfunction
-    ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
-    SetText(text) {\r\n    try {\r\n      $.subNode(\"Text\").setText(`${text}`);\r\n   
-    } catch (e) {\r\n      $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
-    exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SetPosition(x,
-    y, z) {\r\n    try {\r\n        $.setPosition(new Vector3(parseFloat(x), parseFloat(y),
-    parseFloat(z)));\r\n    } catch (e) {\r\n        $.log(`Error in SetPosition:
-    ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction
-    AddPosition(x, y, z) {\r\n    try {\r\n        const currentPos = $.getPosition();\r\n       
-    $.setPosition(currentPos.add(new Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));\r\n   
-    } catch (e) {\r\n        $.log(`Error in AddPosition: ${e}. Ensure MovableItem
-    is present and x,y,z are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction SetRotation(x,
-    y, z) {\r\n    try {\r\n        $.setRotation(new Quaternion().setFromEulerAngles(new
+    SetPosition(x, y, z) {\r\n    try {\r\n        $.setPosition(new Vector3(parseFloat(x),
+    parseFloat(y), parseFloat(z)));\r\n    } catch (e) {\r\n        $.log(`Error
+    in SetPosition: ${e}. Ensure MovableItem is present and x,y,z are valid numbers.`);\r\n   
+    }\r\n}\r\n\r\nfunction AddPosition(x, y, z) {\r\n    try {\r\n        $.setPosition($.getPosition().add(new
+    Vector3(parseFloat(x), parseFloat(y), parseFloat(z))))\r\n    } catch (e) {\r\n       
+    $.log(`Error in AddPosition: ${e}. Ensure MovableItem is present and x,y,z are
+    valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction SetRotation(x, y, z) {\r\n   
+    try {\r\n        $.setRotation(new Quaternion().setFromEulerAngles(new Vector3(parseFloat(x),
+    parseFloat(y), parseFloat(z))));\r\n    } catch (e) {\r\n        $.log(`Error
+    in SetRotation: ${e}. Ensure MovableItem is present and x,y,z are valid numbers
+    (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction AddRotation(x, y, z) {\r\n   
+    try {\r\n        $.setRotation($.getRotation().multiply(new Quaternion().setFromEulerAngles(new
+    Vector3(parseFloat(x), parseFloat(y), parseFloat(z)))))\r\n    } catch (e) {\r\n       
+    $.log(`Error in AddRotation: ${e}. Ensure MovableItem is present and x,y,z are
+    valid numbers (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction ShowChild(childName)
+    {\r\n    $.subNode(childName).setEnabled(true);\r\n}\r\n\r\nfunction HideChild(childName)
+    {\r\n    $.subNode(childName).setEnabled(false);\r\n}\r\n\r\nfunction SetChildPosition(childName,
+    x, y, z) {\r\n    try {\r\n        $.subNode(childName).setPosition(new Vector3(parseFloat(x),
+    parseFloat(y), parseFloat(z)));\r\n    } catch (e) {\r\n        $.log(`Error
+    in SetChildPosition: ${e}. Ensure MovableItem is present and x,y,z are valid
+    numbers.`);\r\n    }\r\n}\r\n\r\nfunction AddChildPosition(childName, x, y, z)
+    {\r\n    try {\r\n        $.subNode(childName).setPosition($.subNode(childName).getPosition().add(new
+    Vector3(parseFloat(x), parseFloat(y), parseFloat(z))))\r\n    } catch (e) {\r\n       
+    $.log(`Error in AddChildPosition: ${e}. Ensure MovableItem is present and x,y,z
+    are valid numbers.`);\r\n    }\r\n}\r\n\r\nfunction SetChildRotation(childName,
+    x, y, z) {\r\n    try {\r\n        $.subNode(childName).setRotation(new Quaternion().setFromEulerAngles(new
     Vector3(parseFloat(x), parseFloat(y), parseFloat(z))));\r\n    } catch (e) {\r\n       
-    $.log(`Error in SetRotation: ${e}. Ensure MovableItem is present and x,y,z are
-    valid numbers (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction AddRotation(x,
-    y, z) {\r\n    try {\r\n        const currentRot = $.getRotation();\r\n       
-    const offsetRot = new Quaternion().setFromEulerAngles(new Vector3(parseFloat(x),
-    parseFloat(y), parseFloat(z)));\r\n        $.setRotation(currentRot.multiply(offsetRot));\r\n   
-    } catch (e) {\r\n        $.log(`Error in AddRotation: ${e}. Ensure MovableItem
+    $.log(`Error in SetChildRotation: ${e}. Ensure MovableItem is present and x,y,z
+    are valid numbers (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction AddChildRotation(childName,
+    x, y, z) {\r\n    try {\r\n        $.subNode(childName).setRotation($.subNode(childName).getRotation().multiply(new
+    Quaternion().setFromEulerAngles(new Vector3(parseFloat(x), parseFloat(y), parseFloat(z)))))\r\n   
+    } catch (e) {\r\n        $.log(`Error in AddChildRotation: ${e}. Ensure MovableItem
     is present and x,y,z are valid numbers (Euler degrees).`);\r\n    }\r\n}\r\n\r\nfunction
+    ToNextState() {\r\n    $.sendSignalCompat(\"this\", \"state_triggerTransition\");\r\n}\r\n\r\nfunction
     SendDataToCollector(label, value) {\r\n    if (!$.groupState.collectedData) $.groupState.collectedData
     = {};\r\n    let collectedData = $.groupState.collectedData;\r\n    collectedData[label]
     = value;\r\n    $.groupState.collectedData = collectedData;\r\n}\r\n\r\nfunction
     ProcessAndSaveCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_recordCustomData\");\r\n}\r\n\r\nfunction
     UploadCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
-    SendHaptics(target, frequency, amplitude, duration) {\r\n    try {\r\n       
-    if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\r\n       
-    if ($.state.player) {\r\n            let hapticsTarget = target;\r\n           
-    if (typeof target === 'string') {\r\n                const lowerTarget = target.toLowerCase();\r\n               
-    if (lowerTarget === 'null' || lowerTarget === 'undefined' || lowerTarget ===
-    \"\") {\r\n                    hapticsTarget = null; // Use JS null for \"both\"
-    or unspecified\r\n                } else if (lowerTarget === '\"left\"' || lowerTarget
-    === \"'left'\") {\r\n                    hapticsTarget = \"left\";\r\n               
-    } else if (lowerTarget === '\"right\"' || lowerTarget === \"'right'\") {\r\n                    
-    hapticsTarget = \"right\";\r\n                }\r\n                // else assume
-    target is already \"left\", \"right\", or a valid direct value.\r\n           
-    }\r\n\r\n            $.state.player.send(\"haptics\", {\r\n                target:
-    hapticsTarget,\r\n                frequency: parseFloat(frequency),\r\n               
-    amplitude: parseFloat(amplitude),\r\n                duration: parseFloat(duration)
-    // Duration in seconds\r\n            });\r\n        } else {\r\n           
-    $.log(\"SendHaptics: No player found nearby.\");\r\n        }\r\n    } catch
-    (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n    }\r\n}\r\n\r\nfunction
-    OnStateEnter(deltaTime) {\r\n    CONDITION = $.groupState.currentCondition;\r\n   
-    PARTICIPANTS = $.groupState.participants;\r\n    if (!stateEnterActions[$.state.state_id]
-    || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
+    SetText(text) {\r\n    try {\r\n        $.subNode(\"Text\").setText(`${text}`);\r\n   
+    } catch (e) {\r\n        $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
+    exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(participantId,
+    target, frequency, amplitude, duration) {\r\n    try {\r\n        if (PARTICIPANTS[participantId])
+    {\r\n            let hapticsTarget = target;\r\n            if (typeof target
+    === 'string') {\r\n                const lowerTarget = target.toLowerCase();\r\n               
+    if (lowerTarget === '\"left\"' || lowerTarget === \"'left'\") {\r\n                   
+    hapticsTarget = \"left\";\r\n                } else if (lowerTarget === '\"right\"'
+    || lowerTarget === \"'right'\") {\r\n                    hapticsTarget = \"right\";\r\n               
+    } else {\r\n                    hapticsTarget = null;\r\n                }\r\n           
+    }\r\n\r\n            PARTICIPANTS[participantId].send(\"haptics\", {\r\n               
+    target: hapticsTarget,\r\n                frequency: parseFloat(frequency),\r\n               
+    amplitude: parseFloat(amplitude),\r\n                duration: parseFloat(duration)\r\n           
+    });\r\n        } else {\r\n            $.log(\"SendHaptics: No player found nearby.\");\r\n       
+    }\r\n    } catch (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n   
+    }\r\n}\r\n\r\nfunction SendViaOsc(participantId, address, values) {\r\n    PARTICIPANTS[participantId].send(\"sendOsc\",
+    { address, values });\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n    CONDITION
+    = $.groupState.currentCondition;\r\n    PARTICIPANTS = [null].concat($.groupState.participants);\r\n   
+    if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
     return;\r\n    \r\n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
     && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !== \"sleep\")
     {\r\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\r\n       

@@ -1,0 +1,151 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acb8c4c8a0a4dc6418e2f4d59454f5e3, type: 3}
+  m_Name: Message
+  m_EditorClassIdentifier: 
+  stateListeners:
+  - stateID: 1
+    onStateStartedActions:
+    - predefinedActionTemplate:
+        actionType: Show item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
+        variables: []
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys: []
+      _variableValuesList: []
+    - predefinedActionTemplate:
+        actionType: Set text
+        codeSnippet: $.subNode('Text').setText(`{_text_}`);
+        variables:
+        - text
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys:
+      - text
+      _variableValuesList:
+      - "You will be asked to repeat touching a green ball.\nAfter touching it once,
+        the ball moves forward, \nand you need to reach your arm to touch it again.\nThen,
+        you should answer whether you hand moved \nfaster or slower than your real
+        hand during the reaching.\nPress the button to get started."
+    duringStateActions: []
+    onStateExitedActions: []
+  - stateID: 2
+    onStateStartedActions:
+    - predefinedActionTemplate:
+        actionType: Set text
+        codeSnippet: $.subNode('Text').setText(`{_text_}`);
+        variables:
+        - text
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys:
+      - text
+      _variableValuesList:
+      - Touch the green ball in front of you.
+    duringStateActions: []
+    onStateExitedActions: []
+  - stateID: 3
+    onStateStartedActions:
+    - predefinedActionTemplate:
+        actionType: Set text
+        codeSnippet: $.subNode('Text').setText(`{_text_}`);
+        variables:
+        - text
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys:
+      - text
+      _variableValuesList:
+      - Reach your arm to touch the green ball again.
+    duringStateActions: []
+    onStateExitedActions: []
+  - stateID: 5
+    onStateStartedActions:
+    - predefinedActionTemplate:
+        actionType: Set text
+        codeSnippet: $.subNode('Text').setText(`{_text_}`);
+        variables:
+        - text
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys:
+      - text
+      _variableValuesList:
+      - Put your hand down
+    duringStateActions: []
+    onStateExitedActions: []
+  - stateID: 7
+    onStateStartedActions:
+    - predefinedActionTemplate:
+        actionType: Set text
+        codeSnippet: $.subNode('Text').setText(`{_text_}`);
+        variables:
+        - text
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys:
+      - text
+      _variableValuesList:
+      - Thank you for your participation!
+    duringStateActions: []
+    onStateExitedActions: []
+  - stateID: 4
+    onStateStartedActions:
+    - predefinedActionTemplate:
+        actionType: Set text
+        codeSnippet: $.subNode('Text').setText(`{_text_}`);
+        variables:
+        - text
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys:
+      - text
+      _variableValuesList:
+      - "Do you feel the virtual hand moved \nfaster or slower than your real hand?"
+    duringStateActions: []
+    onStateExitedActions: []
+  otherImplementation: '// function Start() { }
+
+    // function Update(deltaTime)
+    { }
+
+    // $.onCollide((collision) => { });
+
+    // $.onGrab((isGrab, isLeftHand,
+    player) => { });
+
+    // $.onInteract((player) => { });
+
+    // $.onUse((isDown,
+    player) => { });
+
+    // $.onPhysicsUpdate((deltaTime) => { });
+
+    // $.onReceive((messageType,
+    arg, sender) => { });
+
+'

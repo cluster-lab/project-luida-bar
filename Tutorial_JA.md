@@ -116,16 +116,16 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 <details>
 <summary><h3>こちらの手順に従って登録・設定してください</h3></summary>
+＊こちらの手順の一部は今後自動化する予定です。現状はお手数ですが一通りおこなってください。
+
 
 1.  [最新リリースの実装テンプレート](https://github.com/cluster-lab/project-luida-bar/releases)をダウンロードします。
 2.  ダウンロードしたUnityプロジェクトをUnity Hubから開きます。プロジェクトを開いた際にコンソールにエラーが表示されることがありますが、まずは無視して進み、以下の必須パッケージをUnityにインポートしてください。
     *   [**CSCombiner: Cluster Scriptを Unity Editor 上で結合するツール**](https://vkao.booth.pm/items/5924956) (ver1.01 推奨)
     *   [**CSEmulator: Cluster Scriptを Unity Editor 上で再生できるようにするツール**](https://vkao.booth.pm/items/5111235) (最新バージョンを推奨)
-3.  Unityのメニューバーから `Window > Luida Editor` を開きます。以下の画面が表示された場合は、まずご自身が実装する実験用のシーン名（例: `MyExperimentScene`）を入力してください。
-
-| 初回起動時、どのシーンも開いていない場合、以下の画面でシーンを新規作成 | どれかのシーンがすでに開いた場合、Luida Editor右上のフォームでシーンを新規作成 |
-| :---: | :---: |
-| ![New Scene Form 1](https://github.com/user-attachments/assets/be969afc-0dc8-43a3-995b-ae8f420a5e5b) | ![New Scene Form 2](https://github.com/user-attachments/assets/427bba7e-80ea-405e-86d0-d3620501a613) |
+3.  Unityのメニューバーから `LUIDA > Scene > Create New Scene` のウィンドウを開き、ご自身が実装する実験用のシーン名（例: `MyExperimentScene`）を入力した上でOKボタンを押します。
+       <img width="482" height="120" alt="image" src="https://github.com/user-attachments/assets/78e2852f-3fd0-4655-a9c5-7a5efa189eba" />
+        <img width="322" height="138" alt="image" src="https://github.com/user-attachments/assets/925099e3-3089-4a92-80ef-29e7d7200e1e" />
 
 4.  次に、clusterのアクセストークンを発行し、Unityプロジェクトに登録します。詳細な手順は以下の画像を参照してください。
     ![clusterアクセストークン登録手順](https://github.com/user-attachments/assets/c06f43c6-3412-4462-92a9-ac3576252e99)
@@ -135,12 +135,15 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 | :---: | :---: | :---: |
 | ![registerTokenStep1](https://github.com/user-attachments/assets/a207e2d5-7c40-4a39-b910-b22218d8054c) | ![registerTokenStep2](https://github.com/user-attachments/assets/fa658c8d-9c98-48ee-a322-93b60e067d6c) | ![registerTokenStep3](https://github.com/user-attachments/assets/584d1acd-5571-4c9a-89ba-b721200d7365) |
 
-| 4. Luida Editorを開く | 5. Experiment Identifierタブに切り替え、登録したURLの識別子（Endpoint ID）を`callExternal Endpoint ID`に、Verify Tokenを`Verify Token`にコピーする |
+| 4. LUIDA > Configure experiment identifiers を開く | 5. 先ほど登録したURLの識別子（Endpoint ID）を`callExternal Endpoint ID`に、Verify Tokenを`Verify Token`にコピーする |
 | :---: | :---: |
-| ![registerTokenStep4](https://github.com/user-attachments/assets/1f6b6989-00c4-44a2-b089-aa299ed4a605) | ![registerTokenStep5](https://github.com/user-attachments/assets/92ca9dbf-fb59-4dae-bbcf-702a173fdfd5) |
+| ![registerTokenStep4](https://github.com/user-attachments/assets/2315ce7e-67ad-4989-861a-d2950d9f0617) | ![registerTokenStep5](https://github.com/user-attachments/assets/24f5b63f-61dd-4f60-a389-0269f3543f7e) |
 
-6.  `Window > Luida Editor`の`Experiment Identifiers`タブに、先ほどウェブコンソールでコピーした実験IDを `Experiment ID` フィールドに入力します。
-    ![Luida Editor 実験ID登録画面](https://github.com/user-attachments/assets/53f7eba3-de7e-48bf-910d-cdea16cf1886)
+6.  `Configure experiment identifiers` の画面に残り、先ほどウェブコンソールでコピーした実験IDを `Experiment ID` フィールドに入力したうえで、画面を閉じます。
+    ![Luida Editor 実験ID登録画面](https://github.com/user-attachments/assets/d5e9efbd-9309-458e-9997-5cda7a4f2904)
+
+7. `Window > かおもラボ > CSEmulator`の`callExternal用Endpoint`設定フィールドに、先ほどの `Endpoint ID` と `https://luida-web-next.vercel.app/api/cluster`で埋めます。
+    <img width="928" height="290" alt="image" src="https://github.com/user-attachments/assets/31b160e0-e1cd-4dbf-a8fd-8c907de48015" />
 
 </details>
 
@@ -148,7 +151,7 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 ## 3. 実験変数と試行回数を設定する
 
-`LUIDA > Config Window > Experiment Variables`画面（左図）で、実験の参加者内/参加者間変数を登録すると、それに基づいてシステムが自動的に試行の数と各試行における実験条件を決定します（右図）。
+`LUIDA > Configure experiment automation > Experiment Variables`画面（左図）で、実験の参加者内/参加者間変数を登録すると、それに基づいてシステムが自動的に試行の数と各試行における実験条件を決定します（右図）。
 
 各設定項目の詳細は[ドキュメント](/Documentation_JA.md#実験変数と試行回数の設定)をご参照ください。
 
@@ -162,19 +165,22 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 <details>
 <summary><h3>こちらの手順に従って設定してください</h3></summary>
 
-1.  Unityのメニューバーから `LUIDA > Config Window` を開き、`Experiment Variables` タブに切り替えます。「Create New Variables Asset」ボタンをクリックして、実験変数設定用の新しいアセットファイルを作成します。
-2.  **参加者内変数の設定**：`Variables for Within-Subject Conditions`に3つの項目を追加し、以下の通りに設定します：
-    -  Name: `request`　　Values: `material,text`　　isRandom: □
+1.  Unityのメニューバーから `LUIDA > Configure experiment automation` ウィンドウを開き、ボタン`Activate Experiment Automation Feature`をクリックします
+
+    <img width="767" height="207" alt="Configure experiment automation window" src="https://github.com/user-attachments/assets/79dffcb5-7f2e-4f4b-8f20-fd824558c3e3" />
+
+2.  `Experiment Variables` タブが開いているのを確認します。
+3.  **参加者内変数の設定**：`Variables for Within-Subject Conditions`に3つの項目を追加し、以下の通りに設定します：
+    -  Name: `request`　　Values: `font, meaning`　　isRandom: □
     -  Name: `font`　　Values: `R,B`　　isRandom: ☑
     -  Name: `text`　　Values: `Red,Blue`　　isRandom: ☑
-    -  _* ver1.1.0と1.1.1でバグ確認：ファイルを新規作成したらそのまま変数を追加するとUIに反映されない。一回設定画面を閉じてまた開くと治る。_
-3.  **参加者間変数の設定**：`Variables for Between-Subject Conditions`に1つの項目を追加し、以下の通りに設定します：
+4.  **参加者間変数の設定**：`Variables for Between-Subject Conditions`に1つの項目を追加し、以下の通りに設定します：
     -  Name: `depth`　　Values: `near,far`
-4.  `Trials Count per Condition` に、`2`を入力します。すると各条件（変数の組み合わせ）を持つ試行は2回ずつになります。
+5.  `Trials Count per Condition` に、`2`を入力します。すると各条件（変数の組み合わせ）を持つ試行は2回ずつになります。
 
 設定後、画面が下の図の通りになっているか確認しましょう。
 
-![image](https://github.com/user-attachments/assets/5232a67b-c2b8-43f9-8a8c-c83bbea20760)
+<img width="954" height="327" alt="image" src="https://github.com/user-attachments/assets/ff61673a-d7a2-423d-b0fb-a636c5d7d285" />
 
 </details>
 
@@ -182,7 +188,7 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 ## 4. 実験進行の設定（ステート遷移）と質問紙の紐づけ
 
-`LUIDA > Config Window > State Machine`画面（左図）で、実験の進行フローを「ステート」と呼ばれる単位で設定すると、右図のように実験が自動的に進行します。
+`LUIDA > Configure experiment automation > State Machine`画面（左図）で、実験の進行フローを「ステート」と呼ばれる単位で設定すると、右図のように実験が自動的に進行します。
 各ステートは実験の一区切り（例：説明、タスク実行、休憩、質問紙回答など）を表し、それらがどのように遷移するかをここで定義できます。
 
 各設定項目の詳細は[ドキュメント](/Documentation_JA.md#実験進行の設定ステート遷移と質問紙の紐づけ)をご参照ください。
@@ -209,7 +215,7 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 設定後、画面が下の図の通りになっているか確認しましょう。
 
-![state-transition-sample](https://github.com/user-attachments/assets/965e8bc0-c679-4bbd-96cb-85c21b67cf5a)
+<img width="1110" height="1025" alt="image" src="https://github.com/user-attachments/assets/95355e8a-f512-45d5-9d66-5d98898187ef" />
 
 </details>
 
@@ -217,7 +223,7 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 ## 5. 実験進行に合わせたオブジェクトの挙動の設定
 
-`LUIDA > Config Window > State-listening Items`では、実験の進行（ステートの遷移）に合わせてオブジェクトの動作を制御できます。
+`LUIDA > Configure experiment automation > State-listening Items`では、実験の進行（ステートの遷移）に合わせてオブジェクトの動作を制御できます。
 
 動作の例：自身や子オブジェクトの表示/非表示、自身や子オブジェクトの位置・回転の設定、テキスト内容の変更、コントローラを振動させる、数秒間待機、カスタムな動作（ご自身でコーディング）など。
 
@@ -233,7 +239,7 @@ _*特定のステートに依存しないオブジェクトや動作は、この
 
 <summary><h3>指示用のオブジェクト</h3></summary>
 
-0. `LUIDA > Config Window > State-listening Items`を開きます。
+0. `LUIDA > Configure experiment automation > State-listening Items`を開きます。
 1. `New Item Name`に`Instruction`と名前を入れて`Add state-listening item`ボタンをクリックします。
    - すると下のテーブルに列が追加され、シーンの中にも`Instruction`という名前を持つオブジェクトが作成されます。
 2. `Instruction`の列と、`Intro`、`Trial - Start`、`Outro`の行が交差するセルで、`Add Listener`ボタンをクリックし、以下のテーブルにある図の通りに設定します。
@@ -275,7 +281,7 @@ _*特定のステートに依存しないオブジェクトや動作は、この
 
 <summary><h3>タスクの題目テキスト</h3></summary>
 
-0. `LUIDA > Config Window > State-listening Items`を開きます。
+0. `LUIDA > Configure experiment automation > State-listening Items`を開きます。
 1. **赤いフォントを持つテキスト**：`New Item Name`に`Text_RedFont`と名前を入れて`Add state-listening item`ボタンをクリックします。
 2. **青いフォントを持つテキスト**：`New Item Name`に`Text_BlueFont`と名前を入れて`Add state-listening item`ボタンをクリックします。
 3. `Text_RedFont`と`Text_BlueFont`の列と、`Trial - Start`の行が交差するセルで、`Add Listener`ボタンをクリックし、以下の図の通りに設定します。
@@ -300,7 +306,7 @@ _*特定のステートに依存しないオブジェクトや動作は、この
 
 <summary><h3>タスクの回答用ボタン</h3></summary>
 
-0. `LUIDA > Config Window > State-listening Items`を開きます。
+0. `LUIDA > Configure experiment automation > State-listening Items`を開きます。
 1. **赤と回答するボタン**：`New Item Name`に`Answer_Red`と名前を入れて`Add state-listening item`ボタンをクリックします。
 2. **青と回答するボタン**：`New Item Name`に`Answer_Blue`と名前を入れて`Add state-listening item`ボタンをクリックします。
 3. `Answer_Red`と`Answer_Blue`の列と、`Trial - Start`の行が交差するセルで、`Add Listener`ボタンをクリックし、以下の図の通りに設定します。
@@ -319,6 +325,7 @@ _*特定のステートに依存しないオブジェクトや動作は、この
     - Trigger（トリガー）とGimmick（ギミック）の関係はCCKのドキュメントをご参照ください：https://docs.cluster.mu/creatorkit/world/trigger-gimmick/
         - 予想される動作（例えばAnswer_Red場合）：
             1. クリックされたら`Interact Item Trigger`が動作し、`LUIDA-DataCollector`（データ記録用のオブジェクト、詳細は後述）宛に`isRed=true`のメッセージ、次にThis（自分自身）宛に`toNextState`というメッセージが送信されます。
+                -  ゲームオブジェクト `LUIDA-DataCollector` が存在しない場合、Hierarchyで右クリックして `LUIDA > Data Collector` を選ぶことで `LUIDA-DataCollector` を作成してください：<img width="471" height="752" alt="image" src="https://github.com/user-attachments/assets/66a310c7-6cc6-49df-90fa-875c4820b22d" />
             2. This（自分自身）宛に`toNextState`というメッセージが届いたら`Luida To Next State Gimmick`が動作し、ステート遷移を発火させます。
     - _`Luida To Next State Gimmick`はLuida専用のCCKギミックです。他にも`Luida Process Data And Save To Collection Gimmick`と`Luida Update Collected Data Gimmick`があります。_
 
@@ -332,18 +339,18 @@ _*特定のステートに依存しないオブジェクトや動作は、この
 
 <summary><h3>タイマー（タスクにかかった時間を数える）オブジェクト</h3></summary>
 
-0. `LUIDA > Config Window > State-listening Items`を開きます。
+0. `LUIDA > Configure experiment automation > State-listening Items`を開きます。
 1. `New Item Name`に`TimeRecorder`と名前を入れて`Add state-listening item`ボタンをクリックします。
-2. `TimeRecorder`の列と、`Custom implementation not listening to any State`、`Trial - Start`、`Outro`の行が交差するセルで、`Add Listener`ボタンをクリックし、以下のテーブルにある図の通りに設定します。
+2. `TimeRecorder`の列と、`Functions, events, variables not listening to the state machine`、`Trial - Start`、`Outro`の行が交差するセルで、`Add Listener`ボタンをクリックし、以下のテーブルにある図の通りに設定します。
 
-| Custom implementation not listening to any State | Trial - Start | Outro |
+| Functions, events, variables not listening to the state machine | Trial - Start | Outro |
 | :---: | :---: | :---: |
 | ![Instruction GameObject](https://github.com/user-attachments/assets/47dbd2d3-e382-45f2-bc0a-9ceb410e0db6) | ![TimerRecorder-TrialStart](https://github.com/user-attachments/assets/837fab63-e31c-47d3-a62a-a24a8bdcd5bf) | ![TimeRecorder-Outro](https://github.com/user-attachments/assets/ea250246-4c3a-4aca-b94b-7feecde4c41e) |
-| スクリプトとその説明は↓の`▶ Custom implementation`にあります | スクリプトとその説明は↓の`▶ Trial - Start`にあります | 全試行が終了した後、記録してきたデータをアップロードさせます。 |
+| スクリプトとその説明は、下の`▶ Functions, events, variables not listening to the state machine`にあります | スクリプトとその説明は↓の`▶ Trial - Start`にあります | 全試行が終了した後、記録してきたデータをアップロードさせます。 |
 
 <details>
 
-<summary>Custom implementation</summary>
+<summary>Functions, events, variables not listening to the state machine</summary>
 
 タイマーを初期化し、試行中であればタイマーをかける：
 ```javascript
@@ -383,9 +390,9 @@ SendDataToCollector("timer", $.state.timer); // 回答に使った時間をLUIDA
 
 <summary><h3>認知負荷をかけるための計算タスク用オブジェクト</h3></summary>
 
-1. `LUIDA > Config Window > State-listening Items`を開きます。
+1. `LUIDA > Configure experiment automation > State-listening Items`を開きます。
 2. `New Item Name`に`CalculationTextInput`と名前を入れて`Add state-listening item`ボタンをクリックします。
-3. `CalculationTextInput`の列の`Custom implementation not listening to any State`のコードブロックに、以下のスクリプトをコピペします：
+3. `CalculationTextInput`の列の`Functions, events, variables not listening to the state machine`のコードブロックに、以下のスクリプトをコピペします：
 ```javascript
 function getRandomInt(max) { // 乱数の整数を生成する関数を定義する
   return Math.floor(Math.random() * max);
@@ -399,14 +406,14 @@ $.onTextInput((text, meta, status) => {
 ```
 4. `CalculationTextInput`の列と、`CalculationTask`の行が交差するセルで、`Add Listener`ボタンをクリックし、Customized Action動作を一つ追加し、コードブロックに以下のスクリプトをコピペします
 ```javascript
-// PARTICIPANTS[0]で一人目の参加者（1人しかいないけど）を特定する
-PARTICIPANTS[0].requestTextInput(
+// PARTICIPANTS[1]で一人目の参加者（1人しかいないけど）を特定する
+PARTICIPANTS[1].requestTextInput(
   "ask_to_calculate",
   getRandomInt(100) + "+" + getRandomInt(100) + "=?"
 );
 ```
 
-| Custom implementation not listening to any State | Trial - Start |
+| Functions, events, variables not listening to the state machine | Trial - Start |
 | :---: | :---: |
 | ![calculation-task-code](https://github.com/user-attachments/assets/891b2e76-1fc2-4e44-9c7d-54e3989549ec) | ![calculation-task-code-during-task](https://github.com/user-attachments/assets/dc5343c8-d54a-4f6e-93bf-5bfb7c342bc6) |
 
@@ -416,16 +423,19 @@ PARTICIPANTS[0].requestTextInput(
 
 ## 6. カスタム形式で記録したいデータの定義
 
-`LUIDA > Config Window > Data Collector`では、カスタム形式で記録したいデータ（例：回答ボタンをクリックする際に送られるisRedの値、試行が終わるたびに送られるタイマーの値、そして試行ごとの実験条件）の定義や計算ができます。
+LUIDAでは、カスタム形式で記録したいデータ（例：回答ボタンをクリックする際に送られるisRedの値、試行が終わるたびに送られるタイマーの値、そして試行ごとの実験条件）の定義や計算ができます。
 
 各設定項目の詳細は[ドキュメント](/Documentation_JA.md#カスタム形式で記録したいデータの定義)をご参照ください。
 
-<!-- <img width="357" alt="Screenshot 2025-05-28 at 14 49 45" src="https://github.com/user-attachments/assets/f0e27d68-5f55-4589-bce2-7b5e402fa7f4" /> -->
-![image](https://github.com/user-attachments/assets/373f5444-eeb5-415e-a010-311f63720ecb)
+<img width="787" height="219" alt="image" src="https://github.com/user-attachments/assets/893571d5-30c0-441a-aff7-c237ce926ce1" />
+
 
 以下の記述に従って設定してください。
 
-1. 設定画面のコードブロックに以下のスクリプトをコピペします：
+1. シーンの中からゲームオブジェクト `LUIDA-DataCollector` を特定し、そのInspectorから `Script Asset` をダブルクリックします（下の図を参照）。すると該当するスクリプトの編集画面が開きます。
+        <img width="636" height="347" alt="data-collector" src="https://github.com/user-attachments/assets/b36ae892-08b8-4ce7-aa89-c0f405faad8b" />
+
+2. 以下のスクリプトをコピペしてファイル保存します：
 ```JavaScript
 return {
   d: CONDITION['depth'], // 該当試行のdepth条件（参加者間変数depthの該当試行における値）
@@ -449,10 +459,8 @@ return {
 
 1.  Unityのメニューバーから `Cluster > 設定` を開き、「ベータ機能を利用する」にチェックを入れます。
     ![ベータ機能の有効化](https://github.com/user-attachments/assets/af786e5e-07fe-4126-b350-1ed7c0401ecd)
-2.  Unityのメニューバーから `Window > かおもラボ > CSCombiner` を開き、「全更新」ボタンをクリックします。これにより、プロジェクト内のCluster Script (`.cs.js`ファイル) が正しく結合・処理されます。
-    ![CSCombiner 全更新](https://github.com/user-attachments/assets/12cd1c5e-0dcc-4d91-b340-900ed0a35041)
-3.  Unityのシーンを保存します。
-4.  **ローカルテストプレイ**: Unityエディタの再生ボタンを押して、実験全体の流れや各ステートの動作、オブジェクトの挙動などが意図した通りかを確認します。
+2.  **ローカルテストプレイ**: Unityエディタの再生ボタンを押して、実験全体の流れや各ステートの動作、オブジェクトの挙動などが意図した通りかを確認します。
+3.  シーンをセーブします。
 
 </details>
 

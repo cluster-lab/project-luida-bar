@@ -223,11 +223,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "$.onStart(() => {\r\n  initializeRandomBetweenSubjectsConditions();\r\n 
-    reset();\r\n});\r\n\r\n$.onUpdate(() => {\r\n  if (\r\n    $.state.trialID !==
-    $.getStateCompat(\"global\", \"exp_trialID\", \"integer\") &&\r\n      $.getStateCompat(\"global\",
-    \"exp_trialID\", \"integer\") >= 0\r\n  ) {\r\n    $.state.trialID = $.getStateCompat(\"global\",
-    \"exp_trialID\", \"integer\");\r\n    updateCondition();\r\n  }\r\n});\r\n\r\n$.onReceive((messageType,
+  sourceCode: "const trialsCountForEachUniqueCondition = 1;\r\nconst within_subjects_variables
+    = [\r\n];\r\nconst between_subjects_variables = [\r\n];\r\n\r\n$.onStart(() =>
+    {\r\n  initializeRandomBetweenSubjectsConditions();\r\n  reset();\r\n});\r\n\r\n$.onUpdate(()
+    => {\r\n  if (\r\n    $.state.trialID !== $.getStateCompat(\"global\", \"exp_trialID\",
+    \"integer\") &&\r\n      $.getStateCompat(\"global\", \"exp_trialID\", \"integer\")
+    >= 0\r\n  ) {\r\n    $.state.trialID = $.getStateCompat(\"global\", \"exp_trialID\",
+    \"integer\");\r\n    updateCondition();\r\n  }\r\n});\r\n\r\n$.onReceive((messageType,
     arg, sender) => {\r\n  switch (messageType) {\r\n    case \"luida_participants_info\":\r\n     
     $.groupState.participants = arg.participants;\r\n      $.groupState.sessionID
     = arg.sessionID;\r\n      break;\r\n    // case \"exp_questionnaire_answer\":\r\n   
@@ -429,6 +431,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clusterScripts:
+  - {fileID: 5022602860645237092, guid: b87332eb7be8909439b64cc0b2e914f3, type: 3}
   - {fileID: 5022602860645237092, guid: 8821fb654779949b38c61e01b3dae4b5, type: 3}
   playerScripts: []
   clusterScriptMD5s: []

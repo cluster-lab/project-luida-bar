@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 public class ExpIdentifierConfigTab : EditorWindow
 {
@@ -18,7 +19,14 @@ public class ExpIdentifierConfigTab : EditorWindow
     private string filePath;
     private bool isSubscribed = false;
     private const string formPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/Questionnaire/Questionnaire.prefab";
-
+    private const string StateQuestionnaireRootName = "LUIDA-QuestionnaireByState";
+    
+    [MenuItem("LUIDA/Configure experiment identifiers")]
+    public static void ShowWindow()
+    {
+        GetWindow<ExpIdentifierConfigTab>("LUIDA Experiment Identifiers Config Window");
+    }
+    
     public void OnEnable()
     {
         // Set the file path to the single ExpIdentifiers.js file
@@ -124,33 +132,70 @@ public class ExpIdentifierConfigTab : EditorWindow
 
     private void UpdateQuestionnaireObjects()
     {
-        var wnd = LuidaConfigWindow.Instance;
-        if (!wnd || !wnd.StateTab.stateList || wnd.StateTab.stateList.States == null) return;
-
         int newPNum = pNum;
+        var wnd = LuidaConfigWindow.Instance;
 
-        // for each state, count how many questionnaire children are in the scene
-        for (var i = 0; i < wnd.StateTab.stateList.States.Length; i++)
+        var questionnaireGroups = new Dictionary<Transform, List<GameObject>>();
+        var allGameObjects = Resources.FindObjectsOfTypeAll<GameObject>();
+
+        foreach (var go in allGameObjects)
         {
-            var state = wnd.StateTab.stateList.States[i];
-            if (state.qID <= 0) continue;
-            
-            var go = wnd.StateTab.FindStateObject(state.StateName);
-            var objs = go?.transform.Find("Objects");
-            var existingCount = 0;
-            if (objs)
+            if (!go.scene.isLoaded || PrefabUtility.GetNearestPrefabInstanceRoot(go) != go)
             {
-                foreach (Transform child in objs)
-                {
-                    if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject)
-                        == formPrefabPath)
-                        existingCount++;
-                }
+                continue;
             }
 
-            if (existingCount != newPNum)
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(go) == formPrefabPath)
             {
-                wnd.StateTab.AddOrEnableQuestionnaireForm(i, state.StateName);
+                var parent = go.transform.parent;
+                if (parent == null) continue;
+
+                if (!questionnaireGroups.ContainsKey(parent))
+                {
+                    questionnaireGroups[parent] = new List<GameObject>();
+                }
+                questionnaireGroups[parent].Add(go);
+            }
+        }
+
+        foreach (var group in questionnaireGroups)
+        {
+            var parentTransform = group.Key;
+            var childrenCount = group.Value.Count;
+
+            if (childrenCount == newPNum) continue;
+
+            if (parentTransform.parent != null && parentTransform.parent.name == StateQuestionnaireRootName)
+            {
+                if (wnd != null && wnd.StateTab != null && wnd.StateTab.stateList != null)
+                {
+                    string stateName = parentTransform.name;
+                    var stateList = wnd.StateTab.stateList;
+
+                    for (int i = 0; i < stateList.States.Length; i++)
+                    {
+                        if (stateList.States[i].StateName == stateName && stateList.States[i].qID > 0)
+                        {
+                            Debug.Log($"Updating state-linked questionnaire '{stateName}' to have {newPNum} forms.");
+                            // CHANGED: Passed newPNum as an argument
+                            QuestionnaireEditorManager.AddOrEnableQuestionnaireForm(stateList, i, stateName, newPNum);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                LuidaQuestionnaire idSync = parentTransform.GetComponent<LuidaQuestionnaire>();
+                if (idSync != null)
+                {
+                    int qID = idSync.qId;
+                    Debug.Log($"Updating directly-created questionnaire with qID {qID} to have {newPNum} forms.");
+                    
+                    Undo.DestroyObjectImmediate(parentTransform.gameObject);
+                    // CHANGED: Passed newPNum as an argument
+                    QuestionnaireEditorManager.CreateQuestionnaireDirectly(qID, newPNum);
+                }
             }
         }
     }

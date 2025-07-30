@@ -3,7 +3,7 @@ const dataLengthPerUpload = 100;
 const dataByteLengthPerUpload = 100000; // 102400
 
 $.onStart(() => {
-    $.state.customData = {};
+    $.state.customData = [];
     $.state.uploadIndex = 0;
     $.state.elapsedTime = 0;
     // $.state.dataLength = 0;
@@ -51,29 +51,19 @@ function uploadDataInit() {
     $.state.uploadIndex = 0;
     $.state.elapsedTime = 0;
     $.state.isUploading = true;
-    let firstFileName = Object.keys($.state.customData)[0];
-    if (firstFileName) {
-        // $.state.dataLength = $.state.customData[firstFileName].length;
-        $.log($.state.customData[firstFileName]);
-        let dataByteLength = utf8ByteLength(JSON.stringify($.state.customData[firstFileName]));
-        $.log("Data byte length: " + dataByteLength);
-        $.state.steps = Math.ceil(dataByteLength / dataByteLengthPerUpload);
-    }
+
+    let dataByteLength = utf8ByteLength(JSON.stringify($.state.customData));
+    $.log("Data byte length: " + dataByteLength);
+    $.state.steps = Math.ceil(dataByteLength / dataByteLengthPerUpload);
 }
 
 function uploadDataStep() {
     $.log("Upload data step: " + $.state.uploadIndex);
     if ($.state.uploadIndex < $.state.steps) {
-        const slicedData = Object.fromEntries(
-            Object.entries($.state.customData).map(([key, value]) => [
-                key,
-                value.slice($.state.uploadIndex * dataLengthPerUpload, ($.state.uploadIndex + 1) * dataLengthPerUpload)
-            ])
-        );
         let request = {
             type: "uploadCustomData",
             token: token || "",
-            data: slicedData,
+            data: { data: $.state.customData.slice($.state.uploadIndex * dataLengthPerUpload, ($.state.uploadIndex + 1) * dataLengthPerUpload) },
             eID: expID || "",
             pID: $.groupState.participants[0].idfc // TODO: replace with `sessionID: $.groupState.sessionID`
         };
@@ -87,7 +77,7 @@ function uploadDataStep() {
         if ($.state.uploadIndex >= $.state.steps) {
             $.state.uploadIndex = 0;
             $.state.isUploading = false;
-            $.state.customData = {};
+            $.state.customData = [];
         }
     }
 }
@@ -108,3 +98,11 @@ function utf8ByteLength(str) {
     }
     return bytes;
 }
+
+function calculateData () {
+    let returnData = $.state.customData;
+    if (!Array.isArray(returnData)) returnData = [];
+    const CONDITION = $.groupState.currentCondition;
+    const PARTICIPANTS = [null].concat($.groupState.participants);
+    const COLLECTED_DATA = $.groupState.collectedData;
+    function saveData() {

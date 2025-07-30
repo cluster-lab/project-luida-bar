@@ -5,8 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class ItemsManagerConfigTab : EditorWindow
+public class ItemsManagerConfigTab : LuidaAutomationConfigTab
 {
+    protected override LuidaConfigWindow.TabIndex TabIndex => LuidaConfigWindow.TabIndex.StateListeningItems;
+    
     // State variables accessed by helper classes
     public bool _needsRebuild = true;
     public string[] _cachedStateNames = Array.Empty<string>();
@@ -32,7 +34,7 @@ public class ItemsManagerConfigTab : EditorWindow
     public Vector2 docScrollPositionY;
     public Vector2 _horizontalScrollPosition;
 
-    private bool isSubscribed = false;
+    private bool isInitialized = false;
 
     #region Unity Callbacks & Event Handling
 
@@ -45,35 +47,39 @@ public class ItemsManagerConfigTab : EditorWindow
     {
         _needsRebuild = true;
 
-        if (!isSubscribed)
+        if (!isInitialized)
         {
-            EditorApplication.hierarchyChanged += OnHierarchyChanged;
-            EditorApplication.projectChanged += OnProjectChanged;
-            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            ItemsManagerAssetUtil.RefreshStateList(this);
+            ItemsManagerAssetUtil.RefreshExperimentVariablesCache(this);
             
-            LuidaConfigWindow.OnEditorClosed += HandleCloseOrFocusLost;
-            LuidaConfigWindow.OnEditorClosed += OnDisable;
-            LuidaConfigWindow.OnTabSwitched += HandleCloseOrFocusLost;
-            isSubscribed = true;
-        }
-        
-        ItemsManagerAssetUtil.RefreshStateList(this);
-        ItemsManagerAssetUtil.RefreshExperimentVariablesCache(this);
-    }
-
-    public void OnDisable()
-    {
-        if (isSubscribed)
-        {
             EditorApplication.hierarchyChanged -= OnHierarchyChanged;
             EditorApplication.projectChanged -= OnProjectChanged;
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
 
             LuidaConfigWindow.OnEditorClosed -= HandleCloseOrFocusLost;
             LuidaConfigWindow.OnEditorClosed -= OnDisable;
-            LuidaConfigWindow.OnTabSwitched -= HandleCloseOrFocusLost;
-            isSubscribed = false;
+            LuidaConfigWindow.OnTabSwitched -= HandleTabSwitched;
+            
+            EditorApplication.hierarchyChanged += OnHierarchyChanged;
+            EditorApplication.projectChanged += OnProjectChanged;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            
+            LuidaConfigWindow.OnEditorClosed += HandleCloseOrFocusLost;
+            LuidaConfigWindow.OnEditorClosed += OnDisable;
+            LuidaConfigWindow.OnTabSwitched += HandleTabSwitched;
+            isInitialized = true;
         }
+    }
+
+    public void OnDisable()
+    {
+        EditorApplication.hierarchyChanged -= OnHierarchyChanged;
+        EditorApplication.projectChanged -= OnProjectChanged;
+        EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+
+        LuidaConfigWindow.OnEditorClosed -= HandleCloseOrFocusLost;
+        LuidaConfigWindow.OnEditorClosed -= OnDisable;
+        LuidaConfigWindow.OnTabSwitched -= HandleTabSwitched;
     }
 
     private void HandleCloseOrFocusLost() => ItemsManagerAssetUtil.ApplyAssetsToScripts(this);
@@ -113,6 +119,11 @@ public class ItemsManagerConfigTab : EditorWindow
 
         // Delegate all drawing to the helper class
         ItemsManagerUIDrawer.DrawGUI(this);
+    }
+
+    private void HandleTabSwitched(LuidaConfigWindow.TabIndex prevTab, LuidaConfigWindow.TabIndex nextTab)
+    {
+        if (prevTab == TabIndex && nextTab != TabIndex) HandleCloseOrFocusLost();
     }
 
     private void RebuildCache()

@@ -19,7 +19,7 @@ MonoBehaviour:
         actionType: Customized Action
         codeSnippet: 
         variables: []
-      customAction: "PARTICIPANTS[0].requestTextInput(\n  \"ask_to_calculate\",\n 
+      customAction: "PARTICIPANTS[1].requestTextInput(\n  \"ask_to_calculate\",\n 
         getRandomInt(100) + \"+\" + getRandomInt(100) + \"=?\"\n);"
       isConditional: 0
       conditionVariable: 

@@ -12,7 +12,7 @@ public class CreateStateListeningItemMenu
     private const string ExpManagersWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/LUIDA-ExpManagers.prefab";
     private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
 
-    [MenuItem("GameObject/LUIDA State-Listening Item", false, 10)]
+    // [MenuItem("GameObject/LUIDA State-Listening Item", false, 10)]
     static void CreateNewStateListeningItem()
     {
         InputNameWindow.ShowWindow(CreateItemWithName);

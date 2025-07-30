@@ -537,7 +537,7 @@ public class LuidaStateListeningItemInspector : Editor
         var content = $"function {functionName}({extraParameters}) {{\n";
         content += "  const STATE_ID = $.state.state_id;\n";
         content += "  const CONDITION = $.groupState.currentCondition;\n";
-        content += "  const PARTICIPANTS = $.groupState.participants;\n\n";
+        content += "  const PARTICIPANTS = [null].concat($.groupState.participants);\n\n";
 
         // Aggregate action content from all listeners of the item
         foreach (var listenerData in stateListeners)
