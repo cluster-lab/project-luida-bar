@@ -1,7 +1,7 @@
 const stateEnterActions = {
     2: [
         { type: "exec", action: () => {
-            PARTICIPANTS[0].requestTextInput(
+            PARTICIPANTS[1].requestTextInput(
               "ask_to_calculate",
               getRandomInt(100) + "+" + getRandomInt(100) + "=?"
             );

@@ -138,28 +138,26 @@ function SetText(text) {
     }
 }
 
-function SendHaptics(target, frequency, amplitude, duration) {
+function SendHaptics(participantId, target, frequency, amplitude, duration) {
     try {
-        if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];
-        if ($.state.player) {
+        if (PARTICIPANTS[participantId]) {
             let hapticsTarget = target;
             if (typeof target === 'string') {
                 const lowerTarget = target.toLowerCase();
-                if (lowerTarget === 'null' || lowerTarget === 'undefined' || lowerTarget === "") {
-                    hapticsTarget = null; // Use JS null for "both" or unspecified
-                } else if (lowerTarget === '"left"' || lowerTarget === "'left'") {
+                if (lowerTarget === '"left"' || lowerTarget === "'left'") {
                     hapticsTarget = "left";
                 } else if (lowerTarget === '"right"' || lowerTarget === "'right'") {
                     hapticsTarget = "right";
+                } else {
+                    hapticsTarget = null;
                 }
-                // else assume target is already "left", "right", or a valid direct value.
             }
 
-            $.state.player.send("haptics", {
+            PARTICIPANTS[participantId].send("haptics", {
                 target: hapticsTarget,
                 frequency: parseFloat(frequency),
                 amplitude: parseFloat(amplitude),
-                duration: parseFloat(duration) // Duration in seconds
+                duration: parseFloat(duration)
             });
         } else {
             $.log("SendHaptics: No player found nearby.");
@@ -169,9 +167,13 @@ function SendHaptics(target, frequency, amplitude, duration) {
     }
 }
 
+function SendViaOsc(participantId, address, values) {
+    PARTICIPANTS[participantId].send("sendOsc", { address, values });
+}
+
 function OnStateEnter(deltaTime) {
     CONDITION = $.groupState.currentCondition;
-    PARTICIPANTS = $.groupState.participants;
+    PARTICIPANTS = [null].concat($.groupState.participants);
     if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length) return;
     
     while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !== "sleep") {

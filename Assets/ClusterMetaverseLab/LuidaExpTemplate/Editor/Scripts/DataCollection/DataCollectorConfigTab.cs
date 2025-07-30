@@ -76,7 +76,7 @@ public class DataCollectorConfigTab : EditorWindow
             EditorGUILayout.HelpBox("⋅ Values are determined by your configured experimental variables and vary across trials.\n⋅ Only available during the trial states if you have enabled the LUIDA experiment progress automation feature.\n⋅ Use CONDITION[\"variable_name\"] to reference a specific condition within the current trial.", MessageType.Info);
 
             EditorGUILayout.LabelField("PARTICIPANTS", EditorStyles.boldLabel);
-            EditorGUILayout.HelpBox("⋅ An array of PlayerHandle of the participants joining this experiment.\n⋅ Use `PARTICIPANTS[0]` to retrieve the first participant, `PARTICIPANTS[1]` to retrieve the second participant, and so on.", MessageType.Info);
+            EditorGUILayout.HelpBox("⋅ An array of PlayerHandle of the participants joining this experiment.\n⋅ Use `PARTICIPANTS[1]` to retrieve the first participant, `PARTICIPANTS[2]` to retrieve the second participant, and so on.", MessageType.Info);
 
             EditorGUILayout.LabelField("COLLECTED_DATA", EditorStyles.boldLabel);
             EditorGUILayout.HelpBox("⋅ The collected data you send to the LUIDA data collector using the SendDataToCollector action/function.\n⋅ Use `COLLECTED_DATA[your_data_label]` to retrieve the value.", MessageType.Info);

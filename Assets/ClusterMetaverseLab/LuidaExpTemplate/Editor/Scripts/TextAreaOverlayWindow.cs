@@ -75,8 +75,6 @@ public class TextAreaOverlayWindow : EditorWindow
         }
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
-        
-        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
         scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
 

@@ -20,23 +20,23 @@ const stateEnterActions = {
 const duringStateActions = {
     2: [
         { type: "exec", action: () => {
-            $.setPosition(PARTICIPANTS[0].getHumanoidBonePosition(HumanoidBone.RightHand));
-            $.setRotation(PARTICIPANTS[0].getHumanoidBoneRotation(HumanoidBone.RightHand));
+            $.setPosition(PARTICIPANTS[1].getHumanoidBonePosition(HumanoidBone.RightHand));
+            $.setRotation(PARTICIPANTS[1].getHumanoidBoneRotation(HumanoidBone.RightHand));
         } }
     ],
     3: [
         { type: "exec", action: () => {
             $.setPosition($.state.originPos.clone()
-              .add(PARTICIPANTS[0].getHumanoidBonePosition(HumanoidBone.RightHand).clone()
+              .add(PARTICIPANTS[1].getHumanoidBonePosition(HumanoidBone.RightHand).clone()
                 .sub($.state.originPos)
                 .multiplyScalar(CONDITION['gain'] || 1)));
-            $.setRotation(PARTICIPANTS[0].getHumanoidBoneRotation(HumanoidBone.RightHand));
+            $.setRotation(PARTICIPANTS[1].getHumanoidBoneRotation(HumanoidBone.RightHand));
         } }
     ],
     5: [
         { type: "exec", action: () => {
-            $.setPosition(PARTICIPANTS[0].getHumanoidBonePosition(HumanoidBone.RightHand));
-            $.setRotation(PARTICIPANTS[0].getHumanoidBoneRotation(HumanoidBone.RightHand));
+            $.setPosition(PARTICIPANTS[1].getHumanoidBonePosition(HumanoidBone.RightHand));
+            $.setRotation(PARTICIPANTS[1].getHumanoidBoneRotation(HumanoidBone.RightHand));
         } }
     ]
 };

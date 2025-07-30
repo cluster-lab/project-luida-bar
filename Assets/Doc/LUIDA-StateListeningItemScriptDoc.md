@@ -16,7 +16,7 @@ Tip: When asking an LLM service for coding assistance, first share the `Asset/Do
 ### `PARTICIPANTS`
 
 - An array of PlayerHandle of the participants joining this experiment."
-- Use `PARTICIPANTS[0]` to retrieve the first participant, `PARTICIPANTS[1]` to retrieve the second participant, etc.
+- Use `PARTICIPANTS[1]` to retrieve the first participant, `PARTICIPANTS[2]` to retrieve the second participant, etc.
 
 ---
 
@@ -165,14 +165,25 @@ Tip: When asking an LLM service for coding assistance, first share the `Asset/Do
 
 ## User Feedback & Utilities
 
-### `SendHaptics(target, frequency, amplitude, duration)`
+### `SendHaptics(participantId, target, frequency, amplitude, duration)`
 
-- **Description**: Sends haptic feedback to the player. The target can be "left", "right", or null for both hands. The duration is in seconds.
+- **Description**: Sends haptic feedback to the player specified by `participantId`. `target` should be filled in with "left", "right", or null for both hands. `duration` is in seconds.
 - **Parameters**:
+  - `participantId`: `integer` (start from 1)
   - `target`: `string`
   - `frequency`: `number`
   - `amplitude`: `number`
   - `duration`: `number`
+
+### `SendViaOsc(participantId, address, values)`
+
+-   **Description**: Sends an OSC message from the client of the player specified by `participantId`. This is typically used to control external hardware or software outside Cluster.
+-   **Parameters**:
+    -   `participantId`: `integer` (starts from 1).
+    -   `address`: `string`
+        -   The OSC path, which must begin with `/` (e.g., `/sample`).
+    -   `values`: `array`
+        -   A list of arguments to send with the message. Each argument should be one of the following types: `Boolean`, `Number`, `String`.
 
 ### `Sleep(seconds)`
 

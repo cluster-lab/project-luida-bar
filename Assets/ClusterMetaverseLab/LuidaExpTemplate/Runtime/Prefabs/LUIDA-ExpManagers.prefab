@@ -428,11 +428,13 @@ PrefabInstance:
         effect.frequency = body.frequency;\r\n                effect.amplitude =
         body.amplitude;\r\n                effect.duration = body.duration;\r\n               
         haptics.playEffect(effect, body.target);\r\n            }\r\n           
-        break;\r\n        case \"initializeParticipant\":\r\n            _.setMoveSpeedRate(1);\r\n           
-        _.sendTo(sender, \"envInfoResponse\", {\r\n                isAndroid: _.isAndroid,\r\n               
-        isDesktop: _.isDesktop,\r\n                isIos: _.isIos,\r\n               
-        isMacOs: _.isMacOs,\r\n                isMobile: _.isMobile,\r\n               
-        isVr: _.isVr,\r\n                isWindows: _.isWindows\r\n            });\r\n           
+        break;\r\n        case \"sendOsc\":\r\n            sendOsc(body.address,
+        body.values);\r\n            break;\r\n        case \"initializeParticipant\":\r\n           
+        _.setMoveSpeedRate(1);\r\n            _.sendTo(sender, \"envInfoResponse\",
+        {\r\n                isAndroid: _.isAndroid,\r\n                isDesktop:
+        _.isDesktop,\r\n                isIos: _.isIos,\r\n                isMacOs:
+        _.isMacOs,\r\n                isMobile: _.isMobile,\r\n                isVr:
+        _.isVr,\r\n                isWindows: _.isWindows\r\n            });\r\n           
         break;\r\n        case \"setQuestionnaireUI\":\r\n            setQuestionnaireUI(body.n,\r\n               
         (body.hasOwnProperty(\"e\") ? body.e : null),\r\n                body.p,
         body.r,\r\n                (body.hasOwnProperty(\"t\") ? body.t.toString()
@@ -453,7 +455,22 @@ PrefabInstance:
         if (position) targetUI.getUnityComponent(\"Transform\").unityProp.localPosition
         = position;\r\n    if (rotation) targetUI.getUnityComponent(\"Transform\").unityProp.localRotation
         = rotation;\r\n    if (text !== null) targetUI.findObject(\"Text\").getUnityComponent(\"Text\").unityProp.text
-        = text;\r\n}\r\n"
+        = text;\r\n}\r\n\r\nfunction sendOsc(address, values) {\r\n    if (typeof
+        _ === 'undefined' || typeof _.oscHandle === 'undefined') {\r\n        _.log(\"Error:
+        PlayerScript environment or oscHandle not found.\");\r\n        return;\r\n   
+        }\r\n\r\n    try {\r\n        const oscValues = values.map(val => {\r\n           
+        const type = typeof val;\r\n            if (type === 'boolean') {\r\n               
+        return OscValue.bool(val);\r\n            } else if (type === 'number') {\r\n               
+        if (Number.isInteger(val)) {\r\n                    return OscValue.int(val);\r\n               
+        } else {\r\n                    return OscValue.float(val);\r\n               
+        }\r\n            } else if (type === 'string') {\r\n                return
+        OscValue.asciiString(val);\r\n            } else {\r\n                _.log(`Warning:
+        Unsupported data type '${type}' for value '${val}'. Skipping.`);\r\n               
+        return null;\r\n            }\r\n        }).filter(v => v !== null);\r\n       
+        const message = new OscMessage(address, oscValues);\r\n        _.oscHandle.send(message);\r\n       
+        // _.log(`OSC message sent to ${address} with ${oscValues.length} value(s).`);\r\n\r\n   
+        } catch (e) {\r\n        _.log(`Error sending OSC message: ${e.message}`);\r\n   
+        }\r\n}\r\n"
       objectReference: {fileID: 0}
     - target: {fileID: 3933797981565559285, guid: d54fd1885b76d47d9bd9a3a2f0675afb,
         type: 3}

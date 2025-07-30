@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System;
 using System.Text.RegularExpressions;
@@ -10,6 +11,20 @@ using ClusterVR.CreatorKit.World.Implements.TextView;
 
 public static class ItemsManagerUIDrawer
 {
+    [System.Serializable]
+    public class OscArgument
+    {
+        public enum OscValueType { Boolean, Number, String }
+        public OscValueType Type = OscValueType.String;
+        public string Value = "";
+    }
+
+    [System.Serializable]
+    private class OscArgumentListWrapper
+    {
+        public List<OscArgument> Arguments = new List<OscArgument>();
+    }
+
     private static string docFilePath = "Assets/Doc/LUIDA-StateListeningItemScriptDoc.md";
     private static readonly string codeFontPath = "Assets/Fonts/FiraCode-Regular.ttf";
     private static readonly StateListeningAction[] AvailableStateListeningActions =
@@ -40,14 +55,14 @@ public static class ItemsManagerUIDrawer
         new StateListeningAction("Upload collected data", "$.sendSignalCompat('this', 'exp_uploadCustomData');"),
         new StateListeningAction("Set text", "$.subNode('Text').setText(`{_text_}`);", new[] { "text" }),
         new StateListeningAction("Send Haptics",
-            "if (!$.state.player) $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0]; \n $.state.player.send('haptics', {target: {_target_}, frequency: {_frequency_}, amplitude: {_amplitude_}, duration: {_duration_}});",
-            new[] { "target", "frequency", "amplitude", "duration" }),
+            "PARTICIPANTS[{_participantId_}].send('haptics', {target: {_target_}, frequency: {_frequency_}, amplitude: {_amplitude_}, duration: {_duration_}});",
+            new[] { "participantId", "target", "frequency", "amplitude", "duration" }),
+        new StateListeningAction("Send via OSC", "PARTICIPANTS[{_participantId_}].send('sendOsc', {address: '{_address_}', values: [{_values_}] });", new[] { "participantId", "address", "values" }),
         new StateListeningAction("Sleep", "{_seconds_}", new[] { "seconds" }),
     };
     
-    private static GUIStyle _codeTextAreaStyle; // Custom style for monospaced font
+    private static GUIStyle _codeTextAreaStyle;
 
-    // ... (Other methods like DrawGUI, DrawHeader, etc. remain the same) ...
     public static void DrawGUI(ItemsManagerConfigTab editor)
     {
         EditorGUI.BeginChangeCheck();
@@ -180,7 +195,6 @@ public static class ItemsManagerUIDrawer
                 string currentOtherImpl = itemDataAsset.otherImplementation ?? string.Empty;
 
                 Rect taRect = EditorGUILayout.GetControlRect(false, 75, GUILayout.Width(233.5f), GUILayout.MaxHeight(75));
-                // MODIFIED CALL: Pass 'isColored: true' for JS code
                 DrawHoverableTextArea(taRect, currentOtherImpl, (newValue) =>
                 {
                     Undo.RecordObject(itemDataAsset, "Edit Other Implementation for " + item.name);
@@ -435,7 +449,15 @@ public static class ItemsManagerUIDrawer
                         {
                             foreach (var varName in action.predefinedActionTemplate.variables)
                             {
-                                action.variableValues[varName] = new StateListenerAction(action.predefinedActionTemplate).variableValues[varName];
+                                // MODIFIED: For Haptics target, initialize with quotes
+                                if (action.predefinedActionTemplate.actionType == "Send Haptics" && varName == "target")
+                                {
+                                    action.variableValues[varName] = "''";
+                                }
+                                else
+                                {
+                                    action.variableValues[varName] = new StateListenerAction(action.predefinedActionTemplate).variableValues[varName];
+                                }
                             }
                         }
 
@@ -469,7 +491,6 @@ public static class ItemsManagerUIDrawer
                 if (action.predefinedActionTemplate.actionType == "Customized Action")
                 {
                     Rect textAreaRect = new Rect(rect.x + 15, currentY, rect.width - 15, lineHeight * 3);
-                    // MODIFIED CALL: Pass 'isColored: true' for JS code
                     DrawHoverableTextArea(textAreaRect, action.customAction ?? "", (newValue) => {
                         Undo.RecordObject(itemDataAsset, "Edit Custom Action");
                         action.customAction = newValue;
@@ -479,101 +500,254 @@ public static class ItemsManagerUIDrawer
                 }
                 else if (action.predefinedActionTemplate.variables != null && action.predefinedActionTemplate.variables.Length > 0)
                 {
-                    var variables = action.predefinedActionTemplate.variables;
-                    bool allSingleChar = variables.All(v => v.Length == 1);
-
-                    if (allSingleChar)
+                    if (action.predefinedActionTemplate.actionType == "Send via OSC")
                     {
-                        float labelWidth = 18f, fieldWidth = 40f, spacingH = 8f;
-                        float x = rect.x + 15;
-                        foreach (string variableName in variables)
+                        float labelWidth = 85f;
+                        
+                        Rect idLabelRect = new Rect(rect.x + 15, currentY, labelWidth, lineHeight);
+                        Rect idFieldRect = new Rect(idLabelRect.xMax, currentY, rect.width - 15 - labelWidth, lineHeight);
+
+                        EditorGUI.LabelField(idLabelRect, "Participant ID");
+                        action.variableValues.TryGetValue("participantId", out string currentId);
+                        string newId = EditorGUI.TextField(idFieldRect, currentId ?? "");
+
+                        newId = ValidateParticipantId(newId);
+
+                        if (newId != currentId)
                         {
-                            EditorGUI.LabelField(new Rect(x, currentY, labelWidth, lineHeight), variableName);
-                            action.variableValues.TryGetValue(variableName, out string currentValue);
-                            string newValue = EditorGUI.TextField(new Rect(x + labelWidth, currentY, fieldWidth, lineHeight), currentValue ?? "");
-                            if (newValue != currentValue)
-                            {
-                                Undo.RecordObject(itemDataAsset, "Edit Variable " + variableName);
-                                action.variableValues[variableName] = newValue;
-                                EditorUtility.SetDirty(itemDataAsset);
-                            }
-                            x += labelWidth + fieldWidth + spacingH;
+                            Undo.RecordObject(itemDataAsset, "Edit OSC Participant ID");
+                            action.variableValues["participantId"] = newId;
+                            EditorUtility.SetDirty(itemDataAsset);
                         }
                         currentY += lineHeight + spacing;
+
+                        Rect addressLabelRect = new Rect(rect.x + 15, currentY, labelWidth, lineHeight);
+                        Rect addressFieldRect = new Rect(addressLabelRect.xMax, currentY, rect.width - 15 - labelWidth, lineHeight);
+
+                        EditorGUI.LabelField(addressLabelRect, "Address");
+                        action.variableValues.TryGetValue("address", out string currentAddress);
+                        string newAddress = EditorGUI.TextField(addressFieldRect, currentAddress ?? "");
+                    
+                        if (newAddress != currentAddress)
+                        {
+                            Undo.RecordObject(itemDataAsset, "Edit OSC Address");
+                            action.variableValues["address"] = newAddress;
+                            EditorUtility.SetDirty(itemDataAsset);
+                        }
+                        currentY += lineHeight + spacing;
+
+                        action.variableValues.TryGetValue("values_json", out string currentValuesJson);
+                        var wrapper = new OscArgumentListWrapper();
+                        if (!string.IsNullOrEmpty(currentValuesJson))
+                        {
+                            try { JsonUtility.FromJsonOverwrite(currentValuesJson, wrapper); }
+                            catch { wrapper.Arguments = new List<OscArgument>(); }
+                        }
+                        if (wrapper.Arguments == null) wrapper.Arguments = new List<OscArgument>();
+
+                        EditorGUI.BeginChangeCheck();
+
+                        EditorGUI.LabelField(new Rect(rect.x + 15, currentY, rect.width - 15, lineHeight), "Values");
+                        currentY += lineHeight + spacing;
+
+                        Rect sizeLabelRect = new Rect(rect.x + 30, currentY, labelWidth, lineHeight);
+                        Rect sizeFieldRect = new Rect(sizeLabelRect.xMax, currentY, rect.width - 45 - labelWidth, lineHeight);
+                        
+                        EditorGUI.LabelField(sizeLabelRect, "Size");
+                        int newCount = EditorGUI.IntField(sizeFieldRect, wrapper.Arguments.Count);
+                        currentY += lineHeight + spacing;
+                        
+                        if (newCount < 0) newCount = 0;
+                        while (newCount > wrapper.Arguments.Count) wrapper.Arguments.Add(new OscArgument());
+                        while (newCount < wrapper.Arguments.Count) wrapper.Arguments.RemoveAt(wrapper.Arguments.Count - 1);
+
+                        for (int i = 0; i < wrapper.Arguments.Count; i++)
+                        {
+                            var arg = wrapper.Arguments[i];
+                            float elX = rect.x + 30;
+                            float elWidth = rect.width - 45;
+                            float typeWidth = 80;
+                            float valueWidth = elWidth - typeWidth - 5;
+
+                            EditorGUI.LabelField(new Rect(elX, currentY, 20, lineHeight), $"[{i}]");
+                            arg.Type = (OscArgument.OscValueType)EditorGUI.EnumPopup(new Rect(elX + 20, currentY, typeWidth, lineHeight), arg.Type);
+                            arg.Value = EditorGUI.TextField(new Rect(elX + 20 + typeWidth + 5, currentY, valueWidth, lineHeight), arg.Value ?? "");
+                            currentY += lineHeight + spacing;
+                        }
+
+                        if (EditorGUI.EndChangeCheck())
+                        {
+                            Undo.RecordObject(itemDataAsset, "Edit OSC Values");
+                            action.variableValues["values_json"] = JsonUtility.ToJson(wrapper);
+                            action.variableValues["values"] = GenerateOscValuesJsString(wrapper.Arguments);
+                            EditorUtility.SetDirty(itemDataAsset);
+                        }
                     }
-                    else
+                    else if (action.predefinedActionTemplate.actionType == "Send Haptics")
                     {
+                        var variables = action.predefinedActionTemplate.variables;
                         foreach (string variableName in variables)
                         {
                             action.variableValues.TryGetValue(variableName, out string currentValue);
                             currentValue ??= "";
-
-                            if (action.predefinedActionTemplate.actionType == "Set text" && variableName == "text")
+                            
+                            float labelWidth = 85f;
+                            if (variableName == "target" || variableName == "frequency" || variableName == "amplitude" || variableName == "duration")
                             {
-                                EditorGUI.LabelField(new Rect(rect.x + 15, currentY, rect.width - 15, lineHeight), variableName);
-                                currentY += lineHeight + spacing;
-                                float textAreaHeight = lineHeight * 2;
-                                Rect textAreaRect = new Rect(rect.x + 15, currentY, rect.width - 15, textAreaHeight);
-                                
-                                // MODIFIED CALL: Pass 'isColored: false' for plain text
-                                DrawHoverableTextArea(textAreaRect, currentValue, (newValue) => {
-                                    Undo.RecordObject(itemDataAsset, "Edit Variable " + variableName);
-                                    action.variableValues[variableName] = newValue;
-                                    EditorUtility.SetDirty(itemDataAsset);
-                                }, editor, isColored: false);
+                                labelWidth = 70f;
+                            }
 
-                                currentY += textAreaHeight + spacing;
+                            Rect labelRect = new Rect(rect.x + 15, currentY, labelWidth, lineHeight);
+                            EditorGUI.LabelField(labelRect, variableName);
+                            Rect fieldRect = new Rect(labelRect.xMax, currentY, rect.width - labelRect.width - 15, lineHeight);
+                            
+                            if (variableName == "target")
+                            {
+                                string displayValue = currentValue.Trim('\'');
+                                string newValueFromField = EditorGUI.TextField(fieldRect, displayValue);
+                                string newValueToStore = $"'{newValueFromField}'";
+
+                                if (newValueToStore != currentValue)
+                                {
+                                    Undo.RecordObject(itemDataAsset, "Edit Variable " + variableName);
+                                    action.variableValues[variableName] = newValueToStore;
+                                    EditorUtility.SetDirty(itemDataAsset);
+                                }
                             }
                             else
                             {
-                                Rect labelRect = new Rect(rect.x + 15, currentY, EditorGUIUtility.labelWidth * 0.6f, lineHeight);
-                                EditorGUI.LabelField(labelRect, variableName);
-                                Rect fieldRect = new Rect(labelRect.xMax, currentY, rect.width - labelRect.width - 15, lineHeight);
                                 string newValue = EditorGUI.TextField(fieldRect, currentValue);
+                                if (variableName == "participantId")
+                                {
+                                    newValue = ValidateParticipantId(newValue);
+                                }
+
                                 if (newValue != currentValue)
                                 {
                                     Undo.RecordObject(itemDataAsset, "Edit Variable " + variableName);
                                     action.variableValues[variableName] = newValue;
                                     EditorUtility.SetDirty(itemDataAsset);
                                 }
-                                currentY += lineHeight + spacing;
+                            }
+                            currentY += lineHeight + spacing;
+                        }
+                    }
+                    else 
+                    {
+                        var variables = action.predefinedActionTemplate.variables;
+                        bool allSingleChar = variables.All(v => v.Length == 1);
+
+                        if (allSingleChar)
+                        {
+                            float labelWidth = 18f, fieldWidth = 40f, spacingH = 8f;
+                            float x = rect.x + 15;
+                            foreach (string variableName in variables)
+                            {
+                                EditorGUI.LabelField(new Rect(x, currentY, labelWidth, lineHeight), variableName);
+                                action.variableValues.TryGetValue(variableName, out string currentValue);
+                                string newValue = EditorGUI.TextField(new Rect(x + labelWidth, currentY, fieldWidth, lineHeight), currentValue ?? "");
+                                if (newValue != currentValue)
+                                {
+                                    Undo.RecordObject(itemDataAsset, "Edit Variable " + variableName);
+                                    action.variableValues[variableName] = newValue;
+                                    EditorUtility.SetDirty(itemDataAsset);
+                                }
+                                x += labelWidth + fieldWidth + spacingH;
+                            }
+                            currentY += lineHeight + spacing;
+                        }
+                        else
+                        {
+                            foreach (string variableName in variables)
+                            {
+                                action.variableValues.TryGetValue(variableName, out string currentValue);
+                                currentValue ??= "";
+
+                                if (action.predefinedActionTemplate.actionType == "Set text" && variableName == "text")
+                                {
+                                    EditorGUI.LabelField(new Rect(rect.x + 15, currentY, rect.width - 15, lineHeight), variableName);
+                                    currentY += lineHeight + spacing;
+                                    float textAreaHeight = lineHeight * 2;
+                                    Rect textAreaRect = new Rect(rect.x + 15, currentY, rect.width - 15, textAreaHeight);
+                                    
+                                    DrawHoverableTextArea(textAreaRect, currentValue, (newValue) => {
+                                        Undo.RecordObject(itemDataAsset, "Edit Variable " + variableName);
+                                        action.variableValues[variableName] = newValue;
+                                        EditorUtility.SetDirty(itemDataAsset);
+                                    }, editor, isColored: false);
+
+                                    currentY += textAreaHeight + spacing;
+                                }
+                                else
+                                {
+                                    Rect labelRect = new Rect(rect.x + 15, currentY, EditorGUIUtility.labelWidth * 0.6f, lineHeight);
+                                    EditorGUI.LabelField(labelRect, variableName);
+                                    Rect fieldRect = new Rect(labelRect.xMax, currentY, rect.width - labelRect.width - 15, lineHeight);
+                                    string newValue = EditorGUI.TextField(fieldRect, currentValue);
+                                    if (newValue != currentValue)
+                                    {
+                                        Undo.RecordObject(itemDataAsset, "Edit Variable " + variableName);
+                                        action.variableValues[variableName] = newValue;
+                                        EditorUtility.SetDirty(itemDataAsset);
+                                    }
+                                    currentY += lineHeight + spacing;
+                                }
                             }
                         }
                     }
                 }
             },
-            elementHeightCallback = index =>
-            {
-                if (actions == null || index < 0 || index >= actions.Count) return EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                var action = actions[index];
-                float lineHeight = EditorGUIUtility.singleLineHeight;
-                float spacing = EditorGUIUtility.standardVerticalSpacing;
-                float height = lineHeight + spacing;
+        elementHeightCallback = index =>
+        {
+            if (actions == null || index < 0 || index >= actions.Count) return EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+            var action = actions[index];
+            float lineHeight = EditorGUIUtility.singleLineHeight;
+            float spacing = EditorGUIUtility.standardVerticalSpacing;
+            float height = lineHeight + spacing;
 
-                if (isCurrentStateTrialRelated && action.isConditional)
+            if (isCurrentStateTrialRelated && action.isConditional)
+            {
+                height += lineHeight + spacing;
+                if (!string.IsNullOrEmpty(action.conditionVariable))
                 {
-                    height += lineHeight + spacing;
-                    if (!string.IsNullOrEmpty(action.conditionVariable))
+                    var selectedExpVar = editor._cachedExperimentVariables?.FirstOrDefault(v => v.name == action.conditionVariable);
+                    if (selectedExpVar != null)
                     {
-                        var selectedExpVar = editor._cachedExperimentVariables?.FirstOrDefault(v => v.name == action.conditionVariable);
-                        if (selectedExpVar != null)
-                        {
-                            height += lineHeight + spacing;
-                        }
+                        height += lineHeight + spacing;
                     }
                 }
+            }
 
-                bool requiresMovableItem = new[] { "Set position", "Add position", "Set rotation", "Add rotation" }.Contains(action.predefinedActionTemplate.actionType);
-                if (requiresMovableItem && itemGO.GetComponent<MovableItem>() == null)
-                {
-                     height += lineHeight * 2 + spacing;
-                }
+            bool requiresMovableItem = new[] { "Set position", "Add position", "Set rotation", "Add rotation" }.Contains(action.predefinedActionTemplate.actionType);
+            if (requiresMovableItem && itemGO.GetComponent<MovableItem>() == null)
+            {
+                 height += lineHeight * 2 + spacing;
+            }
 
-                if (action.predefinedActionTemplate.actionType == "Customized Action")
+            if (action.predefinedActionTemplate.actionType == "Customized Action")
+            {
+                height += lineHeight * 3 + spacing;
+            }
+            else if (action.predefinedActionTemplate.variables != null && action.predefinedActionTemplate.variables.Length > 0)
+            {
+                if (action.predefinedActionTemplate.actionType == "Send via OSC")
                 {
-                    height += lineHeight * 3 + spacing;
+                    height += (lineHeight + spacing);
+                    height += (lineHeight + spacing); 
+                    height += (lineHeight + spacing) * 2; 
+
+                    action.variableValues.TryGetValue("values_json", out string currentValuesJson);
+                    var wrapper = new OscArgumentListWrapper();
+                    if (!string.IsNullOrEmpty(currentValuesJson))
+                    {
+                        try { JsonUtility.FromJsonOverwrite(currentValuesJson, wrapper); }
+                        catch { wrapper.Arguments = new List<OscArgument>(); }
+                    }
+                    if (wrapper.Arguments == null) wrapper.Arguments = new List<OscArgument>();
+                    
+                    height += wrapper.Arguments.Count * (lineHeight + spacing);
                 }
-                else if (action.predefinedActionTemplate.variables != null && action.predefinedActionTemplate.variables.Length > 0)
+                else 
                 {
                     var variables = action.predefinedActionTemplate.variables;
                     bool allSingleChar = variables.All(v => v.Length == 1);
@@ -596,29 +770,30 @@ public static class ItemsManagerUIDrawer
                         }
                     }
                 }
-                return height + spacing;
-            },
-            onAddCallback = list =>
-            {
-                Undo.RecordObject(itemDataAsset, "Add Action");
-                actions.Add(new StateListenerAction());
-                EditorUtility.SetDirty(itemDataAsset);
-            },
-            onRemoveCallback = list =>
-            {
-                Undo.RecordObject(itemDataAsset, "Remove Action");
-                if (list.index >= 0 && list.index < actions.Count)
-                {
-                    actions.RemoveAt(list.index);
-                }
-                EditorUtility.SetDirty(itemDataAsset);
-            },
-            onReorderCallback = list =>
-            {
-                Undo.RecordObject(itemDataAsset, "Reorder Actions");
-                EditorUtility.SetDirty(itemDataAsset);
             }
-        };
+            return height + spacing;
+        },
+        onAddCallback = list =>
+        {
+            Undo.RecordObject(itemDataAsset, "Add Action");
+            actions.Add(new StateListenerAction());
+            EditorUtility.SetDirty(itemDataAsset);
+        },
+        onRemoveCallback = list =>
+        {
+            Undo.RecordObject(itemDataAsset, "Remove Action");
+            if (list.index >= 0 && list.index < actions.Count)
+            {
+                actions.RemoveAt(list.index);
+            }
+            EditorUtility.SetDirty(itemDataAsset);
+        },
+        onReorderCallback = list =>
+        {
+            Undo.RecordObject(itemDataAsset, "Reorder Actions");
+            EditorUtility.SetDirty(itemDataAsset);
+        }
+    };
         editor._reorderableLists[key] = rl;
     }
 
@@ -629,6 +804,49 @@ public static class ItemsManagerUIDrawer
         {
             rl.DoLayoutList();
         }
+    }
+
+    private static string ValidateParticipantId(string id)
+    {
+        if (int.TryParse(id, out int intId) && intId <= 0)
+        {
+            return "1";
+        }
+        return id;
+    }
+
+    private static string GenerateOscValuesJsString(List<OscArgument> args)
+    {
+        if (args == null || args.Count == 0)
+        {
+            return "";
+        }
+
+        var stringParts = new List<string>();
+        foreach (var arg in args)
+        {
+            switch (arg.Type)
+            {
+                case OscArgument.OscValueType.Boolean:
+                    bool.TryParse(arg.Value, out bool boolVal);
+                    stringParts.Add(boolVal ? "true" : "false");
+                    break;
+                case OscArgument.OscValueType.Number:
+                    // Use InvariantCulture to ensure '.' is the decimal separator.
+                    double.TryParse(arg.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out double numVal);
+                    stringParts.Add(numVal.ToString(CultureInfo.InvariantCulture));
+                    break;
+                case OscArgument.OscValueType.String:
+                default:
+                    // Escape single quotes and backslashes, then wrap the result in single quotes.
+                    string escaped = (arg.Value ?? "")
+                        .Replace("\\", "\\\\")
+                        .Replace("'", "\\'");
+                    stringParts.Add($"'{escaped}'");
+                    break;
+            }
+        }
+        return string.Join(", ", stringParts);
     }
     
     #endregion
@@ -644,7 +862,6 @@ public static class ItemsManagerUIDrawer
             _codeTextAreaStyle.font = codeFont;
         }
         
-        // NEW: Enable rich text for the style to render color tags.
         _codeTextAreaStyle.richText = true;
     }
     
@@ -655,7 +872,6 @@ public static class ItemsManagerUIDrawer
             InitializeStyles();
         }
 
-        // Apply syntax highlighting if requested
         string displayText = (isColored && !string.IsNullOrEmpty(text)) ? HighlightJsSyntax(text) : text;
 
         if (GUI.Button(rect, displayText, _codeTextAreaStyle))
@@ -667,7 +883,6 @@ public static class ItemsManagerUIDrawer
                 float zoomHeight = Math.Max(200f, screenRect.height * 3f);
                 Rect popupRect = new Rect(screenRect.x, screenRect.y, zoomWidth, zoomHeight);
 
-                // Show the popup with the *original, uncolored* text for editing
                 TextAreaOverlayWindow.Show(popupRect, text, onUpdate, _codeTextAreaStyle);
             }
         }
@@ -677,7 +892,6 @@ public static class ItemsManagerUIDrawer
     
     #region Syntax Highlighting
     
-    // Color definitions (VSCode Dark+ theme inspired)
     private const string JsKeywordColor = "#569CD6";
     private const string JsStringColor = "#CE9178";
     private const string JsCommentColor = "#6A9955";
@@ -685,7 +899,6 @@ public static class ItemsManagerUIDrawer
     private const string JsFunctionColor = "#DCDCAA";
     private const string JsPunctuationColor = "#D4D4D4";
 
-    // Regex to find different parts of JS syntax using named capture groups
     private static readonly Regex JsSyntaxRegex = new Regex(
         @"(?<comment>//.*|/\*[\s\S]*?\*/)|" +
         @"(?<string>"".*?""|'.*?'|`.*?`)|" +
@@ -698,9 +911,6 @@ public static class ItemsManagerUIDrawer
     
     public static string HighlightJsSyntax(string code)
     {
-        // First, escape any existing angle brackets to prevent them from being treated as rich text tags.
-        // code = code.Replace("<", "<noparse><</noparse>").Replace(">", "<noparse>></noparse>");
-
         return JsSyntaxRegex.Replace(code, match =>
         {
             if (match.Groups["comment"].Success)
@@ -716,43 +926,8 @@ public static class ItemsManagerUIDrawer
             if (match.Groups["punctuation"].Success)
                 return $"<color={JsPunctuationColor}>{match.Value}</color>";
             
-            return match.Value; // Return original value if no group matches (shouldn't happen)
+            return match.Value;
         });
-    }
-
-    #endregion
-    
-    #region Documentation
-
-    private static void DrawDocEntry(string actionName, string description, string parametersInfo = null, bool requiresMovableItem = false, string jsFunctionSignature = null)
-    {
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Space(20);
-        EditorGUILayout.BeginVertical();
-
-        EditorGUILayout.LabelField(actionName, EditorStyles.boldLabel);
-        string helpText = description;
-        if (requiresMovableItem)
-        {
-            helpText += "\n(Requires `MovableItem` component on this item)";
-        }
-        if (!string.IsNullOrEmpty(parametersInfo) && parametersInfo != "None")
-        {
-            helpText += $"\nInput Fields (for predefined action): {parametersInfo}";
-        }
-        if (!string.IsNullOrEmpty(jsFunctionSignature))
-        {
-            helpText += ("\nEquivalent ClusterScript function: " + jsFunctionSignature);
-        }
-        else if (actionName == "Sleep")
-        {
-            helpText += "\nNo equivalent ClusterScript function. If necessary, try adding two Customized actions before and after a Sleep action.";
-        }
-        EditorGUILayout.HelpBox(helpText, MessageType.None);
-
-        EditorGUILayout.EndVertical();
-        EditorGUILayout.EndHorizontal();
-        GUILayout.Space(3);
     }
 
     #endregion

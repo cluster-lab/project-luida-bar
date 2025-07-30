@@ -130,27 +130,23 @@ MonoBehaviour:
     UploadCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
     SetText(text) {\r\n    try {\r\n        $.subNode(\"Text\").setText(`${text}`);\r\n   
     } catch (e) {\r\n        $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
-    exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(target,
-    frequency, amplitude, duration) {\r\n    try {\r\n        if (!$.state.player)
-    $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\r\n        if
-    ($.state.player) {\r\n            let hapticsTarget = target;\r\n           
-    if (typeof target === 'string') {\r\n                const lowerTarget = target.toLowerCase();\r\n               
-    if (lowerTarget === 'null' || lowerTarget === 'undefined' || lowerTarget ===
-    \"\") {\r\n                    hapticsTarget = null; // Use JS null for \"both\"
-    or unspecified\r\n                } else if (lowerTarget === '\"left\"' || lowerTarget
-    === \"'left'\") {\r\n                    hapticsTarget = \"left\";\r\n               
-    } else if (lowerTarget === '\"right\"' || lowerTarget === \"'right'\") {\r\n                   
-    hapticsTarget = \"right\";\r\n                }\r\n                // else assume
-    target is already \"left\", \"right\", or a valid direct value.\r\n           
-    }\r\n\r\n            $.state.player.send(\"haptics\", {\r\n                target:
-    hapticsTarget,\r\n                frequency: parseFloat(frequency),\r\n               
-    amplitude: parseFloat(amplitude),\r\n                duration: parseFloat(duration)
-    // Duration in seconds\r\n            });\r\n        } else {\r\n           
-    $.log(\"SendHaptics: No player found nearby.\");\r\n        }\r\n    } catch
-    (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n    }\r\n}\r\n\r\nfunction
-    OnStateEnter(deltaTime) {\r\n    CONDITION = $.groupState.currentCondition;\r\n   
-    PARTICIPANTS = $.groupState.participants;\r\n    if (!stateEnterActions[$.state.state_id]
-    || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
+    exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(participantId,
+    target, frequency, amplitude, duration) {\r\n    try {\r\n        if (PARTICIPANTS[participantId])
+    {\r\n            let hapticsTarget = target;\r\n            if (typeof target
+    === 'string') {\r\n                const lowerTarget = target.toLowerCase();\r\n               
+    if (lowerTarget === '\"left\"' || lowerTarget === \"'left'\") {\r\n                   
+    hapticsTarget = \"left\";\r\n                } else if (lowerTarget === '\"right\"'
+    || lowerTarget === \"'right'\") {\r\n                    hapticsTarget = \"right\";\r\n               
+    } else {\r\n                    hapticsTarget = null;\r\n                }\r\n           
+    }\r\n\r\n            PARTICIPANTS[participantId].send(\"haptics\", {\r\n               
+    target: hapticsTarget,\r\n                frequency: parseFloat(frequency),\r\n               
+    amplitude: parseFloat(amplitude),\r\n                duration: parseFloat(duration)\r\n           
+    });\r\n        } else {\r\n            $.log(\"SendHaptics: No player found nearby.\");\r\n       
+    }\r\n    } catch (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n   
+    }\r\n}\r\n\r\nfunction SendViaOsc(participantId, address, values) {\r\n    PARTICIPANTS[participantId].send(\"sendOsc\",
+    { address, values });\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n    CONDITION
+    = $.groupState.currentCondition;\r\n    PARTICIPANTS = [null].concat($.groupState.participants);\r\n   
+    if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
     return;\r\n    \r\n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
     && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !== \"sleep\")
     {\r\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\r\n       

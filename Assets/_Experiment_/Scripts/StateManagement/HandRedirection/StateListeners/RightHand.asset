@@ -30,9 +30,9 @@ MonoBehaviour:
         actionType: Customized Action
         codeSnippet: 
         variables: []
-      customAction: '$.setPosition(PARTICIPANTS[0].getHumanoidBonePosition(HumanoidBone.RightHand));
+      customAction: '$.setPosition(PARTICIPANTS[1].getHumanoidBonePosition(HumanoidBone.RightHand));
 
-        $.setRotation(PARTICIPANTS[0].getHumanoidBoneRotation(HumanoidBone.RightHand));'
+        $.setRotation(PARTICIPANTS[1].getHumanoidBoneRotation(HumanoidBone.RightHand));'
       isConditional: 0
       conditionVariable: 
       conditionValue: 
@@ -59,8 +59,8 @@ MonoBehaviour:
         actionType: Customized Action
         codeSnippet: 
         variables: []
-      customAction: "$.setPosition($.state.originPos.clone()\n  .add(PARTICIPANTS[0].getHumanoidBonePosition(HumanoidBone.RightHand).clone()\n   
-        .sub($.state.originPos)\n    .multiplyScalar(CONDITION['gain'] || 1)));\n$.setRotation(PARTICIPANTS[0].getHumanoidBoneRotation(HumanoidBone.RightHand));"
+      customAction: "$.setPosition($.state.originPos.clone()\n  .add(PARTICIPANTS[1].getHumanoidBonePosition(HumanoidBone.RightHand).clone()\n   
+        .sub($.state.originPos)\n    .multiplyScalar(CONDITION['gain'] || 1)));\n$.setRotation(PARTICIPANTS[1].getHumanoidBoneRotation(HumanoidBone.RightHand));"
       isConditional: 0
       conditionVariable: 
       conditionValue: 
@@ -84,9 +84,9 @@ MonoBehaviour:
         actionType: Customized Action
         codeSnippet: 
         variables: []
-      customAction: '$.setPosition(PARTICIPANTS[0].getHumanoidBonePosition(HumanoidBone.RightHand));
+      customAction: '$.setPosition(PARTICIPANTS[1].getHumanoidBonePosition(HumanoidBone.RightHand));
 
-        $.setRotation(PARTICIPANTS[0].getHumanoidBoneRotation(HumanoidBone.RightHand));'
+        $.setRotation(PARTICIPANTS[1].getHumanoidBoneRotation(HumanoidBone.RightHand));'
       isConditional: 0
       conditionVariable: 
       conditionValue: 

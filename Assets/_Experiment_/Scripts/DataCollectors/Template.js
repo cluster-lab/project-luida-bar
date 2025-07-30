@@ -2,7 +2,7 @@
 # Available variables:
   PARTICIPANTS
     - An array of PlayerHandle of the participants joining this experiment.
-    - Use `PARTICIPANTS[0]` to retrieve the first participant, `PARTICIPANTS[1]` to retrieve the second participant, etc.
+    - Use `PARTICIPANTS[1]` to retrieve the first participant, `PARTICIPANTS[2]` to retrieve the second participant, etc.
 
 # Available variables only if you have enabled the LUIDA experiment progress automation feature:
   CONDITION

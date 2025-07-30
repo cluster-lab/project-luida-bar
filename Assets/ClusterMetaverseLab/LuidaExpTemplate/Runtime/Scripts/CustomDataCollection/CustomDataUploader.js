@@ -103,6 +103,6 @@ function calculateData () {
     let returnData = $.state.customData;
     if (!Array.isArray(returnData)) returnData = [];
     const CONDITION = $.groupState.currentCondition;
-    const PARTICIPANTS = $.groupState.participants;
+    const PARTICIPANTS = [null].concat($.groupState.participants);
     const COLLECTED_DATA = $.groupState.collectedData;
     function saveData() {

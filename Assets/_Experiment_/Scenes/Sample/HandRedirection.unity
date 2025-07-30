@@ -496,28 +496,26 @@ PrefabInstance:
         UploadCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
         SetText(text) {\r\n    try {\r\n        $.subNode(\"Text\").setText(`${text}`);\r\n   
         } catch (e) {\r\n        $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
-        exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(target,
-        frequency, amplitude, duration) {\r\n    try {\r\n        if (!$.state.player)
-        $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\r\n       
-        if ($.state.player) {\r\n            let hapticsTarget = target;\r\n           
-        if (typeof target === 'string') {\r\n                const lowerTarget =
-        target.toLowerCase();\r\n                if (lowerTarget === 'null' || lowerTarget
-        === 'undefined' || lowerTarget === \"\") {\r\n                    hapticsTarget
-        = null; // Use JS null for \"both\" or unspecified\r\n                } else
+        exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(participantId,
+        target, frequency, amplitude, duration) {\r\n    try {\r\n        if (PARTICIPANTS[participantId])
+        {\r\n            let hapticsTarget = target;\r\n            if (typeof target
+        === 'string') {\r\n                const lowerTarget = target.toLowerCase();\r\n               
         if (lowerTarget === '\"left\"' || lowerTarget === \"'left'\") {\r\n                   
         hapticsTarget = \"left\";\r\n                } else if (lowerTarget === '\"right\"'
         || lowerTarget === \"'right'\") {\r\n                    hapticsTarget =
-        \"right\";\r\n                }\r\n                // else assume target
-        is already \"left\", \"right\", or a valid direct value.\r\n            }\r\n\r\n           
-        $.state.player.send(\"haptics\", {\r\n                target: hapticsTarget,\r\n               
-        frequency: parseFloat(frequency),\r\n                amplitude: parseFloat(amplitude),\r\n               
-        duration: parseFloat(duration) // Duration in seconds\r\n            });\r\n       
-        } else {\r\n            $.log(\"SendHaptics: No player found nearby.\");\r\n       
-        }\r\n    } catch (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n   
-        }\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n    CONDITION = $.groupState.currentCondition;\r\n   
-        PARTICIPANTS = $.groupState.participants;\r\n    if (!stateEnterActions[$.state.state_id]
-        || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
-        return;\r\n    \r\n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
+        \"right\";\r\n                } else {\r\n                    hapticsTarget
+        = null;\r\n                }\r\n            }\r\n\r\n            PARTICIPANTS[participantId].send(\"haptics\",
+        {\r\n                target: hapticsTarget,\r\n                frequency:
+        parseFloat(frequency),\r\n                amplitude: parseFloat(amplitude),\r\n               
+        duration: parseFloat(duration)\r\n            });\r\n        } else {\r\n           
+        $.log(\"SendHaptics: No player found nearby.\");\r\n        }\r\n    } catch
+        (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n    }\r\n}\r\n\r\nfunction
+        SendViaOsc(participantId, address, values) {\r\n    PARTICIPANTS[participantId].send(\"sendOsc\",
+        { address, values });\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n   
+        CONDITION = $.groupState.currentCondition;\r\n    PARTICIPANTS = [null].concat($.groupState.participants);\r\n   
+        if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >=
+        stateEnterActions[$.state.state_id].length) return;\r\n    \r\n    while
+        ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
         && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !==
         \"sleep\") {\r\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\r\n       
         $.state.stateEnterActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateEnterActionID
@@ -937,28 +935,26 @@ PrefabInstance:
         UploadCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
         SetText(text) {\r\n    try {\r\n        $.subNode(\"Text\").setText(`${text}`);\r\n   
         } catch (e) {\r\n        $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
-        exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(target,
-        frequency, amplitude, duration) {\r\n    try {\r\n        if (!$.state.player)
-        $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\r\n       
-        if ($.state.player) {\r\n            let hapticsTarget = target;\r\n           
-        if (typeof target === 'string') {\r\n                const lowerTarget =
-        target.toLowerCase();\r\n                if (lowerTarget === 'null' || lowerTarget
-        === 'undefined' || lowerTarget === \"\") {\r\n                    hapticsTarget
-        = null; // Use JS null for \"both\" or unspecified\r\n                } else
+        exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(participantId,
+        target, frequency, amplitude, duration) {\r\n    try {\r\n        if (PARTICIPANTS[participantId])
+        {\r\n            let hapticsTarget = target;\r\n            if (typeof target
+        === 'string') {\r\n                const lowerTarget = target.toLowerCase();\r\n               
         if (lowerTarget === '\"left\"' || lowerTarget === \"'left'\") {\r\n                   
         hapticsTarget = \"left\";\r\n                } else if (lowerTarget === '\"right\"'
         || lowerTarget === \"'right'\") {\r\n                    hapticsTarget =
-        \"right\";\r\n                }\r\n                // else assume target
-        is already \"left\", \"right\", or a valid direct value.\r\n            }\r\n\r\n           
-        $.state.player.send(\"haptics\", {\r\n                target: hapticsTarget,\r\n               
-        frequency: parseFloat(frequency),\r\n                amplitude: parseFloat(amplitude),\r\n               
-        duration: parseFloat(duration) // Duration in seconds\r\n            });\r\n       
-        } else {\r\n            $.log(\"SendHaptics: No player found nearby.\");\r\n       
-        }\r\n    } catch (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n   
-        }\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n    CONDITION = $.groupState.currentCondition;\r\n   
-        PARTICIPANTS = $.groupState.participants;\r\n    if (!stateEnterActions[$.state.state_id]
-        || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
-        return;\r\n    \r\n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
+        \"right\";\r\n                } else {\r\n                    hapticsTarget
+        = null;\r\n                }\r\n            }\r\n\r\n            PARTICIPANTS[participantId].send(\"haptics\",
+        {\r\n                target: hapticsTarget,\r\n                frequency:
+        parseFloat(frequency),\r\n                amplitude: parseFloat(amplitude),\r\n               
+        duration: parseFloat(duration)\r\n            });\r\n        } else {\r\n           
+        $.log(\"SendHaptics: No player found nearby.\");\r\n        }\r\n    } catch
+        (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n    }\r\n}\r\n\r\nfunction
+        SendViaOsc(participantId, address, values) {\r\n    PARTICIPANTS[participantId].send(\"sendOsc\",
+        { address, values });\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n   
+        CONDITION = $.groupState.currentCondition;\r\n    PARTICIPANTS = [null].concat($.groupState.participants);\r\n   
+        if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >=
+        stateEnterActions[$.state.state_id].length) return;\r\n    \r\n    while
+        ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
         && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !==
         \"sleep\") {\r\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\r\n       
         $.state.stateEnterActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateEnterActionID
@@ -1373,28 +1369,26 @@ PrefabInstance:
         UploadCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
         SetText(text) {\r\n    try {\r\n        $.subNode(\"Text\").setText(`${text}`);\r\n   
         } catch (e) {\r\n        $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
-        exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(target,
-        frequency, amplitude, duration) {\r\n    try {\r\n        if (!$.state.player)
-        $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\r\n       
-        if ($.state.player) {\r\n            let hapticsTarget = target;\r\n           
-        if (typeof target === 'string') {\r\n                const lowerTarget =
-        target.toLowerCase();\r\n                if (lowerTarget === 'null' || lowerTarget
-        === 'undefined' || lowerTarget === \"\") {\r\n                    hapticsTarget
-        = null; // Use JS null for \"both\" or unspecified\r\n                } else
+        exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(participantId,
+        target, frequency, amplitude, duration) {\r\n    try {\r\n        if (PARTICIPANTS[participantId])
+        {\r\n            let hapticsTarget = target;\r\n            if (typeof target
+        === 'string') {\r\n                const lowerTarget = target.toLowerCase();\r\n               
         if (lowerTarget === '\"left\"' || lowerTarget === \"'left'\") {\r\n                   
         hapticsTarget = \"left\";\r\n                } else if (lowerTarget === '\"right\"'
         || lowerTarget === \"'right'\") {\r\n                    hapticsTarget =
-        \"right\";\r\n                }\r\n                // else assume target
-        is already \"left\", \"right\", or a valid direct value.\r\n            }\r\n\r\n           
-        $.state.player.send(\"haptics\", {\r\n                target: hapticsTarget,\r\n               
-        frequency: parseFloat(frequency),\r\n                amplitude: parseFloat(amplitude),\r\n               
-        duration: parseFloat(duration) // Duration in seconds\r\n            });\r\n       
-        } else {\r\n            $.log(\"SendHaptics: No player found nearby.\");\r\n       
-        }\r\n    } catch (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n   
-        }\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n    CONDITION = $.groupState.currentCondition;\r\n   
-        PARTICIPANTS = $.groupState.participants;\r\n    if (!stateEnterActions[$.state.state_id]
-        || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
-        return;\r\n    \r\n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
+        \"right\";\r\n                } else {\r\n                    hapticsTarget
+        = null;\r\n                }\r\n            }\r\n\r\n            PARTICIPANTS[participantId].send(\"haptics\",
+        {\r\n                target: hapticsTarget,\r\n                frequency:
+        parseFloat(frequency),\r\n                amplitude: parseFloat(amplitude),\r\n               
+        duration: parseFloat(duration)\r\n            });\r\n        } else {\r\n           
+        $.log(\"SendHaptics: No player found nearby.\");\r\n        }\r\n    } catch
+        (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n    }\r\n}\r\n\r\nfunction
+        SendViaOsc(participantId, address, values) {\r\n    PARTICIPANTS[participantId].send(\"sendOsc\",
+        { address, values });\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n   
+        CONDITION = $.groupState.currentCondition;\r\n    PARTICIPANTS = [null].concat($.groupState.participants);\r\n   
+        if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >=
+        stateEnterActions[$.state.state_id].length) return;\r\n    \r\n    while
+        ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
         && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !==
         \"sleep\") {\r\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\r\n       
         $.state.stateEnterActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateEnterActionID
@@ -1432,15 +1426,15 @@ PrefabInstance:
         + CONDITION['gain']);\n        } }\r\n    ],\r\n    6: [\n        { type:
         \"exec\", action: () => {\n            $.sendSignalCompat('this', 'exp_uploadCustomData');\n       
         } }\r\n    ]\r\n};\n\r\nconst duringStateActions = {\r\n    2: [\n       
-        { type: \"exec\", action: () => {\n            $.setPosition(PARTICIPANTS[0].getHumanoidBonePosition(HumanoidBone.RightHand));\n           
-        $.setRotation(PARTICIPANTS[0].getHumanoidBoneRotation(HumanoidBone.RightHand));\n       
+        { type: \"exec\", action: () => {\n            $.setPosition(PARTICIPANTS[1].getHumanoidBonePosition(HumanoidBone.RightHand));\n           
+        $.setRotation(PARTICIPANTS[1].getHumanoidBoneRotation(HumanoidBone.RightHand));\n       
         } }\r\n    ],\r\n    3: [\n        { type: \"exec\", action: () => {\n           
-        $.setPosition($.state.originPos.clone()\n              .add(PARTICIPANTS[0].getHumanoidBonePosition(HumanoidBone.RightHand).clone()\n               
+        $.setPosition($.state.originPos.clone()\n              .add(PARTICIPANTS[1].getHumanoidBonePosition(HumanoidBone.RightHand).clone()\n               
         .sub($.state.originPos)\n                .multiplyScalar(CONDITION['gain']
-        || 1)));\n            $.setRotation(PARTICIPANTS[0].getHumanoidBoneRotation(HumanoidBone.RightHand));\n       
+        || 1)));\n            $.setRotation(PARTICIPANTS[1].getHumanoidBoneRotation(HumanoidBone.RightHand));\n       
         } }\r\n    ],\r\n    5: [\n        { type: \"exec\", action: () => {\n           
-        $.setPosition(PARTICIPANTS[0].getHumanoidBonePosition(HumanoidBone.RightHand));\n           
-        $.setRotation(PARTICIPANTS[0].getHumanoidBoneRotation(HumanoidBone.RightHand));\n       
+        $.setPosition(PARTICIPANTS[1].getHumanoidBonePosition(HumanoidBone.RightHand));\n           
+        $.setRotation(PARTICIPANTS[1].getHumanoidBoneRotation(HumanoidBone.RightHand));\n       
         } }\r\n    ]\r\n};\n\r\nconst stateExitActions = {\r\n    3: [\n        {
         type: \"exec\", action: () => {\n            $.setStateCompat('this', 'exp_showItem',
         false);\n        } }\r\n    ]\r\n};\r\n\n\n// function Start() { }\n// function
@@ -1778,8 +1772,8 @@ PrefabInstance:
         \u2013 U+FFFF\r\n    }\r\n    return bytes;\r\n}\r\n\r\nfunction calculateData
         () {\r\n    let returnData = $.state.customData;\r\n    if (!Array.isArray(returnData))
         returnData = [];\r\n    const CONDITION = $.groupState.currentCondition;\r\n   
-        const PARTICIPANTS = $.groupState.participants;\r\n    const COLLECTED_DATA
-        = $.groupState.collectedData;\r\n    function saveData() {\r\n\r\n/*\r\n#
+        const PARTICIPANTS = [null].concat($.groupState.participants);\r\n    const
+        COLLECTED_DATA = $.groupState.collectedData;\r\n    function saveData() {\r\n\r\n/*\r\n#
         Available Variables in LUIDA Data Collector Script\r\n\r\nThe script for
         LUIDA Data Collector is primarily to be written using ClusterScript (https://docs.cluster.mu/script/index.html).\r\n\r\nWe
         also provide the following variables that work with LUIDA-only features.\r\n\r\nTip:
@@ -1791,7 +1785,7 @@ PrefabInstance:
         trial.\r\n    - Use `CONDITION[\"your_variable_name\"]` to retrieve a specific
         condition value within the current trial.\r\n\r\n### PARTICIPANTS\r\n   
         - An array of PlayerHandle of the participants joining this experiment.\"\r\n   
-        - Use `PARTICIPANTS[0]` to retrieve the first participant, `PARTICIPANTS[1]`
+        - Use `PARTICIPANTS[1]` to retrieve the first participant, `PARTICIPANTS[2]`
         to retrieve the second participant, etc.\r\n\r\n### COLLECTED_DATA\r\n   
         - Contains data that are sent from state-listening items' `Send Data To Collector`
         action or a customized action script's `SendDataToCollector(\"your_data_label\",
@@ -2007,28 +2001,26 @@ PrefabInstance:
         UploadCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
         SetText(text) {\r\n    try {\r\n        $.subNode(\"Text\").setText(`${text}`);\r\n   
         } catch (e) {\r\n        $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
-        exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(target,
-        frequency, amplitude, duration) {\r\n    try {\r\n        if (!$.state.player)
-        $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\r\n       
-        if ($.state.player) {\r\n            let hapticsTarget = target;\r\n           
-        if (typeof target === 'string') {\r\n                const lowerTarget =
-        target.toLowerCase();\r\n                if (lowerTarget === 'null' || lowerTarget
-        === 'undefined' || lowerTarget === \"\") {\r\n                    hapticsTarget
-        = null; // Use JS null for \"both\" or unspecified\r\n                } else
+        exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(participantId,
+        target, frequency, amplitude, duration) {\r\n    try {\r\n        if (PARTICIPANTS[participantId])
+        {\r\n            let hapticsTarget = target;\r\n            if (typeof target
+        === 'string') {\r\n                const lowerTarget = target.toLowerCase();\r\n               
         if (lowerTarget === '\"left\"' || lowerTarget === \"'left'\") {\r\n                   
         hapticsTarget = \"left\";\r\n                } else if (lowerTarget === '\"right\"'
         || lowerTarget === \"'right'\") {\r\n                    hapticsTarget =
-        \"right\";\r\n                }\r\n                // else assume target
-        is already \"left\", \"right\", or a valid direct value.\r\n            }\r\n\r\n           
-        $.state.player.send(\"haptics\", {\r\n                target: hapticsTarget,\r\n               
-        frequency: parseFloat(frequency),\r\n                amplitude: parseFloat(amplitude),\r\n               
-        duration: parseFloat(duration) // Duration in seconds\r\n            });\r\n       
-        } else {\r\n            $.log(\"SendHaptics: No player found nearby.\");\r\n       
-        }\r\n    } catch (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n   
-        }\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n    CONDITION = $.groupState.currentCondition;\r\n   
-        PARTICIPANTS = $.groupState.participants;\r\n    if (!stateEnterActions[$.state.state_id]
-        || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
-        return;\r\n    \r\n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
+        \"right\";\r\n                } else {\r\n                    hapticsTarget
+        = null;\r\n                }\r\n            }\r\n\r\n            PARTICIPANTS[participantId].send(\"haptics\",
+        {\r\n                target: hapticsTarget,\r\n                frequency:
+        parseFloat(frequency),\r\n                amplitude: parseFloat(amplitude),\r\n               
+        duration: parseFloat(duration)\r\n            });\r\n        } else {\r\n           
+        $.log(\"SendHaptics: No player found nearby.\");\r\n        }\r\n    } catch
+        (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n    }\r\n}\r\n\r\nfunction
+        SendViaOsc(participantId, address, values) {\r\n    PARTICIPANTS[participantId].send(\"sendOsc\",
+        { address, values });\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n   
+        CONDITION = $.groupState.currentCondition;\r\n    PARTICIPANTS = [null].concat($.groupState.participants);\r\n   
+        if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >=
+        stateEnterActions[$.state.state_id].length) return;\r\n    \r\n    while
+        ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
         && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !==
         \"sleep\") {\r\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\r\n       
         $.state.stateEnterActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateEnterActionID
@@ -3215,11 +3207,13 @@ PrefabInstance:
         effect.frequency = body.frequency;\r\n                effect.amplitude =
         body.amplitude;\r\n                effect.duration = body.duration;\r\n               
         haptics.playEffect(effect, body.target);\r\n            }\r\n           
-        break;\r\n        case \"initializeParticipant\":\r\n            _.setMoveSpeedRate(1);\r\n           
-        _.sendTo(sender, \"envInfoResponse\", {\r\n                isAndroid: _.isAndroid,\r\n               
-        isDesktop: _.isDesktop,\r\n                isIos: _.isIos,\r\n               
-        isMacOs: _.isMacOs,\r\n                isMobile: _.isMobile,\r\n               
-        isVr: _.isVr,\r\n                isWindows: _.isWindows\r\n            });\r\n           
+        break;\r\n        case \"sendOsc\":\r\n            sendOsc(body.address,
+        body.values);\r\n            break;\r\n        case \"initializeParticipant\":\r\n           
+        _.setMoveSpeedRate(1);\r\n            _.sendTo(sender, \"envInfoResponse\",
+        {\r\n                isAndroid: _.isAndroid,\r\n                isDesktop:
+        _.isDesktop,\r\n                isIos: _.isIos,\r\n                isMacOs:
+        _.isMacOs,\r\n                isMobile: _.isMobile,\r\n                isVr:
+        _.isVr,\r\n                isWindows: _.isWindows\r\n            });\r\n           
         break;\r\n        case \"setQuestionnaireUI\":\r\n            setQuestionnaireUI(body.n,\r\n               
         (body.hasOwnProperty(\"e\") ? body.e : null),\r\n                body.p,
         body.r,\r\n                (body.hasOwnProperty(\"t\") ? body.t.toString()
@@ -3240,7 +3234,22 @@ PrefabInstance:
         if (position) targetUI.getUnityComponent(\"Transform\").unityProp.localPosition
         = position;\r\n    if (rotation) targetUI.getUnityComponent(\"Transform\").unityProp.localRotation
         = rotation;\r\n    if (text !== null) targetUI.findObject(\"Text\").getUnityComponent(\"Text\").unityProp.text
-        = text;\r\n}\r\n"
+        = text;\r\n}\r\n\r\nfunction sendOsc(address, values) {\r\n    if (typeof
+        _ === 'undefined' || typeof _.oscHandle === 'undefined') {\r\n        _.log(\"Error:
+        PlayerScript environment or oscHandle not found.\");\r\n        return;\r\n   
+        }\r\n\r\n    try {\r\n        const oscValues = values.map(val => {\r\n           
+        const type = typeof val;\r\n            if (type === 'boolean') {\r\n               
+        return OscValue.bool(val);\r\n            } else if (type === 'number') {\r\n               
+        if (Number.isInteger(val)) {\r\n                    return OscValue.int(val);\r\n               
+        } else {\r\n                    return OscValue.float(val);\r\n               
+        }\r\n            } else if (type === 'string') {\r\n                return
+        OscValue.asciiString(val);\r\n            } else {\r\n                _.log(`Warning:
+        Unsupported data type '${type}' for value '${val}'. Skipping.`);\r\n               
+        return null;\r\n            }\r\n        }).filter(v => v !== null);\r\n       
+        const message = new OscMessage(address, oscValues);\r\n        _.oscHandle.send(message);\r\n       
+        // _.log(`OSC message sent to ${address} with ${oscValues.length} value(s).`);\r\n\r\n   
+        } catch (e) {\r\n        _.log(`Error sending OSC message: ${e.message}`);\r\n   
+        }\r\n}\r\n"
       objectReference: {fileID: 0}
     - target: {fileID: 3660925819112729135, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
@@ -3585,28 +3594,26 @@ PrefabInstance:
         UploadCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
         SetText(text) {\r\n    try {\r\n        $.subNode(\"Text\").setText(`${text}`);\r\n   
         } catch (e) {\r\n        $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
-        exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(target,
-        frequency, amplitude, duration) {\r\n    try {\r\n        if (!$.state.player)
-        $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\r\n       
-        if ($.state.player) {\r\n            let hapticsTarget = target;\r\n           
-        if (typeof target === 'string') {\r\n                const lowerTarget =
-        target.toLowerCase();\r\n                if (lowerTarget === 'null' || lowerTarget
-        === 'undefined' || lowerTarget === \"\") {\r\n                    hapticsTarget
-        = null; // Use JS null for \"both\" or unspecified\r\n                } else
+        exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(participantId,
+        target, frequency, amplitude, duration) {\r\n    try {\r\n        if (PARTICIPANTS[participantId])
+        {\r\n            let hapticsTarget = target;\r\n            if (typeof target
+        === 'string') {\r\n                const lowerTarget = target.toLowerCase();\r\n               
         if (lowerTarget === '\"left\"' || lowerTarget === \"'left'\") {\r\n                   
         hapticsTarget = \"left\";\r\n                } else if (lowerTarget === '\"right\"'
         || lowerTarget === \"'right'\") {\r\n                    hapticsTarget =
-        \"right\";\r\n                }\r\n                // else assume target
-        is already \"left\", \"right\", or a valid direct value.\r\n            }\r\n\r\n           
-        $.state.player.send(\"haptics\", {\r\n                target: hapticsTarget,\r\n               
-        frequency: parseFloat(frequency),\r\n                amplitude: parseFloat(amplitude),\r\n               
-        duration: parseFloat(duration) // Duration in seconds\r\n            });\r\n       
-        } else {\r\n            $.log(\"SendHaptics: No player found nearby.\");\r\n       
-        }\r\n    } catch (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n   
-        }\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n    CONDITION = $.groupState.currentCondition;\r\n   
-        PARTICIPANTS = $.groupState.participants;\r\n    if (!stateEnterActions[$.state.state_id]
-        || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
-        return;\r\n    \r\n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
+        \"right\";\r\n                } else {\r\n                    hapticsTarget
+        = null;\r\n                }\r\n            }\r\n\r\n            PARTICIPANTS[participantId].send(\"haptics\",
+        {\r\n                target: hapticsTarget,\r\n                frequency:
+        parseFloat(frequency),\r\n                amplitude: parseFloat(amplitude),\r\n               
+        duration: parseFloat(duration)\r\n            });\r\n        } else {\r\n           
+        $.log(\"SendHaptics: No player found nearby.\");\r\n        }\r\n    } catch
+        (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n    }\r\n}\r\n\r\nfunction
+        SendViaOsc(participantId, address, values) {\r\n    PARTICIPANTS[participantId].send(\"sendOsc\",
+        { address, values });\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n   
+        CONDITION = $.groupState.currentCondition;\r\n    PARTICIPANTS = [null].concat($.groupState.participants);\r\n   
+        if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >=
+        stateEnterActions[$.state.state_id].length) return;\r\n    \r\n    while
+        ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
         && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !==
         \"sleep\") {\r\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\r\n       
         $.state.stateEnterActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateEnterActionID
@@ -5420,28 +5427,26 @@ PrefabInstance:
         UploadCollectedData() {\r\n    $.sendSignalCompat(\"this\", \"exp_uploadCustomData\");\r\n}\r\n\r\nfunction
         SetText(text) {\r\n    try {\r\n        $.subNode(\"Text\").setText(`${text}`);\r\n   
         } catch (e) {\r\n        $.log(`Error in SetText: ${e}. Ensure a 'Text' sub-node
-        exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(target,
-        frequency, amplitude, duration) {\r\n    try {\r\n        if (!$.state.player)
-        $.state.player = $.getPlayersNear($.getPosition(), Infinity)[0];\r\n       
-        if ($.state.player) {\r\n            let hapticsTarget = target;\r\n           
-        if (typeof target === 'string') {\r\n                const lowerTarget =
-        target.toLowerCase();\r\n                if (lowerTarget === 'null' || lowerTarget
-        === 'undefined' || lowerTarget === \"\") {\r\n                    hapticsTarget
-        = null; // Use JS null for \"both\" or unspecified\r\n                } else
+        exists and has setText method.`);\r\n    }\r\n}\r\n\r\nfunction SendHaptics(participantId,
+        target, frequency, amplitude, duration) {\r\n    try {\r\n        if (PARTICIPANTS[participantId])
+        {\r\n            let hapticsTarget = target;\r\n            if (typeof target
+        === 'string') {\r\n                const lowerTarget = target.toLowerCase();\r\n               
         if (lowerTarget === '\"left\"' || lowerTarget === \"'left'\") {\r\n                   
         hapticsTarget = \"left\";\r\n                } else if (lowerTarget === '\"right\"'
         || lowerTarget === \"'right'\") {\r\n                    hapticsTarget =
-        \"right\";\r\n                }\r\n                // else assume target
-        is already \"left\", \"right\", or a valid direct value.\r\n            }\r\n\r\n           
-        $.state.player.send(\"haptics\", {\r\n                target: hapticsTarget,\r\n               
-        frequency: parseFloat(frequency),\r\n                amplitude: parseFloat(amplitude),\r\n               
-        duration: parseFloat(duration) // Duration in seconds\r\n            });\r\n       
-        } else {\r\n            $.log(\"SendHaptics: No player found nearby.\");\r\n       
-        }\r\n    } catch (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n   
-        }\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n    CONDITION = $.groupState.currentCondition;\r\n   
-        PARTICIPANTS = $.groupState.participants;\r\n    if (!stateEnterActions[$.state.state_id]
-        || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
-        return;\r\n    \r\n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
+        \"right\";\r\n                } else {\r\n                    hapticsTarget
+        = null;\r\n                }\r\n            }\r\n\r\n            PARTICIPANTS[participantId].send(\"haptics\",
+        {\r\n                target: hapticsTarget,\r\n                frequency:
+        parseFloat(frequency),\r\n                amplitude: parseFloat(amplitude),\r\n               
+        duration: parseFloat(duration)\r\n            });\r\n        } else {\r\n           
+        $.log(\"SendHaptics: No player found nearby.\");\r\n        }\r\n    } catch
+        (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n    }\r\n}\r\n\r\nfunction
+        SendViaOsc(participantId, address, values) {\r\n    PARTICIPANTS[participantId].send(\"sendOsc\",
+        { address, values });\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n   
+        CONDITION = $.groupState.currentCondition;\r\n    PARTICIPANTS = [null].concat($.groupState.participants);\r\n   
+        if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >=
+        stateEnterActions[$.state.state_id].length) return;\r\n    \r\n    while
+        ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
         && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !==
         \"sleep\") {\r\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\r\n       
         $.state.stateEnterActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateEnterActionID

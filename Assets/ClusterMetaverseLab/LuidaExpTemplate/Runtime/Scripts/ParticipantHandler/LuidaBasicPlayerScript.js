@@ -11,6 +11,9 @@ _.onReceive((id, body, sender) => {
                 haptics.playEffect(effect, body.target);
             }
             break;
+        case "sendOsc":
+            sendOsc(body.address, body.values);
+            break;
         case "initializeParticipant":
             _.setMoveSpeedRate(1);
             _.sendTo(sender, "envInfoResponse", {
@@ -61,4 +64,37 @@ function setQuestionnaireUI(targetName, isEnabled, position, rotation, text) {
     if (position) targetUI.getUnityComponent("Transform").unityProp.localPosition = position;
     if (rotation) targetUI.getUnityComponent("Transform").unityProp.localRotation = rotation;
     if (text !== null) targetUI.findObject("Text").getUnityComponent("Text").unityProp.text = text;
+}
+
+function sendOsc(address, values) {
+    if (typeof _ === 'undefined' || typeof _.oscHandle === 'undefined') {
+        _.log("Error: PlayerScript environment or oscHandle not found.");
+        return;
+    }
+
+    try {
+        const oscValues = values.map(val => {
+            const type = typeof val;
+            if (type === 'boolean') {
+                return OscValue.bool(val);
+            } else if (type === 'number') {
+                if (Number.isInteger(val)) {
+                    return OscValue.int(val);
+                } else {
+                    return OscValue.float(val);
+                }
+            } else if (type === 'string') {
+                return OscValue.asciiString(val);
+            } else {
+                _.log(`Warning: Unsupported data type '${type}' for value '${val}'. Skipping.`);
+                return null;
+            }
+        }).filter(v => v !== null);
+        const message = new OscMessage(address, oscValues);
+        _.oscHandle.send(message);
+        // _.log(`OSC message sent to ${address} with ${oscValues.length} value(s).`);
+
+    } catch (e) {
+        _.log(`Error sending OSC message: ${e.message}`);
+    }
 }
