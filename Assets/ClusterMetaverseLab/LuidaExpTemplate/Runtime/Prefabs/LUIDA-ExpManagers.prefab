@@ -525,11 +525,12 @@ PrefabInstance:
         targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(\"AnsText\");\r\n           
         targetUI.setEnabled(false);\r\n            for (let i = 0; i < 20; i++) {\r\n               
         targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(\"AnsOptLabel_\"
-        + i);\n                if (targetUI) {\n                    targetUI.setEnabled(false);\n               
-        } else {\n                    break;\n                }\n            }\n           
-        break;\n        default:\n            break;\n    }\n});\n\nfunction setQuestionnaireUI(targetName,
-        isEnabled, position, rotation, text) {\n    let targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(targetName);\n   
-        if (!targetUI) return;\n    if (isEnabled !== null) targetUI.setEnabled(isEnabled);\n   
+        + i);\r\n                if (targetUI) {\r\n                    targetUI.setEnabled(false);\r\n               
+        } else {\r\n                    break;\r\n                }\r\n           
+        }\r\n            break;\r\n        default:\r\n            break;\r\n   
+        }\r\n});\r\n\r\nfunction setQuestionnaireUI(targetName, isEnabled, position,
+        rotation, text) {\r\n    let targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(targetName);\r\n   
+        if (!targetUI) return;\r\n    if (isEnabled !== null) targetUI.setEnabled(isEnabled);\r\n   
         if (position) targetUI.getUnityComponent(\"Transform\").unityProp.localPosition
         = position;\r\n    if (rotation) targetUI.getUnityComponent(\"Transform\").unityProp.localRotation
         = rotation;\r\n    if (text !== null) targetUI.findObject(\"Text\").getUnityComponent(\"Text\").unityProp.text

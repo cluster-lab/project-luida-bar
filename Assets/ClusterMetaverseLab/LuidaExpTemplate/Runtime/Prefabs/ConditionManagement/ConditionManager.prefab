@@ -244,8 +244,8 @@ MonoBehaviour:
     within_subjects_variables[i].values[\r\n              $.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]\r\n             
     ];\r\n      condition[varName] = varValue;\r\n    }\r\n    $.groupState.currentCondition
     = condition;\r\n\r\n    // Check if this is the last trial (if true, stop repeating
-    trials when next state transition is triggered)\r\n    if (\r\n        $.state.trialCount
-    > 0 &&\r\n        !$.state.isLast &&\r\n        $.state.trialID >= $.state.trialCount
+    trials when next state transition is triggered)\r\n    if (\r\n      $.state.trialCount
+    > 0 &&\r\n      !$.state.isLast &&\r\n      $.state.trialID >= $.state.trialCount
     - 1\r\n    ) {\r\n      $.state.isLast = true;\r\n      $.sendSignalCompat(\"this\",
     \"exp_readyToLeaveTrials\");\r\n    }\r\n  }\r\n}\r\n\r\nfunction reset() {\r\n 
     $.state.trialID = 0;\r\n  if (!$.state.betweenSubjectsConditions)\r\n    $.state.betweenSubjectsConditions
