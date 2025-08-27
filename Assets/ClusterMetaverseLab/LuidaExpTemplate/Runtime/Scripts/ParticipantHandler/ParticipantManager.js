@@ -21,13 +21,10 @@ $.onUpdate((deltaTime) => {
             if (newPlayers.length > 0) {
                 for (const newPlayer of newPlayers) {
                     // TODO: Check if the player is eligible to join the experiment before adding them to $.groupState.participants.
-                    $.groupState.participants = [ ...$.groupState.participants, newPlayer ];
+                    // $.groupState.participants = [ ...$.groupState.participants, newPlayer ];
                     $.setPlayerScript(newPlayer);
                     newPlayer.send("initializeParticipant", true);
                 }
-            }
-            if (!$.groupState.isParticipantsEnough && $.groupState.participants.length >= pNum) {
-                HandleParticipantsEnough();
             }
         }
     } else if ($.state.isBetweenSubjectsConditionsSet) { // participants are enough & conditions are set

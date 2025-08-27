@@ -193,6 +193,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2656686999155914180}
+  - {fileID: 5506118114075882160}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -240,7 +241,7 @@ MonoBehaviour:
     .filter(p => !pIdfcs.includes(p.idfc));\r\n            if (newPlayers.length
     > 0) {\r\n                for (const newPlayer of newPlayers) {\r\n                   
     // TODO: Check if the player is eligible to join the experiment before adding
-    them to $.groupState.participants.\r\n                    $.groupState.participants
+    them to $.groupState.participants.\r\n                    // $.groupState.participants
     = [ ...$.groupState.participants, newPlayer ];\r\n                    $.setPlayerScript(newPlayer);\r\n                   
     newPlayer.send(\"initializeParticipant\", true);\r\n                }\r\n           
     }\r\n            if (!$.groupState.isParticipantsEnough && $.groupState.participants.length
@@ -676,3 +677,88 @@ MonoBehaviour:
   playerLocalObjectReferences:
   - id: luida_questionnaire_ui
     targetObject: {fileID: 0}
+--- !u!1001 &5980918388433126844
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 100295540188533776}
+    m_Modifications:
+    - target: {fileID: 2263574305700755203, guid: 5475fa3e27333b2419a0bb8086303137,
+        type: 3}
+      propertyPath: m_Name
+      value: WorldGateToLuidaBar
+      objectReference: {fileID: 0}
+    - target: {fileID: 2263574305700755203, guid: 5475fa3e27333b2419a0bb8086303137,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2263574305700755212, guid: 5475fa3e27333b2419a0bb8086303137,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2263574305700755212, guid: 5475fa3e27333b2419a0bb8086303137,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2263574305700755212, guid: 5475fa3e27333b2419a0bb8086303137,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2263574305700755212, guid: 5475fa3e27333b2419a0bb8086303137,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2263574305700755212, guid: 5475fa3e27333b2419a0bb8086303137,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2263574305700755212, guid: 5475fa3e27333b2419a0bb8086303137,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2263574305700755212, guid: 5475fa3e27333b2419a0bb8086303137,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2263574305700755212, guid: 5475fa3e27333b2419a0bb8086303137,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2263574305700755212, guid: 5475fa3e27333b2419a0bb8086303137,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2263574305700755212, guid: 5475fa3e27333b2419a0bb8086303137,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2263574305700755212, guid: 5475fa3e27333b2419a0bb8086303137,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7983046424833205505, guid: 5475fa3e27333b2419a0bb8086303137,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5475fa3e27333b2419a0bb8086303137, type: 3}
+--- !u!4 &5506118114075882160 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2263574305700755212, guid: 5475fa3e27333b2419a0bb8086303137,
+    type: 3}
+  m_PrefabInstance: {fileID: 5980918388433126844}
+  m_PrefabAsset: {fileID: 0}
