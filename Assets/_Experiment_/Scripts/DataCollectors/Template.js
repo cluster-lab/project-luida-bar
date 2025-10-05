@@ -16,4 +16,7 @@
     e.g., `return { score: 100 };`
     e.g., `const answer = $.getStateCompat('global', 'count', 'integer') > 5; return { isLarger: answer }`
 */
-return { foo: 'bar' };
+return {
+    cond: CONDITION || {}, // Include conditions in the collected data by default
+    foo: 'bar' // Replace with your custom collected data
+};
