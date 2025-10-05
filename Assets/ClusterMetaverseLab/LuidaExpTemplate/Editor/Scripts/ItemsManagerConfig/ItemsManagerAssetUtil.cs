@@ -305,7 +305,7 @@ public static class ItemsManagerAssetUtil
             return $"{{ type: \"sleep\", value: {(isNumeric ? sleepValue.ToString(System.Globalization.CultureInfo.InvariantCulture) : "0")} }}";
         }
         actionCode = (actionCode ?? "").Trim().Replace("\n", "\n            ");
-        return $"{{ type: \"exec\", action: () => {{\n            {actionCode}\n        }} }}";
+        return $"{{ type: \"exec\", action: (deltaTime) => {{\n            {actionCode}\n        }} }}";
     }
 
     private static string GenerateActionsObjectsForItem(GameObject item, ItemsManagerConfigTab editor)

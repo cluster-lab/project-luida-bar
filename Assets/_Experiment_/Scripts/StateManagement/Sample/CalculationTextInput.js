@@ -1,6 +1,6 @@
 const stateEnterActions = {
     2: [
-        { type: "exec", action: () => {
+        { type: "exec", action: (deltaTime) => {
             PARTICIPANTS[1].requestTextInput(
               "ask_to_calculate",
               getRandomInt(100) + "+" + getRandomInt(100) + "=?"

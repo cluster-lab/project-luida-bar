@@ -177,7 +177,7 @@ function OnStateEnter(deltaTime) {
     if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length) return;
     
     while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !== "sleep") {
-        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();
+        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action(deltaTime);
         $.state.stateEnterActionID += 1;
     }
 
@@ -196,7 +196,7 @@ function OnStateEnter(deltaTime) {
 function OnStateExit(deltaTime) {
     if (!stateExitActions[$.state.last_state_id] || $.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length) return;
     while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length && stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type !== "sleep") {
-        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();
+        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action(deltaTime);
         $.state.stateExitActionID += 1;
     }
 
@@ -223,7 +223,7 @@ function DuringState(deltaTime) {
         if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type === "sleep") {
             $.state.duringStateActionID += 1;
         } else {
-            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);
+            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(deltaTime);
             $.state.duringStateActionID += 1;
         }
     }
