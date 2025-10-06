@@ -3,3 +3,4 @@ const within_subjects_variables = [
 ];
 const between_subjects_variables = [
 ];
+const state_names = [];

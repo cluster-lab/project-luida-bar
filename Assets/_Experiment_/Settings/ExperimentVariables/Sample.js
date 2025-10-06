@@ -7,3 +7,4 @@ const within_subjects_variables = [
 const between_subjects_variables = [
     { name: "depth", values: ["near", "far"], isRandom: true },
 ];
+const state_names = ["Start", "Intro", "CalculationTask", "Trial - Start", "Trial - Rest", "Outro", "End"];

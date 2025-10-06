@@ -182,6 +182,8 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
 
         string combinedJs = $"const trialsCountForEachUniqueCondition = {trialsCountForEachUniqueCondition};\n" +
             withinSubjectsVariablesJs + "\n" + betweenSubjectsVariablesJs + "\n";
+        
+        combinedJs += GetStateNamesJavaScript();
 
         File.WriteAllText(variablesAssetPath, combinedJs);
 
@@ -205,6 +207,24 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
         }
         js += "];";
         return js;
+    }
+    
+    private string GetStateNamesJavaScript()
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+        string stateListAssetPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
+        StateList stateList = AssetDatabase.LoadAssetAtPath<StateList>(stateListAssetPath);
+
+        if (stateList != null && stateList.States != null)
+        {
+            var stateNames = stateList.States.Select(s => $"\"{s.StateName}\"");
+            return $"const state_names = [{string.Join(", ", stateNames)}];\n";
+        }
+        else
+        {
+            Debug.LogWarning($"StateList asset not found at path: {stateListAssetPath}. State names will not be written to JS file.");
+            return ""; // Return an empty string if the asset isn't found
+        }
     }
 
     private void RetrieveJavaScriptAsset()

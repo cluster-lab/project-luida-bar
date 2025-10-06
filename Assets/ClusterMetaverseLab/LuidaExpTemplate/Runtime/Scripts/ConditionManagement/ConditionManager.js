@@ -66,6 +66,7 @@ function reset() {
   $.groupState.currentCondition = {
     ...$.state.betweenSubjectsConditions,
   };
+  $.groupState.stateNames = state_names || [];
   try {
     initializeWithinSubjectsConditions(
       within_subjects_variables,
