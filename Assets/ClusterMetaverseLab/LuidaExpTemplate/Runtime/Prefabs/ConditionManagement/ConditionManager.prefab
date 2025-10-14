@@ -257,21 +257,23 @@ MonoBehaviour:
     variables are not defined.\");\r\n    initializeWithinSubjectsConditions([],
     1);\r\n  }\r\n  updateCondition();\r\n}\r\n\r\nfunction initializeRandomBetweenSubjectsConditions()
     {\r\n  let betweenSubjectsCondition = {};\r\n  try {\r\n    between_subjects_variables.forEach((v)
-    => {\r\n      if (v.isRandom && !betweenSubjectsCondition[v.name]) {\r\n       
-    betweenSubjectsCondition[v.name] =\r\n          v.values[Math.floor(Math.random()
-    * v.values.length)];\r\n      }\r\n    });\r\n  } catch (e) {\r\n    $.log(\"Between-subjects
-    variables are not defined.\");\r\n  }\r\n  $.state.betweenSubjectsConditions
-    = betweenSubjectsCondition;\r\n}\r\n\r\nfunction initializeWithinSubjectsConditions(variables,
-    repeatsPerCond = 1) {\r\n  variables = [...variables.sort((a, b) => a.isRandom
-    - b.isRandom)];\r\n  const varNames = variables.map((v) => v.name);\r\n\r\n 
-    let indicesPerVar = variables.map((v) =>\r\n    Array.from({ length: v.values.length
-    }, (_, i) => i)\r\n  );\r\n  let condIndicesList = indicesPerVar\r\n    .reduce(\r\n     
-    (acc, array) => {\r\n        return acc.flatMap((accItem) =>\r\n          array.map((arrayItem)
-    => [...accItem, arrayItem])\r\n        );\r\n      },\r\n      [[]]\r\n    )\r\n   
-    .flatMap((condIndices) =>\r\n      Array.from({ length: repeatsPerCond }, ()
-    => condIndices)\r\n    );\r\n\r\n  let shufflePartitionSize = 0;\r\n  for (let
-    i = 0; i < variables.length; i++) {\r\n    if (variables[i].isRandom) {\r\n     
-    shufflePartitionSize =\r\n        shufflePartitionSize === 0\r\n          ? variables[i].values.length\r\n         
+    => {\r\n      if (!betweenSubjectsCondition[v.name]) {\r\n        if (v.debugValue)
+    {\r\n          betweenSubjectsCondition[v.name] = v.debugValue;\r\n        }
+    else if (v.isRandom) {\r\n          betweenSubjectsCondition[v.name] =\r\n             
+    v.values[Math.floor(Math.random() * v.values.length)];\r\n        }\r\n     
+    }\r\n    });\r\n  } catch (e) {\r\n    $.log(\"Between-subjects variables are
+    not defined.\");\r\n  }\r\n  $.state.betweenSubjectsConditions = betweenSubjectsCondition;\r\n}\r\n\r\nfunction
+    initializeWithinSubjectsConditions(variables, repeatsPerCond = 1) {\r\n  variables
+    = [...variables.sort((a, b) => a.isRandom - b.isRandom)];\r\n  const varNames
+    = variables.map((v) => v.name);\r\n\r\n  let indicesPerVar = variables.map((v)
+    =>\r\n    Array.from({ length: v.values.length }, (_, i) => i)\r\n  );\r\n  let
+    condIndicesList = indicesPerVar\r\n    .reduce(\r\n      (acc, array) => {\r\n       
+    return acc.flatMap((accItem) =>\r\n          array.map((arrayItem) => [...accItem,
+    arrayItem])\r\n        );\r\n      },\r\n      [[]]\r\n    )\r\n    .flatMap((condIndices)
+    =>\r\n      Array.from({ length: repeatsPerCond }, () => condIndices)\r\n   
+    );\r\n\r\n  let shufflePartitionSize = 0;\r\n  for (let i = 0; i < variables.length;
+    i++) {\r\n    if (variables[i].isRandom) {\r\n      shufflePartitionSize =\r\n       
+    shufflePartitionSize === 0\r\n          ? variables[i].values.length\r\n         
     : shufflePartitionSize * variables[i].values.length;\r\n    }\r\n  }\r\n  shufflePartitionSize
     *= repeatsPerCond;\r\n\r\n  if (shufflePartitionSize > 0) {\r\n    const result
     = [...condIndicesList]; // Copy the array to avoid mutating the original\r\n   

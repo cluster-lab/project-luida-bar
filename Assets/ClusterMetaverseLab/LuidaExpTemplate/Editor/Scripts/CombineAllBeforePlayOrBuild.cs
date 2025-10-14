@@ -1,3 +1,4 @@
+using ClusterVR.CreatorKit.Editor.EditorEvents;
 using UnityEngine;
 using UnityEditor;
 using System;
@@ -8,8 +9,16 @@ public class CombineAllBeforePlayOrBuild
 {
     static CombineAllBeforePlayOrBuild()
     {
+        WorldUploadEvents.RegisterOnWorldUploadStart(OnWorldUploadStarted, -1);
         EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
         EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+    }
+    
+    static bool OnWorldUploadStarted(WorldUploadStartEventData data)
+    {
+        ExperimentVariablesConfigTab.ResetAllDebugValues();
+        OnPlayModeStateChanged(PlayModeStateChange.ExitingEditMode);
+        return true;
     }
 
     private static void OnPlayModeStateChanged(PlayModeStateChange state)

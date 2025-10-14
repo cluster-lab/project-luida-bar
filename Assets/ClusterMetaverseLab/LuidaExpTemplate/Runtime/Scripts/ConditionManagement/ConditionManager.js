@@ -84,9 +84,13 @@ function initializeRandomBetweenSubjectsConditions() {
   let betweenSubjectsCondition = {};
   try {
     between_subjects_variables.forEach((v) => {
-      if (v.isRandom && !betweenSubjectsCondition[v.name]) {
-        betweenSubjectsCondition[v.name] =
-          v.values[Math.floor(Math.random() * v.values.length)];
+      if (!betweenSubjectsCondition[v.name]) {
+        if (v.debugValue) {
+          betweenSubjectsCondition[v.name] = v.debugValue;
+        } else if (v.isRandom) {
+          betweenSubjectsCondition[v.name] =
+              v.values[Math.floor(Math.random() * v.values.length)];
+        }
       }
     });
   } catch (e) {
