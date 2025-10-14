@@ -24,4 +24,7 @@ $.onTextInput((text, meta, status) => {
     ToNextState(); // 参加者からのテキスト入力を受け付けたら次のステートへ遷移させる
     // メモ：ただ計算させるだけなので、正解かどうかを確認しない。確認したい場合はご自身でスクリプトを編集してください。
   }
+  if (status === TextInputStatus.Refused) {
+    ToNextState();
+  }
 });

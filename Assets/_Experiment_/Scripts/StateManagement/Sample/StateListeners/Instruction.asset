@@ -37,7 +37,11 @@ MonoBehaviour:
       _variableKeys:
       - text
       _variableValuesList:
-      - This experiment...
+      - "You will first repeat a calculation task five times.\nNext, you will be
+        shown text in which\nthe color and the meaning of the word differ.\nFollow
+        the instructions to either \nselect the ball that matches the \"meaning\"
+        of the text,\nor the ball that matches the \"font color\" of the text.\nThe
+        experiment will start soon..."
     duringStateActions: []
     onStateExitedActions:
     - predefinedActionTemplate:
@@ -76,7 +80,7 @@ MonoBehaviour:
       _variableValuesList:
       - 'Click the button that
 
-        matches the text''s font color'
+        matches the text''s "font color"'
     - predefinedActionTemplate:
         actionType: Set text
         codeSnippet: $.subNode('Text').setText(`{_text_}`);
@@ -91,7 +95,7 @@ MonoBehaviour:
       _variableValuesList:
       - 'Click the button that
 
-        matches the text''s meaning'
+        matches the text''s "meaning"'
     duringStateActions: []
     onStateExitedActions: []
   - stateID: 4
@@ -109,6 +113,51 @@ MonoBehaviour:
       - text
       _variableValuesList:
       - Take a break for 3 seconds
+    duringStateActions: []
+    onStateExitedActions:
+    - predefinedActionTemplate:
+        actionType: Hide item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
+        variables: []
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys: []
+      _variableValuesList: []
+  - stateID: 6
+    onStateStartedActions:
+    - predefinedActionTemplate:
+        actionType: Show item
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
+        variables: []
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys: []
+      _variableValuesList: []
+    - predefinedActionTemplate:
+        actionType: Set text
+        codeSnippet: $.subNode('Text').setText(`{_text_}`);
+        variables:
+        - text
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys:
+      - text
+      _variableValuesList:
+      - 'Thank you for the participation!
+
+        Now, you can leave this world
+        freely,
+
+        or step on the portal in front of you
+
+        to return
+        to LUIDA''s recruitment world.'
     duringStateActions: []
     onStateExitedActions:
     - predefinedActionTemplate:

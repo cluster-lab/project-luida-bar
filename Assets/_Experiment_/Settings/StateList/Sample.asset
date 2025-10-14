@@ -24,7 +24,7 @@ MonoBehaviour:
   - StateName: Intro
     DestStateName: CalculationTask
     HasExitTime: 1
-    ExitTime: 30
+    ExitTime: 20
     IsRepeated: 0
     RepeatDestStateName: 
     RepeatCount: 1
@@ -55,12 +55,12 @@ MonoBehaviour:
     qID: 0
   - StateName: Outro
     DestStateName: End
-    HasExitTime: 0
-    ExitTime: 0
+    HasExitTime: 1
+    ExitTime: 1
     IsRepeated: 0
     RepeatDestStateName: 
     RepeatCount: 1
-    qID: 2
+    qID: 0
   - StateName: End
     DestStateName: 
     HasExitTime: 0
