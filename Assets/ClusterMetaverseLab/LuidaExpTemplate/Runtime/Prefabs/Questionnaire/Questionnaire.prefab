@@ -664,22 +664,22 @@ MonoBehaviour:
     || 0) + deltaTime;\r\n    if ($.state.timer > 0.2 && $.state.pendingAnswerOptions
     && $.state.pendingAnswerOptions.length > 0) {\r\n        spawnNextAnswerOption();\r\n       
     $.state.timer = 0; // Reset the timer after generating a batch\r\n    }\r\n});\r\n\r\n$.onInteract(()
-    => {\r\n    $.setStateCompat(\"this\", \"form_set_content_active\", true);\r\n});\r\n\r\n$.onReceive((messageType,
-    arg) => {\r\n    if (!$.state.isInitiated) return;\r\n    switch (messageType)
-    {\r\n        case \"form_answer\":\r\n            handleFormAnswer(arg);\r\n           
-    break;\r\n        case \"form_to_next\":\r\n            saveAnswer();\r\n           
-    break;\r\n        case \"form_to_prev\":\r\n            toPrev();\r\n           
-    break;\r\n    }\r\n});\r\n\r\nfunction tryInitQuestion() {\r\n    $.state.tryInitQuestion
-    = true;\r\n}\r\n\r\nfunction initQuestion() {\r\n    // Prepare to stop destruction
-    of answer options and initialize a new question\r\n    $.state.tryInitQuestion
-    = false;\r\n    $.state.answerOptionUIs = [];\r\n    $.state.answerOptionLocalPositions
-    = [];\r\n    const q = $.state.questions[$.state.qID];\r\n    $.state.participant?.send(\"setQuestionnaireUIs\",
-    [\r\n        {\r\n            n: \"Title\",\r\n            e: true,\r\n           
-    p: $.subNode(\"Title\").getGlobalPosition(),\r\n            r: $.subNode(\"Title\").getGlobalRotation(),\r\n           
-    t: q.t\r\n        },\r\n        {\r\n            n: \"Description\",\r\n           
-    e: true,\r\n            p: $.subNode(\"Description\").getGlobalPosition(),\r\n           
-    r: $.subNode(\"Description\").getGlobalRotation(),\r\n            t: q.d\r\n       
-    }\r\n    ]);\r\n    $.state.questionTypeID = q.i;\r\n    $.state.answerOptions
+    => {\r\n    if (!$.state.isInitiated) $.setStateCompat(\"this\", \"form_set_content_active\",
+    true);\r\n});\r\n\r\n$.onReceive((messageType, arg) => {\r\n    if (!$.state.isInitiated)
+    return;\r\n    switch (messageType) {\r\n        case \"form_answer\":\r\n           
+    handleFormAnswer(arg);\r\n            break;\r\n        case \"form_to_next\":\r\n           
+    saveAnswer();\r\n            break;\r\n        case \"form_to_prev\":\r\n           
+    toPrev();\r\n            break;\r\n    }\r\n});\r\n\r\nfunction tryInitQuestion()
+    {\r\n    $.state.tryInitQuestion = true;\r\n}\r\n\r\nfunction initQuestion()
+    {\r\n    // Prepare to stop destruction of answer options and initialize a new
+    question\r\n    $.state.tryInitQuestion = false;\r\n    $.state.answerOptionUIs
+    = [];\r\n    $.state.answerOptionLocalPositions = [];\r\n    const q = $.state.questions[$.state.qID];\r\n   
+    $.state.participant?.send(\"setQuestionnaireUIs\", [\r\n        {\r\n           
+    n: \"Title\",\r\n            e: true,\r\n            p: $.subNode(\"Title\").getGlobalPosition(),\r\n           
+    r: $.subNode(\"Title\").getGlobalRotation(),\r\n            t: q.t\r\n       
+    },\r\n        {\r\n            n: \"Description\",\r\n            e: true,\r\n           
+    p: $.subNode(\"Description\").getGlobalPosition(),\r\n            r: $.subNode(\"Description\").getGlobalRotation(),\r\n           
+    t: q.d\r\n        }\r\n    ]);\r\n    $.state.questionTypeID = q.i;\r\n    $.state.answerOptions
     = Array.isArray(q.a)\r\n        ? q.a\r\n        : (typeof q.a === \"string\"
     ? q.a.split(\",\") : []) ;\r\n    if (q.i === 1 && $.state.answerOptions.length
     === 0) {\r\n        $.state.answerOptions = [1,2,3,4,5,6,7];\r\n    }\r\n   
@@ -763,7 +763,7 @@ MonoBehaviour:
     $.state.answers);\r\n    }\r\n    $.callExternal(new ExternalEndpointId(callExternalEndpointID),
     JSON.stringify(request), \"postQuestionAnswers\");\r\n    $.state.participant?.send(\"setQuestionnaireUI\",
     {\r\n        n: \"WaitingText\",\r\n        p: $.getPosition(),\r\n        r:
-    $.getRotation(),\r\n        e: true\r\n    });\r\n    reset();\r\n}\r\n\r\nfunction
+    $.getRotation(),\r\n        e: true\r\n    });\r\n    reset(false);\r\n}\r\n\r\nfunction
     toNext() {\r\n    destroyAnswerOptionUIs(); // Ensure previous UI elements are
     destroyed\r\n    $.state.qID = $.state.qID + 1;\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
     if ($.state.qID >= $.state.questions.length) {\r\n        submitAnswers();\r\n   
@@ -772,9 +772,9 @@ MonoBehaviour:
     destroyAnswerOptionUIs(); // Ensure previous UI elements are destroyed\r\n   
     $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n    $.state.qID = $.state.qID
     - 1;\r\n    $.state.tmpAnswer = null;\r\n    tryInitQuestion();\r\n}\r\n\r\nfunction
-    reset() {\r\n    destroyAnswerOptionUIs(); // destroy any existing answer option
-    UIs first\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
-    $.state.answers = [];\r\n    $.state.qID = 0;\r\n    $.state.isInitiated = false;\r\n   
+    reset(enableReactivation = true) {\r\n    destroyAnswerOptionUIs(); // destroy
+    any existing answer option UIs first\r\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\r\n   
+    $.state.answers = [];\r\n    $.state.qID = 0;\r\n    $.state.isInitiated = !enableReactivation;\r\n   
     $.state.tryInitQuestion = false;\r\n    $.state.answerOptionUIs = [];\r\n   
     $.state.answerOptionLocalPositions = [];\r\n    $.state.answerOptionIndex = 0;\r\n   
     $.state.pendingAnswerOptions = [];\r\n    $.setStateCompat(\"this\", \"form_set_content_active\",
@@ -801,7 +801,7 @@ MonoBehaviour:
     // state_triggerTransition\r\n            $.groupState.participants.forEach(p
     => {\r\n                p.send(\"setQuestionnaireUI\", {\r\n                   
     n: \"WaitingText\",\r\n                    e: false\r\n                });\r\n           
-    });\r\n        }\r\n        reset();\r\n    }\r\n});\r\n"
+    });\r\n            reset();\r\n        }\r\n    }\r\n});\r\n"
 --- !u!114 &5697374075709122382
 MonoBehaviour:
   m_ObjectHideFlags: 0

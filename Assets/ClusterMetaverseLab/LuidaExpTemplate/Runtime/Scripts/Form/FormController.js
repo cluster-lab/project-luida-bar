@@ -54,7 +54,7 @@ $.onUpdate((deltaTime) => {
 });
 
 $.onInteract(() => {
-    $.setStateCompat("this", "form_set_content_active", true);
+    if (!$.state.isInitiated) $.setStateCompat("this", "form_set_content_active", true);
 });
 
 $.onReceive((messageType, arg) => {
@@ -262,7 +262,7 @@ function submitAnswers() {
         r: $.getRotation(),
         e: true
     });
-    reset();
+    reset(false);
 }
 
 function toNext() {
@@ -286,12 +286,12 @@ function toPrev() {
     tryInitQuestion();
 }
 
-function reset() {
+function reset(enableReactivation = true) {
     destroyAnswerOptionUIs(); // destroy any existing answer option UIs first
     $.subNode("RadioButtonIndicator").setEnabled(false);
     $.state.answers = [];
     $.state.qID = 0;
-    $.state.isInitiated = false;
+    $.state.isInitiated = !enableReactivation;
     $.state.tryInitQuestion = false;
     $.state.answerOptionUIs = [];
     $.state.answerOptionLocalPositions = [];
@@ -342,7 +342,7 @@ $.onExternalCallEnd((res, meta, err) => {
                     e: false
                 });
             });
+            reset();
         }
-        reset();
     }
 });

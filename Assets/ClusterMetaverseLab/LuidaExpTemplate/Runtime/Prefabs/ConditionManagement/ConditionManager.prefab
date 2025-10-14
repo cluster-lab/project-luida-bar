@@ -224,12 +224,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
   sourceCode: "const trialsCountForEachUniqueCondition = 1;\r\nconst within_subjects_variables
-    = [\r\n];\r\nconst between_subjects_variables = [\r\n];\r\n\r\n$.onStart(() =>
-    {\r\n  initializeRandomBetweenSubjectsConditions();\r\n  reset();\r\n});\r\n\r\n$.onUpdate(()
-    => {\r\n  if (\r\n    $.state.trialID !== $.getStateCompat(\"global\", \"exp_trialID\",
-    \"integer\") &&\r\n      $.getStateCompat(\"global\", \"exp_trialID\", \"integer\")
-    >= 0\r\n  ) {\r\n    $.state.trialID = $.getStateCompat(\"global\", \"exp_trialID\",
-    \"integer\");\r\n    updateCondition();\r\n  }\r\n});\r\n\r\n$.onReceive((messageType,
+    = [\r\n];\r\nconst between_subjects_variables = [\r\n];\r\nconst state_names
+    = [];\r\n\r\n$.onStart(() => {\r\n  initializeRandomBetweenSubjectsConditions();\r\n 
+    reset();\r\n});\r\n\r\n$.onUpdate(() => {\r\n  if (\r\n    $.state.trialID !==
+    $.getStateCompat(\"global\", \"exp_trialID\", \"integer\") &&\r\n      $.getStateCompat(\"global\",
+    \"exp_trialID\", \"integer\") >= 0\r\n  ) {\r\n    $.state.trialID = $.getStateCompat(\"global\",
+    \"exp_trialID\", \"integer\");\r\n    updateCondition();\r\n  }\r\n});\r\n\r\n$.onReceive((messageType,
     arg, sender) => {\r\n  switch (messageType) {\r\n    case \"luida_participants_info\":\r\n     
     $.groupState.participants = arg.participants;\r\n      $.groupState.sessionID
     = arg.sessionID;\r\n      break;\r\n    // case \"exp_questionnaire_answer\":\r\n   
@@ -250,7 +250,8 @@ MonoBehaviour:
     $.state.trialID = 0;\r\n  if (!$.state.betweenSubjectsConditions)\r\n    $.state.betweenSubjectsConditions
     = {};\r\n  $.state.withinSubjectsVariableNames = [];\r\n  $.state.withinSubjectsConditionIndicesByTrial
     = [];\r\n  $.state.trialCount = 1;\r\n  $.groupState.currentCondition = {\r\n   
-    ...$.state.betweenSubjectsConditions,\r\n  };\r\n  try {\r\n    initializeWithinSubjectsConditions(\r\n     
+    ...$.state.betweenSubjectsConditions,\r\n  };\r\n  $.groupState.stateNames =
+    state_names || [];\r\n  try {\r\n    initializeWithinSubjectsConditions(\r\n     
     within_subjects_variables,\r\n      trialsCountForEachUniqueCondition\r\n   
     );\r\n  } catch (error) {\r\n    $.log(error);\r\n    $.log(\"Within-subjects
     variables are not defined.\");\r\n    initializeWithinSubjectsConditions([],

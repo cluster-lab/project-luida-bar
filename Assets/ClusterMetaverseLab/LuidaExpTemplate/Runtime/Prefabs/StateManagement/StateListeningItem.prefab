@@ -149,7 +149,7 @@ MonoBehaviour:
     if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
     return;\r\n    \r\n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
     && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !== \"sleep\")
-    {\r\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action();\r\n       
+    {\r\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action(deltaTime);\r\n       
     $.state.stateEnterActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateEnterActionID
     >= stateEnterActions[$.state.state_id].length) {\r\n        $.state.stateEnterActionID
     = -1;\r\n    } else if (stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type
@@ -160,7 +160,7 @@ MonoBehaviour:
     || $.state.stateExitActionID >= stateExitActions[$.state.last_state_id].length)
     return;\r\n    while ($.state.stateExitActionID < stateExitActions[$.state.last_state_id].length
     && stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type !==
-    \"sleep\") {\r\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action();\r\n       
+    \"sleep\") {\r\n        stateExitActions[$.state.last_state_id][$.state.stateExitActionID].action(deltaTime);\r\n       
     $.state.stateExitActionID += 1;\r\n    }\r\n\r\n    if ($.state.stateExitActionID
     >= stateExitActions[$.state.last_state_id].length) {\r\n        $.state.stateExitActionID
     = -1;\r\n        $.state.last_state_id = $.state.state_id;\r\n    } else if (stateExitActions[$.state.last_state_id][$.state.stateExitActionID].type
@@ -174,7 +174,7 @@ MonoBehaviour:
     \r\n    while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length)
     {\r\n        if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type
     === \"sleep\") {\r\n            $.state.duringStateActionID += 1;\r\n       
-    } else {\r\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(CONDITION);\r\n           
+    } else {\r\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(deltaTime);\r\n           
     $.state.duringStateActionID += 1;\r\n        }\r\n    }\r\n    $.state.duringStateActionID
     = 0;\r\n}\r\n\r\nfunction Start() {}\r\nfunction Update(deltaTime) {}\r\n\r\nconst
     stateEnterActions = {}\r\n\r\nconst duringStateActions = {}\r\n\r\nconst stateExitActions

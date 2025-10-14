@@ -68,9 +68,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
-    = \"callExternalEndpointID_example\";\npNum = 1;\n\r\nconst uploadInterval =
-    1;\r\nconst dataLengthPerUpload = 100;\r\nconst dataByteLengthPerUpload = 100000;
+  sourceCode: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\ncallExternalEndpointID
+    = \"callExternalEndpointID_example\";\r\npNum = 1;\r\n\r\nconst uploadInterval
+    = 1;\r\nconst dataLengthPerUpload = 100;\r\nconst dataByteLengthPerUpload = 100000;
     // 102400\r\n\r\n$.onStart(() => {\r\n    $.state.customData = [];\r\n    $.state.uploadIndex
     = 0;\r\n    $.state.elapsedTime = 0;\r\n    // $.state.dataLength = 0;\r\n   
     $.state.steps = 0;\r\n    $.state.isUploading = false;\r\n})\r\n\r\n$.onUpdate((deltaTime)
@@ -133,8 +133,12 @@ MonoBehaviour:
     values.\r\n\r\n---\r\n\r\n**Important Note:** The script **must return a value**
     at the end of its code block.\r\n\r\nExamples:\r\n    - return { score: 100 };`\r\n   
     - const answer = $.getStateCompat('global', 'count', 'integer') > 5; return {
-    isLarger: answer };`\r\n*/\r\nreturn { foo: 'bar' };\r\n\r\n    return {};\r\n 
-    }\r\n  returnData.push(saveData());\r\n  return returnData;\r\n}\r\n"
+    isLarger: answer };`\r\n*/\r\nreturn {\r\n    stateLog: COLLECTED_DATA[\"stateLog\"],
+    // Include log of the current state by default (state name, id, and the timestamp
+    when the state starts)\r\n    cond: CONDITION || {}, // Include conditions in
+    the collected data by default (if you have enabled the experiment automation
+    feature)\r\n    foo: 'bar' // Replace with your custom collected data\r\n};\r\n\r\n   
+    return {};\r\n  }\r\n  returnData.push(saveData());\r\n  return returnData;\r\n}\r\n"
 --- !u!114 &4976748577095326931
 MonoBehaviour:
   m_ObjectHideFlags: 0
