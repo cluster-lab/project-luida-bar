@@ -1,8 +1,10 @@
 $.onStart(() => {
+  $.state.isBetweenSubjectsConditionsSet = false;
   $.groupState.isParticipantsEnough = false;
   $.groupState.sessionID = Date.now() + "_" +  (Math.random() + 1).toString(36).substring(7);
   $.groupState.participants = []; // array of PlayerHandle who are currently in the experiment
   $.state.participantsEnvInfo = [];
+  $.state.idfc2userId = {};
   $.state.timer = 0;
   
   // TODO: load exp info so that we can check later what environments this experiment requires
@@ -28,6 +30,18 @@ $.onUpdate((deltaTime) => {
                 HandleParticipantsEnough();
             }
         }
+    } else if ($.state.isBetweenSubjectsConditionsSet) { // participants are enough & conditions are set
+        let request = {
+            type: "uploadCustomData",
+            data: {
+                pInfo: $.state.participantsEnvInfo.map(info => ({ ...info, betweenSubjectsConditions: $.state.betweenSubjectsConditions })),
+                idfc2userId: $.state.idfc2userId
+            },
+            token: token || "",
+            eID: expID || "",
+            pID: $.groupState.sessionID, // TODO: change 'pID' to 'sessionID' 
+        };
+        $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), "customDataUploaded");
     }
 /*
   if ($.getStateCompat("this", "exp_checkJoinEligibility", "boolean")) {
@@ -55,6 +69,10 @@ $.onUpdate((deltaTime) => {
 
 $.onReceive((messageType, arg, sender) => {
     switch (messageType) {
+        case "betweenSubjectsCondition":
+            $.state.betweenSubjectsConditions = arg;
+            $.state.isBetweenSubjectsConditionsSet = true;
+            break;
         case "envInfoResponse":
             $.state.participantsEnvInfo = [
               ...$.state.participantsEnvInfo,
@@ -62,17 +80,10 @@ $.onReceive((messageType, arg, sender) => {
                 idfc: sender.idfc,
                 envInfo: arg
               }
-            ]
-            if ($.state.participantsEnvInfo.length >= pNum) {
-              let request = {
-                  type: "uploadCustomData",
-                  data: { envInfo: $.state.participantsEnvInfo },
-                  token: token || "",
-                  eID: expID || "",
-                  pID: $.groupState.sessionID, // TODO: change 'pID' to 'sessionID' 
-              };
-              $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), "customDataUploaded");
-            }
+            ];
+            let idfc2userId = { ...$.state.idfc2userId };
+            idfc2userId[sender.idfc] = sender.userId;
+            $.state.idfc2userId = idfc2userId;
             break;
         default:
             break;
@@ -82,8 +93,8 @@ $.onReceive((messageType, arg, sender) => {
 function HandleParticipantsEnough() {
   $.log("Participants are enough to start the experiment.");
   $.groupState.isParticipantsEnough = true;
-    $.sendSignalCompat("this", "exp_playersAreEnough");
-    $.sendSignalCompat("this", "exp_StartStateTransition");
+  $.sendSignalCompat("this", "exp_playersAreEnough");
+  $.sendSignalCompat("this", "exp_StartStateTransition");
 
   const conditionManager = $.worldItemReference("ConditionManager");
   if (conditionManager) {

@@ -18,6 +18,7 @@ $.onReceive((messageType, arg, sender) => {
     case "luida_participants_info":
       $.groupState.participants = arg.participants;
       $.groupState.sessionID = arg.sessionID;
+      sender.send("betweenSubjectsCondition", $.state.betweenSubjectsConditions);
       break;
     // case "exp_questionnaire_answer":
     //     $.state.betweenSubjectsConditions = GetBetweenSubjectsCondition(arg);
