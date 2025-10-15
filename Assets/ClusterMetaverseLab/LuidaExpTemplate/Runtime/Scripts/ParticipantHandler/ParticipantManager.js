@@ -31,6 +31,7 @@ $.onUpdate((deltaTime) => {
             }
         }
     } else if ($.state.isBetweenSubjectsConditionsSet) { // participants are enough & conditions are set
+        $.state.isBetweenSubjectsConditionsSet = false;
         let request = {
             type: "uploadCustomData",
             data: {

@@ -244,7 +244,8 @@ MonoBehaviour:
     }\n            if (!$.groupState.isParticipantsEnough && $.groupState.participants.length
     >= pNum) {\n                HandleParticipantsEnough();\n            }\n       
     }\n    } else if ($.state.isBetweenSubjectsConditionsSet) { // participants are
-    enough & conditions are set\n        let request = {\n            type: \"uploadCustomData\",\n           
+    enough & conditions are set\n        $.state.isBetweenSubjectsConditionsSet =
+    false;\n        let request = {\n            type: \"uploadCustomData\",\n           
     data: {\n                pInfo: $.state.participantsEnvInfo.map(info => ({ ...info,
     betweenSubjectsConditions: $.state.betweenSubjectsConditions })),\n               
     idfc2userId: $.state.idfc2userId\n            },\n            token: token ||
