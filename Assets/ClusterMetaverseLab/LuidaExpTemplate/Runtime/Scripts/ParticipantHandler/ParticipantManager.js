@@ -1,7 +1,7 @@
 $.onStart(() => {
   $.state.isBetweenSubjectsConditionsSet = false;
   $.groupState.isParticipantsEnough = false;
-  $.groupState.sessionID = Date.now() + "_" +  (Math.random() + 1).toString(36).substring(7);
+  $.groupState.sessionID = Date.now() + "_" +  (Math.random() + 1).toString(36).substring(2, 8);
   $.groupState.participants = []; // array of PlayerHandle who are currently in the experiment
   $.state.participantsEnvInfo = [];
   $.state.idfc2userId = {};
@@ -40,7 +40,7 @@ $.onUpdate((deltaTime) => {
             },
             token: token || "",
             eID: expID || "",
-            sID: sID: $.groupState.sessionID || ""
+            sID: $.groupState.sessionID || ""
         };
         $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), "customDataUploaded");
     }

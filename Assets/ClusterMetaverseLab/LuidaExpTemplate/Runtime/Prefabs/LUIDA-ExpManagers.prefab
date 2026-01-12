@@ -554,8 +554,8 @@ PrefabInstance:
         = \"callExternalEndpointID_example\";\npNum = 1;\n\r\n$.onStart(() => {\n 
         $.state.isBetweenSubjectsConditionsSet = false;\n  $.groupState.isParticipantsEnough
         = false;\n  $.groupState.sessionID = Date.now() + \"_\" +  (Math.random()
-        + 1).toString(36).substring(7);\n  $.groupState.participants = []; // array
-        of PlayerHandle who are currently in the experiment\n  $.state.participantsEnvInfo
+        + 1).toString(36).substring(2, 8);\n  $.groupState.participants = []; //
+        array of PlayerHandle who are currently in the experiment\n  $.state.participantsEnvInfo
         = [];\n  $.state.idfc2userId = {};\n  $.state.timer = 0;\n  \n  // TODO:
         load exp info so that we can check later what environments this experiment
         requires\n})\n\n$.onUpdate((deltaTime) => {\n    if (!$.groupState.isParticipantsEnough)
@@ -577,7 +577,7 @@ PrefabInstance:
         ts: Date.now(), sID: $.groupState.sessionID || \"\", ...info, betweenSubjectsConditions:
         $.state.betweenSubjectsConditions })),\n                idfc2userId: $.state.idfc2userId\n           
         },\n            token: token || \"\",\n            eID: expID || \"\",\n           
-        sID: sID: $.groupState.sessionID || \"\"\n        };\n        $.callExternal(new
+        sID: $.groupState.sessionID || \"\"\n        };\n        $.callExternal(new
         ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), \"customDataUploaded\");\n   
         }\n/*\n  if ($.getStateCompat(\"this\", \"exp_checkJoinEligibility\", \"boolean\"))
         {\n    $.setStateCompat(\"this\", \"exp_checkJoinEligibility\", false);\n\n   
