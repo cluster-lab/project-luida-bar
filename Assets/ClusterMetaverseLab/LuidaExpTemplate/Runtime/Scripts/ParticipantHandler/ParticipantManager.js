@@ -35,12 +35,12 @@ $.onUpdate((deltaTime) => {
         let request = {
             type: "uploadCustomData",
             data: {
-                pInfo: $.state.participantsEnvInfo.map(info => ({ ts: Date.now(), ...info, betweenSubjectsConditions: $.state.betweenSubjectsConditions })),
+                pInfo: $.state.participantsEnvInfo.map(info => ({ ts: Date.now(), sessionID: $.groupState.sessionID, ...info, betweenSubjectsConditions: $.state.betweenSubjectsConditions })),
                 idfc2userId: $.state.idfc2userId
             },
             token: token || "",
             eID: expID || "",
-            pID: "" // $.groupState.sessionID, // TODO: change 'pID' to 'sessionID' 
+            pID: "" 
         };
         $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), "customDataUploaded");
     }

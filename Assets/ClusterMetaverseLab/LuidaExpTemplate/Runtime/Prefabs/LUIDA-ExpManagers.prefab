@@ -574,11 +574,10 @@ PrefabInstance:
         participants are enough & conditions are set\n        $.state.isBetweenSubjectsConditionsSet
         = false;\n        let request = {\n            type: \"uploadCustomData\",\n           
         data: {\n                pInfo: $.state.participantsEnvInfo.map(info => ({
-        ts: Date.now(), ...info, betweenSubjectsConditions: $.state.betweenSubjectsConditions
-        })),\n                idfc2userId: $.state.idfc2userId\n            },\n           
-        token: token || \"\",\n            eID: expID || \"\",\n            pID:
-        \"\" // $.groupState.sessionID, // TODO: change 'pID' to 'sessionID' \n       
-        };\n        $.callExternal(new ExternalEndpointId(callExternalEndpointID),
+        ts: Date.now(), sessionID: $.groupState.sessionID, ...info, betweenSubjectsConditions:
+        $.state.betweenSubjectsConditions })),\n                idfc2userId: $.state.idfc2userId\n           
+        },\n            token: token || \"\",\n            eID: expID || \"\",\n           
+        pID: \"\" \n        };\n        $.callExternal(new ExternalEndpointId(callExternalEndpointID),
         JSON.stringify(request), \"customDataUploaded\");\n    }\n/*\n  if ($.getStateCompat(\"this\",
         \"exp_checkJoinEligibility\", \"boolean\")) {\n    $.setStateCompat(\"this\",
         \"exp_checkJoinEligibility\", false);\n\n    let pIdfcs = $.groupState.participants.map(p
