@@ -1627,14 +1627,13 @@ PrefabInstance:
         returnData = [];\n    const CONDITION = $.groupState.currentCondition;\n   
         const PARTICIPANTS = [null].concat($.groupState.participants);\n    const
         COLLECTED_DATA = $.groupState.collectedData;\n    function saveData() {\n\r\nreturn
-        {\n    d: CONDITION['depth'], // \u8A72\u5F53\u8A66\u884C\u306Edepth\u6761\u4EF6\uFF08\u53C2\u52A0\u8005\u9593\u5909\u6570depth\u306E\u8A72\u5F53\u8A66\u884C\u306B\u304A\u3051\u308B\u5024\uFF09\n   
-        req: CONDITION['request'], // \u8A72\u5F53\u8A66\u884C\u306Erequest\u6761\u4EF6\uFF08\u53C2\u52A0\u8005\u5185\u5909\u6570request\u306E\u8A72\u5F53\u8A66\u884C\u306B\u304A\u3051\u308B\u5024\uFF09\n   
-        font: CONDITION['font'], // \u8A72\u5F53\u8A66\u884C\u306Efont\u6761\u4EF6\uFF08\u53C2\u52A0\u8005\u5185\u5909\u6570font\u306E\u8A72\u5F53\u8A66\u884C\u306B\u304A\u3051\u308B\u5024\uFF09\n   
-        text: CONDITION['text'], // \u8A72\u5F53\u8A66\u884C\u306Etext\u6761\u4EF6\uFF08\u53C2\u52A0\u8005\u5185\u5909\u6570text\u306E\u8A72\u5F53\u8A66\u884C\u306B\u304A\u3051\u308B\u5024\uFF09\n   
-        ans: $.getStateCompat('this', 'isRed', 'boolean') ? \"R\" : \"B\",\u3000//
-        \u56DE\u7B54\uFF08\u8D64\u304B\u9752\uFF09\n    time: COLLECTED_DATA['timer']\u3000//
-        \u7B54\u3048\u308B\u306E\u306B\u4F7F\u3063\u305F\u6642\u9593\n};\r\n    return
-        {};\n  }\n  returnData.push(saveData());\n  return returnData;\n}\n"
+        {\n    stateLog: COLLECTED_DATA[\"stateLog\"], // Include log of the current
+        state by default (state name, id, and the timestamp when the state starts)\n   
+        cond: CONDITION || {}, // Include conditions in the collected data by default
+        (if you have enabled the experiment automation feature)\n    ans: $.getStateCompat('this',
+        'isRed', 'boolean') ? \"R\" : \"B\",\u3000// \u56DE\u7B54\uFF08\u8D64\u304B\u9752\uFF09\n   
+        time: COLLECTED_DATA['timer']\u3000// \u7B54\u3048\u308B\u306E\u306B\u4F7F\u3063\u305F\u6642\u9593\n};\r\n   
+        return {};\n  }\n  returnData.push(saveData());\n  return returnData;\n}\n"
       objectReference: {fileID: 0}
     - target: {fileID: 8273925800708392170, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}

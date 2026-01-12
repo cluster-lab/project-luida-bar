@@ -1,8 +1,6 @@
 return {
-    d: CONDITION['depth'], // 該当試行のdepth条件（参加者間変数depthの該当試行における値）
-    req: CONDITION['request'], // 該当試行のrequest条件（参加者内変数requestの該当試行における値）
-    font: CONDITION['font'], // 該当試行のfont条件（参加者内変数fontの該当試行における値）
-    text: CONDITION['text'], // 該当試行のtext条件（参加者内変数textの該当試行における値）
+    stateLog: COLLECTED_DATA["stateLog"], // Include log of the current state by default (state name, id, and the timestamp when the state starts)
+    cond: CONDITION || {}, // Include conditions in the collected data by default (if you have enabled the experiment automation feature)
     ans: $.getStateCompat('this', 'isRed', 'boolean') ? "R" : "B",　// 回答（赤か青）
     time: COLLECTED_DATA['timer']　// 答えるのに使った時間
 };

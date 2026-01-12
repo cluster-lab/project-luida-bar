@@ -29,6 +29,7 @@ Examples:
     - const answer = $.getStateCompat('global', 'count', 'integer') > 5; return { isLarger: answer };`
 */
 return {
-    gain: CONDITION['gain'],
+    stateLog: COLLECTED_DATA["stateLog"], // Include log of the current state by default (state name, id, and the timestamp when the state starts)
+    cond: CONDITION || {}, // Include conditions in the collected data by default (if you have enabled the experiment automation feature)
     isFaster: $.getStateCompat('global', 'isFaster', 'boolean') ? 'Y' : 'N'
 };
