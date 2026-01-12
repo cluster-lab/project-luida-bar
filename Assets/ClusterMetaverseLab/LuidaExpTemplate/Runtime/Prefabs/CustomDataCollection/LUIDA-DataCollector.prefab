@@ -95,27 +95,26 @@ MonoBehaviour:
     {\n        let request = {\n            type: \"uploadCustomData\",\n           
     token: token || \"\",\n            data: { data: $.state.customData.slice($.state.uploadIndex
     * dataLengthPerUpload, ($.state.uploadIndex + 1) * dataLengthPerUpload) },\n           
-    eID: expID || \"\",\n            pID: $.groupState.participants[0].idfc // TODO:
-    replace with `sessionID: $.groupState.sessionID`\n        };\n        $.log(JSON.stringify(request));\n       
-    $.callExternal(\n            new ExternalEndpointId(callExternalEndpointID),\n           
-    JSON.stringify(request),\n            \"customDataUploaded\");\n        $.state.uploadIndex
-    = $.state.uploadIndex + 1;\n\n        if ($.state.uploadIndex >= $.state.steps)
-    {\n            $.state.uploadIndex = 0;\n            $.state.isUploading = false;\n           
-    $.state.customData = [];\n        }\n    }\n}\n\nfunction utf8ByteLength(str)
-    {\n    let bytes = 0;\n    for (let i = 0; i < str.length; i++) {\n        const
-    code = str.charCodeAt(i);\n\n        if (code <= 0x7F)                      bytes
-    += 1; // U+0000 \u2013 U+007F\n        else if (code <= 0x7FF)               
-    bytes += 2; // U+0080 \u2013 U+07FF\n        else if (code >= 0xD800 && code
-    <= 0xDBFF) {\n            // Surrogate pair (astral plane)\n            bytes
-    += 4;                          // Whole pair is 4 bytes\n            i++;                                
-    // Skip the next surrogate\n        }\n        else                                  
-    bytes += 3; // U+0800 \u2013 U+FFFF\n    }\n    return bytes;\n}\n\nfunction
-    calculateData () {\n    let returnData = $.state.customData;\n    if (!Array.isArray(returnData))
-    returnData = [];\n    const CONDITION = $.groupState.currentCondition;\n    const
-    PARTICIPANTS = [null].concat($.groupState.participants);\n    const COLLECTED_DATA
-    = $.groupState.collectedData;\n    function saveData() {\n\r\n/*\n# Available
-    Variables in LUIDA Data Collector Script\n\nThe script for LUIDA Data Collector
-    is primarily to be written using ClusterScript (https://docs.cluster.mu/script/index.html).\n\nWe
+    eID: expID || \"\",\n            sID: $.groupState.sessionID || \"\"\n       
+    };\n        $.log(JSON.stringify(request));\n        $.callExternal(\n           
+    new ExternalEndpointId(callExternalEndpointID),\n            JSON.stringify(request),\n           
+    \"customDataUploaded\");\n        $.state.uploadIndex = $.state.uploadIndex +
+    1;\n\n        if ($.state.uploadIndex >= $.state.steps) {\n            $.state.uploadIndex
+    = 0;\n            $.state.isUploading = false;\n            $.state.customData
+    = [];\n        }\n    }\n}\n\nfunction utf8ByteLength(str) {\n    let bytes =
+    0;\n    for (let i = 0; i < str.length; i++) {\n        const code = str.charCodeAt(i);\n\n       
+    if (code <= 0x7F)                      bytes += 1; // U+0000 \u2013 U+007F\n       
+    else if (code <= 0x7FF)                bytes += 2; // U+0080 \u2013 U+07FF\n       
+    else if (code >= 0xD800 && code <= 0xDBFF) {\n            // Surrogate pair (astral
+    plane)\n            bytes += 4;                          // Whole pair is 4 bytes\n           
+    i++;                                 // Skip the next surrogate\n        }\n       
+    else                                   bytes += 3; // U+0800 \u2013 U+FFFF\n   
+    }\n    return bytes;\n}\n\nfunction calculateData () {\n    let returnData =
+    $.state.customData;\n    if (!Array.isArray(returnData)) returnData = [];\n   
+    const CONDITION = $.groupState.currentCondition;\n    const PARTICIPANTS = [null].concat($.groupState.participants);\n   
+    const COLLECTED_DATA = $.groupState.collectedData;\n    function saveData() {\n\r\n/*\n#
+    Available Variables in LUIDA Data Collector Script\n\nThe script for LUIDA Data
+    Collector is primarily to be written using ClusterScript (https://docs.cluster.mu/script/index.html).\n\nWe
     also provide the following variables that work with LUIDA-only features.\n\nTip:
     When asking an LLM service for coding assistance, first share the `Asset/Doc/CCK-Types.d.ts`
     file and this comment section with it.\n\n### CONDITION\n    - Only available

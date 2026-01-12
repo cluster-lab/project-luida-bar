@@ -65,7 +65,7 @@ function uploadDataStep() {
             token: token || "",
             data: { data: $.state.customData.slice($.state.uploadIndex * dataLengthPerUpload, ($.state.uploadIndex + 1) * dataLengthPerUpload) },
             eID: expID || "",
-            pID: $.groupState.participants[0].idfc // TODO: replace with `sessionID: $.groupState.sessionID`
+            sID: $.groupState.sessionID || ""
         };
         $.log(JSON.stringify(request));
         $.callExternal(

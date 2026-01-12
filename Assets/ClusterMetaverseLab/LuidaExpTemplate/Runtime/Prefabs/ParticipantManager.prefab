@@ -247,20 +247,20 @@ MonoBehaviour:
     enough & conditions are set\n        $.state.isBetweenSubjectsConditionsSet =
     false;\n        let request = {\n            type: \"uploadCustomData\",\n           
     data: {\n                pInfo: $.state.participantsEnvInfo.map(info => ({ ts:
-    Date.now(), sessionID: $.groupState.sessionID, ...info, betweenSubjectsConditions:
+    Date.now(), sID: $.groupState.sessionID || \"\", ...info, betweenSubjectsConditions:
     $.state.betweenSubjectsConditions })),\n                idfc2userId: $.state.idfc2userId\n           
     },\n            token: token || \"\",\n            eID: expID || \"\",\n           
-    pID: \"\" \n        };\n        $.callExternal(new ExternalEndpointId(callExternalEndpointID),
-    JSON.stringify(request), \"customDataUploaded\");\n    }\n/*\n  if ($.getStateCompat(\"this\",
-    \"exp_checkJoinEligibility\", \"boolean\")) {\n    $.setStateCompat(\"this\",
-    \"exp_checkJoinEligibility\", false);\n\n    let pIdfcs = $.groupState.participants.map(p
-    => p.idfc);\n    const newPlayers = $.getPlayersNear($.getPosition(), 1)\n     
-    .filter(p => !pIDFCs.includes(p.idfc));\n    \n    if (newPlayers.length > 0)
-    {\n      $.state.newPlayers = newPlayers;\n      $.log(newPlayers[0].idfc);\n\n     
-    const request = {\n        type: \"checkJoinEligibility\",\n        token: token
-    || \"\",\n        eID: expID || \"\",\n        idfcs: newPlayers.map(p => p.idfc).join(\"|\")\n     
-    };\n      $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(request),
-    \"joinEligibilityChecked\");\n    }\n  }\n*/\n})\n\n$.onReceive((messageType,
+    sID: sID: $.groupState.sessionID || \"\"\n        };\n        $.callExternal(new
+    ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), \"customDataUploaded\");\n   
+    }\n/*\n  if ($.getStateCompat(\"this\", \"exp_checkJoinEligibility\", \"boolean\"))
+    {\n    $.setStateCompat(\"this\", \"exp_checkJoinEligibility\", false);\n\n   
+    let pIdfcs = $.groupState.participants.map(p => p.idfc);\n    const newPlayers
+    = $.getPlayersNear($.getPosition(), 1)\n      .filter(p => !pIDFCs.includes(p.idfc));\n   
+    \n    if (newPlayers.length > 0) {\n      $.state.newPlayers = newPlayers;\n     
+    $.log(newPlayers[0].idfc);\n\n      const request = {\n        type: \"checkJoinEligibility\",\n       
+    token: token || \"\",\n        eID: expID || \"\",\n        idfcs: newPlayers.map(p
+    => p.idfc).join(\"|\")\n      };\n      $.callExternal(new ExternalEndpointId(callExternalEndpointID),
+    JSON.stringify(request), \"joinEligibilityChecked\");\n    }\n  }\n*/\n})\n\n$.onReceive((messageType,
     arg, sender) => {\n    switch (messageType) {\n        case \"betweenSubjectsCondition\":\n           
     $.state.betweenSubjectsConditions = arg;\n            $.state.isBetweenSubjectsConditionsSet
     = true;\n            break;\n        case \"envInfoResponse\":\n            $.state.participantsEnvInfo
