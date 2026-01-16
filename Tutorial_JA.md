@@ -129,20 +129,25 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 4.  次に、clusterのアクセストークンを発行し、Unityプロジェクトに登録します。詳細な手順は以下の画像を参照してください。
     ![clusterアクセストークン登録手順](https://github.com/user-attachments/assets/c06f43c6-3412-4462-92a9-ac3576252e99)
-5.  続いて、clusterの外部通信接続先URLを登録し、そこで生成された識別子（Endpoint ID）とVerify Tokenを、本実装テンプレートに登録します。手順は以下の画像を順番に参照してください。
+5.  続いて、clusterの外部通信接続先URLを登録します。以下の手順に従ってください：
+    1. ブラウザでcluster公式サイトの[外部通信接続先URL設定画面](https://cluster.mu/account/tokens/callExternal)にアクセスします。
+    2. 「新規登録」をクリックし、URLに `https://luida-web-next.vercel.app/api/cluster` を入力して登録します。
+    3. 登録後、「Verify Tokenを生成」ボタンをクリックしてトークンを生成します。
 
 | 1. 外部通信接続先URLの設定画面を開く | 2. 外部通信接続先URLを登録する：`https://luida-web-next.vercel.app/api/cluster` | 3. 外部通信用Verify Tokenを生成させる |
 | :---: | :---: | :---: |
 | ![registerTokenStep1](https://github.com/user-attachments/assets/a207e2d5-7c40-4a39-b910-b22218d8054c) | ![registerTokenStep2](https://github.com/user-attachments/assets/fa658c8d-9c98-48ee-a322-93b60e067d6c) | ![registerTokenStep3](https://github.com/user-attachments/assets/584d1acd-5571-4c9a-89ba-b721200d7365) |
 
-| 4. LUIDA > Configure experiment identifiers を開く | 5. 先ほど登録したURLの識別子（Endpoint ID）を`callExternal Endpoint ID`に、Verify Tokenを`Verify Token`にコピーする |
+6.  Unityのメニューバーから `LUIDA > Configure experiment identifiers` を開きます。**Endpoint ID と Verify Token は自動的に設定されます**（clusterアカウントと連携済みの場合）。手動で設定する必要がある場合は、先ほど登録したURLの識別子（Endpoint ID）を`callExternal Endpoint ID`に、Verify Tokenを`Verify Token`にコピーしてください。
+
+| Configure experiment identifiers を開く | Endpoint IDとVerify Tokenが自動設定される（または手動で入力） |
 | :---: | :---: |
 | ![registerTokenStep4](https://github.com/user-attachments/assets/2315ce7e-67ad-4989-861a-d2950d9f0617) | ![registerTokenStep5](https://github.com/user-attachments/assets/24f5b63f-61dd-4f60-a389-0269f3543f7e) |
 
-6.  `Configure experiment identifiers` の画面に残り、先ほどウェブコンソールでコピーした実験IDを `Experiment ID` フィールドに入力したうえで、画面を閉じます。
+7.  同じ `Configure experiment identifiers` の画面で、先ほどウェブコンソールでコピーした実験IDを `Experiment ID` フィールドに入力したうえで、画面を閉じます。
     ![Luida Editor 実験ID登録画面](https://github.com/user-attachments/assets/d5e9efbd-9309-458e-9997-5cda7a4f2904)
 
-7. `Window > かおもラボ > CSEmulator`の`callExternal用Endpoint`設定フィールドに、先ほどの `Endpoint ID` と `https://luida-web-next.vercel.app/api/cluster`で埋めます。
+8. `Window > かおもラボ > CSEmulator`の`callExternal用Endpoint`設定フィールドに、Endpoint ID と `https://luida-web-next.vercel.app/api/cluster` を入力します。（ローカルテスト時に外部通信機能を使用する場合に必要です）
     <img width="928" height="290" alt="image" src="https://github.com/user-attachments/assets/31b160e0-e1cd-4dbf-a8fd-8c907de48015" />
 
 </details>
