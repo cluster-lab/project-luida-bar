@@ -105,7 +105,12 @@ public class ExpIdentifierConfigTab : EditorWindow
     private void DrawLoginGUI()
     {
         EditorGUILayout.HelpBox("Please log in with your Cluster access token to auto-fill API keys.", MessageType.Info);
-        
+
+        if (GUILayout.Button("Create Access Token"))
+        {
+            Application.OpenURL("https://cluster.mu/account/tokens");
+        }
+
         loginTokenInput = EditorGUILayout.TextField("Access Token", loginTokenInput);
 
         GUI.enabled = !string.IsNullOrEmpty(loginTokenInput);

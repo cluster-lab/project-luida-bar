@@ -113,30 +113,18 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
     *   [**CSEmulator: Tool to play Cluster Scripts in Unity Editor**](https://vkao.booth.pm/items/5111235) (latest version recommended)
 3.  Open `LUIDA > Scene > Create New Scene` from Unity's menu bar, enter a scene name for your experiment (e.g., `MyExperimentScene`), and press the OK button.
        <img width="482" height="120" alt="image" src="https://github.com/user-attachments/assets/78e2852f-3fd0-4655-a9c5-7a5efa189eba" />
-        <img width="322" height="138" alt="image" src="https://github.com/user-attachments/assets/925099e3-3089-4a92-80ef-29e7d7200e1e" />
+       <img width="322" height="138" alt="image" src="https://github.com/user-attachments/assets/925099e3-3089-4a92-80ef-29e7d7200e1e" />
+ 
+4. Next, link your cluster account to this Unity project. The procedure is as follows (see the image for reference):
+    1. From the Unity menu bar, open the `LUIDA > Configure experiment identifiers` window.
+    2. Click the `Create Access Token` button to open the cluster access token creation page in your web browser.
+    3. Click the `Create Token` button, and then copy and paste the displayed token into the `Access Token` field in the `Configure experiment identifiers` window that you previously opened in Unity.
 
-4.  Next, generate a cluster access token and register it in the Unity project. See the image below for detailed steps.
-    ![cluster access token registration steps](https://github.com/user-attachments/assets/c06f43c6-3412-4462-92a9-ac3576252e99)
-5.  Next, register the external communication connection URL for cluster. Follow these steps:
-    1. Access the [external communication connection URL settings page](https://cluster.mu/account/tokens/callExternal) on the cluster official website in your browser.
-    2. Click "New Registration" and enter `https://luida-web-next.vercel.app/api/cluster` as the URL to register.
-    3. After registration, click the "Generate Verify Token" button to generate a token.
+    ![cluster access token registration procedure](https://github.com/user-attachments/assets/e3f23566-e1b0-459b-8586-58ee897b7616)
 
-| 1. Open external communication URL settings | 2. Register external communication URL: `https://luida-web-next.vercel.app/api/cluster` | 3. Generate Verify Token |
-| :---: | :---: | :---: |
-| ![registerTokenStep1](https://github.com/user-attachments/assets/a207e2d5-7c40-4a39-b910-b22218d8054c) | ![registerTokenStep2](https://github.com/user-attachments/assets/fa658c8d-9c98-48ee-a322-93b60e067d6c) | ![registerTokenStep3](https://github.com/user-attachments/assets/584d1acd-5571-4c9a-89ba-b721200d7365) |
+5. With the `Configure experiment identifiers` window still open, enter the Experiment ID you copied from the web console earlier into the `Experiment ID` field, and then close the window.
 
-6.  Open `LUIDA > Configure experiment identifiers` from Unity's menu bar. **Endpoint ID and Verify Token are automatically configured** (if linked with your cluster account). If you need to set them manually, copy the Endpoint ID from the registered URL to `callExternal Endpoint ID` and the Verify Token to `Verify Token`.
-
-| Open Configure experiment identifiers | Endpoint ID and Verify Token auto-configured (or enter manually) |
-| :---: | :---: |
-| ![registerTokenStep4](https://github.com/user-attachments/assets/2315ce7e-67ad-4989-861a-d2950d9f0617) | ![registerTokenStep5](https://github.com/user-attachments/assets/24f5b63f-61dd-4f60-a389-0269f3543f7e) |
-
-7.  In the same `Configure experiment identifiers` window, enter the experiment ID you copied from the web console into the `Experiment ID` field, then close the window.
-    ![Luida Editor experiment ID registration](https://github.com/user-attachments/assets/d5e9efbd-9309-458e-9997-5cda7a4f2904)
-
-8. In `Window > Kaomo Lab > CSEmulator`, fill in the `callExternal Endpoint` settings field with the Endpoint ID and `https://luida-web-next.vercel.app/api/cluster`. (Required for using external communication during local testing)
-    <img width="928" height="290" alt="image" src="https://github.com/user-attachments/assets/31b160e0-e1cd-4dbf-a8fd-8c907de48015" />
+    ![Luida Editor Experiment ID registration screen](https://github.com/user-attachments/assets/d5e9efbd-9309-458e-9997-5cda7a4f2904)
 
 </details>
 
