@@ -124,7 +124,7 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 5. With the `Configure experiment identifiers` window still open, enter the Experiment ID you copied from the web console earlier into the `Experiment ID` field, and then close the window.
 
-    ![Luida Editor Experiment ID registration screen](https://github.com/user-attachments/assets/d5e9efbd-9309-458e-9997-5cda7a4f2904)
+    ![Luida Editor Experiment ID registration screen](https://github.com/user-attachments/assets/45afbd6b-502b-40ef-a1f7-b2c2c8ef9c30)
 
 </details>
 

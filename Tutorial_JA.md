@@ -136,7 +136,7 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 5. `Configure experiment identifiers` ウィンドウが開いたまま、先ほどウェブコンソールでコピーした実験IDを `Experiment ID` フィールドに入力したうえで、画面を閉じます。
 
-    ![Luida Editor 実験ID登録画面](https://github.com/user-attachments/assets/d5e9efbd-9309-458e-9997-5cda7a4f2904)
+    ![Luida Editor 実験ID登録画面](https://github.com/user-attachments/assets/45afbd6b-502b-40ef-a1f7-b2c2c8ef9c30)
 
 </details>
 
