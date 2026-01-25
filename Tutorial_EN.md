@@ -112,13 +112,14 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
     *   [**CSCombiner: Tool for combining Cluster Scripts in Unity Editor**](https://vkao.booth.pm/items/5924956) (ver1.01 recommended)
     *   [**CSEmulator: Tool to play Cluster Scripts in Unity Editor**](https://vkao.booth.pm/items/5111235) (latest version recommended)
 3.  Open `LUIDA > Scene > Create New Scene` from Unity's menu bar, enter a scene name for your experiment (e.g., `MyExperimentScene`), and press the OK button.
-       <img width="482" height="120" alt="image" src="https://github.com/user-attachments/assets/78e2852f-3fd0-4655-a9c5-7a5efa189eba" />
-       <img width="322" height="138" alt="image" src="https://github.com/user-attachments/assets/925099e3-3089-4a92-80ef-29e7d7200e1e" />
+
+    <img width="482" height="120" alt="image" src="https://github.com/user-attachments/assets/78e2852f-3fd0-4655-a9c5-7a5efa189eba" />
+    <img width="322" height="138" alt="image" src="https://github.com/user-attachments/assets/925099e3-3089-4a92-80ef-29e7d7200e1e" />
  
 4. Next, link your cluster account to this Unity project. The procedure is as follows (see the image for reference):
     1. From the Unity menu bar, open the `LUIDA > Configure experiment identifiers` window.
     2. Click the `Create Access Token` button to open the cluster access token creation page in your web browser.
-    3. Click the `Create Token` button, and then copy and paste the displayed token into the `Access Token` field in the `Configure experiment identifiers` window that you previously opened in Unity.
+    3. Click the `Create Token` button, and then copy and paste the displayed token into the `Access Token` field in the `Configure experiment identifiers` window that you just opened in Unity.
 
     ![cluster access token registration procedure](https://github.com/user-attachments/assets/e3f23566-e1b0-459b-8586-58ee897b7616)
 

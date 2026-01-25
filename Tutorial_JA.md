@@ -124,15 +124,16 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
     *   [**CSCombiner: Cluster Scriptを Unity Editor 上で結合するツール**](https://vkao.booth.pm/items/5924956) (ver1.01 推奨)
     *   [**CSEmulator: Cluster Scriptを Unity Editor 上で再生できるようにするツール**](https://vkao.booth.pm/items/5111235) (最新バージョンを推奨)
 3.  Unityのメニューバーから `LUIDA > Scene > Create New Scene` のウィンドウを開き、ご自身が実装する実験用のシーン名（例: `MyExperimentScene`）を入力した上でOKボタンを押します。
-       <img width="482" height="120" alt="image" src="https://github.com/user-attachments/assets/78e2852f-3fd0-4655-a9c5-7a5efa189eba" />
-       <img width="322" height="138" alt="image" src="https://github.com/user-attachments/assets/925099e3-3089-4a92-80ef-29e7d7200e1e" />
 
-4.  次に、clusterのアカウントをこのUnityプロジェクトに紐づけます。詳細な手順は以下の通り（画像を併せて参照してください）：
-    1. Unityのメニューバーから `LUIDA > Configure experiment identifiers` のウィンドウを開きます。
-    2. ボタン `Create Access Token` をクリックし、ウェブブラウザーでclusterのアクセストークン発行ページを開きます。
-    3. ボタン `Create Token` をクリックし、表示されたトークンを、先ほど開いたUnity側の `Configure experiment identifiers` ウィンドウの `Access Token` フィールドにコピペします。
+    <img width="482" height="120" alt="image" src="https://github.com/user-attachments/assets/78e2852f-3fd0-4655-a9c5-7a5efa189eba" />
+    <img width="322" height="138" alt="image" src="https://github.com/user-attachments/assets/925099e3-3089-4a92-80ef-29e7d7200e1e" />
 
-    ![clusterアクセストークン登録手順](https://github.com/user-attachments/assets/e3f23566-e1b0-459b-8586-58ee897b7616)
+4. 次に、clusterアカウントとUnityプロジェクトを連携します。手順は以下の通りです。
+   1.  Unityのメニューバーから `LUIDA > Configure experiment identifiers` を選択し、ウィンドウを開きます。
+   2.  `Create Access Token`ボタンをクリックすると、Webブラウザでclusterのアクセストークン発行ページが開きます。
+   3.  ブラウザ上で `Create Token`ボタンをクリックして表示されたトークンをコピーし、先ほど開いたUnity側の `Configure experiment identifiers` ウィンドウの `Access Token` フィールドに貼り付けます。
+
+   ![clusterアクセストークン登録手順](https://github.com/user-attachments/assets/e3f23566-e1b0-459b-8586-58ee897b7616)
 
 5. `Configure experiment identifiers` ウィンドウが開いたまま、先ほどウェブコンソールでコピーした実験IDを `Experiment ID` フィールドに入力したうえで、画面を閉じます。
 
