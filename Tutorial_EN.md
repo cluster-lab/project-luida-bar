@@ -34,7 +34,7 @@ Also, please complete the following preparations before starting the tutorial:
 
 1.  [Create a cluster account](https://help.cluster.mu/hc/articles/115000827112)
 2.  [Install the required version of Unity for cluster](https://docs.cluster.mu/creatorkit/installation/install-unity/)
-3.  Log in to the [LUIDA Web Console](https://luida-web-next.vercel.app/) for the first time and submit an approval request. After submitting the request, please contact the administrator (y.hu@cluster.mu).
+3.  Log in to the [LUIDA Web Console](https://luida.cluster.mu/experiments) for the first time and submit an approval request. After submitting the request, please contact the administrator (y.hu@cluster.mu).
 
 ---
 
@@ -66,7 +66,7 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 <details>
 <summary><h3>Follow these steps to register and configure</h3></summary>
 
-1.  Open the [LUIDA Web Console](https://luida-web-next.vercel.app/).
+1.  Open the [LUIDA Web Console](https://luida.cluster.mu/experiments).
 2.  **Create a new experiment**: Click "+New Experiment" and register the basic experiment information with the following values:
     1. Title: `Stroop Effect Experiment`
     2. Participation requirements: `No color vision deficiency`
