@@ -1,23 +1,23 @@
 const stateEnterActions = {
     1: [
-        { type: "exec", action: () => {
+        { type: "exec", action: (deltaTime) => {
             $.setStateCompat('this', 'exp_showItem', true);
         } },
-        { type: "exec", action: () => {
+        { type: "exec", action: (deltaTime) => {
             $.subNode('Text').setText(`This experiment...`);
         } }
     ],
     3: [
-        { type: "exec", action: () => {
+        { type: "exec", action: (deltaTime) => {
             $.setStateCompat('this', 'exp_showItem', true);
         } },
-        { type: "exec", action: () => {
+        { type: "exec", action: (deltaTime) => {
             if (CONDITION['request'] === 'font') {
               $.subNode('Text').setText(`Click the button that
               matches the text's font color`);
             }
         } },
-        { type: "exec", action: () => {
+        { type: "exec", action: (deltaTime) => {
             if (CONDITION['request'] === 'meaning') {
               $.subNode('Text').setText(`Click the button that
               matches the text's meaning`);
@@ -25,7 +25,7 @@ const stateEnterActions = {
         } }
     ],
     4: [
-        { type: "exec", action: () => {
+        { type: "exec", action: (deltaTime) => {
             $.subNode('Text').setText(`Take a break for 3 seconds`);
         } }
     ]
@@ -36,12 +36,12 @@ const duringStateActions = {
 
 const stateExitActions = {
     1: [
-        { type: "exec", action: () => {
+        { type: "exec", action: (deltaTime) => {
             $.setStateCompat('this', 'exp_showItem', false);
         } }
     ],
     4: [
-        { type: "exec", action: () => {
+        { type: "exec", action: (deltaTime) => {
             $.setStateCompat('this', 'exp_showItem', false);
         } }
     ]

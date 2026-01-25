@@ -434,6 +434,7 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
         {
             UpdateSceneObjects();
             UpdateStateListeningItemsAfterReorder();
+            UpdateJavaScriptStateNames();
             
             // ### MODIFICATION START ###
             // Synchronize questionnaire containers using the new manager
@@ -450,6 +451,51 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
     
     // ... All other methods from StateMachineConfigTab (excluding those moved to QuestionnaireEditorManager) remain here ...
     // e.g., InitializeStateDefaults, UpdateSceneObjects, UpdateTransitionCurrentStateId, etc.
+    
+    // Updates the 'state_names' constant in the experiment's JS variables file
+    private void UpdateJavaScriptStateNames()
+    {
+        // Get the path to the JS file
+        string sceneName = SceneManager.GetActiveScene().name;
+        string jsPath = $"Assets/_Experiment_/Settings/ExperimentVariables/{sceneName}.js";
+
+        if (!File.Exists(jsPath))
+        {
+            // Don't log a warning, as the file might be generated later by the other tab.
+            return;
+        }
+
+        // Get the current state names and format them for JavaScript
+        if (stateList == null || stateList.States == null) return;
+        var stateNames = stateList.States.Select(s => $"\"{s.StateName}\"");
+        string newStatesLine = $"const state_names = [{string.Join(", ", stateNames)}];";
+
+        var lines = new List<string>(File.ReadAllLines(jsPath));
+        int lineIndex = -1;
+        for (int i = 0; i < lines.Count; i++)
+        {
+            if (lines[i].Trim().StartsWith("const state_names ="))
+            {
+                lineIndex = i;
+                break;
+            }
+        }
+
+        if (lineIndex != -1)
+        {
+            // Replace the existing line
+            lines[lineIndex] = newStatesLine;
+        }
+        else
+        {
+            // If the line doesn't exist, append it.
+            lines.Add(newStatesLine);
+        }
+
+        // Write the updated content back to the file
+        File.WriteAllLines(jsPath, lines);
+        Debug.Log($"State names updated in {jsPath}");
+    }
     
     private void InitializeStateDefaults(int index)
     {

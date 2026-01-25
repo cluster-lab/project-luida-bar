@@ -124,26 +124,20 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
     *   [**CSCombiner: Cluster Scriptを Unity Editor 上で結合するツール**](https://vkao.booth.pm/items/5924956) (ver1.01 推奨)
     *   [**CSEmulator: Cluster Scriptを Unity Editor 上で再生できるようにするツール**](https://vkao.booth.pm/items/5111235) (最新バージョンを推奨)
 3.  Unityのメニューバーから `LUIDA > Scene > Create New Scene` のウィンドウを開き、ご自身が実装する実験用のシーン名（例: `MyExperimentScene`）を入力した上でOKボタンを押します。
-       <img width="482" height="120" alt="image" src="https://github.com/user-attachments/assets/78e2852f-3fd0-4655-a9c5-7a5efa189eba" />
-        <img width="322" height="138" alt="image" src="https://github.com/user-attachments/assets/925099e3-3089-4a92-80ef-29e7d7200e1e" />
 
-4.  次に、clusterのアクセストークンを発行し、Unityプロジェクトに登録します。詳細な手順は以下の画像を参照してください。
-    ![clusterアクセストークン登録手順](https://github.com/user-attachments/assets/c06f43c6-3412-4462-92a9-ac3576252e99)
-5.  続いて、clusterの外部通信接続先URLを登録し、そこで生成された識別子（Endpoint ID）とVerify Tokenを、本実装テンプレートに登録します。手順は以下の画像を順番に参照してください。
+    <img width="482" height="120" alt="image" src="https://github.com/user-attachments/assets/78e2852f-3fd0-4655-a9c5-7a5efa189eba" />
+    <img width="322" height="138" alt="image" src="https://github.com/user-attachments/assets/925099e3-3089-4a92-80ef-29e7d7200e1e" />
 
-| 1. 外部通信接続先URLの設定画面を開く | 2. 外部通信接続先URLを登録する：`https://luida.cluster.mu/api/cluster` | 3. 外部通信用Verify Tokenを生成させる |
-| :---: | :---: | :---: |
-| ![registerTokenStep1](https://github.com/user-attachments/assets/a207e2d5-7c40-4a39-b910-b22218d8054c) | ![registerTokenStep2](https://github.com/user-attachments/assets/b10fec59-b769-4251-83f9-edad3550c6d2) | ![registerTokenStep3](https://github.com/user-attachments/assets/584d1acd-5571-4c9a-89ba-b721200d7365) |
+4. 次に、clusterアカウントとUnityプロジェクトを連携します。手順は以下の通りです。
+   1.  Unityのメニューバーから `LUIDA > Configure experiment identifiers` を選択し、ウィンドウを開きます。
+   2.  `Create Access Token`ボタンをクリックすると、Webブラウザでclusterのアクセストークン発行ページが開きます。
+   3.  ブラウザ上で `Create Token`ボタンをクリックして表示されたトークンをコピーし、先ほど開いたUnity側の `Configure experiment identifiers` ウィンドウの `Access Token` フィールドに貼り付けます。
 
-| 4. LUIDA > Configure experiment identifiers を開く | 5. 先ほど登録したURLの識別子（Endpoint ID）を`callExternal Endpoint ID`に、Verify Tokenを`Verify Token`にコピーする |
-| :---: | :---: |
-| ![registerTokenStep4](https://github.com/user-attachments/assets/2315ce7e-67ad-4989-861a-d2950d9f0617) | ![registerTokenStep5](https://github.com/user-attachments/assets/24f5b63f-61dd-4f60-a389-0269f3543f7e) |
+   ![clusterアクセストークン登録手順](https://github.com/user-attachments/assets/e3f23566-e1b0-459b-8586-58ee897b7616)
 
-6.  `Configure experiment identifiers` の画面に残り、先ほどウェブコンソールでコピーした実験IDを `Experiment ID` フィールドに入力したうえで、画面を閉じます。
-    ![Luida Editor 実験ID登録画面](https://github.com/user-attachments/assets/d5e9efbd-9309-458e-9997-5cda7a4f2904)
+5. `Configure experiment identifiers` ウィンドウが開いたまま、先ほどウェブコンソールでコピーした実験IDを `Experiment ID` フィールドに入力したうえで、画面を閉じます。
 
-7. `Window > かおもラボ > CSEmulator`の`callExternal用Endpoint`設定フィールドに、先ほどの `Endpoint ID` と `https://luida.cluster.mu/api/cluster`で埋めます。
-    <img width="928" height="290" alt="471866129-31b160e0-e1cd-4dbf-a8fd-8c907de48015" src="https://github.com/user-attachments/assets/f88cbee9-7cb4-416f-aef6-5d1a054dd048" />
+    ![Luida Editor 実験ID登録画面](https://github.com/user-attachments/assets/45afbd6b-502b-40ef-a1f7-b2c2c8ef9c30)
 
 </details>
 

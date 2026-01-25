@@ -74,11 +74,12 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
             var element = withinSubjectsVariables[index];
             rect.y += 2;
             float singleLineHeight = EditorGUIUtility.singleLineHeight;
+            float spacing = 20;
 
-            var nameRect = new Rect(rect.x, rect.y, rect.width * 0.35f, singleLineHeight);
-            var valuesRect = new Rect(rect.x + rect.width * 0.4f, rect.y, rect.width * 0.4f, singleLineHeight);
-            var randomLabelRect = new Rect(rect.x + rect.width * 0.82f, rect.y, 70, singleLineHeight);
-            var randomToggleRect = new Rect(randomLabelRect.xMax, rect.y, 20, singleLineHeight);
+            var nameRect = new Rect(rect.x, rect.y, rect.width * 0.25f, singleLineHeight);
+            var valuesRect = new Rect(nameRect.xMax + spacing, rect.y, rect.width * 0.35f, singleLineHeight);
+            var randomLabelRect = new Rect(valuesRect.xMax + spacing, rect.y, 70, singleLineHeight);
+            var randomToggleRect = new Rect(randomLabelRect.xMax + spacing, rect.y, 20, singleLineHeight);
 
             float labelWidth = 40f;
             var nameLabelRect = new Rect(nameRect.x, nameRect.y, labelWidth, nameRect.height);
@@ -119,10 +120,13 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
             var element = betweenSubjectsVariables[index];
             rect.y += 2;
             float singleLineHeight = EditorGUIUtility.singleLineHeight;
+            float spacing = 20;
             
-            var nameRect = new Rect(rect.x, rect.y, rect.width * 0.35f, singleLineHeight);
-            var valuesRect = new Rect(rect.x + rect.width * 0.4f, rect.y, rect.width * 0.4f, singleLineHeight);
-            var randomLabelRect = new Rect(rect.x + rect.width * 0.82f, rect.y, rect.width * 0.18f, singleLineHeight);
+            var nameRect = new Rect(rect.x, rect.y, rect.width * 0.25f, singleLineHeight);
+            var valuesRect = new Rect(nameRect.xMax + spacing, rect.y, rect.width * 0.35f, singleLineHeight);
+            var randomLabelRect = new Rect(valuesRect.xMax + spacing, rect.y, rect.width * 0.1f, singleLineHeight);
+            var debugValueRect = new Rect(randomLabelRect.xMax + spacing, rect.y, rect.width * 0.15f, singleLineHeight);
+
 
             float labelWidth = 40f;
             var nameLabelRect = new Rect(nameRect.x, nameRect.y, labelWidth, nameRect.height);
@@ -138,6 +142,12 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
             valuesString = EditorGUI.TextField(valuesFieldRect, valuesString);
             element.values = valuesString.Split(',').Select(v => v.Trim()).Where(v => !string.IsNullOrEmpty(v)).ToArray();
 
+            labelWidth = 70f;
+            var debugLabelRect = new Rect(debugValueRect.x, debugValueRect.y, labelWidth, debugValueRect.height);
+            var debugFieldRect = new Rect(debugLabelRect.xMax, debugValueRect.y, debugValueRect.width - labelWidth, debugValueRect.height);
+            EditorGUI.LabelField(debugLabelRect, new GUIContent("Debug Val:", "Force this value for testing. Leave empty for random assignment."));
+            element.debugValue = EditorGUI.TextField(debugFieldRect, element.debugValue);
+            
             element.isRandom = true; 
             EditorGUI.LabelField(randomLabelRect, "Is Random: true");
         };
@@ -146,7 +156,8 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
             betweenSubjectsVariables.Add(new ExperimentVariable { 
                 name = "NewVariable", 
                 values = new[] { "value1", "value2" }, 
-                isRandom = true 
+                isRandom = true,
+                debugValue = null
             });
         };
     }
@@ -182,6 +193,8 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
 
         string combinedJs = $"const trialsCountForEachUniqueCondition = {trialsCountForEachUniqueCondition};\n" +
             withinSubjectsVariablesJs + "\n" + betweenSubjectsVariablesJs + "\n";
+        
+        combinedJs += GetStateNamesJavaScript();
 
         File.WriteAllText(variablesAssetPath, combinedJs);
 
@@ -201,10 +214,37 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
         foreach (var variable in variables)
         {
             string values = string.Join(", ", variable.values.Select(v => $"\"{v}\""));
-            js += $"    {{ name: \"{variable.name}\", values: [{values}], isRandom: {variable.isRandom.ToString().ToLower()} }},\n";
+            string varObject = $"    {{ name: \"{variable.name}\", values: [{values}], isRandom: {variable.isRandom.ToString().ToLower()}";
+
+            if (variableName == "between_subjects_variables")
+            {
+                string debugValueJs = string.IsNullOrEmpty(variable.debugValue) ? "null" : $"\"{variable.debugValue}\"";
+                varObject += $", debugValue: {debugValueJs}";
+            }
+            
+            varObject += " },\n";
+            js += varObject;
         }
         js += "];";
         return js;
+    }
+    
+    private string GetStateNamesJavaScript()
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+        string stateListAssetPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
+        StateList stateList = AssetDatabase.LoadAssetAtPath<StateList>(stateListAssetPath);
+
+        if (stateList != null && stateList.States != null)
+        {
+            var stateNames = stateList.States.Select(s => $"\"{s.StateName}\"");
+            return $"const state_names = [{string.Join(", ", stateNames)}];\n";
+        }
+        else
+        {
+            Debug.LogWarning($"StateList asset not found at path: {stateListAssetPath}. State names will not be written to JS file.");
+            return ""; // Return an empty string if the asset isn't found
+        }
     }
 
     private void RetrieveJavaScriptAsset()
@@ -279,12 +319,19 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
             string valuesString = Regex.Match(variableContent, @"values: \[(.*?)\]").Groups[1].Value;
             bool isRandom = Regex.Match(variableContent, @"isRandom: (true|false)").Groups[1].Value == "true";
             
+            string debugValue = null;
+            var debugValueMatch = Regex.Match(variableContent, @"debugValue:\s*(""(.*?)""|null)");
+            if (debugValueMatch.Success && debugValueMatch.Groups[2].Success)
+            {
+                debugValue = debugValueMatch.Groups[2].Value;
+            }
+            
             // defensive check for empty values array
             string[] values = string.IsNullOrEmpty(valuesString)
                 ? new string[0]
                 : valuesString.Split(',').Select(v => v.Trim().Trim('"')).ToArray();
 
-            variables.Add(new ExperimentVariable { name = name, values = values, isRandom = isRandom });
+            variables.Add(new ExperimentVariable { name = name, values = values, isRandom = isRandom, debugValue = debugValue });
         }
         return variables;
     }
@@ -343,6 +390,59 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
         else
         {
             Debug.LogWarning("ConditionManager GameObject not found in the scene.");
+        }
+    }
+    
+    public static void ResetAllDebugValues()
+    {
+        string searchPath = "Assets/_Experiment_/Settings/ExperimentVariables";
+        if (!Directory.Exists(searchPath))
+        {
+            Debug.LogWarning($"Directory not found, nothing to reset: {searchPath}");
+            return;
+        }
+
+        string[] guids = AssetDatabase.FindAssets("t:JavaScriptAsset", new[] { searchPath });
+        if (guids.Length == 0)
+        {
+            Debug.Log("No ExperimentVariables assets found to reset.");
+            return;
+        }
+
+        int filesModified = 0;
+        foreach (var guid in guids)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            string jsContent = File.ReadAllText(path);
+
+            string pattern = @"(const between_subjects_variables = \[)(.*?)(\];)";
+            Match match = Regex.Match(jsContent, pattern, RegexOptions.Singleline);
+            
+            if (match.Success)
+            {
+                string arrayContent = match.Groups[2].Value;
+                
+                string updatedArrayContent = Regex.Replace(arrayContent, @"debugValue:\s*("".*?""|null|undefined|\d+)", "debugValue: null");
+
+                if (arrayContent != updatedArrayContent)
+                {
+                    string newBlock = match.Groups[1].Value + updatedArrayContent + match.Groups[3].Value;
+                    string newJsContent = jsContent.Replace(match.Value, newBlock);
+                    File.WriteAllText(path, newJsContent);
+                    filesModified++;
+                }
+            }
+        }
+
+        if (filesModified > 0)
+        {
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log($"Successfully reset debug values for {filesModified} ExperimentVariables asset(s).");
+        }
+        else
+        {
+            Debug.Log("No assets required debug value reset.");
         }
     }
 }

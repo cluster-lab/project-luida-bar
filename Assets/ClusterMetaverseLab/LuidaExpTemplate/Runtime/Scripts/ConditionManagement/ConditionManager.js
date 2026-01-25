@@ -18,6 +18,7 @@ $.onReceive((messageType, arg, sender) => {
     case "luida_participants_info":
       $.groupState.participants = arg.participants;
       $.groupState.sessionID = arg.sessionID;
+      sender.send("betweenSubjectsCondition", $.state.betweenSubjectsConditions);
       break;
     // case "exp_questionnaire_answer":
     //     $.state.betweenSubjectsConditions = GetBetweenSubjectsCondition(arg);
@@ -66,6 +67,7 @@ function reset() {
   $.groupState.currentCondition = {
     ...$.state.betweenSubjectsConditions,
   };
+  $.groupState.stateNames = state_names || [];
   try {
     initializeWithinSubjectsConditions(
       within_subjects_variables,
@@ -83,9 +85,13 @@ function initializeRandomBetweenSubjectsConditions() {
   let betweenSubjectsCondition = {};
   try {
     between_subjects_variables.forEach((v) => {
-      if (v.isRandom && !betweenSubjectsCondition[v.name]) {
-        betweenSubjectsCondition[v.name] =
-          v.values[Math.floor(Math.random() * v.values.length)];
+      if (!betweenSubjectsCondition[v.name]) {
+        if (v.debugValue) {
+          betweenSubjectsCondition[v.name] = v.debugValue;
+        } else if (v.isRandom) {
+          betweenSubjectsCondition[v.name] =
+              v.values[Math.floor(Math.random() * v.values.length)];
+        }
       }
     });
   } catch (e) {
