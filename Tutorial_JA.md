@@ -34,7 +34,7 @@
 
 1.  [cluster アカウントの作成](https://help.cluster.mu/hc/articles/115000827112)
 2.  [cluster に必要なバージョンの Unity のインストール](https://docs.cluster.mu/creatorkit/installation/install-unity/)
-3.  [LUIDAのウェブコンソール](https://luida-web-next.vercel.app/)で初回ログインを行い、承認リクエストを送信してください。承認リクエスト送信後、担当者（y.hu@cluster.mu）までご連絡をお願いします。
+3.  [LUIDAのウェブコンソール](https://luida.cluster.mu/experiments)で初回ログインを行い、承認リクエストを送信してください。承認リクエスト送信後、担当者（y.hu@cluster.mu）までご連絡をお願いします。
 
 ---
 
@@ -66,7 +66,7 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 <details>
 <summary><h3>こちらの手順に従って登録・設定してください</h3></summary>
 
-1.  [LUIDAのウェブコンソール](https://luida-web-next.vercel.app/)を開きます。
+1.  [LUIDAのウェブコンソール](https://luida.cluster.mu/experiments)を開きます。
 2.  **実験を新規作成**：「＋新規実験」をクリックし、実験の基本情報を以下の値で登録します。
     1. タイトル：`ストループ効果の実験`
     2. 参加条件：`色覚異常のない方`
