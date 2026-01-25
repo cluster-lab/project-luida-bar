@@ -1,3 +1,5 @@
+$.state.isServerAssigned = false;
+
 $.onStart(() => {
   initializeRandomBetweenSubjectsConditions();
   reset();
@@ -15,6 +17,11 @@ $.onUpdate(() => {
 
 $.onReceive((messageType, arg, sender) => {
   switch (messageType) {
+    case "luida_server_assigned_conditions":
+      $.state.betweenSubjectsConditions = arg;
+      $.state.isServerAssigned = true;
+      $.log("Server assigned conditions: " + JSON.stringify(arg));
+      break;
     case "luida_participants_info":
       $.groupState.participants = arg.participants;
       $.groupState.sessionID = arg.sessionID;
@@ -82,6 +89,12 @@ function reset() {
 }
 
 function initializeRandomBetweenSubjectsConditions() {
+  // Skip if server already assigned conditions
+  if ($.state.isServerAssigned && $.state.betweenSubjectsConditions) {
+    $.log("Using server-assigned between-subjects conditions");
+    return;
+  }
+
   let betweenSubjectsCondition = {};
   try {
     between_subjects_variables.forEach((v) => {

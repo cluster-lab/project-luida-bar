@@ -92,11 +92,32 @@ $.onReceive((messageType, arg, sender) => {
 }, { item: true, player: true });
 
 function HandleParticipantsEnough() {
-  $.log("Participants are enough to start the experiment.");
+  $.log("Participants are enough. Checking session status...");
   $.groupState.isParticipantsEnough = true;
-  $.sendSignalCompat("this", "exp_playersAreEnough");
-  $.sendSignalCompat("this", "exp_StartStateTransition");
 
+  // Build between-subjects config from local variables
+  let betweenSubjectsConfig = [];
+  try {
+    if (typeof between_subjects_variables !== 'undefined' && Array.isArray(between_subjects_variables)) {
+      betweenSubjectsConfig = between_subjects_variables.map(v => ({
+        name: v.name,
+        values: v.values
+      }));
+    }
+  } catch (e) {
+    $.log("No between_subjects_variables defined: " + e);
+  }
+
+  const request = {
+    type: "getSessionStatus",
+    token: token || "",
+    eID: expID || "",
+    betweenSubjectsConfig: betweenSubjectsConfig
+  };
+  $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), "sessionStatusChecked");
+}
+
+function proceedWithLocalConditions() {
   const conditionManager = $.worldItemReference("ConditionManager");
   if (conditionManager) {
     conditionManager.send("luida_participants_info", {
@@ -104,30 +125,46 @@ function HandleParticipantsEnough() {
       sessionID: $.groupState.sessionID
     });
   }
+  $.sendSignalCompat("this", "exp_playersAreEnough");
+  $.sendSignalCompat("this", "exp_StartStateTransition");
 }
 
-/*
-$.onExternalCallEnd((res, meta, err) =>
-{
+$.onExternalCallEnd((res, meta, err) => {
   if (res == null) {
     $.log("callExternal ERROR: " + err);
+    // Fall back to local random assignment on error
+    if (meta === "sessionStatusChecked") {
+      proceedWithLocalConditions();
+    }
     return;
   }
 
-  if (meta === "joinEligibilityChecked") {
-    const parsedRes = JSON.parse(res);
-    $.state.newPlayers.forEach(newPlayer => {
-      if (parsedRes.ineligibleIdfcs.includes(newPlayer.idfc)) {
-        // TODO: Show message about that this player is not eligible to join this experiment, and teleport the player back to LUIDA bar world.
-      } else {
-        newPlayer.setMoveSpeedRate(1);
-        $.groupState.participants = [ ...$.groupState.participants, newPlayer ];
-        // TODO: Instead of enabling move, teleport the player from the checking area to the task area.
+  if (meta === "sessionStatusChecked") {
+    try {
+      const parsedRes = JSON.parse(res);
+
+      if (!parsedRes.canAccept) {
+        $.log("Experiment has reached max sessions. Current: " + parsedRes.currentSessionCount + "/" + parsedRes.maxSessionCount);
+        // Optionally handle rejection (teleport back, show message, etc.)
+        return;
       }
-    });
-    
-    $.state.newPlayers = [];
-    $.log("Only users who have not joined this experiment before are allowed to proceed to the experiment.");
+
+      const conditionManager = $.worldItemReference("ConditionManager");
+      if (conditionManager) {
+        if (parsedRes.assignedConditions) {
+          conditionManager.send("luida_server_assigned_conditions", parsedRes.assignedConditions);
+        }
+        conditionManager.send("luida_participants_info", {
+          participants: $.groupState.participants,
+          sessionID: $.groupState.sessionID
+        });
+      }
+
+      $.sendSignalCompat("this", "exp_playersAreEnough");
+      $.sendSignalCompat("this", "exp_StartStateTransition");
+    } catch (parseError) {
+      $.log("Error parsing session status response: " + parseError);
+      proceedWithLocalConditions();
+    }
   }
 });
-*/
