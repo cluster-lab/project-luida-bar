@@ -21,6 +21,9 @@ $.onReceive((messageType, arg, sender) => {
       $.state.betweenSubjectsConditions = arg;
       $.state.isServerAssigned = true;
       $.log("Server assigned conditions: " + JSON.stringify(arg));
+      $.groupState.currentCondition = {
+        ...$.state.betweenSubjectsConditions,
+      };
       break;
     case "luida_participants_info":
       $.groupState.participants = arg.participants;
