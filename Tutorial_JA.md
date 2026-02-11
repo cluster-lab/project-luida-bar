@@ -121,13 +121,13 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 4.  次に、cluster アカウントと Unity プロジェクトを連携します。手順は以下の通りです。
 
-    1.  Unity のメニューバーから `LUIDA > Configure experiment identifiers` を選択し、ウィンドウ `LUIDA experiment identifiers config window` を開きます。
+    1.  Unity のメニューバーから `LUIDA > Configure experiment identifiers` を選択し、ID設定用の画面を開きます。
     2.  `Create Access Token`ボタンをクリックすると、Web ブラウザで cluster のアクセストークン発行ページが開きます。
-    3.  ブラウザ上で `Create Token`ボタンをクリックして表示されたトークンをコピーし、先ほど開いた Unity 側の `Configure experiment identifiers` ウィンドウの `Access Token` フィールドに貼り付けます。
+    3.  ブラウザ上で `Create Token`ボタンをクリックして表示されたトークンをコピーし、先ほど開いた Unity 側のID設定用画面の `Access Token` フィールドに貼り付けます。
 
     ![clusterアクセストークン登録手順](https://github.com/user-attachments/assets/e3f23566-e1b0-459b-8586-58ee897b7616)
 
-5.  `LUIDA experiment identifiers config window` ウィンドウが開いたまま、先ほどウェブコンソールでコピーした実験 ID を `Experiment ID` フィールドに入力します。
+5.  ID設定用画面が開いたまま、先ほどウェブコンソールでコピーした実験 ID を `Experiment ID` フィールドに入力します。
 
     ![Luida Editor 実験ID登録画面](https://github.com/user-attachments/assets/45afbd6b-502b-40ef-a1f7-b2c2c8ef9c30)
 
@@ -135,7 +135,7 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
    ![Verify Token 生成](https://github.com/user-attachments/assets/f4fcf341-d44a-4ad1-ab31-147f01a3dde0)
 
-7. `LUIDA experiment identifiers config window` 画面を閉じます。
+7. ID設定用画面を閉じます。
 
 </details>
 
@@ -143,7 +143,7 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 ## 3. 実験変数と試行回数を設定する
 
-`LUIDA > Configure experiment automation > Experiment Variables`画面（左図）で、実験の参加者内/参加者間変数を登録すると、それに基づいてシステムが自動的に試行の数と各試行における実験条件を決定します（右図）。
+`LUIDA > Configure experiment automation > Experiment Variables` 画面（左図）で、実験の参加者内/参加者間変数を登録すると、それに基づいてシステムが自動的に試行の数と各試行における実験条件を決定します（右図）。
 
 各設定項目の詳細は[ドキュメント](/Documentation_JA.md#実験変数と試行回数の設定)をご参照ください。
 
