@@ -259,7 +259,8 @@ public class ClusterExternalEndpointAndVerifyTokenAccessor
             string urlToSync = endpointToSync.Url;
 
             // Check if an entry with this URL already exists
-            var existingEntry = op.callExternalUrl.FirstOrDefault(e => e.url == urlToSync);
+            var currentEndpoints = op.callExternalUrl;
+            var existingEntry = currentEndpoints.FirstOrDefault(e => e.url == urlToSync);
 
             if (existingEntry != null)
             {
@@ -267,6 +268,7 @@ public class ClusterExternalEndpointAndVerifyTokenAccessor
                 if (existingEntry.id != idToSync)
                 {
                     existingEntry.id = idToSync;
+                    op.callExternalUrl = currentEndpoints;  // Reassign to trigger setter and persist
                     Debug.Log($"[CSEmulator] Updated callExternalUrl ID for URL: {urlToSync}");
                 }
             }
