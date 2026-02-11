@@ -44,6 +44,8 @@ In this experiment, we will examine the priming effect. Participants first watch
 - Questionnaire
   - Demographics (Age)
 
+<img width="902" height="503" alt="スクリーンショット 2026-02-12 022027" src="https://github.com/user-attachments/assets/f519c528-9af6-48ea-8cf6-1c23ce2b19e8" />
+
 ---
 
 ## 1. Register Experiment Information on Web Console
@@ -71,7 +73,7 @@ In this experiment, we will examine the priming effect. Participants first watch
     2. Click the "Question List" button for the added questionnaire and add the following question:
        - Title: `Age`, Question Type: `Text Input`, Required: Yes
 
-<!-- TODO: Paste questionnaire creation screenshot here -->
+<img width="2096" height="963" alt="LUIDA-sample-questionnaire-configuration" src="https://github.com/user-attachments/assets/e7133ff1-ba19-44d3-8192-fc1c1d5f0c75" />
 
 5.  **Copy experiment ID**: Copy the "Experiment ID" displayed at the top of the experiment details page. This ID will be used later in the Unity project.
     ![Experiment ID location](https://github.com/user-attachments/assets/20780d32-15ce-4588-a377-415b6d0fef40)
@@ -93,7 +95,8 @@ In this experiment, we will examine the priming effect. Participants first watch
 3.  Open the sample scene `Assets/_Experiment_/Scenes/Sample/Priming_incomplete.unity` and press the Play button in the Unity Editor to get a feel for the scene.
 4.  After reviewing the scene, go to `LUIDA > Scene > Duplicate current scene` from Unity's menu bar. In the dialog that appears, enter your own name to create a new scene. You will work on this new scene from now on.
 
-    <!-- TODO: Paste Duplicate current scene dialog screenshot here -->
+    <img width="1038" height="301" alt="スクリーンショット 2026-02-12 023657" src="https://github.com/user-attachments/assets/77a1c3af-2863-43eb-9768-75dc473f07ff" />
+    <img width="323" height="131" alt="スクリーンショット 2026-02-12 023710" src="https://github.com/user-attachments/assets/ddef3341-d53b-42c8-a950-eefbad3ee3dc" />
 
 5.  Next, link your cluster account to this Unity project. The procedure is as follows (see the image for reference):
 
@@ -134,7 +137,7 @@ Select the in-scene game object `StartVideoButton` and find its `Global Trigger 
 
 This makes the video selection random when the button is pressed, and records which video was shown as `isElderVideo`.
 
-<!-- TODO: Paste StartVideoButton configuration screenshot here -->
+<img width="786" height="695" alt="スクリーンショット 2026-02-12 020601" src="https://github.com/user-attachments/assets/a7ce183a-be0a-46ec-86cb-b7412f6cbcc0" />
 
 </details>
 
@@ -151,7 +154,7 @@ Select the in-scene game object `SafeRoadCheckPoint` and find its `On Collide It
 
 After configuration, it should look like the figure below:
 
-<!-- TODO: Paste SafeRoadCheckPoint configuration screenshot here -->
+<img width="779" height="826" alt="スクリーンショット 2026-02-12 020954" src="https://github.com/user-attachments/assets/bc1761f1-f780-400b-ab68-f7fe9875b360" />
 
 Figure legend:
 - **Red squares**: Data collection — when this checkpoint is passed, record `isSafeRoad=true`
@@ -168,6 +171,8 @@ Select the in-scene game object `DangerousRoadCheckPoint` and configure it with 
 
 **The only difference**: Set the value of `isSafeRoad` to `false`.
 
+<img width="779" height="834" alt="スクリーンショット 2026-02-12 020959" src="https://github.com/user-attachments/assets/e36ea3ac-1dc5-41da-8984-252c96614924" />
+
 </details>
 
 <details>
@@ -176,14 +181,12 @@ Select the in-scene game object `DangerousRoadCheckPoint` and configure it with 
 
 Select the in-scene game object `LUIDA-DataCollector` and double-click the `Script Asset` in its Inspector component (see figure below). The script editing screen will open.
 
-<!-- TODO: Paste LUIDA-DataCollector Script Asset screenshot here -->
+<img width="668" height="350" alt="スクリーンショット 2026-02-12 030242" src="https://github.com/user-attachments/assets/3ba4959d-0be6-4398-a622-7355fbe3d18f" />
 
 Replace the contents with the following script and save the file:
 
 ```JavaScript
 return {
-    stateLog: COLLECTED_DATA ? COLLECTED_DATA["stateLog"] : "", // The state at the time this data is recorded
-    cond: CONDITION || {}, // Experimental conditions (if experiment automation feature is enabled)
     video: $.getStateCompat("global", "isElderVideo", "boolean") ? "Elder" : "Young", // Which video was shown
     road: $.getStateCompat("global", "isSafeRoad", "boolean") ? "Safe" : "Danger", // Which bridge was crossed
 };
@@ -207,7 +210,7 @@ A questionnaire game object will be generated.
    - `Set Game Object Active Gimmick`
 4. Set the values of the added components as shown in the figure below.
 
-<!-- TODO: Paste questionnaire configuration screenshot here -->
+<img width="730" height="623" alt="スクリーンショット 2026-02-12 022700" src="https://github.com/user-attachments/assets/aad277ef-24ea-4b72-8fc6-47d530896143" />
 
 This configuration makes the questionnaire automatically hide itself after the participant finishes answering it.
 
