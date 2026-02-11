@@ -26,17 +26,34 @@ public class DataCollectorCreateMenu
             return;
         }
 
+        CreateDataCollectorInScene(registerUndo: true, selectObject: true);
+    }
+
+    /// <summary>
+    /// Creates a LUIDA Data Collector instance in the scene programmatically.
+    /// </summary>
+    /// <param name="registerUndo">Whether to register undo for the creation.</param>
+    /// <param name="selectObject">Whether to select the created object in the hierarchy.</param>
+    /// <returns>The created GameObject, or null if creation failed or a collector already exists.</returns>
+    public static GameObject CreateDataCollectorInScene(bool registerUndo = true, bool selectObject = false)
+    {
+        if (Object.FindObjectOfType<LuidaDataCollector>() != null)
+        {
+            Debug.LogWarning("A LUIDA Data Collector already exists in this scene. Skipping creation.");
+            return null;
+        }
+
         GameObject dataCollectorPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(DataCollectorPrefabPath);
         if (dataCollectorPrefab == null)
         {
             Debug.LogError("LUIDA Data Collector prefab not found at: " + DataCollectorPrefabPath);
-            return;
+            return null;
         }
 
         GameObject collectorInstance = (GameObject)PrefabUtility.InstantiatePrefab(dataCollectorPrefab);
         collectorInstance.name = "LUIDA-DataCollector";
         var luidaComponent = collectorInstance.GetComponent<LuidaDataCollector>();
-        if (!luidaComponent) collectorInstance.AddComponent<LuidaDataCollector>();
+        if (!luidaComponent) luidaComponent = collectorInstance.AddComponent<LuidaDataCollector>();
 
         JavaScriptAsset calculatorAsset = FindOrCreateCalculatorScript();
         if (calculatorAsset != null)
@@ -47,8 +64,17 @@ public class DataCollectorCreateMenu
 
         EnsureAccessToExpConditions(collectorInstance);
 
-        Undo.RegisterCreatedObjectUndo(collectorInstance, "Create " + collectorInstance.name);
-        Selection.activeObject = collectorInstance;
+        if (registerUndo)
+        {
+            Undo.RegisterCreatedObjectUndo(collectorInstance, "Create " + collectorInstance.name);
+        }
+
+        if (selectObject)
+        {
+            Selection.activeObject = collectorInstance;
+        }
+
+        return collectorInstance;
     }
 
     private static JavaScriptAsset FindOrCreateCalculatorScript()
