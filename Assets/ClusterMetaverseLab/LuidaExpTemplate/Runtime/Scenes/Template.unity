@@ -485,27 +485,36 @@ PrefabInstance:
     - target: {fileID: 320188938653792925, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
-        = \"callExternalEndpointID_example\";\npNum = 1;\n\r\n$.onStart(() => {\r\n 
-        $.groupState.isParticipantsEnough = false;\r\n  $.groupState.sessionID =
-        Date.now() + \"_\" +  (Math.random() + 1).toString(36).substring(7);\r\n 
-        $.groupState.participants = []; // array of PlayerHandle who are currently
-        in the experiment\r\n  $.state.participantsEnvInfo = [];\r\n  $.state.timer
-        = 0;\r\n  \r\n  // TODO: load exp info so that we can check later what environments
-        this experiment requires\r\n})\r\n\r\n$.onUpdate((deltaTime) => {\r\n   
-        if (!$.groupState.isParticipantsEnough) {\r\n        $.state.timer += deltaTime;\r\n       
-        if ($.state.timer >= 1){\r\n            $.state.timer = 0;\r\n           
-        let pIdfcs = $.groupState.participants.map(p => p.idfc);\r\n            const
-        newPlayers = $.getPlayersNear($.getPosition(), Infinity)\r\n               
-        .filter(p => !pIdfcs.includes(p.idfc));\r\n            if (newPlayers.length
-        > 0) {\r\n                for (const newPlayer of newPlayers) {\r\n                   
-        // TODO: Check if the player is eligible to join the experiment before adding
-        them to $.groupState.participants.\r\n                    $.groupState.participants
-        = [ ...$.groupState.participants, newPlayer ];\r\n                    $.setPlayerScript(newPlayer);\r\n                   
-        newPlayer.send(\"initializeParticipant\", true);\r\n                }\r\n           
-        }\r\n            if (!$.groupState.isParticipantsEnough && $.groupState.participants.length
-        >= pNum) {\r\n                HandleParticipantsEnough();\r\n           
-        }\r\n        }\r\n    }\r\n/*\r\n  if ($.getStateCompat(\"this\", \"exp_checkJoinEligibility\",
+      value: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\ncallExternalEndpointID
+        = \"callExternalEndpointID_example\";\r\npNum = 1;\r\n\r\n$.onStart(() =>
+        {\r\n  $.state.isBetweenSubjectsConditionsSet = false;\r\n  $.groupState.isParticipantsEnough
+        = false;\r\n  $.groupState.sessionID = Date.now() + \"_\" +  (Math.random()
+        + 1).toString(36).substring(2, 8);\r\n  $.groupState.participants = []; //
+        array of PlayerHandle who are currently in the experiment\r\n  $.state.participantsEnvInfo
+        = [];\r\n  $.state.idfc2userId = {};\r\n  $.state.timer = 0;\r\n  \r\n  //
+        TODO: load exp info so that we can check later what environments this experiment
+        requires\r\n})\r\n\r\n$.onUpdate((deltaTime) => {\r\n    if (!$.groupState.isParticipantsEnough)
+        {\r\n        $.state.timer += deltaTime;\r\n        if ($.state.timer >=
+        1){\r\n            $.state.timer = 0;\r\n            let pIdfcs = $.groupState.participants.map(p
+        => p.idfc);\r\n            const newPlayers = $.getPlayersNear($.getPosition(),
+        Infinity)\r\n                .filter(p => !pIdfcs.includes(p.idfc));\r\n           
+        if (newPlayers.length > 0) {\r\n                for (const newPlayer of newPlayers)
+        {\r\n                    // TODO: Check if the player is eligible to join
+        the experiment before adding them to $.groupState.participants.\r\n                   
+        $.groupState.participants = [ ...$.groupState.participants, newPlayer ];\r\n                   
+        $.setPlayerScript(newPlayer);\r\n                    newPlayer.send(\"initializeParticipant\",
+        true);\r\n                }\r\n            }\r\n            if (!$.groupState.isParticipantsEnough
+        && $.groupState.participants.length >= pNum) {\r\n                HandleParticipantsEnough();\r\n           
+        }\r\n        }\r\n    } else if ($.state.isBetweenSubjectsConditionsSet)
+        { // participants are enough & conditions are set\r\n        $.state.isBetweenSubjectsConditionsSet
+        = false;\r\n        let request = {\r\n            type: \"uploadCustomData\",\r\n           
+        data: {\r\n                pInfo: $.state.participantsEnvInfo.map(info =>
+        ({ ts: Date.now(), sID: $.groupState.sessionID || \"\", ...info, betweenSubjectsConditions:
+        $.state.betweenSubjectsConditions })),\r\n                idfc2userId: $.state.idfc2userId\r\n           
+        },\r\n            token: token || \"\",\r\n            eID: expID || \"\",\r\n           
+        sID: $.groupState.sessionID || \"\"\r\n        };\r\n        $.callExternal(new
+        ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), \"customDataUploaded\");\r\n   
+        }\r\n/*\r\n  if ($.getStateCompat(\"this\", \"exp_checkJoinEligibility\",
         \"boolean\")) {\r\n    $.setStateCompat(\"this\", \"exp_checkJoinEligibility\",
         false);\r\n\r\n    let pIdfcs = $.groupState.participants.map(p => p.idfc);\r\n   
         const newPlayers = $.getPlayersNear($.getPosition(), 1)\r\n      .filter(p
@@ -515,24 +524,21 @@ PrefabInstance:
         token || \"\",\r\n        eID: expID || \"\",\r\n        idfcs: newPlayers.map(p
         => p.idfc).join(\"|\")\r\n      };\r\n      $.callExternal(new ExternalEndpointId(callExternalEndpointID),
         JSON.stringify(request), \"joinEligibilityChecked\");\r\n    }\r\n  }\r\n*/\r\n})\r\n\r\n$.onReceive((messageType,
-        arg, sender) => {\r\n    switch (messageType) {\r\n        case \"envInfoResponse\":\r\n           
+        arg, sender) => {\r\n    switch (messageType) {\r\n        case \"betweenSubjectsCondition\":\r\n           
+        $.state.betweenSubjectsConditions = arg;\r\n            $.state.isBetweenSubjectsConditionsSet
+        = true;\r\n            break;\r\n        case \"envInfoResponse\":\r\n           
         $.state.participantsEnvInfo = [\r\n              ...$.state.participantsEnvInfo,\r\n             
         {\r\n                idfc: sender.idfc,\r\n                envInfo: arg\r\n             
-        }\r\n            ]\r\n            if ($.state.participantsEnvInfo.length
-        >= pNum) {\r\n              let request = {\r\n                  type: \"uploadCustomData\",\r\n                 
-        data: { envInfo: $.state.participantsEnvInfo },\r\n                  token:
-        token || \"\",\r\n                  eID: expID || \"\",\r\n                 
-        pID: $.groupState.sessionID, // TODO: change 'pID' to 'sessionID' \r\n             
-        };\r\n              $.callExternal(new ExternalEndpointId(callExternalEndpointID),
-        JSON.stringify(request), \"customDataUploaded\");\r\n            }\r\n           
-        break;\r\n        default:\r\n            break;\r\n    }\r\n}, { item: true,
-        player: true });\r\n\r\nfunction HandleParticipantsEnough() {\r\n  $.log(\"Participants
-        are enough to start the experiment.\");\r\n  $.groupState.isParticipantsEnough
-        = true;\r\n    $.sendSignalCompat(\"this\", \"exp_playersAreEnough\");\r\n   
-        $.sendSignalCompat(\"this\", \"exp_StartStateTransition\");\r\n\r\n  const
-        conditionManager = $.worldItemReference(\"ConditionManager\");\r\n  if (conditionManager)
-        {\r\n    conditionManager.send(\"luida_participants_info\", {\r\n      participants:
-        $.groupState.participants,\r\n      sessionID: $.groupState.sessionID\r\n   
+        }\r\n            ];\r\n            let idfc2userId = { ...$.state.idfc2userId
+        };\r\n            idfc2userId[sender.idfc] = sender.userId;\r\n           
+        $.state.idfc2userId = idfc2userId;\r\n            break;\r\n        default:\r\n           
+        break;\r\n    }\r\n}, { item: true, player: true });\r\n\r\nfunction HandleParticipantsEnough()
+        {\r\n  $.log(\"Participants are enough to start the experiment.\");\r\n 
+        $.groupState.isParticipantsEnough = true;\r\n  $.sendSignalCompat(\"this\",
+        \"exp_playersAreEnough\");\r\n  $.sendSignalCompat(\"this\", \"exp_StartStateTransition\");\r\n\r\n 
+        const conditionManager = $.worldItemReference(\"ConditionManager\");\r\n 
+        if (conditionManager) {\r\n    conditionManager.send(\"luida_participants_info\",
+        {\r\n      participants: $.groupState.participants,\r\n      sessionID: $.groupState.sessionID\r\n   
         });\r\n  }\r\n}\r\n\r\n/*\r\n$.onExternalCallEnd((res, meta, err) =>\r\n{\r\n 
         if (res == null) {\r\n    $.log(\"callExternal ERROR: \" + err);\r\n    return;\r\n 
         }\r\n\r\n  if (meta === \"joinEligibilityChecked\") {\r\n    const parsedRes
@@ -565,24 +571,25 @@ PrefabInstance:
         type: 3}
       propertyPath: sourceCode
       value: "const trialsCountForEachUniqueCondition = 1;\r\nconst within_subjects_variables
-        = [\r\n];\r\nconst between_subjects_variables = [\r\n];\r\n\r\n$.onStart(()
-        => {\r\n  initializeRandomBetweenSubjectsConditions();\r\n  reset();\r\n});\r\n\r\n$.onUpdate(()
-        => {\r\n  if (\r\n    $.state.trialID !== $.getStateCompat(\"global\", \"exp_trialID\",
-        \"integer\") &&\r\n      $.getStateCompat(\"global\", \"exp_trialID\", \"integer\")
-        >= 0\r\n  ) {\r\n    $.state.trialID = $.getStateCompat(\"global\", \"exp_trialID\",
-        \"integer\");\r\n    updateCondition();\r\n  }\r\n});\r\n\r\n$.onReceive((messageType,
-        arg, sender) => {\r\n  switch (messageType) {\r\n    case \"luida_participants_info\":\r\n     
+        = [\r\n];\r\nconst between_subjects_variables = [\r\n];\r\nconst state_names
+        = [];\r\n\r\n$.onStart(() => {\r\n  initializeRandomBetweenSubjectsConditions();\r\n 
+        reset();\r\n});\r\n\r\n$.onUpdate(() => {\r\n  if (\r\n    $.state.trialID
+        !== $.getStateCompat(\"global\", \"exp_trialID\", \"integer\") &&\r\n     
+        $.getStateCompat(\"global\", \"exp_trialID\", \"integer\") >= 0\r\n  ) {\r\n   
+        $.state.trialID = $.getStateCompat(\"global\", \"exp_trialID\", \"integer\");\r\n   
+        updateCondition();\r\n  }\r\n});\r\n\r\n$.onReceive((messageType, arg, sender)
+        => {\r\n  switch (messageType) {\r\n    case \"luida_participants_info\":\r\n     
         $.groupState.participants = arg.participants;\r\n      $.groupState.sessionID
-        = arg.sessionID;\r\n      break;\r\n    // case \"exp_questionnaire_answer\":\r\n   
-        //     $.state.betweenSubjectsConditions = GetBetweenSubjectsCondition(arg);\r\n   
-        //     break;\r\n    default:\r\n      break;\r\n  }\r\n});\r\n\r\nfunction
-        updateCondition() {\r\n  if ($.state.trialID >= $.state.trialCount) {\r\n   
-        $.sendSignalCompat(\"this\", \"exp_resetTrials\");\r\n  } else if ($.state.trialID
-        <= -1) {\r\n    reset();\r\n  } else {\r\n    let condition = { ...$.state.betweenSubjectsConditions
-        };\r\n    for (let i = 0; i < $.state.withinSubjectsVariableNames.length;
-        i++) {\r\n      const varName = $.state.withinSubjectsVariableNames[i];\r\n     
-        const varValue =\r\n          within_subjects_variables[i].values[\r\n             
-        $.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]\r\n             
+        = arg.sessionID;\r\n      sender.send(\"betweenSubjectsCondition\", $.state.betweenSubjectsConditions);\r\n     
+        break;\r\n    // case \"exp_questionnaire_answer\":\r\n    //     $.state.betweenSubjectsConditions
+        = GetBetweenSubjectsCondition(arg);\r\n    //     break;\r\n    default:\r\n     
+        break;\r\n  }\r\n});\r\n\r\nfunction updateCondition() {\r\n  if ($.state.trialID
+        >= $.state.trialCount) {\r\n    $.sendSignalCompat(\"this\", \"exp_resetTrials\");\r\n 
+        } else if ($.state.trialID <= -1) {\r\n    reset();\r\n  } else {\r\n   
+        let condition = { ...$.state.betweenSubjectsConditions };\r\n    for (let
+        i = 0; i < $.state.withinSubjectsVariableNames.length; i++) {\r\n      const
+        varName = $.state.withinSubjectsVariableNames[i];\r\n      const varValue
+        =\r\n          within_subjects_variables[i].values[\r\n              $.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]\r\n             
         ];\r\n      condition[varName] = varValue;\r\n    }\r\n    $.groupState.currentCondition
         = condition;\r\n\r\n    // Check if this is the last trial (if true, stop
         repeating trials when next state transition is triggered)\r\n    if (\r\n       
@@ -593,14 +600,16 @@ PrefabInstance:
         $.state.betweenSubjectsConditions = {};\r\n  $.state.withinSubjectsVariableNames
         = [];\r\n  $.state.withinSubjectsConditionIndicesByTrial = [];\r\n  $.state.trialCount
         = 1;\r\n  $.groupState.currentCondition = {\r\n    ...$.state.betweenSubjectsConditions,\r\n 
-        };\r\n  try {\r\n    initializeWithinSubjectsConditions(\r\n      within_subjects_variables,\r\n     
-        trialsCountForEachUniqueCondition\r\n    );\r\n  } catch (error) {\r\n   
-        $.log(error);\r\n    $.log(\"Within-subjects variables are not defined.\");\r\n   
-        initializeWithinSubjectsConditions([], 1);\r\n  }\r\n  updateCondition();\r\n}\r\n\r\nfunction
-        initializeRandomBetweenSubjectsConditions() {\r\n  let betweenSubjectsCondition
-        = {};\r\n  try {\r\n    between_subjects_variables.forEach((v) => {\r\n     
-        if (v.isRandom && !betweenSubjectsCondition[v.name]) {\r\n        betweenSubjectsCondition[v.name]
-        =\r\n          v.values[Math.floor(Math.random() * v.values.length)];\r\n     
+        };\r\n  $.groupState.stateNames = state_names || [];\r\n  try {\r\n    initializeWithinSubjectsConditions(\r\n     
+        within_subjects_variables,\r\n      trialsCountForEachUniqueCondition\r\n   
+        );\r\n  } catch (error) {\r\n    $.log(error);\r\n    $.log(\"Within-subjects
+        variables are not defined.\");\r\n    initializeWithinSubjectsConditions([],
+        1);\r\n  }\r\n  updateCondition();\r\n}\r\n\r\nfunction initializeRandomBetweenSubjectsConditions()
+        {\r\n  let betweenSubjectsCondition = {};\r\n  try {\r\n    between_subjects_variables.forEach((v)
+        => {\r\n      if (!betweenSubjectsCondition[v.name]) {\r\n        if (v.debugValue)
+        {\r\n          betweenSubjectsCondition[v.name] = v.debugValue;\r\n       
+        } else if (v.isRandom) {\r\n          betweenSubjectsCondition[v.name] =\r\n             
+        v.values[Math.floor(Math.random() * v.values.length)];\r\n        }\r\n     
         }\r\n    });\r\n  } catch (e) {\r\n    $.log(\"Between-subjects variables
         are not defined.\");\r\n  }\r\n  $.state.betweenSubjectsConditions = betweenSubjectsCondition;\r\n}\r\n\r\nfunction
         initializeWithinSubjectsConditions(variables, repeatsPerCond = 1) {\r\n 

@@ -65,6 +65,7 @@ public static class LuidaSceneUtility
         string newStateListenerScriptsFolder = $"Assets/_Experiment_/Scripts/StateManagement/{newSceneName}";
         UpdateScriptableClusterScriptCombiners(newSceneName, newStateListenerScriptsFolder);
         UpdateDataCollectorScriptCombiner(newSceneName);
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
     }
     
     private static void DuplicateSceneAndAssets(string currentScenePath, string newSceneName)
@@ -172,9 +173,11 @@ public static class LuidaSceneUtility
 
             AssetDatabase.CopyAsset(CalculatorTemplateAssetPath, newScriptPath);
             AssetDatabase.Refresh();
+            newScriptAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(newScriptPath);
         }
 
         dataCollector.calculationScript = newScriptAsset;
+        EditorUtility.SetDirty(dataCollector);
         scriptCombiner.ReplaceScript(newScriptAsset, 2, null, 0, false);
         scriptCombiner.CombineScripts();
         EditorUtility.SetDirty(scriptCombiner);
