@@ -122,9 +122,15 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
     ![cluster access token registration procedure](https://github.com/user-attachments/assets/e3f23566-e1b0-459b-8586-58ee897b7616)
 
-5.  With the `Configure experiment identifiers` window still open, enter the Experiment ID you copied from the web console earlier into the `Experiment ID` field, and then close the window.
+5.  With the identifiers configuring window still open, enter the Experiment ID you copied from the web console earlier into the `Experiment ID` field, and then close the window.
 
     ![Luida Editor Experiment ID registration screen](https://github.com/user-attachments/assets/45afbd6b-502b-40ef-a1f7-b2c2c8ef9c30)
+
+6. If the Verify Token is not generated yet, click the `Generate a new verify token` button.
+
+   ![Verify Token generation](https://github.com/user-attachments/assets/f4fcf341-d44a-4ad1-ab31-147f01a3dde0)
+
+7. Close the identifiers configuring window.
 
 </details>
 
