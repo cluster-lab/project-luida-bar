@@ -44,6 +44,8 @@
 - 質問紙
   - デモグラフィクス（年齢）
 
+<img width="902" height="503" alt="スクリーンショット 2026-02-12 022027" src="https://github.com/user-attachments/assets/f519c528-9af6-48ea-8cf6-1c23ce2b19e8" />
+
 ---
 
 ## 1. ウェブコンソールで実験情報を登録
@@ -71,7 +73,7 @@
     2. 追加された質問紙の「質問一覧」ボタンをクリックし、以下の質問項目を追加します：
        - タイトル：`Age`、質問タイプ：`Text Input`、必須：はい
 
-<!-- TODO: ここに質問紙作成の画像を貼り付けてください -->
+<img width="2096" height="963" alt="LUIDA-sample-questionnaire-configuration" src="https://github.com/user-attachments/assets/e7133ff1-ba19-44d3-8192-fc1c1d5f0c75" />
 
 5.  **実験 ID をコピー**：実験詳細ページの上部に表示される「実験 ID」をコピーしておきます。この ID は後ほど Unity プロジェクトで使用します。
     ![実験IDの確認箇所](https://github.com/user-attachments/assets/20780d32-15ce-4588-a377-415b6d0fef40)
@@ -93,7 +95,8 @@
 3.  サンプルシーン `Assets/_Experiment_/Scenes/Sample/Priming_incomplete.unity` を開き、Unity エディタの再生ボタンを押して、まずはシーンの様子を確認してみましょう。
 4.  確認が済んだら、Unity のメニューバーから `LUIDA > Scene > Duplicate current scene` を選択し、表示されるダイアログでご自身の名前を入力して新しいシーンを作成します。以降はこの新しいシーン上で作業を進めます。
 
-    <!-- TODO: ここにDuplicate current sceneのダイアログの画像を貼り付けてください -->
+    <img width="1038" height="301" alt="スクリーンショット 2026-02-12 023657" src="https://github.com/user-attachments/assets/77a1c3af-2863-43eb-9768-75dc473f07ff" />
+    <img width="323" height="131" alt="スクリーンショット 2026-02-12 023710" src="https://github.com/user-attachments/assets/ddef3341-d53b-42c8-a950-eefbad3ee3dc" />
 
 5.  次に、cluster アカウントと Unity プロジェクトを連携します。手順は以下の通りです。
 
@@ -134,7 +137,7 @@
 
 これにより、ボタンを押した際にどちらの動画が再生されるかがランダムに決まり、その結果が `isElderVideo` として記録されます。
 
-<!-- TODO: ここにStartVideoButtonの設定画面の画像を貼り付けてください -->
+<img width="786" height="695" alt="スクリーンショット 2026-02-12 020601" src="https://github.com/user-attachments/assets/a7ce183a-be0a-46ec-86cb-b7412f6cbcc0" />
 
 </details>
 
@@ -151,7 +154,7 @@
 
 設定後、以下の図のようになります：
 
-<!-- TODO: ここにSafeRoadCheckPointの設定画面の画像を貼り付けてください -->
+<img width="779" height="826" alt="スクリーンショット 2026-02-12 020954" src="https://github.com/user-attachments/assets/bc1761f1-f780-400b-ab68-f7fe9875b360" />
 
 図の解説：
 - **赤枠**：データ収集の設定 — このチェックポイントを通過したら `isSafeRoad=true` を記録する
@@ -168,6 +171,8 @@
 
 **唯一の違い**：`isSafeRoad` の値を `false` に設定してください。
 
+<img width="779" height="834" alt="スクリーンショット 2026-02-12 020959" src="https://github.com/user-attachments/assets/e36ea3ac-1dc5-41da-8984-252c96614924" />
+
 </details>
 
 <details>
@@ -176,14 +181,12 @@
 
 シーン内のゲームオブジェクト `LUIDA-DataCollector` を選択し、Inspector のコンポーネントにある `Script Asset` をダブルクリックします（下の図を参照）。するとスクリプトの編集画面が開きます。
 
-<!-- TODO: ここにLUIDA-DataCollectorのScript Assetの画像を貼り付けてください -->
+<img width="668" height="350" alt="スクリーンショット 2026-02-12 030242" src="https://github.com/user-attachments/assets/3ba4959d-0be6-4398-a622-7355fbe3d18f" />
 
 中身を以下のスクリプトに置き換えてファイル保存します：
 
 ```JavaScript
 return {
-    stateLog: COLLECTED_DATA ? COLLECTED_DATA["stateLog"] : "", // このデータが記録される際のステート
-    cond: CONDITION || {}, // 実験条件（実験自動化機能を有効にしている場合）
     video: $.getStateCompat("global", "isElderVideo", "boolean") ? "Elder" : "Young", // どちらの動画が提示されたか
     road: $.getStateCompat("global", "isSafeRoad", "boolean") ? "Safe" : "Danger", // どちらの橋を渡ったか
 };
@@ -207,7 +210,7 @@ return {
    - `Set Game Object Active Gimmick`
 4. 追加したコンポーネントの値を以下の図の通りに設定します。
 
-<!-- TODO: ここに質問紙の設定画面の画像を貼り付けてください -->
+<img width="730" height="623" alt="スクリーンショット 2026-02-12 022700" src="https://github.com/user-attachments/assets/aad277ef-24ea-4b72-8fc6-47d530896143" />
 
 この設定により、参加者が質問紙への回答を終えた後に、質問紙が自動的に非表示になります。
 
