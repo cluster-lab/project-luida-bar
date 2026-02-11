@@ -121,15 +121,21 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 
 4.  次に、cluster アカウントと Unity プロジェクトを連携します。手順は以下の通りです。
 
-    1.  Unity のメニューバーから `LUIDA > Configure experiment identifiers` を選択し、ウィンドウを開きます。
+    1.  Unity のメニューバーから `LUIDA > Configure experiment identifiers` を選択し、ウィンドウ `LUIDA experiment identifiers config window` を開きます。
     2.  `Create Access Token`ボタンをクリックすると、Web ブラウザで cluster のアクセストークン発行ページが開きます。
     3.  ブラウザ上で `Create Token`ボタンをクリックして表示されたトークンをコピーし、先ほど開いた Unity 側の `Configure experiment identifiers` ウィンドウの `Access Token` フィールドに貼り付けます。
 
     ![clusterアクセストークン登録手順](https://github.com/user-attachments/assets/e3f23566-e1b0-459b-8586-58ee897b7616)
 
-5.  `Configure experiment identifiers` ウィンドウが開いたまま、先ほどウェブコンソールでコピーした実験 ID を `Experiment ID` フィールドに入力したうえで、画面を閉じます。
+5.  `LUIDA experiment identifiers config window` ウィンドウが開いたまま、先ほどウェブコンソールでコピーした実験 ID を `Experiment ID` フィールドに入力します。
 
     ![Luida Editor 実験ID登録画面](https://github.com/user-attachments/assets/45afbd6b-502b-40ef-a1f7-b2c2c8ef9c30)
+
+6. Verify Token がまだ生成されていなければ `Generate a new verify token` のボタンを押します。
+
+   ![Verify Token 生成](https://github.com/user-attachments/assets/f4fcf341-d44a-4ad1-ab31-147f01a3dde0)
+
+7. `LUIDA experiment identifiers config window` 画面を閉じます。
 
 </details>
 
