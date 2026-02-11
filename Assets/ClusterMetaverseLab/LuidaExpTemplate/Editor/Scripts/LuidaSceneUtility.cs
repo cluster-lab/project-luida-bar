@@ -32,8 +32,14 @@ public static class LuidaSceneUtility
         File.Copy(templateScenePath, newScenePath);
         AssetDatabase.Refresh();
         EditorSceneManager.OpenScene(newScenePath);
-        
-        // After opening the new scene, update the script references within it.
+
+        // Create a DataCollector in the new scene (Template doesn't include one)
+        DataCollectorCreateMenu.CreateDataCollectorInScene(registerUndo: false, selectObject: false);
+
+        // Mark scene as dirty so changes are saved
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+
+        // After opening the new scene, update the script references within it (fallback if collector exists).
         UpdateDataCollectorScriptCombiner(newSceneName);
     }
 
