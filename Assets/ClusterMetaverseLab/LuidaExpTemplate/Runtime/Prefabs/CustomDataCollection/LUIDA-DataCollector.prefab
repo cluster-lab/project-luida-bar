@@ -132,12 +132,12 @@ MonoBehaviour:
     values.\r\n\r\n---\r\n\r\n**Important Note:** The script **must return a value**
     at the end of its code block.\r\n\r\nExamples:\r\n    - return { score: 100 };`\r\n   
     - const answer = $.getStateCompat('global', 'count', 'integer') > 5; return {
-    isLarger: answer };`\r\n*/\r\nreturn {\r\n    stateLog: COLLECTED_DATA[\"stateLog\"],
-    // Include log of the current state by default (state name, id, and the timestamp
-    when the state starts)\r\n    cond: CONDITION || {}, // Include conditions in
-    the collected data by default (if you have enabled the experiment automation
+    isLarger: answer };`\r\n*/\r\nreturn {\r\n    stateLog: COLLECTED_DATA ? COLLECTED_DATA[\"stateLog\"]
+    : \"\", // Include log of the current state by default (state name, id, and the
+    timestamp when the state starts)\r\n    cond: CONDITION || {}, // Include conditions
+    in the collected data by default (if you have enabled the experiment automation
     feature)\r\n    someCckState: $.getStateCompat(\"global\", \"someCckState\",
-    \"bool\"), // Replace with your in-scene state triggered by CCK components\r\n   
+    \"boolean\"), // Replace with your in-scene state triggered by CCK components\r\n   
     foo: 'bar' // Replace with your custom collected data\r\n};\r\n\r\n    return
     {};\r\n  }\r\n  returnData.push(saveData());\r\n  return returnData;\r\n}\r\n"
 --- !u!114 &4976748577095326931

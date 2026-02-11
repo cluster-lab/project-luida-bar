@@ -17,8 +17,8 @@
     e.g., `const answer = $.getStateCompat('global', 'count', 'integer') > 5; return { isLarger: answer }`
 */
 return {
-    stateLog: COLLECTED_DATA["stateLog"], // Include log of the current state by default (state name, id, and the timestamp when the state starts)
+    stateLog: COLLECTED_DATA ? COLLECTED_DATA["stateLog"] : "", // Include log of the current state by default (state name, id, and the timestamp when the state starts)
     cond: CONDITION || {}, // Include conditions in the collected data by default (if you have enabled the experiment automation feature)
-    someCckState: $.getStateCompat("global", "someCckState", "bool"), // Replace with your in-scene state triggered by CCK components
+    someCckState: $.getStateCompat("global", "someCckState", "boolean"), // Replace with your in-scene state triggered by CCK components
     foo: 'bar' // Replace with your custom collected data
 };
