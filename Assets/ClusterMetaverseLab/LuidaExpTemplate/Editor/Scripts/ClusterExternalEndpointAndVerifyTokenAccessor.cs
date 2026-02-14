@@ -18,20 +18,26 @@ public class LuidaVerifyTokenResult
 {
     public string Token { get; }
     public bool FoundAssociatedToken { get; }
-    
+
     /// <summary>
     /// True if the token came from the "custom" EditorPrefs key.
     /// </summary>
     public bool IsCustomToken { get; }
-    
+
     public ExternalCallVerifyToken[] AllTokens { get; }
 
-    public LuidaVerifyTokenResult(string token, bool found, bool isCustom, ExternalCallVerifyToken[] allTokens)
+    /// <summary>
+    /// True if the user has reached the maximum number of verify tokens.
+    /// </summary>
+    public bool IsAtTokenCapacity { get; }
+
+    public LuidaVerifyTokenResult(string token, bool found, bool isCustom, ExternalCallVerifyToken[] allTokens, bool isAtCapacity)
     {
         Token = token;
         FoundAssociatedToken = found;
         IsCustomToken = isCustom;
         AllTokens = allTokens ?? Array.Empty<ExternalCallVerifyToken>();
+        IsAtTokenCapacity = isAtCapacity;
     }
 }
 
@@ -174,6 +180,7 @@ public class ClusterExternalEndpointAndVerifyTokenAccessor
         
         await tokenRepo.LoadVerifyTokenListAsync(userInfo.Value.VerifiedToken, cancellationToken);
         var allTokens = tokenRepo.VerifyTokenList.Val;
+        bool isAtCapacity = allTokens != null && allTokens.Length >= ExternalCallVerifyToken.MaxVerifyTokenCount;
 
         // 1. Check for an existing, API-associated token (newest to oldest)
         if (allTokens != null && allTokens.Length > 0)
@@ -187,7 +194,7 @@ public class ClusterExternalEndpointAndVerifyTokenAccessor
                 if (!string.IsNullOrEmpty(savedToken))
                 {
                     Debug.Log($"Found associated verify token in EditorPrefs: {key}");
-                    return new LuidaVerifyTokenResult(savedToken, true, false, allTokens);
+                    return new LuidaVerifyTokenResult(savedToken, true, false, allTokens, isAtCapacity);
                 }
             }
         }
@@ -196,21 +203,21 @@ public class ClusterExternalEndpointAndVerifyTokenAccessor
         if (allTokens == null || allTokens.Length == 0)
         {
             var newToken = await CreateNewTokenAndSaveToPrefsAsync(userInfo.Value, cancellationToken);
-            var newTokensList = tokenRepo.VerifyTokenList.Val; 
-            return new LuidaVerifyTokenResult(newToken.VerifyToken, true, false, newTokensList);
+            var newTokensList = tokenRepo.VerifyTokenList.Val;
+            return new LuidaVerifyTokenResult(newToken.VerifyToken, true, false, newTokensList, false);
         }
-        
+
         // 3. Tokens exist, but none are associated. Check for a "custom" token.
         string customToken = EditorPrefs.GetString(CustomTokenKey);
         if (!string.IsNullOrEmpty(customToken))
         {
             Debug.Log("Found custom verify token in EditorPrefs.");
-            return new LuidaVerifyTokenResult(customToken, true, true, allTokens);
+            return new LuidaVerifyTokenResult(customToken, true, true, allTokens, isAtCapacity);
         }
 
         // 4. Tokens exist, but none are associated and no custom token is set.
         Debug.Log("Tokens found, but none are associated with LUIDA in EditorPrefs.");
-        return new LuidaVerifyTokenResult(null, false, false, allTokens);
+        return new LuidaVerifyTokenResult(null, false, false, allTokens, isAtCapacity);
     }
     
     public async Task<string> GenerateNewLuidaVerifyTokenAsync(ExternalCallVerifyToken[] currentTokens, CancellationToken cancellationToken = default)
@@ -223,15 +230,9 @@ public class ClusterExternalEndpointAndVerifyTokenAccessor
         
         if (currentTokens != null && currentTokens.Length >= ExternalCallVerifyToken.MaxVerifyTokenCount)
         {
-            var oldestToken = currentTokens.OrderBy(t => t.RegisteredAt).FirstOrDefault();
-            if (oldestToken != null)
-            {
-                Debug.Log($"At token capacity ({currentTokens.Length}). Deleting oldest token: {oldestToken.TokenId}");
-                await tokenRepo.DeleteVerifyTokenAsync(userInfo.Value.VerifiedToken, oldestToken.TokenId, cancellationToken);
-                
-                string oldKey = GetEditorPrefsKey(oldestToken.TokenId);
-                EditorPrefs.DeleteKey(oldKey);
-            }
+            throw new InvalidOperationException(
+                "Cannot generate a new verify token: you have reached the maximum number of verify tokens. " +
+                "Please paste an existing token or delete one via the Cluster Creator Kit window.");
         }
         
         // Clear the custom token key since we are generating a new, associated one
