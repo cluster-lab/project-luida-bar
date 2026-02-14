@@ -6,10 +6,7 @@ $.onStart(() => {
 
 $.onUpdate((deltaTime) => {
   if (!$.state.isParticipantAssigned && $.groupState.isParticipantsEnough) {
-    let player =
-      $.groupState.participants[
-        $.getStateCompat("this", "pID", "integer") - 1 || 0
-      ];
+    let player = $.groupState.participants[($.getStateCompat("this", "pID", "integer") - 1) || 0];
     $.state.participant = player;
     $.requestOwner(player);
     $.setVisiblePlayers([player]);
@@ -21,10 +18,7 @@ $.onUpdate((deltaTime) => {
   }
 
   // Ensure that the question is only initialized after all currently displayed answer options are destroyed
-  if (
-    !$.state.isInitiated &&
-    $.getStateCompat("this", "form_set_content_active", "boolean")
-  ) {
+  if (!$.state.isInitiated && $.getStateCompat("this", "form_set_content_active", "boolean")) {
     $.state.isInitiated = true;
     $.state.qID = 0;
     $.state.questions = [];
@@ -40,44 +34,27 @@ $.onUpdate((deltaTime) => {
     // Reintroduced callExternal to get questions
     const questionnaireID = $.getStateCompat("this", "qID", "integer");
     if (questionnaireID > 0) {
-      let request = {
-        type: "questions",
-        token: token || "",
-        eID: expID || "",
-        qID: questionnaireID,
-        startIndex: 0,
-      };
-      $.callExternal(
-        new ExternalEndpointId(callExternalEndpointID),
-        JSON.stringify(request),
-        "getQuestions"
-      );
+      let request = { type: "questions", token: token || "", eID: expID || "", qID: questionnaireID, startIndex: 0 };
+      $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), "getQuestions");
     } else {
       $.log("No questionnaire ID (qID) provided or it is invalid.");
     }
   }
 
-  if (
-    $.state.tryInitQuestion &&
-    !$.state.answerOptionUIs.some((ans) => ans.exists())
-  ) {
+  if ($.state.tryInitQuestion && !$.state.answerOptionUIs.some(ans => ans.exists())) {
     initQuestion();
   }
 
   // Timer to trigger batch generation of answer options
   $.state.timer = ($.state.timer || 0) + deltaTime;
-  if (
-    $.state.timer > 0.2 &&
-    $.state.pendingAnswerOptions &&
-    $.state.pendingAnswerOptions.length > 0
-  ) {
+  if ($.state.timer > 0.2 && $.state.pendingAnswerOptions && $.state.pendingAnswerOptions.length > 0) {
     spawnNextAnswerOption();
     $.state.timer = 0; // Reset the timer after generating a batch
   }
 });
 
 $.onInteract(() => {
-    if (!$.state.isInitiated) $.setStateCompat("this", "form_set_content_active", true);
+  if (!$.state.isInitiated) $.setStateCompat("this", "form_set_content_active", true);
 });
 
 $.onReceive((messageType, arg) => {
@@ -111,24 +88,22 @@ function initQuestion() {
       e: true,
       p: $.subNode("Title").getGlobalPosition(),
       r: $.subNode("Title").getGlobalRotation(),
-      t: q.t,
+      t: q.t
     },
     {
       n: "Description",
       e: true,
       p: $.subNode("Description").getGlobalPosition(),
       r: $.subNode("Description").getGlobalRotation(),
-      t: q.d,
-    },
+      t: q.d
+    }
   ]);
   $.state.questionTypeID = q.i;
   $.state.answerOptions = Array.isArray(q.a)
-    ? q.a
-    : typeof q.a === "string"
-    ? q.a.split(",")
-    : [];
+      ? q.a
+      : (typeof q.a === "string" ? q.a.split(",") : []) ;
   if (q.i === 1 && $.state.answerOptions.length === 0) {
-    $.state.answerOptions = [1, 2, 3, 4, 5, 6, 7];
+    $.state.answerOptions = [1,2,3,4,5,6,7];
   }
   if ($.state.answerOptions.length === 0) $.state.answerOptions = [""];
   spawnAnswerOptionUI();
@@ -139,22 +114,11 @@ function spawnAnswerOptionUI() {
   $.state.answerOptionIndex = 0;
 }
 
-function addAnswerOption(id, localPos, rot, ansId) {
-  const itemHandle = $.createItem(
-    id,
-    $.getPosition().clone().add(localPos.clone().applyQuaternion(rot)),
-    rot
-  );
+function addAnswerOption (id, localPos, rot, ansId) {
+  const itemHandle = $.createItem(id, $.getPosition().clone().add(localPos.clone().applyQuaternion(rot)), rot);
   $.state.answerOptionUIs = [...$.state.answerOptionUIs, itemHandle];
-  $.state.answerOptionLocalPositions = [
-    ...$.state.answerOptionLocalPositions,
-    localPos,
-  ];
-  itemHandle.send("form_init_answer_option", {
-    value: ansId + 1,
-    label: $.state.answerOptions[ansId],
-    participant: $.state.participant,
-  });
+  $.state.answerOptionLocalPositions = [...$.state.answerOptionLocalPositions, localPos];
+  itemHandle.send("form_init_answer_option", { value: ansId + 1, label: $.state.answerOptions[ansId], participant: $.state.participant });
 }
 
 function spawnNextAnswerOption() {
@@ -163,25 +127,15 @@ function spawnNextAnswerOption() {
     $.state.pendingAnswerOptions = [];
     if ($.state.questionTypeID !== 3) {
       let rot = $.getRotation().clone();
-      let posOffset = $.getPosition()
-        .clone()
-        .add(
-          new Vector3(
-            $.state.questionTypeID === 1
-              ? 0.06
-              : $.state.questionTypeID === 4
-              ? 0
-              : 0.2,
-            $.state.questionTypeID === 1 ? 0.2 : 0,
-            0
-          )
-        );
+      let posOffset = $.getPosition().clone().add(new Vector3(
+          $.state.questionTypeID === 1 ? 0.06 : $.state.questionTypeID === 4 ? 0 : 0.2,
+          $.state.questionTypeID === 1 ? 0.2: 0, 0));
       const req = $.state.answerOptions.map((label, i) => ({
-        n: $.state.questionTypeID === 4 ? "AnsText" : "AnsOptLabel_" + i,
+        n: $.state.questionTypeID === 4 ? "AnsText" : ("AnsOptLabel_" + i),
         e: true,
         p: $.state.answerOptionLocalPositions[i].clone().add(posOffset),
         r: rot,
-        t: $.state.questionTypeID === 4 ? "Click here" : label,
+        t: $.state.questionTypeID === 4 ? "Click here" : label
       }));
       $.state.participant?.send("setQuestionnaireUIs", req);
     }
@@ -205,59 +159,35 @@ function spawnNextAnswerOption() {
     let rowIndex = $.state.answerOptionIndex % maxRows;
 
     // Calculate dynamic x and y positions
-    let x = columnIndex - (numColumns - 1) / 2 - 0.2; // Adjust 0.5 for spacing between columns
+    let x = (columnIndex - (numColumns - 1) / 2) - 0.2; // Adjust 0.5 for spacing between columns
     let y = ((maxRows - 1) / 2 - rowIndex) * 0.2 - 0.1; // 0.2 is the vertical spacing between rows
 
     switch ($.state.questionTypeID) {
       case 0: // Radio Buttons (single answer)
       case 2: // Checkbox (multiple answers)
-        answerUiId = new WorldItemTemplateId(
-          $.state.questionTypeID === 0
+        answerUiId = new WorldItemTemplateId($.state.questionTypeID === 0
             ? "answer-option-radio-button"
-            : "answer-option-checkbox"
-        );
+            : "answer-option-checkbox");
 
         // Add the option at calculated x and y positions
-        addAnswerOption(
-          answerUiId,
-          new Vector3(x, y, 0),
-          rotOffset,
-          $.state.answerOptionIndex
-        );
+        addAnswerOption(answerUiId, new Vector3(x, y, 0), rotOffset, $.state.answerOptionIndex);
         break;
 
       case 1: // Linear Scale
         answerUiId = new WorldItemTemplateId("answer-option-scale-button");
 
-        let scaleX =
-          ((n > 11 ? 3 : 2) / (n - 1)) *
-          ($.state.answerOptionIndex - (n - 1) / 2);
-        addAnswerOption(
-          answerUiId,
-          new Vector3(scaleX, 0, 0),
-          rotOffset,
-          $.state.answerOptionIndex
-        );
+        let scaleX = ((n > 11 ? 3 : 2) / (n - 1)) * ($.state.answerOptionIndex - (n - 1) / 2);
+        addAnswerOption(answerUiId, new Vector3(scaleX, 0, 0), rotOffset, $.state.answerOptionIndex);
         break;
 
       case 3: // Toggle
         answerUiId = new WorldItemTemplateId("answer-option-toggle");
-        addAnswerOption(
-          answerUiId,
-          new Vector3(0, 0, 0),
-          rotOffset,
-          $.state.answerOptionIndex
-        );
+        addAnswerOption(answerUiId, new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);
         break;
 
       case 4: // Text Input
         answerUiId = new WorldItemTemplateId("answer-option-text-input");
-        addAnswerOption(
-          answerUiId,
-          new Vector3(0, 0, 0),
-          rotOffset,
-          $.state.answerOptionIndex
-        );
+        addAnswerOption(answerUiId, new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);
         break;
 
       default:
@@ -284,9 +214,7 @@ function handleFormAnswer(arg) {
     case 0: // Radio Buttons
     case 1: // Linear Scale
       $.subNode("RadioButtonIndicator").setEnabled(true);
-      $.subNode("RadioButtonIndicator").setPosition(
-        $.state.answerOptionLocalPositions[arg - 1].clone()
-      );
+      $.subNode("RadioButtonIndicator").setPosition($.state.answerOptionLocalPositions[arg - 1].clone());
     case 3: // Toggle
     case 4: // Text Input
       $.state.tmpAnswer = arg;
@@ -294,12 +222,9 @@ function handleFormAnswer(arg) {
     case 2: // Checkbox
       if (!Array.isArray($.state.tmpAnswer)) $.state.tmpAnswer = [];
       if (arg.isOn) {
-        if (!$.state.tmpAnswer.includes(arg.value))
-          $.state.tmpAnswer = [...$.state.tmpAnswer, arg.value];
+        if (!$.state.tmpAnswer.includes(arg.value)) $.state.tmpAnswer = [...$.state.tmpAnswer, arg.value];
       } else {
-        $.state.tmpAnswer = $.state.tmpAnswer.filter(
-          (item) => item !== arg.value
-        );
+        $.state.tmpAnswer = $.state.tmpAnswer.filter(item => item !== arg.value);
       }
       break;
   }
@@ -307,13 +232,8 @@ function handleFormAnswer(arg) {
 
 function saveAnswer() {
   if (!$.state.questions[$.state.qID]) return;
-  if (
-    $.state.questions[$.state.qID].r &&
-    !$.state.tmpAnswer &&
-    $.state.tmpAnswer !== false
-  )
-    return;
-  let answers = [...$.state.answers];
+  if ($.state.questions[$.state.qID].r && (!$.state.tmpAnswer && $.state.tmpAnswer !== false)) return;
+  let answers = [ ...$.state.answers ];
   answers[$.state.qID] = $.state.tmpAnswer;
   $.state.answers = answers;
   toNext();
@@ -329,16 +249,20 @@ function submitAnswers() {
     pID: $.state.participant.idfc || "", // TODO: rename to pIdfc, or simply don't send idfc
     pRole: $.getStateCompat("this", "pID", "integer").toString() || "1", // TODO: rename to pID?
     sessionID: $.groupState.sessionID || "",
-    answers: $.state.answers,
+    answers: $.state.answers
   };
   const conditionManager = $.worldItemReference("ConditionManager");
   if (conditionManager) {
-    conditionManager.send("exp_questionnaire_answer", {
-      qID: $.getStateCompat("this", "qID", "integer").toString() || "1",
-      answers: $.state.answers,
-    });
-    reset(false);
+    conditionManager.send("exp_questionnaire_answer", $.state.answers);
   }
+  $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), "postQuestionAnswers");
+  $.state.participant?.send("setQuestionnaireUI", {
+    n: "WaitingText",
+    p: $.getPosition(),
+    r: $.getRotation(),
+    e: true
+  });
+  reset(false);
 }
 
 function toNext() {
@@ -363,20 +287,20 @@ function toPrev() {
 }
 
 function reset(enableReactivation = true) {
-    destroyAnswerOptionUIs(); // destroy any existing answer option UIs first
-    $.subNode("RadioButtonIndicator").setEnabled(false);
-    $.state.answers = [];
-    $.state.qID = 0;
-    $.state.isInitiated = !enableReactivation;
-    $.state.tryInitQuestion = false;
-    $.state.answerOptionUIs = [];
-    $.state.answerOptionLocalPositions = [];
-    $.state.answerOptionIndex = 0;
-    $.state.pendingAnswerOptions = [];
-    $.setStateCompat("this", "form_set_content_active", false);
-    $.state.participant?.send("setQuestionnaireUIs", [
-        { n: "Title", e: false }, { n: "Description", e: false }
-    ]);
+  destroyAnswerOptionUIs(); // destroy any existing answer option UIs first
+  $.subNode("RadioButtonIndicator").setEnabled(false);
+  $.state.answers = [];
+  $.state.qID = 0;
+  $.state.isInitiated = !enableReactivation;
+  $.state.tryInitQuestion = false;
+  $.state.answerOptionUIs = [];
+  $.state.answerOptionLocalPositions = [];
+  $.state.answerOptionIndex = 0;
+  $.state.pendingAnswerOptions = [];
+  $.setStateCompat("this", "form_set_content_active", false);
+  $.state.participant?.send("setQuestionnaireUIs", [
+    { n: "Title", e: false }, { n: "Description", e: false }
+  ]);
 }
 
 $.onExternalCallEnd((res, meta, err) => {
@@ -388,29 +312,19 @@ $.onExternalCallEnd((res, meta, err) => {
   if (meta === "getQuestions") {
     const parsedRes = JSON.parse(res);
     let isFirstGet = $.state.questions.length === 0;
-    $.state.questions = [...$.state.questions, ...parsedRes.questions];
+    $.state.questions = [ ...$.state.questions, ...parsedRes.questions ];
     $.setStateCompat("this", "form_show_loading_bar", false);
     $.state.participant?.send("setQuestionnaireUI", {
       n: "LoadingText",
-      e: false,
+      e: false
     });
     if (isFirstGet) tryInitQuestion();
 
     if ("isDone" in parsedRes && !parsedRes.isDone) {
       const questionnaireID = $.getStateCompat("this", "qID", "integer");
       if (questionnaireID !== -1) {
-        let request = {
-          type: "questions",
-          token: token || "",
-          eID: expID || "",
-          qID: questionnaireID,
-          startIndex: $.state.questions.length,
-        };
-        $.callExternal(
-          new ExternalEndpointId(callExternalEndpointID),
-          JSON.stringify(request),
-          "getQuestions"
-        );
+        let request = { type: "questions", token: token || "", eID: expID || "", qID: questionnaireID, startIndex: $.state.questions.length };
+        $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), "getQuestions");
       }
     }
   }
@@ -422,13 +336,13 @@ $.onExternalCallEnd((res, meta, err) => {
       $.log("All participants have completed the questionnaire!");
       $.groupState.qCompletedCount = 0;
       $.sendSignalCompat("this", "form_allPlayersCompleted"); // state_triggerTransition
-      $.groupState.participants.forEach((p) => {
+      $.groupState.participants.forEach(p => {
         p.send("setQuestionnaireUI", {
           n: "WaitingText",
-          e: false,
+          e: false
         });
       });
+      reset();
     }
-    reset();
   }
 });

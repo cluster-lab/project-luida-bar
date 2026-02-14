@@ -5,8 +5,8 @@ $.onStart(() => {
 
 $.onUpdate(() => {
   if (
-    $.state.trialID !== $.getStateCompat("global", "exp_trialID", "integer") &&
-    $.getStateCompat("global", "exp_trialID", "integer") >= 0
+      $.state.trialID !== $.getStateCompat("global", "exp_trialID", "integer") &&
+      $.getStateCompat("global", "exp_trialID", "integer") >= 0
   ) {
     $.state.trialID = $.getStateCompat("global", "exp_trialID", "integer");
     updateCondition();
@@ -20,21 +20,9 @@ $.onReceive((messageType, arg, sender) => {
       $.groupState.sessionID = arg.sessionID;
       sender.send("betweenSubjectsCondition", $.state.betweenSubjectsConditions);
       break;
-    case "exp_questionnaire_answer":
-      let bsCond = { ...$.state.betweenSubjectsConditions };
-      let qAnswers = { ...bsCond["qAnswers"] };
-      qAnswers[arg.qID] = arg.answers;
-      bsCond["qAnswers"] = qAnswers;
-      $.state.betweenSubjectsConditions = bsCond;
-      $.log(
-        "ConditionManager receiving questionnaire answers: " +
-          JSON.stringify($.state.betweenSubjectsConditions)
-      );
-      updateCondition();
-      $.log(
-        "Update Conditions: " + JSON.stringify($.groupState.currentCondition)
-      );
-      break;
+      // case "exp_questionnaire_answer":
+      //     $.state.betweenSubjectsConditions = GetBetweenSubjectsCondition(arg);
+      //     break;
     default:
       break;
   }
@@ -50,18 +38,18 @@ function updateCondition() {
     for (let i = 0; i < $.state.withinSubjectsVariableNames.length; i++) {
       const varName = $.state.withinSubjectsVariableNames[i];
       const varValue =
-        within_subjects_variables[i].values[
-          $.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]
-        ];
+          within_subjects_variables[i].values[
+              $.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]
+              ];
       condition[varName] = varValue;
     }
     $.groupState.currentCondition = condition;
 
     // Check if this is the last trial (if true, stop repeating trials when next state transition is triggered)
     if (
-      $.state.trialCount > 0 &&
-      !$.state.isLast &&
-      $.state.trialID >= $.state.trialCount - 1
+        $.state.trialCount > 0 &&
+        !$.state.isLast &&
+        $.state.trialID >= $.state.trialCount - 1
     ) {
       $.state.isLast = true;
       $.sendSignalCompat("this", "exp_readyToLeaveTrials");
@@ -82,8 +70,8 @@ function reset() {
   $.groupState.stateNames = state_names || [];
   try {
     initializeWithinSubjectsConditions(
-      within_subjects_variables,
-      trialsCountForEachUniqueCondition
+        within_subjects_variables,
+        trialsCountForEachUniqueCondition
     );
   } catch (error) {
     $.log(error);
@@ -117,28 +105,28 @@ function initializeWithinSubjectsConditions(variables, repeatsPerCond = 1) {
   const varNames = variables.map((v) => v.name);
 
   let indicesPerVar = variables.map((v) =>
-    Array.from({ length: v.values.length }, (_, i) => i)
+      Array.from({ length: v.values.length }, (_, i) => i)
   );
   let condIndicesList = indicesPerVar
-    .reduce(
-      (acc, array) => {
-        return acc.flatMap((accItem) =>
-          array.map((arrayItem) => [...accItem, arrayItem])
-        );
-      },
-      [[]]
-    )
-    .flatMap((condIndices) =>
-      Array.from({ length: repeatsPerCond }, () => condIndices)
-    );
+      .reduce(
+          (acc, array) => {
+            return acc.flatMap((accItem) =>
+                array.map((arrayItem) => [...accItem, arrayItem])
+            );
+          },
+          [[]]
+      )
+      .flatMap((condIndices) =>
+          Array.from({ length: repeatsPerCond }, () => condIndices)
+      );
 
   let shufflePartitionSize = 0;
   for (let i = 0; i < variables.length; i++) {
     if (variables[i].isRandom) {
       shufflePartitionSize =
-        shufflePartitionSize === 0
-          ? variables[i].values.length
-          : shufflePartitionSize * variables[i].values.length;
+          shufflePartitionSize === 0
+              ? variables[i].values.length
+              : shufflePartitionSize * variables[i].values.length;
     }
   }
   shufflePartitionSize *= repeatsPerCond;

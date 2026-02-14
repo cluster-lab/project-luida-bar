@@ -175,7 +175,7 @@ function OnStateEnter(deltaTime) {
     CONDITION = $.groupState.currentCondition;
     PARTICIPANTS = [null].concat($.groupState.participants);
     if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length) return;
-    
+
     while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !== "sleep") {
         stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action(deltaTime);
         $.state.stateEnterActionID += 1;
@@ -218,7 +218,7 @@ function OnStateExit(deltaTime) {
 
 function DuringState(deltaTime) {
     if (!duringStateActions[$.state.state_id] || !duringStateActions[$.state.state_id][$.state.duringStateActionID]) return;
-    
+
     while ($.state.duringStateActionID < duringStateActions[$.state.state_id].length) {
         if (duringStateActions[$.state.state_id][$.state.duringStateActionID].type === "sleep") {
             $.state.duringStateActionID += 1;
