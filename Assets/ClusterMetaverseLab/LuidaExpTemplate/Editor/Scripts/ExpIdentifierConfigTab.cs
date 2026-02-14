@@ -38,6 +38,7 @@ public class ExpIdentifierConfigTab : EditorWindow
     private const string CustomTokenKey = "luida_external_call_verify_token_custom";
     
     private ExternalCallVerifyToken[] currentTokensList = null;
+    private bool isAtTokenCapacity = false;
     private CancellationTokenSource cancellationTokenSource;
 
     
@@ -152,10 +153,22 @@ public class ExpIdentifierConfigTab : EditorWindow
         {
             case TokenUIState.EditableWithGenerate:
                 newDrawnToken = EditorGUILayout.TextField(token);
-                EditorGUILayout.HelpBox("No associated token found. Manually paste a token or generate a new one.", MessageType.Info);
-                if (GUILayout.Button("Generate a new verify token"))
+                if (isAtTokenCapacity)
                 {
-                    GenerateNewTokenAsync();
+                    EditorGUILayout.HelpBox(
+                        "You have reached the maximum number of verify tokens. " +
+                        "Please paste one of your existing verify tokens into the field above. " +
+                        "If you don’t remember any existing verify token, select [Cluster > External Communication (callExternal) Destination URL] " +
+                        "from the top menu to delete the existing verify token and generate a new one.",
+                        MessageType.Warning);
+                }
+                else
+                {
+                    EditorGUILayout.HelpBox("No associated token found. Manually paste a token or generate a new one.", MessageType.Info);
+                    if (GUILayout.Button("Generate a new verify token"))
+                    {
+                        GenerateNewTokenAsync();
+                    }
                 }
                 break;
             
@@ -238,8 +251,9 @@ public class ExpIdentifierConfigTab : EditorWindow
         {
             var tokenResult = await endpointAndTokenAccessor.GetLuidaVerifyTokenAsync(cancellationTokenSource.Token);
             
-            currentTokensList = tokenResult.AllTokens; 
-            
+            currentTokensList = tokenResult.AllTokens;
+            isAtTokenCapacity = tokenResult.IsAtTokenCapacity;
+
             if (tokenResult.FoundAssociatedToken)
             {
                 token = tokenResult.Token;
