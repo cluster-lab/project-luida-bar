@@ -1,19 +1,15 @@
 const stateEnterActions = {
-    2: [
-        { type: "exec", action: () => {
+    3: [
+        { type: "exec", action: (deltaTime) => {
             if (CONDITION['otherAvatar'] === 'happi') {
               $.setStateCompat('this', 'exp_showItem', true);
             }
         } },
-        { type: "exec", action: () => {
+        { type: "exec", action: (deltaTime) => {
             let n = parseInt(CONDITION['number']);
-            const q = new Quaternion(0, 0, 0, 0);
             for (let i = 1; i <= 99; i++) {
               $.subNode("other_" + i)
                 .setEnabled(i < n);
-              if ($.subNode("Avatar_" + i)) {
-                $.subNode("Avatar_" + i).setRotation(q);
-              }
             }
         } }
     ]
@@ -23,8 +19,8 @@ const duringStateActions = {
 };
 
 const stateExitActions = {
-    2: [
-        { type: "exec", action: () => {
+    3: [
+        { type: "exec", action: (deltaTime) => {
             $.setStateCompat('this', 'exp_showItem', false);
         } }
     ]

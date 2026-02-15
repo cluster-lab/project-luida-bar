@@ -1,9 +1,9 @@
 const stateEnterActions = {
     3: [
-        { type: "exec", action: () => {
+        { type: "exec", action: (deltaTime) => {
             $.sendSignalCompat('this', 'exp_recordCustomData');
         } },
-        { type: "exec", action: () => {
+        { type: "exec", action: (deltaTime) => {
             $.sendSignalCompat('this', 'exp_uploadCustomData');
         } }
     ]

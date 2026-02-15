@@ -2,5 +2,6 @@ const trialsCountForEachUniqueCondition = 1;
 const within_subjects_variables = [
 ];
 const between_subjects_variables = [
-    { name: "selfAvatar", values: ["suit", "happi"], isRandom: true },
+    { name: "selfAvatar", values: ["suit", "happi"], isRandom: true, debugValue: null },
 ];
+const state_names = ["Start", "Intro", "Practice", "Trial - Start", "Trial - Rest", "End"];

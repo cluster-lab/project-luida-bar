@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TaikoSideCollider
   m_EditorClassIdentifier: 
   stateListeners:
-  - stateID: 2
+  - stateID: 3
     onStateStartedActions:
     - predefinedActionTemplate:
         actionType: Show item
@@ -62,7 +62,7 @@ MonoBehaviour:
       conditionValue: 
       _variableKeys: []
       _variableValuesList: []
-  - stateID: 4
+  - stateID: 6
     onStateStartedActions:
     - predefinedActionTemplate:
         actionType: Hide item

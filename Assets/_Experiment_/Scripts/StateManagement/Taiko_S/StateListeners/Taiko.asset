@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Taiko
   m_EditorClassIdentifier: 
   stateListeners:
-  - stateID: 4
+  - stateID: 6
     onStateStartedActions:
     - predefinedActionTemplate:
         actionType: Hide item
@@ -27,7 +27,7 @@ MonoBehaviour:
       _variableValuesList: []
     duringStateActions: []
     onStateExitedActions: []
-  - stateID: 2
+  - stateID: 3
     onStateStartedActions:
     - predefinedActionTemplate:
         actionType: Show item

@@ -1,9 +1,9 @@
 const stateEnterActions = {
     1: [
-        { type: "exec", action: () => {
+        { type: "exec", action: (deltaTime) => {
             $.setStateCompat('this', 'exp_showItem', true);
         } },
-        { type: "exec", action: () => {
+        { type: "exec", action: (deltaTime) => {
             $.subNode('Text').setText(`《実験説明》
             本実験の所要時間は約30分です。
             最初に約15秒間、太鼓を叩く練習を行っていただきます。
@@ -16,17 +16,19 @@ const stateEnterActions = {
         } }
     ],
     2: [
-        { type: "exec", action: () => {
+        { type: "exec", action: (deltaTime) => {
             $.subNode('Text').setText(`《練習時間》
             太鼓のバチを掴んで、
             目の前に現れた太鼓を
-            練習として15秒間叩いてください。`);
+            練習として30秒間叩いてください。`);
         } }
     ],
     3: [
-        { type: "exec", action: () => {
-            $.subNode('Text').setText(`10秒後に別のワールドに
-            テレポートします...`);
+        { type: "exec", action: (deltaTime) => {
+            $.subNode('Text').setText(`← 男性　　女性 →
+            ご自身の性別に合った側の
+            ポータルへ進んでください
+            「その他」の方は、いずれかをお選びください`);
         } }
     ]
 };

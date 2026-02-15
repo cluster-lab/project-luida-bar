@@ -37,7 +37,9 @@ MonoBehaviour:
       _variableKeys:
       - text
       _variableValuesList:
-      - "\u76EE\u306E\u524D\u306E\u93E1\u3092\u898B\u306A\u304C\u3089\u3001\n\u6E96\u5099\u4F53\u64CD\u309230\u79D2\u9593\u3067\n\u884C\u3063\u3066\u304F\u3060\u3055\u3044\u3002"
+      - "\u76EE\u306E\u524D\u306E\u93E1\u3092\u898B\u306A\u304C\u3089\u3001\n\u6E96\u5099\u4F53\u64CD\u309230\u79D2\u9593\u3067\u884C\u3063\u3066\u304F\u3060\u3055\u3044:\n1.
+        \u4E21\u624B\u3092\u4E0A\u3052\u4E0B\u3052\r\n2. \u5DE6\u53F3\u306B\u4F53\u3092\u50BE\u3051\u308B\n\r3.
+        \u30D0\u30C1\u3092\u6301\u3063\u3066\u7D20\u632F\u308A"
     - predefinedActionTemplate:
         actionType: Customized Action
         codeSnippet: 
@@ -51,7 +53,7 @@ MonoBehaviour:
       _variableValuesList: []
     duringStateActions: []
     onStateExitedActions: []
-  - stateID: 1
+  - stateID: 2
     onStateStartedActions:
     - predefinedActionTemplate:
         actionType: Set text
@@ -79,7 +81,7 @@ MonoBehaviour:
       _variableValuesList: []
     duringStateActions: []
     onStateExitedActions: []
-  - stateID: 2
+  - stateID: 3
     onStateStartedActions:
     - predefinedActionTemplate:
         actionType: Show item
@@ -129,7 +131,7 @@ MonoBehaviour:
       _variableValuesList: []
     duringStateActions: []
     onStateExitedActions: []
-  - stateID: 3
+  - stateID: 5
     onStateStartedActions:
     - predefinedActionTemplate:
         actionType: Show item
@@ -166,7 +168,7 @@ MonoBehaviour:
       conditionValue: 
       _variableKeys: []
       _variableValuesList: []
-  - stateID: 5
+  - stateID: 7
     onStateStartedActions:
     - predefinedActionTemplate:
         actionType: Show item

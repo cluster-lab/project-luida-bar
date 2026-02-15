@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Portal
   m_EditorClassIdentifier: 
   stateListeners:
-  - stateID: 5
+  - stateID: 7
     onStateStartedActions:
     - predefinedActionTemplate:
         actionType: Sleep

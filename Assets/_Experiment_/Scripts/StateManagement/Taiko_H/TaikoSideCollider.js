@@ -1,15 +1,15 @@
 const stateEnterActions = {
-    2: [
-        { type: "exec", action: () => {
+    3: [
+        { type: "exec", action: (deltaTime) => {
             $.setStateCompat('this', 'exp_showItem', true);
         } },
-        { type: "exec", action: () => {
+        { type: "exec", action: (deltaTime) => {
             $.state.isInTask = true;
             $.state.hits = 0;
         } }
     ],
-    4: [
-        { type: "exec", action: () => {
+    6: [
+        { type: "exec", action: (deltaTime) => {
             $.setStateCompat('this', 'exp_showItem', false);
         } }
     ]
@@ -19,12 +19,12 @@ const duringStateActions = {
 };
 
 const stateExitActions = {
-    2: [
-        { type: "exec", action: () => {
+    3: [
+        { type: "exec", action: (deltaTime) => {
             $.state.isInTask = false;
             SendDataToCollector("sideHits", $.state.hits);
         } },
-        { type: "exec", action: () => {
+        { type: "exec", action: (deltaTime) => {
             $.setStateCompat('this', 'exp_showItem', false);
         } }
     ]

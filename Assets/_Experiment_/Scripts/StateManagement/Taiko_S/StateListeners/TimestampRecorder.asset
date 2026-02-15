@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TimestampRecorder
   m_EditorClassIdentifier: 
   stateListeners:
-  - stateID: 2
+  - stateID: 3
     onStateStartedActions:
     - predefinedActionTemplate:
         actionType: Customized Action
@@ -38,7 +38,7 @@ MonoBehaviour:
       conditionValue: 
       _variableKeys: []
       _variableValuesList: []
-  - stateID: 3
+  - stateID: 5
     onStateStartedActions:
     - predefinedActionTemplate:
         actionType: Process and save collected data
@@ -52,7 +52,7 @@ MonoBehaviour:
       _variableValuesList: []
     duringStateActions: []
     onStateExitedActions: []
-  - stateID: 4
+  - stateID: 6
     onStateStartedActions:
     - predefinedActionTemplate:
         actionType: Upload collected data

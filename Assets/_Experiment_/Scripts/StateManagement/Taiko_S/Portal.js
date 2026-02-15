@@ -1,10 +1,10 @@
 const stateEnterActions = {
-    5: [
+    7: [
         { type: "sleep", value: 10 },
-        { type: "exec", action: () => {
+        { type: "exec", action: (deltaTime) => {
             $.setPosition(new Vector3(0, 0, -2))
         } },
-        { type: "exec", action: () => {
+        { type: "exec", action: (deltaTime) => {
             $.setStateCompat('this', 'exp_showItem', true);
         } }
     ]

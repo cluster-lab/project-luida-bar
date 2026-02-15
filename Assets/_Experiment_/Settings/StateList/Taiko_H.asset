@@ -14,13 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   States:
   - StateName: Acclimatization
-    DestStateName: Prepare
+    DestStateName: AvatarQuestionnaire
     HasExitTime: 1
-    ExitTime: 30
+    ExitTime: 35
     IsRepeated: 0
     RepeatDestStateName: 
     RepeatCount: 1
     qID: 0
+  - StateName: AvatarQuestionnaire
+    DestStateName: Prepare
+    HasExitTime: 0
+    ExitTime: 0
+    IsRepeated: 0
+    RepeatDestStateName: 
+    RepeatCount: 1
+    qID: 2
   - StateName: Prepare
     DestStateName: Trial - Start
     HasExitTime: 1
@@ -30,13 +38,21 @@ MonoBehaviour:
     RepeatCount: 1
     qID: 0
   - StateName: Trial - Start
-    DestStateName: Trial - Rest
+    DestStateName: Trial - Questionnaire
     HasExitTime: 1
     ExitTime: 100
     IsRepeated: 0
     RepeatDestStateName: 
     RepeatCount: 1
     qID: 0
+  - StateName: Trial - Questionnaire
+    DestStateName: Trial - Rest
+    HasExitTime: 0
+    ExitTime: 0
+    IsRepeated: 0
+    RepeatDestStateName: 
+    RepeatCount: 1
+    qID: 3
   - StateName: Trial - Rest
     DestStateName: Outro
     HasExitTime: 1
@@ -52,7 +68,7 @@ MonoBehaviour:
     IsRepeated: 0
     RepeatDestStateName: 
     RepeatCount: 1
-    qID: 2
+    qID: 4
   - StateName: End
     DestStateName: 
     HasExitTime: 0

@@ -1,11 +1,11 @@
 const stateEnterActions = {
-    2: [
-        { type: "exec", action: () => {
+    3: [
+        { type: "exec", action: (deltaTime) => {
             $.setStateCompat('this', 'exp_showItem', true);
         } }
     ],
-    4: [
-        { type: "exec", action: () => {
+    6: [
+        { type: "exec", action: (deltaTime) => {
             $.setStateCompat('this', 'exp_showItem', false);
         } }
     ]
@@ -15,8 +15,8 @@ const duringStateActions = {
 };
 
 const stateExitActions = {
-    2: [
-        { type: "exec", action: () => {
+    3: [
+        { type: "exec", action: (deltaTime) => {
             $.setStateCompat('this', 'exp_showItem', false);
         } }
     ]

@@ -1,16 +1,16 @@
 const stateEnterActions = {
-    2: [
-        { type: "exec", action: () => {
+    3: [
+        { type: "exec", action: (deltaTime) => {
             $.state.startTime = Date.now();
         } }
     ],
-    3: [
-        { type: "exec", action: () => {
+    5: [
+        { type: "exec", action: (deltaTime) => {
             $.sendSignalCompat('this', 'exp_recordCustomData');
         } }
     ],
-    4: [
-        { type: "exec", action: () => {
+    6: [
+        { type: "exec", action: (deltaTime) => {
             $.sendSignalCompat('this', 'exp_uploadCustomData');
         } }
     ]
@@ -20,8 +20,8 @@ const duringStateActions = {
 };
 
 const stateExitActions = {
-    2: [
-        { type: "exec", action: () => {
+    3: [
+        { type: "exec", action: (deltaTime) => {
             $.state.endTime = Date.now();
             SendDataToCollector("timestamp", {
               start: $.state.startTime,

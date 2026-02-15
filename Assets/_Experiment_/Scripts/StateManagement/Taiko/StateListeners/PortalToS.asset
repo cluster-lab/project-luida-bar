@@ -33,15 +33,12 @@ MonoBehaviour:
       _variableValuesList:
       - 0
       - 0
-      - -2
+      - 2
     - predefinedActionTemplate:
         actionType: Customized Action
         codeSnippet: 
         variables: []
-      customAction: 'PARTICIPANTS[1].setMoveSpeedRate(0.1);
-
-        PARTICIPANTS[1].setPosition(new
-        Vector3(0, 0, -2));'
+      customAction: PARTICIPANTS[1].setPosition(new Vector3(0, 0, -2));
       isConditional: 1
       conditionVariable: selfAvatar
       conditionValue: suit
@@ -59,24 +56,12 @@ MonoBehaviour:
       _variableKeys:
       - seconds
       _variableValuesList:
-      - 10
+      - 1
     - predefinedActionTemplate:
         actionType: Show item
         codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
         variables: []
       customAction: 
-      isConditional: 1
-      conditionVariable: selfAvatar
-      conditionValue: suit
-      _variableKeys: []
-      _variableValuesList: []
-    - predefinedActionTemplate:
-        actionType: Customized Action
-        codeSnippet: 
-        variables: []
-      customAction: "$.log(CONDITION);\nif (CONDITION['qAnswers'] && CONDITION['qAnswers']['1']
-        && CONDITION['qAnswers']['1'][0] === 2) {\n  $.subNode('FemaleAvatarPortal').setEnabled(true);\n}
-        else {\n  $.subNode('MaleAvatarPortal').setEnabled(true);\n}"
       isConditional: 1
       conditionVariable: selfAvatar
       conditionValue: suit
