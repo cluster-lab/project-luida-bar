@@ -1,0 +1,11 @@
+{
+  "author": "Cluster, Inc.",
+  "name": "mu.cluster.luida-exp-template",
+  "version": "1.3.4",
+  "displayName": "Luida Experiment Template",
+  "unity": "2021.3",
+  "type": "tool",
+  "dependencies": {
+    "mu.cluster.cluster-creator-kit": "2.35.0"
+  }
+}
