@@ -554,9 +554,9 @@ PrefabInstance:
     - target: {fileID: 3933797981565559285, guid: d54fd1885b76d47d9bd9a3a2f0675afb,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\ncallExternalEndpointID
-        = \"callExternalEndpointID_example\";\r\npNum = 1;\r\n\r\n$.onStart(() =>
-        {\r\n  $.state.isBetweenSubjectsConditionsSet = false;\r\n  $.groupState.isParticipantsEnough
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
+        = \"callExternalEndpointID_example\";\npNum = 1;\nexpIsVr = true;\n\r\n$.onStart(()
+        => {\r\n  $.state.isBetweenSubjectsConditionsSet = false;\r\n  $.groupState.isParticipantsEnough
         = false;\r\n  $.groupState.sessionID = Date.now() + \"_\" +  (Math.random()
         + 1).toString(36).substring(2, 8);\r\n  $.groupState.participants = []; //
         array of PlayerHandle who are currently in the experiment\r\n  $.state.participantsEnvInfo
@@ -596,12 +596,15 @@ PrefabInstance:
         arg, sender) => {\r\n    switch (messageType) {\r\n        case \"betweenSubjectsCondition\":\r\n           
         $.state.betweenSubjectsConditions = arg;\r\n            $.state.isBetweenSubjectsConditionsSet
         = true;\r\n            break;\r\n        case \"envInfoResponse\":\r\n           
-        $.state.participantsEnvInfo = [\r\n              ...$.state.participantsEnvInfo,\r\n             
-        {\r\n                idfc: sender.idfc,\r\n                envInfo: arg\r\n             
-        }\r\n            ];\r\n            let idfc2userId = { ...$.state.idfc2userId
-        };\r\n            idfc2userId[sender.idfc] = sender.userId;\r\n           
-        $.state.idfc2userId = idfc2userId;\r\n            break;\r\n        default:\r\n           
-        break;\r\n    }\r\n}, { item: true, player: true });\r\n\r\nfunction HandleParticipantsEnough()
+        if (expIsVr !== arg.isVr) {\r\n                $.log(\"VR permission not
+        matched!\");\r\n                $.subNode(\"WorldGateToLuidaBar\").setEnabled(true);\r\n               
+        return;\r\n            }\r\n            $.state.participantsEnvInfo = [\r\n             
+        ...$.state.participantsEnvInfo,\r\n              {\r\n                idfc:
+        sender.idfc,\r\n                envInfo: arg\r\n              }\r\n           
+        ];\r\n            let idfc2userId = { ...$.state.idfc2userId };\r\n           
+        idfc2userId[sender.idfc] = sender.userId;\r\n            $.state.idfc2userId
+        = idfc2userId;\r\n            break;\r\n        default:\r\n            break;\r\n   
+        }\r\n}, { item: true, player: true });\r\n\r\nfunction HandleParticipantsEnough()
         {\r\n  $.log(\"Participants are enough to start the experiment.\");\r\n 
         $.groupState.isParticipantsEnough = true;\r\n  $.sendSignalCompat(\"this\",
         \"exp_playersAreEnough\");\r\n  $.sendSignalCompat(\"this\", \"exp_StartStateTransition\");\r\n\r\n 

@@ -17,11 +17,13 @@ public class ExpIdentifierConfigTab : EditorWindow
     private string prevToken = "";
     private string prevCallExternalEndpointID = "";
     private int prevPNum = 1;
-    
+    private bool prevExpIsVr = true;
+
     private string expID = "";
     private string token = "";
     private string callExternalEndpointID = "";
     private int pNum = 1;
+    private bool expIsVr = true;
     
     private string filePath;
     private const string formPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/Questionnaire/Questionnaire.prefab";
@@ -66,6 +68,7 @@ public class ExpIdentifierConfigTab : EditorWindow
         prevToken = token;
         prevCallExternalEndpointID = callExternalEndpointID;
         prevPNum = pNum;
+        prevExpIsVr = expIsVr;
 
         if (isLoggedIn)
         {
@@ -144,6 +147,7 @@ public class ExpIdentifierConfigTab : EditorWindow
         
         string newExpID = EditorGUILayout.TextField("Experiment ID", expID);
         int newPNum = EditorGUILayout.IntField("Number of Participants", pNum);
+        bool newExpIsVr = EditorGUILayout.Toggle("Experiment is VR", expIsVr);
 
         // --- Modified Verify Token UI ---
         EditorGUILayout.LabelField("Verify Token");
@@ -223,6 +227,13 @@ public class ExpIdentifierConfigTab : EditorWindow
             prevPNum = newPNum;
             hasChanged = true;
             UpdateQuestionnaireObjects();
+        }
+
+        if (newExpIsVr != prevExpIsVr)
+        {
+            expIsVr = newExpIsVr;
+            prevExpIsVr = newExpIsVr;
+            hasChanged = true;
         }
 
         if (hasChanged)
@@ -352,6 +363,7 @@ public class ExpIdentifierConfigTab : EditorWindow
         token = ExtractStringValue(content, "token");
         callExternalEndpointID = ExtractStringValue(content, "callExternalEndpointID");
         pNum = ExtractIntValue(content, "pNum");
+        expIsVr = ExtractBoolValue(content, "expIsVr", true);
     }
 
     private string ExtractStringValue(string content, string key)
@@ -368,6 +380,13 @@ public class ExpIdentifierConfigTab : EditorWindow
         return match.Success ? int.Parse(match.Groups[1].Value) : 1;
     }
 
+    private bool ExtractBoolValue(string content, string key, bool defaultValue)
+    {
+        var pattern = $@"{key}\s*=\s*(true|false);";
+        var match = Regex.Match(content, pattern);
+        return match.Success ? match.Groups[1].Value == "true" : defaultValue;
+    }
+
     private void SaveExpIdentifiers()
     {
         if (!Directory.Exists(Path.GetDirectoryName(filePath)))
@@ -379,7 +398,8 @@ public class ExpIdentifierConfigTab : EditorWindow
             $"expID = \"{expID}\";\n" +
             $"token = \"{token}\";\n" +
             $"callExternalEndpointID = \"{callExternalEndpointID}\";\n" +
-            $"pNum = {pNum};\n";
+            $"pNum = {pNum};\n" +
+            $"expIsVr = {(expIsVr ? "true" : "false")};\n";
 
         File.WriteAllText(filePath, content);
 

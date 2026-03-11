@@ -75,6 +75,11 @@ $.onReceive((messageType, arg, sender) => {
             $.state.isBetweenSubjectsConditionsSet = true;
             break;
         case "envInfoResponse":
+            if (expIsVr !== arg.isVr) {
+                $.log("VR permission not matched!");
+                $.subNode("WorldGateToLuidaBar").setEnabled(true);
+                return;
+            }
             $.state.participantsEnvInfo = [
               ...$.state.participantsEnvInfo,
               {
