@@ -1,3 +1,5 @@
+const REJECTION_GATE_POS = new Vector3(-100, -100, -100);
+
 $.onStart(() => {
   $.state.isBetweenSubjectsConditionsSet = false;
   $.groupState.isParticipantsEnough = false;
@@ -6,8 +8,14 @@ $.onStart(() => {
   $.state.participantsEnvInfo = [];
   $.state.idfc2userId = {};
   $.state.timer = 0;
-  
-  // TODO: load exp info so that we can check later what environments this experiment requires
+  $.state.pendingEligibilityChecks = {};
+  $.state.rejectionQueue = [];
+  $.state.isProcessingRejection = false;
+  $.state.rejectionTimer = 0;
+
+  // Place world gate at remote position and keep it enabled
+  $.subNode("WorldGateToLuidaBar").setPosition(REJECTION_GATE_POS);
+  $.subNode("WorldGateToLuidaBar").setEnabled(false);
 })
 
 $.onUpdate((deltaTime) => {
@@ -20,7 +28,6 @@ $.onUpdate((deltaTime) => {
                 .filter(p => !pIdfcs.includes(p.idfc));
             if (newPlayers.length > 0) {
                 for (const newPlayer of newPlayers) {
-                    // TODO: Check if the player is eligible to join the experiment before adding them to $.groupState.participants.
                     $.groupState.participants = [ ...$.groupState.participants, newPlayer ];
                     $.setPlayerScript(newPlayer);
                     newPlayer.send("initializeParticipant", true);
@@ -44,28 +51,42 @@ $.onUpdate((deltaTime) => {
         };
         $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), "customDataUploaded");
     }
-/*
-  if ($.getStateCompat("this", "exp_checkJoinEligibility", "boolean")) {
-    $.setStateCompat("this", "exp_checkJoinEligibility", false);
 
-    let pIdfcs = $.groupState.participants.map(p => p.idfc);
-    const newPlayers = $.getPlayersNear($.getPosition(), 1)
-      .filter(p => !pIDFCs.includes(p.idfc));
-    
-    if (newPlayers.length > 0) {
-      $.state.newPlayers = newPlayers;
-      $.log(newPlayers[0].idfc);
+    // Process rejection queue: teleport rejected players to remote world gate one at a time
+    if ($.state.rejectionQueue.length > 0 && !$.state.isProcessingRejection) {
+        const rejection = $.state.rejectionQueue[0];
+        const allPlayers = $.getPlayersNear($.getPosition(), Infinity);
+        const player = allPlayers.find(p => p.idfc === rejection.idfc);
 
-      const request = {
-        type: "checkJoinEligibility",
-        token: token || "",
-        eID: expID || "",
-        idfcs: newPlayers.map(p => p.idfc).join("|")
-      };
-      $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), "joinEligibilityChecked");
+        if (!player) {
+            // Player already left, skip
+            $.state.rejectionQueue = $.state.rejectionQueue.slice(1);
+        } else {
+            $.state.isProcessingRejection = true;
+            $.state.rejectionTimer = 0;
+            // Teleport player to the gate (convert item-local to global coords)
+            $.subNode("WorldGateToLuidaBar").setEnabled(true);
+            const itemPos = $.getPosition();
+            player.setPosition(new Vector3(
+                REJECTION_GATE_POS.x + itemPos.x,
+                REJECTION_GATE_POS.y + itemPos.y + 0.5,
+                REJECTION_GATE_POS.z + itemPos.z
+            ));
+            $.log("Rejection: teleported player " + rejection.idfc + " to remote world gate");
+        }
     }
-  }
-*/
+
+    if ($.state.isProcessingRejection) {
+        $.state.rejectionTimer += deltaTime;
+        if ($.state.rejectionTimer >= 1.5) {
+            const processed = $.state.rejectionQueue[0];
+            $.state.rejectionQueue = $.state.rejectionQueue.slice(1);
+            $.state.isProcessingRejection = false;
+            $.state.rejectionTimer = 0;
+            $.subNode("WorldGateToLuidaBar").setEnabled(false);
+            $.log("Rejection: finished processing player " + (processed ? processed.idfc : "unknown"));
+        }
+    }
 })
 
 $.onReceive((messageType, arg, sender) => {
@@ -75,21 +96,31 @@ $.onReceive((messageType, arg, sender) => {
             $.state.isBetweenSubjectsConditionsSet = true;
             break;
         case "envInfoResponse":
-            if (expIsVr !== arg.isVr) {
-                $.log("VR permission not matched!");
-                $.subNode("WorldGateToLuidaBar").setEnabled(true);
-                return;
-            }
+            // Store envInfo
             $.state.participantsEnvInfo = [
               ...$.state.participantsEnvInfo,
-              {
-                idfc: sender.idfc,
-                envInfo: arg
-              }
+              { idfc: sender.idfc, envInfo: arg }
             ];
             let idfc2userId = { ...$.state.idfc2userId };
             idfc2userId[sender.idfc] = sender.userId;
             $.state.idfc2userId = idfc2userId;
+
+            // Check eligibility via backend API
+            let pendingChecks = { ...$.state.pendingEligibilityChecks };
+            pendingChecks[sender.idfc] = true;
+            $.state.pendingEligibilityChecks = pendingChecks;
+
+            const eligibilityRequest = {
+                type: "checkJoinEligibility",
+                token: token || "",
+                eID: expID || "",
+                envInfo: [arg]
+            };
+            $.callExternal(
+                new ExternalEndpointId(callExternalEndpointID),
+                JSON.stringify(eligibilityRequest),
+                "joinEligibilityChecked_" + sender.idfc
+            );
             break;
         default:
             break;
@@ -111,28 +142,36 @@ function HandleParticipantsEnough() {
   }
 }
 
-/*
-$.onExternalCallEnd((res, meta, err) =>
-{
+$.onExternalCallEnd((res, meta, err) => {
   if (res == null) {
     $.log("callExternal ERROR: " + err);
     return;
   }
 
-  if (meta === "joinEligibilityChecked") {
+  if (meta.startsWith("joinEligibilityChecked_")) {
+    const idfc = meta.replace("joinEligibilityChecked_", "");
     const parsedRes = JSON.parse(res);
-    $.state.newPlayers.forEach(newPlayer => {
-      if (parsedRes.ineligibleIdfcs.includes(newPlayer.idfc)) {
-        // TODO: Show message about that this player is not eligible to join this experiment, and teleport the player back to LUIDA bar world.
-      } else {
-        newPlayer.setMoveSpeedRate(1);
-        $.groupState.participants = [ ...$.groupState.participants, newPlayer ];
-        // TODO: Instead of enabling move, teleport the player from the checking area to the task area.
-      }
-    });
-    
-    $.state.newPlayers = [];
-    $.log("Only users who have not joined this experiment before are allowed to proceed to the experiment.");
+
+    // Clear pending check
+    let pendingChecks = { ...$.state.pendingEligibilityChecks };
+    delete pendingChecks[idfc];
+    $.state.pendingEligibilityChecks = pendingChecks;
+
+    if (!parsedRes.eligible) {
+      $.log("Platform not allowed for " + idfc + ": " + (parsedRes.reason || "unknown"));
+      // Remove ineligible participant
+      $.groupState.participants = $.groupState.participants.filter(
+        p => p.idfc !== idfc
+      );
+      $.state.participantsEnvInfo = $.state.participantsEnvInfo.filter(
+        info => info.idfc !== idfc
+      );
+      // Enqueue for isolated rejection via remote world gate
+      $.state.rejectionQueue = [...$.state.rejectionQueue, { idfc: idfc }];
+    }
+  }
+
+  if (meta === "customDataUploaded") {
+    $.log("Response after customDataUploaded called: " + JSON.stringify(res));
   }
 });
-*/
