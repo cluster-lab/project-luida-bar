@@ -20,6 +20,41 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: b52fbbe9b4b674648ac48174430aaeac,
         type: 3}
+    - target: {fileID: 456439234277091765, guid: bcb4321352c07a94480b4dd0ff0fadee,
+        type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1926860735799242843, guid: bcb4321352c07a94480b4dd0ff0fadee,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1926860735799242843, guid: bcb4321352c07a94480b4dd0ff0fadee,
+        type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1926860735799242843, guid: bcb4321352c07a94480b4dd0ff0fadee,
+        type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5669846595080677174, guid: bcb4321352c07a94480b4dd0ff0fadee,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5669846595080677174, guid: bcb4321352c07a94480b4dd0ff0fadee,
+        type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5669846595080677174, guid: bcb4321352c07a94480b4dd0ff0fadee,
+        type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8187736243455501271, guid: bcb4321352c07a94480b4dd0ff0fadee,
         type: 3}
       propertyPath: m_RootOrder
