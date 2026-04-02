@@ -12,6 +12,10 @@ $.onStart(() => {
   $.state.rejectionQueue = [];
   $.state.isProcessingRejection = false;
   $.state.rejectionTimer = 0;
+  $.state.isSessionApproved = false;
+  $.state.existingConditions = null;  // existing conditions from server for balancing
+  $.state.betweenSubjectsConfig = [];  // populated by ConditionManager message
+  $.state.eligibleCount = 0;  // only confirmed-eligible players count toward pNum
 
   // Place world gate at remote position and keep it enabled
   $.subNode("WorldGateToLuidaBar").setPosition(REJECTION_GATE_POS);
@@ -33,16 +37,14 @@ $.onUpdate((deltaTime) => {
                     newPlayer.send("initializeParticipant", true);
                 }
             }
-            if (!$.groupState.isParticipantsEnough && $.groupState.participants.length >= pNum) {
-                HandleParticipantsEnough();
-            }
+            // pNum check moved to onExternalCallEnd — only eligible players count
         }
     } else if ($.state.isBetweenSubjectsConditionsSet) { // participants are enough & conditions are set
         $.state.isBetweenSubjectsConditionsSet = false;
         let request = {
             type: "uploadCustomData",
             data: {
-                pInfo: $.state.participantsEnvInfo.map(info => ({ ts: Date.now(), sID: $.groupState.sessionID || "", ...info, betweenSubjectsConditions: $.state.betweenSubjectsConditions })),
+                pInfo: $.state.participantsEnvInfo.map(info => ({ ts: Date.now(), sID: $.groupState.sessionID || "", ...info })),
                 idfc2userId: $.state.idfc2userId
             },
             token: token || "",
@@ -94,6 +96,19 @@ $.onReceive((messageType, arg, sender) => {
         case "betweenSubjectsCondition":
             $.state.betweenSubjectsConditions = arg;
             $.state.isBetweenSubjectsConditionsSet = true;
+            // Save conditions to backend
+            let saveConditionsRequest = {
+                type: "saveSessionConditions",
+                token: token || "",
+                eID: expID || "",
+                sID: $.groupState.sessionID || "",
+                betweenSubjectsConditions: arg
+            };
+            $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(saveConditionsRequest), "sessionConditionsSaved");
+            break;
+        case "betweenSubjectsConfig":
+            $.state.betweenSubjectsConfig = arg;
+            $.log("Received betweenSubjectsConfig: " + JSON.stringify(arg));
             break;
         case "envInfoResponse":
             // Store envInfo
@@ -110,12 +125,20 @@ $.onReceive((messageType, arg, sender) => {
             pendingChecks[sender.idfc] = true;
             $.state.pendingEligibilityChecks = pendingChecks;
 
-            const eligibilityRequest = {
+            // Build eligibility request
+            let eligibilityRequest = {
                 type: "checkJoinEligibility",
                 token: token || "",
                 eID: expID || "",
+                sID: $.groupState.sessionID || "",
                 envInfo: [arg]
             };
+
+            // Until session is approved, also include betweenSubjectsConfig for session check
+            if (!$.state.isSessionApproved && $.state.betweenSubjectsConfig.length > 0) {
+                eligibilityRequest.betweenSubjectsConfig = $.state.betweenSubjectsConfig;
+            }
+
             $.callExternal(
                 new ExternalEndpointId(callExternalEndpointID),
                 JSON.stringify(eligibilityRequest),
@@ -135,6 +158,10 @@ function HandleParticipantsEnough() {
 
   const conditionManager = $.worldItemReference("ConditionManager");
   if (conditionManager) {
+    // If server returned existing conditions, send them for local balancing
+    if ($.state.isSessionApproved && $.state.existingConditions) {
+      conditionManager.send("luida_existing_conditions", $.state.existingConditions);
+    }
     conditionManager.send("luida_participants_info", {
       participants: $.groupState.participants,
       sessionID: $.groupState.sessionID
@@ -143,35 +170,80 @@ function HandleParticipantsEnough() {
 }
 
 $.onExternalCallEnd((res, meta, err) => {
-  if (res == null) {
-    $.log("callExternal ERROR: " + err);
-    return;
-  }
-
   if (meta.startsWith("joinEligibilityChecked_")) {
     const idfc = meta.replace("joinEligibilityChecked_", "");
-    const parsedRes = JSON.parse(res);
 
-    // Clear pending check
+    // Clear pending check regardless of outcome
     let pendingChecks = { ...$.state.pendingEligibilityChecks };
     delete pendingChecks[idfc];
     $.state.pendingEligibilityChecks = pendingChecks;
 
+    if (res == null) {
+      // Graceful degradation: treat as eligible so experiment can proceed with local conditions
+      $.log("Eligibility check ERROR for " + idfc + ": " + err);
+      $.state.eligibleCount++;
+      if (!$.groupState.isParticipantsEnough && $.state.eligibleCount >= pNum) {
+        HandleParticipantsEnough();
+      }
+      return;
+    }
+
+    const parsedRes = JSON.parse(res);
+
     if (!parsedRes.eligible) {
-      $.log("Platform not allowed for " + idfc + ": " + (parsedRes.reason || "unknown"));
-      // Remove ineligible participant
+      $.log("Rejected " + idfc + ": " + (parsedRes.reason || "unknown"));
+      // Remove ineligible participant and all their data
       $.groupState.participants = $.groupState.participants.filter(
         p => p.idfc !== idfc
       );
       $.state.participantsEnvInfo = $.state.participantsEnvInfo.filter(
         info => info.idfc !== idfc
       );
+      let cleanedIdfc2userId = { ...$.state.idfc2userId };
+      delete cleanedIdfc2userId[idfc];
+      $.state.idfc2userId = cleanedIdfc2userId;
       // Enqueue for isolated rejection via remote world gate
       $.state.rejectionQueue = [...$.state.rejectionQueue, { idfc: idfc }];
+      return;
     }
+
+    // Player is eligible
+    $.state.eligibleCount++;
+
+    // Check if response includes session status info (existing conditions for local balancing)
+    if (parsedRes.existingConditions !== undefined) {
+      $.state.isSessionApproved = true;
+      $.state.existingConditions = parsedRes.existingConditions;
+      $.log("Session approved. Existing conditions: " + JSON.stringify(parsedRes.existingConditions));
+    }
+
+    // Check pNum — only after eligibility is confirmed
+    if (!$.groupState.isParticipantsEnough && $.state.eligibleCount >= pNum) {
+      HandleParticipantsEnough();
+    }
+    return;
+  }
+
+  if (meta === "sessionConditionsSaved") {
+    if (res == null) {
+      $.log("saveSessionConditions ERROR: " + err);
+    } else {
+      $.log("Session conditions saved: " + JSON.stringify(res));
+    }
+    return;
   }
 
   if (meta === "customDataUploaded") {
+    if (res == null) {
+      $.log("callExternal ERROR: " + err);
+      return;
+    }
     $.log("Response after customDataUploaded called: " + JSON.stringify(res));
+    return;
+  }
+
+  // Fallback for unknown meta
+  if (res == null) {
+    $.log("callExternal ERROR (" + meta + "): " + err);
   }
 });
