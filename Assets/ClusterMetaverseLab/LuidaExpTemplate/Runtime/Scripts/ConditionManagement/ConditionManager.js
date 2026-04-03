@@ -1,6 +1,17 @@
 $.onStart(() => {
-  initializeRandomBetweenSubjectsConditions();
+  $.state.isServerAssigned = false;
+  initializeBetweenSubjectsConditions();
   reset();
+
+  // Send between-subjects config to ParticipantManager for eligibility checks
+  const pm = $.worldItemReference("ParticipantManager");
+  if (pm) {
+    let bsc = [];
+    try {
+      bsc = between_subjects_variables.map(v => ({ name: v.name, values: v.values }));
+    } catch (e) { /* between_subjects_variables not defined */ }
+    pm.send("betweenSubjectsConfig", bsc);
+  }
 });
 
 $.onUpdate(() => {
@@ -15,14 +26,26 @@ $.onUpdate(() => {
 
 $.onReceive((messageType, arg, sender) => {
   switch (messageType) {
+    case "luida_existing_conditions":
+      // Receive existing conditions array from server, compute balanced assignment locally
+      let assignedConditions = calculateBalancedAssignment(arg);
+      // Apply debug overrides
+      try {
+        between_subjects_variables.forEach(v => {
+          if (v.debugValue) {
+            assignedConditions[v.name] = v.debugValue;
+          }
+        });
+      } catch (e) { /* between_subjects_variables not defined */ }
+      $.state.betweenSubjectsConditions = assignedConditions;
+      $.state.isServerAssigned = true;
+      $.log("Conditions balanced locally (debug overrides applied): " + JSON.stringify(assignedConditions));
+      break;
     case "luida_participants_info":
       $.groupState.participants = arg.participants;
       $.groupState.sessionID = arg.sessionID;
       sender.send("betweenSubjectsCondition", $.state.betweenSubjectsConditions);
       break;
-    // case "exp_questionnaire_answer":
-    //     $.state.betweenSubjectsConditions = GetBetweenSubjectsCondition(arg);
-    //     break;
     default:
       break;
   }
@@ -81,17 +104,14 @@ function reset() {
   updateCondition();
 }
 
-function initializeRandomBetweenSubjectsConditions() {
+function initializeBetweenSubjectsConditions() {
+  // Debug values only — actual balanced assignment happens in calculateBalancedAssignment()
+  // when existing conditions are received from the server via luida_existing_conditions.
   let betweenSubjectsCondition = {};
   try {
     between_subjects_variables.forEach((v) => {
-      if (!betweenSubjectsCondition[v.name]) {
-        if (v.debugValue) {
-          betweenSubjectsCondition[v.name] = v.debugValue;
-        } else if (v.isRandom) {
-          betweenSubjectsCondition[v.name] =
-              v.values[Math.floor(Math.random() * v.values.length)];
-        }
+      if (v.debugValue) {
+        betweenSubjectsCondition[v.name] = v.debugValue;
       }
     });
   } catch (e) {
@@ -152,4 +172,82 @@ function shuffleArray(array) {
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
+}
+
+/**
+ * Generate Cartesian product of all between-subjects variable values.
+ * Returns array of combination objects, e.g. [{avatar:"robot",difficulty:"easy"}, ...]
+ */
+function generateAllCombinations(variables) {
+  if (variables.length === 0) return [{}];
+  const first = variables[0];
+  const rest = variables.slice(1);
+  const restCombinations = generateAllCombinations(rest);
+  const combinations = [];
+  for (const value of first.values) {
+    for (const combo of restCombinations) {
+      const newCombo = {};
+      newCombo[first.name] = value;
+      for (const k in combo) { newCombo[k] = combo[k]; }
+      combinations.push(newCombo);
+    }
+  }
+  return combinations;
+}
+
+/**
+ * Given an array of existing condition objects (from previous sessions),
+ * find the least-used combination and return it.
+ * Ties are broken randomly.
+ */
+function calculateBalancedAssignment(existingConditions) {
+  let variables = [];
+  try {
+    variables = between_subjects_variables.map(v => ({ name: v.name, values: v.values }));
+  } catch (e) {
+    return {};
+  }
+  if (variables.length === 0) return {};
+
+  const allCombinations = generateAllCombinations(variables);
+
+  // Build a count for each combination using a stable string key
+  const counts = {};
+  for (const combo of allCombinations) {
+    const key = JSON.stringify(combo, Object.keys(combo).sort());
+    counts[key] = 0;
+  }
+
+  // Count occurrences in existing conditions
+  for (const cond of existingConditions) {
+    if (cond && typeof cond === "object") {
+      // Normalize to same key format
+      const normalized = {};
+      for (const combo of allCombinations) {
+        for (const k of Object.keys(combo)) {
+          if (cond[k] !== undefined) normalized[k] = "" + cond[k];
+        }
+        break; // just need the key names from the first combo
+      }
+      const key = JSON.stringify(normalized, Object.keys(normalized).sort());
+      if (key in counts) {
+        counts[key]++;
+      }
+    }
+  }
+
+  // Find minimum count
+  let minCount = Infinity;
+  for (const key in counts) {
+    if (counts[key] < minCount) minCount = counts[key];
+  }
+
+  // Collect all combinations with minimum count
+  const leastUsed = allCombinations.filter(combo => {
+    const key = JSON.stringify(combo, Object.keys(combo).sort());
+    return counts[key] === minCount;
+  });
+
+  // Random tie-break
+  return leastUsed[Math.floor(Math.random() * leastUsed.length)];
 }
