@@ -25,6 +25,8 @@ public abstract class LuidaFakeGimmick : MonoBehaviour
     [SerializeField]
     private Item item;
 
+    protected GlobalLogic CopiedComponent => copiedComponent;
+
     private void OnValidate()
     {
         if (this == null)
@@ -80,7 +82,11 @@ public abstract class LuidaFakeGimmick : MonoBehaviour
 
         copiedComponent.GetType().GetField("globalGimmickKey", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(copiedComponent, gimmickKey);
         copiedComponent.hideFlags = HideFlags.HideInInspector;
+
+        OnAfterCopiedComponentSetup();
     }
+
+    protected virtual void OnAfterCopiedComponentSetup() { }
 
     private T CopyComponent<T>(T original, GameObject destination) where T : Component
     {

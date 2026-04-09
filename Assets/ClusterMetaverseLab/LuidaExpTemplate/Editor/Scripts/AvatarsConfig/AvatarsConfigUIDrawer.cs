@@ -291,6 +291,18 @@ public static class AvatarsConfigUIDrawer
                 GUI.backgroundColor = oldBg;
             }
 
+            EditorGUILayout.Space(8);
+            EditorGUILayout.LabelField("Avatar Gimmick Triggers", EditorStyles.boldLabel);
+            EditorGUILayout.HelpBox(
+                "If you have LuidaAssignAvatarGimmick or LuidaUnassignAvatarGimmick components in the scene, " +
+                "click below to regenerate the trigger config. This also runs automatically before Play/Upload.",
+                MessageType.Info);
+            if (GUILayout.Button("Regenerate Gimmick Trigger Config"))
+            {
+                AvatarsConfigAssetUtil.GenerateAvatarGimmickTriggerConfig();
+                Debug.Log("[LuidaAvatars] Avatar gimmick trigger config regenerated.");
+            }
+
         }
         else
         {

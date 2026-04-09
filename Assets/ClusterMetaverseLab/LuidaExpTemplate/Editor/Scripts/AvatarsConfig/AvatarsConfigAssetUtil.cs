@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -345,6 +347,9 @@ public static class AvatarsConfigAssetUtil
         // Add spawner reference to all existing state-listening items
         ItemsManagerAssetUtil.AddAvatarSpawnerReferenceToAllItems();
 
+        // Generate gimmick trigger config for any avatar gimmick instances in the scene
+        GenerateAvatarGimmickTriggerConfig();
+
         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
         Debug.Log($"[LuidaAvatars] Installed AvatarSpawner in scene (mode: {mode})");
     }
@@ -374,6 +379,10 @@ public static class AvatarsConfigAssetUtil
                 EditorUtility.SetDirty(combiner);
             }
         }
+
+        // Regenerate gimmick trigger config
+        GenerateAvatarGimmickTriggerConfig();
+
         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
     }
 
@@ -451,6 +460,135 @@ public static class AvatarsConfigAssetUtil
             defaultAvatarID = avatarMatch.Groups[1].Value;
 
         return (mode, defaultAvatarID);
+    }
+
+    #endregion
+
+    #region Avatar Gimmick Trigger Config
+
+    private const string GimmickTriggerConfigFileName = "AvatarGimmickTriggers.js";
+
+    /// <summary>
+    /// Scans the active scene for LuidaAssignAvatarGimmick and LuidaUnassignAvatarGimmick
+    /// instances and generates a JS config constant that the AvatarManager polls at runtime.
+    /// </summary>
+    public static void GenerateAvatarGimmickTriggerConfig()
+    {
+        Directory.CreateDirectory(GeneratedFolder);
+        string configPath = Path.Combine(GeneratedFolder, GimmickTriggerConfigFileName);
+
+        var assignGimmicks = new List<LuidaAssignAvatarGimmick>();
+        var unassignGimmicks = new List<LuidaUnassignAvatarGimmick>();
+
+        foreach (var root in SceneManager.GetActiveScene().GetRootGameObjects())
+        {
+            assignGimmicks.AddRange(root.GetComponentsInChildren<LuidaAssignAvatarGimmick>(true));
+            unassignGimmicks.AddRange(root.GetComponentsInChildren<LuidaUnassignAvatarGimmick>(true));
+        }
+
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("// Auto-generated avatar gimmick trigger config");
+        sb.AppendLine("const AVATAR_GIMMICK_TRIGGERS = {");
+
+        bool first = true;
+
+        // Read the base key field from LuidaFakeGimmick via reflection
+        var baseKeyField = typeof(LuidaFakeGimmick).GetField("key",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        foreach (var gimmick in assignGimmicks)
+        {
+            string triggerKey = baseKeyField != null ? (string)baseKeyField.GetValue(gimmick) : null;
+            if (string.IsNullOrEmpty(triggerKey)) continue;
+
+            if (!first) sb.AppendLine(",");
+            first = false;
+
+            string boneOffsetsJs = BuildBoneOffsetsJs(gimmick.boneOffsets);
+
+            sb.Append($"    \"{EscapeJs(triggerKey)}\": {{ type: \"assign\", avatarID: \"{EscapeJs(gimmick.avatarID)}\", participantIndex: {gimmick.participantIndex}, boneOffsets: {boneOffsetsJs} }}");
+        }
+
+        foreach (var gimmick in unassignGimmicks)
+        {
+            string triggerKey = baseKeyField != null ? (string)baseKeyField.GetValue(gimmick) : null;
+            if (string.IsNullOrEmpty(triggerKey)) continue;
+
+            if (!first) sb.AppendLine(",");
+            first = false;
+
+            sb.Append($"    \"{EscapeJs(triggerKey)}\": {{ type: \"unassign\", participantIndex: {gimmick.participantIndex} }}");
+        }
+
+        if (!first) sb.AppendLine();
+        sb.AppendLine("};");
+
+        File.WriteAllText(configPath, sb.ToString());
+        AssetDatabase.ImportAsset(configPath, ImportAssetOptions.ForceUpdate);
+
+        // Ensure the config file is in the AvatarSpawner's CSCombiner
+        WireGimmickConfigIntoSpawner(configPath);
+    }
+
+    private static string BuildBoneOffsetsJs(List<BoneOffsetData> offsets)
+    {
+        if (offsets == null || offsets.Count == 0) return "null";
+
+        var sb = new System.Text.StringBuilder();
+        sb.Append("{ ");
+        for (int i = 0; i < offsets.Count; i++)
+        {
+            var bo = offsets[i];
+            if (string.IsNullOrEmpty(bo.boneName)) continue;
+            if (i > 0) sb.Append(", ");
+            sb.Append($"\"{EscapeJs(bo.boneName)}\": {{ ");
+            sb.Append($"pos: {{ x: {F(bo.posOffset.x)}, y: {F(bo.posOffset.y)}, z: {F(bo.posOffset.z)} }}, ");
+            sb.Append($"rot: {{ x: {F(bo.rotOffset.x)}, y: {F(bo.rotOffset.y)}, z: {F(bo.rotOffset.z)} }}");
+            sb.Append(" }");
+        }
+        sb.Append(" }");
+        return sb.ToString();
+    }
+
+    private static string F(float v) => v.ToString(CultureInfo.InvariantCulture);
+
+    private static string EscapeJs(string s) => s?.Replace("\\", "\\\\").Replace("\"", "\\\"") ?? "";
+
+    private static void WireGimmickConfigIntoSpawner(string configPath)
+    {
+        var spawner = FindSpawnerInScene();
+        if (spawner == null) return;
+
+        var combiner = spawner.GetComponent<ScriptableClusterScriptCombiner>();
+        if (combiner == null) return;
+
+        var configAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(configPath);
+        if (configAsset == null) return;
+
+        var scripts = combiner.GetClusterScripts();
+        if (scripts == null) scripts = new List<JavaScriptAsset>();
+
+        // Check if already present — if so, replace in-place to pick up changes
+        int existingIdx = scripts.IndexOf(configAsset);
+        if (existingIdx >= 0)
+        {
+            combiner.ReplaceScript(configAsset, existingIdx, null, 0);
+            combiner.CombineScripts();
+            EditorUtility.SetDirty(combiner);
+            return;
+        }
+
+        // Rebuild the full script list: [header, gimmickConfig, manager]
+        var headerJsPath = Path.Combine(GeneratedFolder, "AvatarSpawnerConfig.js");
+        var headerAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(headerJsPath);
+        var managerAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(AvatarManagerJsPath);
+
+        combiner.ClearScripts();
+        if (headerAsset != null) combiner.AppendScript(headerAsset, null);
+        combiner.AppendScript(configAsset, null);
+        if (managerAsset != null) combiner.AppendScript(managerAsset, null);
+        combiner.CombineScripts();
+        EditorUtility.SetDirty(combiner);
     }
 
     #endregion

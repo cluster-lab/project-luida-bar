@@ -141,3 +141,29 @@ $.onUpdate((deltaTime) => {
     $.state.assignments = current;
   }
 });
+
+// --- Gimmick trigger polling ---
+// Polls global boolean states set by LuidaAssignAvatarGimmick / LuidaUnassignAvatarGimmick.
+// Trigger keys and baked parameters come from the generated AVATAR_GIMMICK_TRIGGERS constant.
+$.onUpdate((deltaTime) => {
+  if (typeof AVATAR_GIMMICK_TRIGGERS === "undefined") return;
+
+  for (const triggerKey in AVATAR_GIMMICK_TRIGGERS) {
+    const isTriggered = $.getStateCompat("global", triggerKey, "boolean");
+    if (isTriggered && !$.state["_gimmick_" + triggerKey]) {
+      $.state["_gimmick_" + triggerKey] = true;
+      const cfg = AVATAR_GIMMICK_TRIGGERS[triggerKey];
+      if (cfg.type === "assign") {
+        const player = resolvePlayer(cfg.participantIndex);
+        if (player) {
+          assignAvatarToPlayer(player, cfg.avatarID, cfg.boneOffsets);
+        }
+      } else if (cfg.type === "unassign") {
+        const player = resolvePlayer(cfg.participantIndex);
+        if (player) {
+          unassignPlayer(player);
+        }
+      }
+    }
+  }
+});

@@ -65,6 +65,9 @@ public class CombineAllBeforePlayOrBuild
             SetTestModeInExpIdentifiers(false);
         }
 
+        // Regenerate avatar gimmick trigger config before combining
+        AvatarsConfigAssetUtil.GenerateAvatarGimmickTriggerConfig();
+
         Type csCombinerType = Type.GetType("Assets.KaomoLab.CSCombiner.CSCombiner, Assembly-CSharp-Editor");
         if (csCombinerType != null)
         {
