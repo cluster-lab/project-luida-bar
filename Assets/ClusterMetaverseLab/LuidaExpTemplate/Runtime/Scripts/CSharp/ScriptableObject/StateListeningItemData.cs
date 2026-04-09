@@ -70,7 +70,12 @@ public class StateListenerAction: ISerializationCallbackReceiver
         if (numericVars.Contains(varName)) return "0";
         
         if (varName == "target") return "\"right\""; // Default for haptics target (JS string literal)
-        
+
+        // Defaults for avatar assignment
+        if (varName == "participantIndex") return "0";
+        if (varName == "boneOffsets") return "null";
+        if (varName == "avatarID") return "";
+
         return ""; // Default for any other unhandled variable
     }
 
