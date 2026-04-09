@@ -41,17 +41,19 @@ $.onUpdate((deltaTime) => {
         }
     } else if ($.state.isBetweenSubjectsConditionsSet) { // participants are enough & conditions are set
         $.state.isBetweenSubjectsConditionsSet = false;
-        let request = {
-            type: "uploadCustomData",
-            data: {
-                pInfo: $.state.participantsEnvInfo.map(info => ({ ts: Date.now(), sID: $.groupState.sessionID || "", ...info })),
-                idfc2userId: $.state.idfc2userId
-            },
-            token: token || "",
-            eID: expID || "",
-            sID: $.groupState.sessionID || ""
-        };
-        $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), "customDataUploaded");
+        if (!isTestMode) {
+            let request = {
+                type: "uploadCustomData",
+                data: {
+                    pInfo: $.state.participantsEnvInfo.map(info => ({ ts: Date.now(), sID: $.groupState.sessionID || "", ...info })),
+                    idfc2userId: $.state.idfc2userId
+                },
+                token: token || "",
+                eID: expID || "",
+                sID: $.groupState.sessionID || ""
+            };
+            $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), "customDataUploaded");
+        }
     }
 
     // Process rejection queue: teleport rejected players to remote world gate one at a time
@@ -96,15 +98,17 @@ $.onReceive((messageType, arg, sender) => {
         case "betweenSubjectsCondition":
             $.state.betweenSubjectsConditions = arg;
             $.state.isBetweenSubjectsConditionsSet = true;
-            // Save conditions to backend
-            let saveConditionsRequest = {
-                type: "saveSessionConditions",
-                token: token || "",
-                eID: expID || "",
-                sID: $.groupState.sessionID || "",
-                betweenSubjectsConditions: arg
-            };
-            $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(saveConditionsRequest), "sessionConditionsSaved");
+            if (!isTestMode) {
+                // Save conditions to backend
+                let saveConditionsRequest = {
+                    type: "saveSessionConditions",
+                    token: token || "",
+                    eID: expID || "",
+                    sID: $.groupState.sessionID || "",
+                    betweenSubjectsConditions: arg
+                };
+                $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(saveConditionsRequest), "sessionConditionsSaved");
+            }
             break;
         case "betweenSubjectsConfig":
             $.state.betweenSubjectsConfig = arg;
@@ -120,30 +124,38 @@ $.onReceive((messageType, arg, sender) => {
             idfc2userId[sender.idfc] = sender.userId;
             $.state.idfc2userId = idfc2userId;
 
-            // Check eligibility via backend API
-            let pendingChecks = { ...$.state.pendingEligibilityChecks };
-            pendingChecks[sender.idfc] = true;
-            $.state.pendingEligibilityChecks = pendingChecks;
+            if (isTestMode) {
+                // In test mode, skip eligibility check and treat as eligible
+                $.state.eligibleCount++;
+                if (!$.groupState.isParticipantsEnough && $.state.eligibleCount >= pNum) {
+                    HandleParticipantsEnough();
+                }
+            } else {
+                // Check eligibility via backend API
+                let pendingChecks = { ...$.state.pendingEligibilityChecks };
+                pendingChecks[sender.idfc] = true;
+                $.state.pendingEligibilityChecks = pendingChecks;
 
-            // Build eligibility request
-            let eligibilityRequest = {
-                type: "checkJoinEligibility",
-                token: token || "",
-                eID: expID || "",
-                sID: $.groupState.sessionID || "",
-                envInfo: [arg]
-            };
+                // Build eligibility request
+                let eligibilityRequest = {
+                    type: "checkJoinEligibility",
+                    token: token || "",
+                    eID: expID || "",
+                    sID: $.groupState.sessionID || "",
+                    envInfo: [arg]
+                };
 
-            // Until session is approved, also include betweenSubjectsConfig for session check
-            if (!$.state.isSessionApproved && $.state.betweenSubjectsConfig.length > 0) {
-                eligibilityRequest.betweenSubjectsConfig = $.state.betweenSubjectsConfig;
+                // Until session is approved, also include betweenSubjectsConfig for session check
+                if (!$.state.isSessionApproved && $.state.betweenSubjectsConfig.length > 0) {
+                    eligibilityRequest.betweenSubjectsConfig = $.state.betweenSubjectsConfig;
+                }
+
+                $.callExternal(
+                    new ExternalEndpointId(callExternalEndpointID),
+                    JSON.stringify(eligibilityRequest),
+                    "joinEligibilityChecked_" + sender.idfc
+                );
             }
-
-            $.callExternal(
-                new ExternalEndpointId(callExternalEndpointID),
-                JSON.stringify(eligibilityRequest),
-                "joinEligibilityChecked_" + sender.idfc
-            );
             break;
         default:
             break;

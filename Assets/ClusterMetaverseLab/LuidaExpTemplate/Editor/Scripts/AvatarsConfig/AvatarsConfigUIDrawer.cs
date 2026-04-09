@@ -14,6 +14,7 @@ public static class AvatarsConfigUIDrawer
     // Spawner config state
     private static int _spawnerModeIndex = 0;
     private static int _defaultAvatarIndex = 0;
+    private static bool _needsDefaultAvatarResolve = false;
     private static readonly string[] SpawnerModes = { "messageDriven", "autoAssignOnJoin" };
     private static readonly string[] SpawnerModeLabels = { "Message-driven (for LUIDA state actions)", "Auto-assign on player join" };
 
@@ -35,7 +36,8 @@ public static class AvatarsConfigUIDrawer
         _spawnerModeIndex = System.Array.IndexOf(SpawnerModes, mode);
         if (_spawnerModeIndex < 0) _spawnerModeIndex = 0;
 
-        // defaultAvatarIndex will be resolved against the registry in DrawSpawnerSection
+        // defaultAvatarIndex will be resolved against the registry on next DrawSpawnerSection
+        _needsDefaultAvatarResolve = true;
         _spawnerConfigInitialized = true;
     }
 
@@ -242,12 +244,12 @@ public static class AvatarsConfigUIDrawer
 
             EditorGUILayout.Space(4);
 
-            // Resolve _defaultAvatarIndex from persisted ID
             var ids = registry.GetAvatarIDs();
-            if (_persistedDefaultAvatarID != null && ids.Length > 0)
+            if (_needsDefaultAvatarResolve && _persistedDefaultAvatarID != null && ids.Length > 0)
             {
                 int idx = System.Array.IndexOf(ids, _persistedDefaultAvatarID);
                 if (idx >= 0) _defaultAvatarIndex = idx;
+                _needsDefaultAvatarResolve = false;
             }
 
             // Mode dropdown

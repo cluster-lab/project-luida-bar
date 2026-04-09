@@ -53,6 +53,11 @@ public static class AvatarsConfigAssetUtil
     /// </summary>
     public static void HandleDrop(Object[] droppedObjects, string[] droppedPaths, AvatarRegistry registry)
     {
+        // Track processed asset paths to avoid handling the same prefab twice
+        // (Unity populates both objectReferences and paths when dragging from
+        // the Project window).
+        var processedPaths = new System.Collections.Generic.HashSet<string>();
+
         // Handle drag from project (Object references)
         if (droppedObjects != null)
         {
@@ -63,6 +68,7 @@ public static class AvatarsConfigAssetUtil
                     string path = AssetDatabase.GetAssetPath(go);
                     if (path.EndsWith(".prefab"))
                     {
+                        processedPaths.Add(path);
                         HandlePrefabDrop(go, registry);
                     }
                 }
@@ -74,6 +80,9 @@ public static class AvatarsConfigAssetUtil
         {
             foreach (var path in droppedPaths)
             {
+                if (processedPaths.Contains(path))
+                    continue;
+
                 if (path.EndsWith(".vrm", System.StringComparison.OrdinalIgnoreCase))
                 {
                     HandleVrmDrop(path, registry);

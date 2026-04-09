@@ -378,7 +378,8 @@ public class ExpIdentifierConfigTab : EditorWindow
             $"expID = \"{expID}\";\n" +
             $"token = \"{token}\";\n" +
             $"callExternalEndpointID = \"{callExternalEndpointID}\";\n" +
-            $"pNum = {pNum};\n";
+            $"pNum = {pNum};\n" +
+            $"isTestMode = true;\n";
 
         File.WriteAllText(filePath, content);
 
