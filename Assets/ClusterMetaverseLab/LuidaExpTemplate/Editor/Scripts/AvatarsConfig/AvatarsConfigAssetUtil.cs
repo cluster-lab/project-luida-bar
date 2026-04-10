@@ -6,8 +6,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using ClusterVR.CreatorKit.Item.Implements;
+using ClusterVR.CreatorKit.Gimmick;
+using ClusterVR.CreatorKit.Gimmick.Implements;
+using ClusterVR.CreatorKit.Operation.Implements;
 
 /// <summary>
 /// Editor utilities for the LUIDA Avatars system:
@@ -344,6 +348,9 @@ public static class AvatarsConfigAssetUtil
             templateList = spawner.AddComponent<WorldItemTemplateList>();
         PopulateTemplateList(templateList, registry);
 
+        // Add ItemGroupMember so the spawner can access $.groupState
+        AddItemGroupMemberToSpawner(spawner);
+
         // Add spawner reference to all existing state-listening items
         ItemsManagerAssetUtil.AddAvatarSpawnerReferenceToAllItems();
 
@@ -462,6 +469,39 @@ public static class AvatarsConfigAssetUtil
         return (mode, defaultAvatarID);
     }
 
+    /// <summary>
+    /// Add an ItemGroupMember to the spawner and link it to the ConditionManager's ItemGroupHost,
+    /// so that the spawner can access $.groupState (needed for participant resolution).
+    /// </summary>
+    private static void AddItemGroupMemberToSpawner(GameObject spawner)
+    {
+        var itemGroupMember = spawner.GetComponent<ItemGroupMember>()
+            ?? (spawner.AddComponent(typeof(ItemGroupMember)) as ItemGroupMember);
+
+        foreach (GameObject obj in SceneManager.GetActiveScene().GetRootGameObjects())
+        {
+            string prefabPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(obj));
+            if (prefabPath != ExpManagersWrapperPrefabPath) continue;
+            for (int i = 0; i < obj.transform.childCount; i++)
+            {
+                Transform child = obj.transform.GetChild(i);
+                if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == ConditionManagerPrefabPath)
+                {
+                    ItemGroupHost host = child.GetComponent<ItemGroupHost>();
+                    if (host != null)
+                    {
+                        SerializedObject serializedItemGroupMember = new SerializedObject(itemGroupMember);
+                        serializedItemGroupMember.FindProperty("host").objectReferenceValue = host;
+                        serializedItemGroupMember.ApplyModifiedProperties();
+                    }
+                }
+            }
+        }
+    }
+
+    private const string ExpManagersWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/LUIDA-ExpManagers.prefab";
+    private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
+
     #endregion
 
     #region Avatar Gimmick Trigger Config
@@ -528,6 +568,24 @@ public static class AvatarsConfigAssetUtil
 
         // Ensure the config file is in the AvatarSpawner's CSCombiner
         WireGimmickConfigIntoSpawner(configPath);
+
+        // Add reset GlobalLogic components to the spawner for re-trigger support
+        var spawner = FindSpawnerInScene();
+        if (spawner != null)
+        {
+            var allTriggerKeys = new List<string>();
+            foreach (var gimmick in assignGimmicks)
+            {
+                string k = baseKeyField != null ? (string)baseKeyField.GetValue(gimmick) : null;
+                if (!string.IsNullOrEmpty(k)) allTriggerKeys.Add(k);
+            }
+            foreach (var gimmick in unassignGimmicks)
+            {
+                string k = baseKeyField != null ? (string)baseKeyField.GetValue(gimmick) : null;
+                if (!string.IsNullOrEmpty(k)) allTriggerKeys.Add(k);
+            }
+            AddResetGlobalLogicToSpawner(spawner, allTriggerKeys);
+        }
     }
 
     private static string BuildBoneOffsetsJs(List<BoneOffsetData> offsets)
@@ -589,6 +647,152 @@ public static class AvatarsConfigAssetUtil
         if (managerAsset != null) combiner.AppendScript(managerAsset, null);
         combiner.CombineScripts();
         EditorUtility.SetDirty(combiner);
+    }
+
+    private const string ResetTemplatePath = "ClusterMetaverseLab/LuidaExpTemplate/FakeGimmickSources/ResetGlobalBool";
+    private const string ResetComponentTag = "LuidaResetGlobalBool";
+
+    /// <summary>
+    /// For each gimmick trigger key, adds a hidden reset GlobalLogic component to the spawner.
+    /// This component listens for "reset_&lt;key&gt;" signal (Item scope) and sets the global state to false.
+    /// Called from GenerateAvatarGimmickTriggerConfig after collecting trigger keys.
+    /// </summary>
+    private static void AddResetGlobalLogicToSpawner(GameObject spawner, List<string> triggerKeys)
+    {
+        // Clean up old reset components
+        RemoveOldResetComponents(spawner);
+
+        if (triggerKeys == null || triggerKeys.Count == 0) return;
+
+        GameObject templatePrefab = (GameObject)Resources.Load(ResetTemplatePath);
+        if (templatePrefab == null)
+        {
+            Debug.LogWarning("[LuidaAvatars] ResetGlobalBool prefab not found. Gimmick re-triggering will not work.");
+            return;
+        }
+
+        GlobalLogic templateComponent = templatePrefab.GetComponent<GlobalLogic>();
+        if (templateComponent == null)
+        {
+            Debug.LogWarning("[LuidaAvatars] ResetGlobalBool prefab has no GlobalLogic component.");
+            return;
+        }
+
+        var spawnerItem = spawner.GetComponent<Item>();
+
+        foreach (string triggerKey in triggerKeys)
+        {
+            // Copy GlobalLogic from template to spawner
+            GlobalLogic resetLogic = CopyComponent(templateComponent, spawner);
+
+            // Patch globalGimmickKey: listen for "reset_<key>" signal on Item (this) scope
+            var gimmickKey = System.Activator.CreateInstance(typeof(GlobalGimmickKey));
+            var keyField = typeof(GlobalGimmickKey).GetField("key", BindingFlags.NonPublic | BindingFlags.Instance);
+            var itemField = typeof(GlobalGimmickKey).GetField("item", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            if (keyField != null)
+                keyField.SetValue(gimmickKey, new GimmickKey(GimmickTarget.Item, "reset_" + triggerKey));
+            if (itemField != null)
+                itemField.SetValue(gimmickKey, spawnerItem);
+
+            resetLogic.GetType().GetField("globalGimmickKey", BindingFlags.NonPublic | BindingFlags.Instance)
+                ?.SetValue(resetLogic, gimmickKey);
+
+            // Patch targetState key to the trigger key (so it resets the correct global state)
+            PatchLogicTargetStateKey(resetLogic, triggerKey);
+
+            resetLogic.hideFlags = HideFlags.HideInInspector;
+            resetLogic.name = ResetComponentTag;
+            EditorUtility.SetDirty(resetLogic);
+        }
+    }
+
+    private static void RemoveOldResetComponents(GameObject spawner)
+    {
+        var allGlobalLogics = spawner.GetComponents<GlobalLogic>();
+        foreach (var gl in allGlobalLogics)
+        {
+            if (gl.hideFlags == HideFlags.HideInInspector && gl.name == ResetComponentTag)
+            {
+                Object.DestroyImmediate(gl);
+            }
+        }
+    }
+
+    private static T CopyComponent<T>(T original, GameObject destination) where T : Component
+    {
+        T copy = destination.AddComponent<T>();
+        foreach (FieldInfo field in typeof(T).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+        {
+            field.SetValue(copy, field.GetValue(original));
+        }
+        return copy;
+    }
+
+    /// <summary>
+    /// Patches the logic statement's targetState key in a GlobalLogic component.
+    /// Reused pattern from LuidaAssignAvatarGimmick.PatchLogicStatementTargetKey.
+    /// </summary>
+    private static void PatchLogicTargetStateKey(GlobalLogic globalLogic, string newKey)
+    {
+        try
+        {
+            var logicField = globalLogic.GetType().GetField("logic", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (logicField == null) return;
+            var logic = logicField.GetValue(globalLogic);
+            if (logic == null) return;
+
+            var statementsField = logic.GetType().GetField("statements", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (statementsField == null) return;
+            var statements = statementsField.GetValue(logic);
+            if (statements == null) return;
+
+            var statementsType = statements.GetType();
+            var countProp = statementsType.GetProperty("Count") ?? statementsType.GetProperty("Length");
+            if (countProp == null) return;
+            int count = (int)countProp.GetValue(statements);
+            if (count == 0) return;
+
+            var indexer = statementsType.GetProperty("Item");
+            object firstStatement;
+            if (indexer != null)
+                firstStatement = indexer.GetValue(statements, new object[] { 0 });
+            else
+                firstStatement = ((System.Array)statements).GetValue(0);
+            if (firstStatement == null) return;
+
+            var singleStatementField = firstStatement.GetType().GetField("singleStatement",
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (singleStatementField == null) return;
+            var singleStatement = singleStatementField.GetValue(firstStatement);
+            if (singleStatement == null) return;
+
+            var targetStateField = singleStatement.GetType().GetField("targetState",
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (targetStateField == null) return;
+            var targetState = targetStateField.GetValue(singleStatement);
+            if (targetState == null) return;
+
+            var tsKeyField = targetState.GetType().GetField("key",
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (tsKeyField == null) return;
+
+            tsKeyField.SetValue(targetState, newKey);
+
+            // Write back the modified structs (value types)
+            targetStateField.SetValue(singleStatement, targetState);
+            singleStatementField.SetValue(firstStatement, singleStatement);
+
+            if (indexer != null)
+                indexer.SetValue(statements, firstStatement, new object[] { 0 });
+
+            statementsField.SetValue(logic, statements);
+            logicField.SetValue(globalLogic, logic);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"[LuidaAvatars] Could not patch reset GlobalLogic target key: {e.Message}");
+        }
     }
 
     #endregion
