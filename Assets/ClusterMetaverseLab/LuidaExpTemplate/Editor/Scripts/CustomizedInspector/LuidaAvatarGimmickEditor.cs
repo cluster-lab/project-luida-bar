@@ -37,24 +37,44 @@ public class LuidaAssignAvatarGimmickEditor : Editor
 
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Gimmick Signal", EditorStyles.boldLabel);
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("target"), new GUIContent("Trigger Target"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("key"), new GUIContent("Trigger Key"));
-        EditorGUILayout.HelpBox(
-            "This key is used as both the CCK signal name and the global state trigger.\n" +
-            "Use $.sendSignalCompat('this', '<key>') from ClusterScript, or wire a CCK trigger gimmick to this signal.",
-            MessageType.Info);
+
+        var targetProp = serializedObject.FindProperty("target");
+        var targetEnum = (CustomGimmickTarget)targetProp.enumValueIndex;
+        if (targetEnum == CustomGimmickTarget.Item)
+        {
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("item"), new GUIContent("Target Item"));
+        }
+
+        string targetHint = targetEnum == CustomGimmickTarget.Player
+            ? "Triggered by a player action (e.g., interact gimmick).\nThe gimmick key listens for player-scoped signals."
+            : targetEnum == CustomGimmickTarget.Global
+            ? "Triggered by a global signal.\nUse $.setStateCompat('global', '<key>', true) to fire."
+            : "Triggered from the same item.\nUse $.sendSignalCompat('this', '<key>') from ClusterScript, or wire a CCK trigger gimmick to this signal.";
+        EditorGUILayout.HelpBox(targetHint, MessageType.Info);
 
         EditorGUILayout.Space();
-        EditorGUILayout.LabelField("Avatar Assignment", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("Avatar Action", EditorStyles.boldLabel);
 
-        // Avatar ID dropdown
-        DrawAvatarIDField(gimmick);
+        // Participant number (always shown)
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("participantNumber"), new GUIContent("Participant Number"));
 
-        // Participant index
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("participantIndex"), new GUIContent("Participant Index"));
+        // Remove avatar checkbox
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("removeAvatar"), new GUIContent("Remove Avatar From This Player"));
 
-        // Bone offsets
-        EditorGUILayout.Space();
-        DrawBoneOffsets(gimmick);
+        if (!gimmick.removeAvatar)
+        {
+            // Assign mode: show avatar ID and bone offsets
+            DrawAvatarIDField(gimmick);
+
+            EditorGUILayout.Space();
+            DrawBoneOffsets(gimmick);
+        }
+        else
+        {
+            EditorGUILayout.HelpBox("When triggered, all avatars assigned to this participant will be removed.", MessageType.Info);
+        }
 
         serializedObject.ApplyModifiedProperties();
     }
@@ -152,33 +172,5 @@ public class LuidaAssignAvatarGimmickEditor : Editor
         }
 
         EditorGUI.indentLevel--;
-    }
-}
-
-[CustomEditor(typeof(LuidaUnassignAvatarGimmick))]
-public class LuidaUnassignAvatarGimmickEditor : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        serializedObject.Update();
-        var gimmick = (LuidaUnassignAvatarGimmick)target;
-
-        GUI.enabled = false;
-        EditorGUILayout.ObjectField("Script", MonoScript.FromMonoBehaviour(gimmick), typeof(LuidaUnassignAvatarGimmick), false);
-        GUI.enabled = true;
-
-        EditorGUILayout.Space();
-        EditorGUILayout.LabelField("Gimmick Signal", EditorStyles.boldLabel);
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("key"), new GUIContent("Trigger Key"));
-        EditorGUILayout.HelpBox(
-            "This key is used as both the CCK signal name and the global state trigger.\n" +
-            "Use $.sendSignalCompat('this', '<key>') from ClusterScript, or wire a CCK trigger gimmick to this signal.",
-            MessageType.Info);
-
-        EditorGUILayout.Space();
-        EditorGUILayout.LabelField("Avatar Unassignment", EditorStyles.boldLabel);
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("participantIndex"), new GUIContent("Participant Index"));
-
-        serializedObject.ApplyModifiedProperties();
     }
 }

@@ -11,34 +11,12 @@ public static class AvatarsConfigUIDrawer
 {
     private static Vector2 _scrollPosition;
 
-    // Spawner config state
-    private static int _spawnerModeIndex = 0;
-    private static int _defaultAvatarIndex = 0;
-    private static bool _needsDefaultAvatarResolve = false;
-    private static readonly string[] SpawnerModes = { "messageDriven", "autoAssignOnJoin" };
-    private static readonly string[] SpawnerModeLabels = { "Message-driven (for LUIDA state actions)", "Auto-assign on player join" };
-
-    // Persisted config (what's actually saved on disk)
-    private static string _persistedMode = null;
-    private static string _persistedDefaultAvatarID = null;
-    private static bool _spawnerConfigInitialized = false;
-
     /// <summary>
-    /// Call this when the window opens or the scene changes to sync dropdown state
-    /// with the actual persisted config on disk.
+    /// Call this when the window opens or the scene changes.
     /// </summary>
     public static void ReloadSpawnerConfig()
     {
-        var (mode, defaultAvatarID) = AvatarsConfigAssetUtil.ReadCurrentSpawnerConfig();
-        _persistedMode = mode;
-        _persistedDefaultAvatarID = defaultAvatarID;
-
-        _spawnerModeIndex = System.Array.IndexOf(SpawnerModes, mode);
-        if (_spawnerModeIndex < 0) _spawnerModeIndex = 0;
-
-        // defaultAvatarIndex will be resolved against the registry on next DrawSpawnerSection
-        _needsDefaultAvatarResolve = true;
-        _spawnerConfigInitialized = true;
+        // No-op — spawner is always message-driven, no persisted config to reload.
     }
 
     public static void DrawGUI(LuidaAvatarsWindow window)
@@ -49,9 +27,6 @@ public static class AvatarsConfigUIDrawer
             EditorGUILayout.HelpBox("AvatarRegistry asset not found. It will be created on next enable.", MessageType.Warning);
             return;
         }
-
-        if (!_spawnerConfigInitialized)
-            ReloadSpawnerConfig();
 
         _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
 
@@ -242,67 +217,6 @@ public static class AvatarsConfigUIDrawer
             EditorGUILayout.ObjectField("Spawner Object", existingSpawner, typeof(GameObject), true);
             GUI.enabled = true;
 
-            EditorGUILayout.Space(4);
-
-            var ids = registry.GetAvatarIDs();
-            if (_needsDefaultAvatarResolve && _persistedDefaultAvatarID != null && ids.Length > 0)
-            {
-                int idx = System.Array.IndexOf(ids, _persistedDefaultAvatarID);
-                if (idx >= 0) _defaultAvatarIndex = idx;
-                _needsDefaultAvatarResolve = false;
-            }
-
-            // Mode dropdown
-            _spawnerModeIndex = EditorGUILayout.Popup("Spawner Mode", _spawnerModeIndex, SpawnerModeLabels);
-
-            if (SpawnerModes[_spawnerModeIndex] == "autoAssignOnJoin")
-            {
-                if (ids.Length > 0)
-                {
-                    _defaultAvatarIndex = Mathf.Clamp(_defaultAvatarIndex, 0, ids.Length - 1);
-                    _defaultAvatarIndex = EditorGUILayout.Popup("Default Avatar", _defaultAvatarIndex, ids);
-                }
-                else
-                {
-                    EditorGUILayout.HelpBox("Register at least one avatar to use auto-assign mode.", MessageType.Warning);
-                }
-            }
-
-            // Detect if current UI state differs from persisted config
-            string currentMode = SpawnerModes[_spawnerModeIndex];
-            string currentDefaultID = null;
-            if (currentMode == "autoAssignOnJoin" && ids.Length > 0)
-                currentDefaultID = ids[Mathf.Clamp(_defaultAvatarIndex, 0, ids.Length - 1)];
-
-            bool configChanged = currentMode != _persistedMode
-                || currentDefaultID != _persistedDefaultAvatarID;
-
-            if (configChanged)
-            {
-                EditorGUILayout.Space(4);
-                var oldBg = GUI.backgroundColor;
-                GUI.backgroundColor = new Color(1f, 0.9f, 0.4f);
-                if (GUILayout.Button("Apply Spawner Config Changes"))
-                {
-                    AvatarsConfigAssetUtil.UpdateSpawnerConfig(currentMode, currentDefaultID);
-                    _persistedMode = currentMode;
-                    _persistedDefaultAvatarID = currentDefaultID;
-                }
-                GUI.backgroundColor = oldBg;
-            }
-
-            EditorGUILayout.Space(8);
-            EditorGUILayout.LabelField("Avatar Gimmick Triggers", EditorStyles.boldLabel);
-            EditorGUILayout.HelpBox(
-                "If you have LuidaAssignAvatarGimmick or LuidaUnassignAvatarGimmick components in the scene, " +
-                "click below to regenerate the trigger config. This also runs automatically before Play/Upload.",
-                MessageType.Info);
-            if (GUILayout.Button("Regenerate Gimmick Trigger Config"))
-            {
-                AvatarsConfigAssetUtil.GenerateAvatarGimmickTriggerConfig();
-                Debug.Log("[LuidaAvatars] Avatar gimmick trigger config regenerated.");
-            }
-
         }
         else
         {
@@ -310,38 +224,9 @@ public static class AvatarsConfigUIDrawer
                 "No AvatarSpawner in the current scene.\nAdd one to enable avatar spawning at runtime.",
                 MessageType.Info);
 
-            EditorGUILayout.Space(4);
-            _spawnerModeIndex = EditorGUILayout.Popup("Spawner Mode", _spawnerModeIndex, SpawnerModeLabels);
-
-            if (SpawnerModes[_spawnerModeIndex] == "autoAssignOnJoin")
-            {
-                var ids = registry.GetAvatarIDs();
-                if (ids.Length > 0)
-                {
-                    _defaultAvatarIndex = Mathf.Clamp(_defaultAvatarIndex, 0, ids.Length - 1);
-                    _defaultAvatarIndex = EditorGUILayout.Popup("Default Avatar", _defaultAvatarIndex, ids);
-                }
-                else
-                {
-                    EditorGUILayout.HelpBox("Register at least one avatar first.", MessageType.Warning);
-                }
-            }
-
             if (GUILayout.Button("Add Avatar Spawner to Current Scene", GUILayout.Height(30)))
             {
-                string defaultID = null;
-                if (SpawnerModes[_spawnerModeIndex] == "autoAssignOnJoin")
-                {
-                    var ids = registry.GetAvatarIDs();
-                    if (ids.Length > 0)
-                        defaultID = ids[_defaultAvatarIndex];
-                }
-                AvatarsConfigAssetUtil.InstallSpawnerInActiveScene(
-                    SpawnerModes[_spawnerModeIndex], defaultID, registry);
-
-                // Update persisted state after install
-                _persistedMode = SpawnerModes[_spawnerModeIndex];
-                _persistedDefaultAvatarID = defaultID;
+                AvatarsConfigAssetUtil.InstallSpawnerInActiveScene(registry);
             }
         }
     }

@@ -12,6 +12,7 @@ using ClusterVR.CreatorKit.Item.Implements;
 using ClusterVR.CreatorKit.Gimmick;
 using ClusterVR.CreatorKit.Gimmick.Implements;
 using ClusterVR.CreatorKit.Operation.Implements;
+using ClusterVR.CreatorKit.World.Implements.WorldRuntimeSetting;
 
 /// <summary>
 /// Editor utilities for the LUIDA Avatars system:
@@ -280,21 +281,34 @@ public static class AvatarsConfigAssetUtil
     /// </summary>
     public static GameObject FindSpawnerInScene()
     {
+        // Also check for spawner renamed by previous bug ("LuidaResetGlobalBool")
+        string[] names = { SpawnerObjectName, "LuidaResetGlobalBool" };
         foreach (var root in SceneManager.GetActiveScene().GetRootGameObjects())
         {
-            if (root.name == SpawnerObjectName) return root;
-            var found = root.GetComponentsInChildren<Transform>(true)
-                .FirstOrDefault(t => t.gameObject.name == SpawnerObjectName);
-            if (found != null) return found.gameObject;
+            foreach (var name in names)
+            {
+                if (root.name == name)
+                {
+                    if (root.name != SpawnerObjectName) root.name = SpawnerObjectName; // Auto-fix
+                    return root;
+                }
+                var found = root.GetComponentsInChildren<Transform>(true)
+                    .FirstOrDefault(t => t.gameObject.name == name);
+                if (found != null)
+                {
+                    if (found.gameObject.name != SpawnerObjectName) found.gameObject.name = SpawnerObjectName;
+                    return found.gameObject;
+                }
+            }
         }
         return null;
     }
 
     /// <summary>
-    /// Install the AvatarSpawner prefab into the active scene.
-    /// Bakes the spawner mode and default avatar into a constants JS header.
+    /// Install the AvatarSpawner into the active scene.
+    /// Message-driven only — responds to gimmick integer commands and direct messages.
     /// </summary>
-    public static void InstallSpawnerInActiveScene(string mode, string defaultAvatarID, AvatarRegistry registry)
+    public static void InstallSpawnerInActiveScene(AvatarRegistry registry)
     {
         if (FindSpawnerInScene() != null)
         {
@@ -320,23 +334,23 @@ public static class AvatarsConfigAssetUtil
         spawner.name = SpawnerObjectName;
         Undo.RegisterCreatedObjectUndo(spawner, "Add Avatar Spawner");
 
-        // Generate constants header JS
-        string headerContent = GenerateSpawnerHeader(mode, defaultAvatarID);
-        string headerJsPath = Path.Combine(GeneratedFolder, "AvatarSpawnerConfig.js");
-        Directory.CreateDirectory(GeneratedFolder);
-        File.WriteAllText(headerJsPath, headerContent);
-        AssetDatabase.ImportAsset(headerJsPath, ImportAssetOptions.ForceUpdate);
+        // Ensure WorldRuntimeSetting: custom clipping planes with near=0.1
+        var wrs = spawner.GetComponent<WorldRuntimeSetting>();
+        if (wrs == null)
+        {
+            wrs = spawner.AddComponent<WorldRuntimeSetting>();
+            var so = new SerializedObject(wrs);
+            so.FindProperty("useCustomClippingPlanes").boolValue = true;
+            so.FindProperty("nearPlane").floatValue = 0.1f;
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
 
-        // Wire up CSCombiner with header + AvatarManager.js
+        // Wire up CSCombiner with AvatarManager.js (config will be added by GenerateAvatarGimmickTriggerConfig)
         var combiner = spawner.GetComponent<ScriptableClusterScriptCombiner>();
         if (combiner != null)
         {
             combiner.ClearScripts();
-
-            var headerAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(headerJsPath);
             var managerAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(AvatarManagerJsPath);
-
-            if (headerAsset != null) combiner.AppendScript(headerAsset, null);
             if (managerAsset != null) combiner.AppendScript(managerAsset, null);
             combiner.CombineScripts();
             EditorUtility.SetDirty(combiner);
@@ -358,39 +372,7 @@ public static class AvatarsConfigAssetUtil
         GenerateAvatarGimmickTriggerConfig();
 
         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
-        Debug.Log($"[LuidaAvatars] Installed AvatarSpawner in scene (mode: {mode})");
-    }
-
-    /// <summary>
-    /// Update the spawner mode and default avatar on an existing spawner in the scene.
-    /// </summary>
-    public static void UpdateSpawnerConfig(string mode, string defaultAvatarID)
-    {
-        string headerContent = GenerateSpawnerHeader(mode, defaultAvatarID);
-        string headerJsPath = Path.Combine(GeneratedFolder, "AvatarSpawnerConfig.js");
-        Directory.CreateDirectory(GeneratedFolder);
-        File.WriteAllText(headerJsPath, headerContent);
-        AssetDatabase.ImportAsset(headerJsPath, ImportAssetOptions.ForceUpdate);
-
-        var spawner = FindSpawnerInScene();
-        if (spawner == null) return;
-
-        var combiner = spawner.GetComponent<ScriptableClusterScriptCombiner>();
-        if (combiner != null)
-        {
-            var headerAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(headerJsPath);
-            if (headerAsset != null)
-            {
-                combiner.ReplaceScript(headerAsset, 0, null, 0);
-                combiner.CombineScripts();
-                EditorUtility.SetDirty(combiner);
-            }
-        }
-
-        // Regenerate gimmick trigger config
-        GenerateAvatarGimmickTriggerConfig();
-
-        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+        Debug.Log("[LuidaAvatars] Installed AvatarSpawner in scene");
     }
 
     /// <summary>
@@ -432,43 +414,6 @@ public static class AvatarsConfigAssetUtil
         EditorUtility.SetDirty(templateList);
     }
 
-    private static string GenerateSpawnerHeader(string mode, string defaultAvatarID)
-    {
-        var sb = new System.Text.StringBuilder();
-        sb.AppendLine("// Auto-generated spawner configuration");
-        sb.AppendLine($"const SPAWNER_MODE = \"{mode}\";");
-        if (!string.IsNullOrEmpty(defaultAvatarID))
-            sb.AppendLine($"const DEFAULT_AVATAR_ID = \"{defaultAvatarID}\";");
-        else
-            sb.AppendLine("const DEFAULT_AVATAR_ID = null;");
-        return sb.ToString();
-    }
-
-    /// <summary>
-    /// Read the current spawner config from the generated JS file.
-    /// Returns (mode, defaultAvatarID). Returns ("messageDriven", null) if file not found.
-    /// </summary>
-    public static (string mode, string defaultAvatarID) ReadCurrentSpawnerConfig()
-    {
-        string headerJsPath = Path.Combine(GeneratedFolder, "AvatarSpawnerConfig.js");
-        if (!File.Exists(headerJsPath))
-            return ("messageDriven", null);
-
-        string content = File.ReadAllText(headerJsPath);
-
-        string mode = "messageDriven";
-        var modeMatch = System.Text.RegularExpressions.Regex.Match(content, @"SPAWNER_MODE\s*=\s*""(\w+)""");
-        if (modeMatch.Success)
-            mode = modeMatch.Groups[1].Value;
-
-        string defaultAvatarID = null;
-        var avatarMatch = System.Text.RegularExpressions.Regex.Match(content, @"DEFAULT_AVATAR_ID\s*=\s*""(\w+)""");
-        if (avatarMatch.Success)
-            defaultAvatarID = avatarMatch.Groups[1].Value;
-
-        return (mode, defaultAvatarID);
-    }
-
     /// <summary>
     /// Add an ItemGroupMember to the spawner and link it to the ConditionManager's ItemGroupHost,
     /// so that the spawner can access $.groupState (needed for participant resolution).
@@ -506,85 +451,48 @@ public static class AvatarsConfigAssetUtil
 
     #region Avatar Gimmick Trigger Config
 
-    private const string GimmickTriggerConfigFileName = "AvatarGimmickTriggers.js";
+    private const string CommandConfigFileName = "AvatarCommandConfig.js";
 
     /// <summary>
-    /// Scans the active scene for LuidaAssignAvatarGimmick and LuidaUnassignAvatarGimmick
-    /// instances and generates a JS config constant that the AvatarManager polls at runtime.
+    /// Generates AVATAR_INDEX_MAP (avatar ID array ordered by registry index) and
+    /// installs fixed reset GlobalLogic components on the spawner for the integer command system.
     /// </summary>
     public static void GenerateAvatarGimmickTriggerConfig()
     {
         Directory.CreateDirectory(GeneratedFolder);
-        string configPath = Path.Combine(GeneratedFolder, GimmickTriggerConfigFileName);
+        string configPath = Path.Combine(GeneratedFolder, CommandConfigFileName);
 
-        var assignGimmicks = new List<LuidaAssignAvatarGimmick>();
-        var unassignGimmicks = new List<LuidaUnassignAvatarGimmick>();
-
-        foreach (var root in SceneManager.GetActiveScene().GetRootGameObjects())
-        {
-            assignGimmicks.AddRange(root.GetComponentsInChildren<LuidaAssignAvatarGimmick>(true));
-            unassignGimmicks.AddRange(root.GetComponentsInChildren<LuidaUnassignAvatarGimmick>(true));
-        }
-
+        // Generate AVATAR_INDEX_MAP from registry
+        var registry = AssetDatabase.LoadAssetAtPath<AvatarRegistry>(RegistryPath);
         var sb = new System.Text.StringBuilder();
-        sb.AppendLine("// Auto-generated avatar gimmick trigger config");
-        sb.AppendLine("const AVATAR_GIMMICK_TRIGGERS = {");
-
-        bool first = true;
-
-        // Read the base key field from LuidaFakeGimmick via reflection
-        var baseKeyField = typeof(LuidaFakeGimmick).GetField("key",
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-        foreach (var gimmick in assignGimmicks)
+        sb.AppendLine("// Auto-generated avatar command config");
+        sb.Append("const AVATAR_INDEX_MAP = [");
+        if (registry != null && registry.entries.Count > 0)
         {
-            string triggerKey = baseKeyField != null ? (string)baseKeyField.GetValue(gimmick) : null;
-            if (string.IsNullOrEmpty(triggerKey)) continue;
-
-            if (!first) sb.AppendLine(",");
-            first = false;
-
-            string boneOffsetsJs = BuildBoneOffsetsJs(gimmick.boneOffsets);
-
-            sb.Append($"    \"{EscapeJs(triggerKey)}\": {{ type: \"assign\", avatarID: \"{EscapeJs(gimmick.avatarID)}\", participantIndex: {gimmick.participantIndex}, boneOffsets: {boneOffsetsJs} }}");
+            for (int i = 0; i < registry.entries.Count; i++)
+            {
+                if (i > 0) sb.Append(", ");
+                sb.Append($"\"{EscapeJs(registry.entries[i].avatarID)}\"");
+            }
         }
-
-        foreach (var gimmick in unassignGimmicks)
-        {
-            string triggerKey = baseKeyField != null ? (string)baseKeyField.GetValue(gimmick) : null;
-            if (string.IsNullOrEmpty(triggerKey)) continue;
-
-            if (!first) sb.AppendLine(",");
-            first = false;
-
-            sb.Append($"    \"{EscapeJs(triggerKey)}\": {{ type: \"unassign\", participantIndex: {gimmick.participantIndex} }}");
-        }
-
-        if (!first) sb.AppendLine();
-        sb.AppendLine("};");
+        sb.AppendLine("];");
 
         File.WriteAllText(configPath, sb.ToString());
         AssetDatabase.ImportAsset(configPath, ImportAssetOptions.ForceUpdate);
 
+        // Also delete old AvatarGimmickTriggers.js if present
+        string oldConfigPath = Path.Combine(GeneratedFolder, "AvatarGimmickTriggers.js");
+        if (File.Exists(oldConfigPath))
+            AssetDatabase.DeleteAsset(oldConfigPath);
+
         // Ensure the config file is in the AvatarSpawner's CSCombiner
         WireGimmickConfigIntoSpawner(configPath);
 
-        // Add reset GlobalLogic components to the spawner for re-trigger support
+        // Add fixed reset GlobalLogic components to the spawner
         var spawner = FindSpawnerInScene();
         if (spawner != null)
         {
-            var allTriggerKeys = new List<string>();
-            foreach (var gimmick in assignGimmicks)
-            {
-                string k = baseKeyField != null ? (string)baseKeyField.GetValue(gimmick) : null;
-                if (!string.IsNullOrEmpty(k)) allTriggerKeys.Add(k);
-            }
-            foreach (var gimmick in unassignGimmicks)
-            {
-                string k = baseKeyField != null ? (string)baseKeyField.GetValue(gimmick) : null;
-                if (!string.IsNullOrEmpty(k)) allTriggerKeys.Add(k);
-            }
-            AddResetGlobalLogicToSpawner(spawner, allTriggerKeys);
+            AddResetGlobalLogicToSpawner(spawner);
         }
     }
 
@@ -636,13 +544,10 @@ public static class AvatarsConfigAssetUtil
             return;
         }
 
-        // Rebuild the full script list: [header, gimmickConfig, manager]
-        var headerJsPath = Path.Combine(GeneratedFolder, "AvatarSpawnerConfig.js");
-        var headerAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(headerJsPath);
+        // Rebuild the full script list: [commandConfig, manager]
         var managerAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(AvatarManagerJsPath);
 
         combiner.ClearScripts();
-        if (headerAsset != null) combiner.AppendScript(headerAsset, null);
         combiner.AppendScript(configAsset, null);
         if (managerAsset != null) combiner.AppendScript(managerAsset, null);
         combiner.CombineScripts();
@@ -650,19 +555,16 @@ public static class AvatarsConfigAssetUtil
     }
 
     private const string ResetTemplatePath = "ClusterMetaverseLab/LuidaExpTemplate/FakeGimmickSources/ResetGlobalBool";
-    private const string ResetComponentTag = "LuidaResetGlobalBool";
 
     /// <summary>
-    /// For each gimmick trigger key, adds a hidden reset GlobalLogic component to the spawner.
-    /// This component listens for "reset_&lt;key&gt;" signal (Item scope) and sets the global state to false.
-    /// Called from GenerateAvatarGimmickTriggerConfig after collecting trigger keys.
+    /// Adds exactly 2 hidden reset GlobalLogic components to the spawner:
+    /// one for "luida_avatar_cmd" and one for "luida_avatar_participant".
+    /// Both listen for the same "luida_avatar_cmd_reset" signal on Item scope
+    /// and set their respective global integer state to 0.
     /// </summary>
-    private static void AddResetGlobalLogicToSpawner(GameObject spawner, List<string> triggerKeys)
+    private static void AddResetGlobalLogicToSpawner(GameObject spawner)
     {
-        // Clean up old reset components
         RemoveOldResetComponents(spawner);
-
-        if (triggerKeys == null || triggerKeys.Count == 0) return;
 
         GameObject templatePrefab = (GameObject)Resources.Load(ResetTemplatePath);
         if (templatePrefab == null)
@@ -680,29 +582,30 @@ public static class AvatarsConfigAssetUtil
 
         var spawnerItem = spawner.GetComponent<Item>();
 
-        foreach (string triggerKey in triggerKeys)
+        string[] stateKeys = { "luida_avatar_cmd", "luida_avatar_participant" };
+        foreach (string stateKey in stateKeys)
         {
-            // Copy GlobalLogic from template to spawner
-            GlobalLogic resetLogic = CopyComponent(templateComponent, spawner);
+            // Deep copy from template using EditorUtility.CopySerialized
+            GlobalLogic resetLogic = spawner.AddComponent<GlobalLogic>();
+            EditorUtility.CopySerialized(templateComponent, resetLogic);
 
-            // Patch globalGimmickKey: listen for "reset_<key>" signal on Item (this) scope
+            // Patch globalGimmickKey: listen for "luida_avatar_cmd_reset" signal on Item scope
             var gimmickKey = System.Activator.CreateInstance(typeof(GlobalGimmickKey));
             var keyField = typeof(GlobalGimmickKey).GetField("key", BindingFlags.NonPublic | BindingFlags.Instance);
             var itemField = typeof(GlobalGimmickKey).GetField("item", BindingFlags.NonPublic | BindingFlags.Instance);
 
             if (keyField != null)
-                keyField.SetValue(gimmickKey, new GimmickKey(GimmickTarget.Item, "reset_" + triggerKey));
+                keyField.SetValue(gimmickKey, new GimmickKey(GimmickTarget.Item, "luida_avatar_cmd_reset"));
             if (itemField != null)
                 itemField.SetValue(gimmickKey, spawnerItem);
 
             resetLogic.GetType().GetField("globalGimmickKey", BindingFlags.NonPublic | BindingFlags.Instance)
                 ?.SetValue(resetLogic, gimmickKey);
 
-            // Patch targetState key to the trigger key (so it resets the correct global state)
-            PatchLogicTargetStateKey(resetLogic, triggerKey);
+            // Patch to set the global integer state to 0
+            LuidaFakeGimmick.PatchStatementToInteger(resetLogic, stateKey, 0);
 
             resetLogic.hideFlags = HideFlags.HideInInspector;
-            resetLogic.name = ResetComponentTag;
             EditorUtility.SetDirty(resetLogic);
         }
     }
@@ -712,86 +615,10 @@ public static class AvatarsConfigAssetUtil
         var allGlobalLogics = spawner.GetComponents<GlobalLogic>();
         foreach (var gl in allGlobalLogics)
         {
-            if (gl.hideFlags == HideFlags.HideInInspector && gl.name == ResetComponentTag)
+            if (gl.hideFlags == HideFlags.HideInInspector)
             {
                 Object.DestroyImmediate(gl);
             }
-        }
-    }
-
-    private static T CopyComponent<T>(T original, GameObject destination) where T : Component
-    {
-        T copy = destination.AddComponent<T>();
-        foreach (FieldInfo field in typeof(T).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
-        {
-            field.SetValue(copy, field.GetValue(original));
-        }
-        return copy;
-    }
-
-    /// <summary>
-    /// Patches the logic statement's targetState key in a GlobalLogic component.
-    /// Reused pattern from LuidaAssignAvatarGimmick.PatchLogicStatementTargetKey.
-    /// </summary>
-    private static void PatchLogicTargetStateKey(GlobalLogic globalLogic, string newKey)
-    {
-        try
-        {
-            var logicField = globalLogic.GetType().GetField("logic", BindingFlags.NonPublic | BindingFlags.Instance);
-            if (logicField == null) return;
-            var logic = logicField.GetValue(globalLogic);
-            if (logic == null) return;
-
-            var statementsField = logic.GetType().GetField("statements", BindingFlags.NonPublic | BindingFlags.Instance);
-            if (statementsField == null) return;
-            var statements = statementsField.GetValue(logic);
-            if (statements == null) return;
-
-            var statementsType = statements.GetType();
-            var countProp = statementsType.GetProperty("Count") ?? statementsType.GetProperty("Length");
-            if (countProp == null) return;
-            int count = (int)countProp.GetValue(statements);
-            if (count == 0) return;
-
-            var indexer = statementsType.GetProperty("Item");
-            object firstStatement;
-            if (indexer != null)
-                firstStatement = indexer.GetValue(statements, new object[] { 0 });
-            else
-                firstStatement = ((System.Array)statements).GetValue(0);
-            if (firstStatement == null) return;
-
-            var singleStatementField = firstStatement.GetType().GetField("singleStatement",
-                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            if (singleStatementField == null) return;
-            var singleStatement = singleStatementField.GetValue(firstStatement);
-            if (singleStatement == null) return;
-
-            var targetStateField = singleStatement.GetType().GetField("targetState",
-                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            if (targetStateField == null) return;
-            var targetState = targetStateField.GetValue(singleStatement);
-            if (targetState == null) return;
-
-            var tsKeyField = targetState.GetType().GetField("key",
-                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            if (tsKeyField == null) return;
-
-            tsKeyField.SetValue(targetState, newKey);
-
-            // Write back the modified structs (value types)
-            targetStateField.SetValue(singleStatement, targetState);
-            singleStatementField.SetValue(firstStatement, singleStatement);
-
-            if (indexer != null)
-                indexer.SetValue(statements, firstStatement, new object[] { 0 });
-
-            statementsField.SetValue(logic, statements);
-            logicField.SetValue(globalLogic, logic);
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogWarning($"[LuidaAvatars] Could not patch reset GlobalLogic target key: {e.Message}");
         }
     }
 

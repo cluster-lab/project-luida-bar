@@ -36,6 +36,13 @@ $.onReceive((messageType, arg, sender) => {
     $.state.player = null;
     $.destroy();
   }
+
+  if (messageType === "unassignIfPlayer") {
+    if ($.state.player && $.state.player.id === arg) {
+      $.state.player = null;
+      $.destroy();
+    }
+  }
 });
 
 // --- Quaternion math helpers ---

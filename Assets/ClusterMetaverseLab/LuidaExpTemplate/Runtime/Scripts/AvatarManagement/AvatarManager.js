@@ -1,23 +1,20 @@
 // ===== LUIDA Avatar Manager =====
 // Runs on the LUIDA-AvatarSpawner item.
-// Reads SPAWNER_MODE and DEFAULT_AVATAR_ID from the prepended constants header.
+// Reads AVATAR_INDEX_MAP from the prepended constants header.
 //
-// Modes:
-//   "messageDriven"     — waits for luida_assign_avatar / luida_unassign_avatar messages
-//   "autoAssignOnJoin"  — scans players periodically, assigns DEFAULT_AVATAR_ID to new joiners
-
-const SCAN_INTERVAL = 0.5; // seconds between player scans in autoAssignOnJoin mode
+// Supports two input paths:
+//   1. Direct messages: luida_assign_avatar / luida_unassign_avatar (from state-listening items)
+//   2. Gimmick integer commands: polls global states "luida_avatar_cmd" + "luida_avatar_participant"
 
 $.onStart(() => {
-  $.state.assignments = {};  // playerId → { handle: ItemHandle, avatarID: string }
-  $.state.scanTimer = 0;
+  $.state.createdAvatars = []; // flat list of created avatar item handles
+  $.state.lastCmd = 0;         // last processed command value
 });
 
 // --- Resolve target to a PlayerHandle ---
-// target can be: PlayerHandle (from direct callers) or integer (participant index from state-listening items)
+// target can be: PlayerHandle (from direct callers) or integer (participant index, 0-based)
 function resolvePlayer(target) {
   if (target === null || target === undefined) return null;
-  // If it's a number, look up from groupState.participants
   if (typeof target === "number") {
     const participants = $.groupState.participants;
     if (!participants || target < 0 || target >= participants.length) {
@@ -26,7 +23,6 @@ function resolvePlayer(target) {
     }
     return participants[target];
   }
-  // Otherwise assume it's already a PlayerHandle
   return target;
 }
 
@@ -37,19 +33,8 @@ function assignAvatarToPlayer(player, avatarID, boneOffsets) {
     return;
   }
 
-  const playerId = player.id;
-  const current = $.state.assignments;
-
-  // If already assigned, unassign the old one first
-  if (current[playerId]) {
-    try {
-      current[playerId].handle.send("unassign", null);
-    } catch (e) {
-      $.log("[AvatarManager] Failed to unassign previous avatar: " + e);
-    }
-    delete current[playerId];
-    $.state.assignments = current;
-  }
+  // Remove any existing avatars for this player first
+  unassignAllFromPlayer(player);
 
   // Spawn the wrapper item
   try {
@@ -59,31 +44,31 @@ function assignAvatarToPlayer(player, avatarID, boneOffsets) {
       player.getRotation()
     );
     handle.send("assignPlayer", { player: player, boneOffsets: boneOffsets || null });
-    current[playerId] = { handle: handle, avatarID: avatarID };
-    $.state.assignments = current;
+
+    const list = $.state.createdAvatars || [];
+    list.push(handle);
+    $.state.createdAvatars = list;
+
     $.log("[AvatarManager] Assigned avatar '" + avatarID + "' to player " + player.userDisplayName);
   } catch (e) {
     $.log("[AvatarManager] createItem failed (rate limit?): " + e);
   }
 }
 
-function unassignPlayer(player) {
+function unassignAllFromPlayer(player) {
   if (!player) return;
-  const playerId = player.id;
-  const current = $.state.assignments;
-  if (current[playerId]) {
+
+  const list = $.state.createdAvatars || [];
+  for (let i = 0; i < list.length; i++) {
     try {
-      current[playerId].handle.send("unassign", null);
-    } catch (e) {
-      $.log("[AvatarManager] Failed to send unassign: " + e);
-    }
-    delete current[playerId];
-    $.state.assignments = current;
-    $.log("[AvatarManager] Unassigned avatar from player " + player.userDisplayName);
+      list[i].send("unassignIfPlayer", player.id);
+    } catch (e) { /* item may already be gone */ }
   }
+
+  $.log("[AvatarManager] Unassigned all avatars from player " + player.userDisplayName);
 }
 
-// --- Message handlers ---
+// --- Message handlers (for state-listening items) ---
 $.onReceive((messageType, arg, sender) => {
   if (messageType === "luida_assign_avatar") {
     const player = resolvePlayer(arg.target !== undefined ? arg.target : arg.participantIndex);
@@ -95,75 +80,51 @@ $.onReceive((messageType, arg, sender) => {
   if (messageType === "luida_unassign_avatar") {
     const player = resolvePlayer(arg.target !== undefined ? arg.target : arg.participantIndex);
     if (player) {
-      unassignPlayer(player);
+      unassignAllFromPlayer(player);
     }
   }
 });
 
-// --- Auto-assign on join (only active when SPAWNER_MODE === "autoAssignOnJoin") ---
+// --- Gimmick trigger polling (integer command) ---
+// Polls two global integer states:
+//   "luida_avatar_cmd"         - action (>0 = assign avatar at index cmd-1, -1 = unassign)
+//   "luida_avatar_participant" - participant number (1-based)
+// After handling, sends a single reset signal to clear both.
 $.onUpdate((deltaTime) => {
-  if (typeof SPAWNER_MODE === "undefined" || SPAWNER_MODE !== "autoAssignOnJoin") return;
+  if (typeof AVATAR_INDEX_MAP === "undefined") return;
 
-  $.state.scanTimer = ($.state.scanTimer || 0) + deltaTime;
-  if ($.state.scanTimer < SCAN_INTERVAL) return;
-  $.state.scanTimer = 0;
+  try {
+    const cmd = $.getStateCompat("global", "luida_avatar_cmd", "integer");
+    if (cmd !== 0 && cmd !== $.state.lastCmd) {
+      $.state.lastCmd = cmd;
 
-  const avatarID = (typeof DEFAULT_AVATAR_ID !== "undefined") ? DEFAULT_AVATAR_ID : null;
-  if (!avatarID) return;
+      const participantNumber = $.getStateCompat("global", "luida_avatar_participant", "integer") || 1;
+      const participantIndex = participantNumber - 1; // Convert 1-based to 0-based for resolvePlayer
 
-  const players = $.getPlayersNear($.getPosition(), Infinity);
-  const current = $.state.assignments;
-  const currentIds = {};
-
-  // Assign avatars to new players
-  for (let i = 0; i < players.length; i++) {
-    const p = players[i];
-    currentIds[p.id] = true;
-    if (!current[p.id]) {
-      assignAvatarToPlayer(p, avatarID, null);
-    }
-  }
-
-  // Clean up assignments for players who left
-  const toRemove = [];
-  for (const pid in current) {
-    if (!currentIds[pid]) {
-      toRemove.push(pid);
-    }
-  }
-  for (let i = 0; i < toRemove.length; i++) {
-    try {
-      current[toRemove[i]].handle.send("unassign", null);
-    } catch (e) { /* item may already be gone */ }
-    delete current[toRemove[i]];
-  }
-  if (toRemove.length > 0) {
-    $.state.assignments = current;
-  }
-});
-
-// --- Gimmick trigger polling ---
-// Polls global boolean states set by LuidaAssignAvatarGimmick / LuidaUnassignAvatarGimmick.
-// Trigger keys and baked parameters come from the generated AVATAR_GIMMICK_TRIGGERS constant.
-$.onUpdate((deltaTime) => {
-  if (typeof AVATAR_GIMMICK_TRIGGERS === "undefined") return;
-
-  for (const triggerKey in AVATAR_GIMMICK_TRIGGERS) {
-    const isTriggered = $.getStateCompat("global", triggerKey, "boolean");
-    if (isTriggered && !$.state["_gimmick_" + triggerKey]) {
-      $.state["_gimmick_" + triggerKey] = true;
-      const cfg = AVATAR_GIMMICK_TRIGGERS[triggerKey];
-      if (cfg.type === "assign") {
-        const player = resolvePlayer(cfg.participantIndex);
-        if (player) {
-          assignAvatarToPlayer(player, cfg.avatarID, cfg.boneOffsets);
+      if (cmd > 0) {
+        // Assign: cmd = avatarIndex + 1 (1-based)
+        const avatarIndex = cmd - 1;
+        const player = resolvePlayer(participantIndex);
+        const avatarID = AVATAR_INDEX_MAP[avatarIndex];
+        if (player && avatarID) {
+          assignAvatarToPlayer(player, avatarID, null);
         }
-      } else if (cfg.type === "unassign") {
-        const player = resolvePlayer(cfg.participantIndex);
+      } else if (cmd === -1) {
+        // Unassign all avatars from participant
+        const player = resolvePlayer(participantIndex);
         if (player) {
-          unassignPlayer(player);
+          unassignAllFromPlayer(player);
         }
       }
+
+      // Reset both global states via CCK GlobalLogic on the spawner
+      $.sendSignalCompat("this", "luida_avatar_cmd_reset");
     }
+
+    if (cmd === 0 && $.state.lastCmd !== 0) {
+      $.state.lastCmd = 0;
+    }
+  } catch (e) {
+    $.log("[AvatarManager] Gimmick trigger poll error: " + e);
   }
 });
