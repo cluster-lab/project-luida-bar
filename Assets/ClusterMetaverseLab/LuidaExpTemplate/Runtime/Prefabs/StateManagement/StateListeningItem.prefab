@@ -74,13 +74,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 5022602860645237092, guid: e228c7ca8dec0428ba2fb1c353edbb9e,
     type: 3}
-  sourceCode: "let timer = 0;\r\nlet CONDITION;\r\n\r\n$.onStart(() => {\r\n    $.state.last_state_id
-    = 0;\r\n    $.state.state_id = 0;\r\n    $.state.stateEnterActionID = -1;\r\n   
-    $.state.stateExitActionID = -1;\r\n    $.state.duringStateActionID = -1;\r\n   
-    Start();\r\n})\r\n\r\n$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\",
-    \"state_exit\", \"boolean\")) {\r\n        $.state.stateExitActionID = 0;\r\n       
-    $.state.last_state_id = $.state.state_id;\r\n        $.setStateCompat(\"this\",
-    \"state_exit\", false);\r\n    }\r\n    if ($.state.stateExitActionID >= 0) OnStateExit(deltaTime);\r\n\r\n   
+  sourceCode: "let timer = 0;\r\nlet CONDITION;\r\nlet PARTICIPANTS = [];\r\n\r\n$.onStart(()
+    => {\r\n    $.state.last_state_id = 0;\r\n    $.state.state_id = 0;\r\n    $.state.stateEnterActionID
+    = -1;\r\n    $.state.stateExitActionID = -1;\r\n    $.state.duringStateActionID
+    = -1;\r\n    Start();\r\n})\r\n\r\n$.onUpdate((deltaTime) => {\r\n    // Refresh
+    every frame so enter/during/exit actions (and helper functions\r\n    // like
+    SendHaptics) always see the current participant roster and condition.\r\n   
+    // Do not rely on OnStateEnter alone \u2014 $.state persists across script reloads,\r\n   
+    // so DuringState can resume without OnStateEnter re-running.\r\n    CONDITION
+    = $.groupState.currentCondition;\r\n    PARTICIPANTS = [null].concat($.groupState.participants
+    || []);\r\n\r\n    if ($.getStateCompat(\"this\", \"state_exit\", \"boolean\"))
+    {\r\n        $.state.stateExitActionID = 0;\r\n        $.state.last_state_id
+    = $.state.state_id;\r\n        $.setStateCompat(\"this\", \"state_exit\", false);\r\n   
+    }\r\n    if ($.state.stateExitActionID >= 0) OnStateExit(deltaTime);\r\n\r\n   
     if ($.getStateCompat(\"this\", \"state_enter\", \"boolean\")) {\r\n        $.setStateCompat(\"this\",
     \"state_enter\", false);\r\n        $.state.state_id = $.getStateCompat(\"global\",
     \"state_currentID\", \"integer\");\r\n        $.state.stateEnterActionID = 0;\r\n       
@@ -144,9 +150,8 @@ MonoBehaviour:
     });\r\n        } else {\r\n            $.log(\"SendHaptics: No player found nearby.\");\r\n       
     }\r\n    } catch (e) {\r\n        $.log(`Error in SendHaptics: ${e}`);\r\n   
     }\r\n}\r\n\r\nfunction SendViaOsc(participantId, address, values) {\r\n    PARTICIPANTS[participantId].send(\"sendOsc\",
-    { address, values });\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n    CONDITION
-    = $.groupState.currentCondition;\r\n    PARTICIPANTS = [null].concat($.groupState.participants);\r\n   
-    if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
+    { address, values });\r\n}\r\n\r\nfunction OnStateEnter(deltaTime) {\r\n    if
+    (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length)
     return;\r\n    \r\n    while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length
     && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !== \"sleep\")
     {\r\n        stateEnterActions[$.state.state_id][$.state.stateEnterActionID].action(deltaTime);\r\n       

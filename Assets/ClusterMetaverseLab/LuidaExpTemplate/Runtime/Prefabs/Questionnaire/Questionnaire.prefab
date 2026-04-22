@@ -635,8 +635,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
   sourceCode: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\ncallExternalEndpointID
-    = \"callExternalEndpointID_example\";\r\npNum = 1;\r\n\r\n$.onStart(() => {\r\n   
-    reset();\r\n    $.state.isParticipantAssigned = false;\r\n    $.groupState.qCompletedCount
+    = \"callExternalEndpointID_example\";\r\npNum = 1;\r\nisTestMode = true;\r\n\r\n$.onStart(()
+    => {\r\n    reset();\r\n    $.state.isParticipantAssigned = false;\r\n    $.groupState.qCompletedCount
     = 0;\r\n});\r\n\r\n$.onUpdate((deltaTime) => {\r\n    if (!$.state.isParticipantAssigned
     && $.groupState.isParticipantsEnough) {\r\n        let player = $.groupState.participants[($.getStateCompat(\"this\",
     \"pID\", \"integer\") - 1) || 0];\r\n        $.state.participant = player;\r\n       

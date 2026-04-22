@@ -225,23 +225,35 @@ MonoBehaviour:
   sourceCodeAsset: {fileID: 0}
   sourceCode: "const trialsCountForEachUniqueCondition = 1;\r\nconst within_subjects_variables
     = [\r\n];\r\nconst between_subjects_variables = [\r\n];\r\nconst state_names
-    = [];\r\n\r\n$.onStart(() => {\r\n  initializeRandomBetweenSubjectsConditions();\r\n 
-    reset();\r\n});\r\n\r\n$.onUpdate(() => {\r\n  if (\r\n    $.state.trialID !==
-    $.getStateCompat(\"global\", \"exp_trialID\", \"integer\") &&\r\n      $.getStateCompat(\"global\",
-    \"exp_trialID\", \"integer\") >= 0\r\n  ) {\r\n    $.state.trialID = $.getStateCompat(\"global\",
-    \"exp_trialID\", \"integer\");\r\n    updateCondition();\r\n  }\r\n});\r\n\r\n$.onReceive((messageType,
-    arg, sender) => {\r\n  switch (messageType) {\r\n    case \"luida_participants_info\":\r\n     
-    $.groupState.participants = arg.participants;\r\n      $.groupState.sessionID
-    = arg.sessionID;\r\n      sender.send(\"betweenSubjectsCondition\", $.state.betweenSubjectsConditions);\r\n     
-    break;\r\n    // case \"exp_questionnaire_answer\":\r\n    //     $.state.betweenSubjectsConditions
-    = GetBetweenSubjectsCondition(arg);\r\n    //     break;\r\n    default:\r\n     
-    break;\r\n  }\r\n});\r\n\r\nfunction updateCondition() {\r\n  if ($.state.trialID
-    >= $.state.trialCount) {\r\n    $.sendSignalCompat(\"this\", \"exp_resetTrials\");\r\n 
-    } else if ($.state.trialID <= -1) {\r\n    reset();\r\n  } else {\r\n    let
-    condition = { ...$.state.betweenSubjectsConditions };\r\n    for (let i = 0;
-    i < $.state.withinSubjectsVariableNames.length; i++) {\r\n      const varName
-    = $.state.withinSubjectsVariableNames[i];\r\n      const varValue =\r\n         
-    within_subjects_variables[i].values[\r\n              $.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]\r\n             
+    = [];\r\n\r\n$.onStart(() => {\r\n  $.state.isServerAssigned = false;\r\n  initializeBetweenSubjectsConditions();\r\n 
+    reset();\r\n\r\n  // Send between-subjects config to ParticipantManager for eligibility
+    checks\r\n  const pm = $.worldItemReference(\"ParticipantManager\");\r\n  if
+    (pm) {\r\n    let bsc = [];\r\n    try {\r\n      bsc = between_subjects_variables.map(v
+    => ({ name: v.name, values: v.values }));\r\n    } catch (e) { /* between_subjects_variables
+    not defined */ }\r\n    pm.send(\"betweenSubjectsConfig\", bsc);\r\n  }\r\n});\r\n\r\n$.onUpdate(()
+    => {\r\n  if (\r\n    $.state.trialID !== $.getStateCompat(\"global\", \"exp_trialID\",
+    \"integer\") &&\r\n      $.getStateCompat(\"global\", \"exp_trialID\", \"integer\")
+    >= 0\r\n  ) {\r\n    $.state.trialID = $.getStateCompat(\"global\", \"exp_trialID\",
+    \"integer\");\r\n    updateCondition();\r\n  }\r\n});\r\n\r\n$.onReceive((messageType,
+    arg, sender) => {\r\n  switch (messageType) {\r\n    case \"luida_existing_conditions\":\r\n     
+    // Receive existing conditions array from server, compute balanced assignment
+    locally\r\n      let assignedConditions = calculateBalancedAssignment(arg);\r\n     
+    // Apply debug overrides\r\n      try {\r\n        between_subjects_variables.forEach(v
+    => {\r\n          if (v.debugValue) {\r\n            assignedConditions[v.name]
+    = v.debugValue;\r\n          }\r\n        });\r\n      } catch (e) { /* between_subjects_variables
+    not defined */ }\r\n      $.state.betweenSubjectsConditions = assignedConditions;\r\n     
+    $.state.isServerAssigned = true;\r\n      $.log(\"Conditions balanced locally
+    (debug overrides applied): \" + JSON.stringify(assignedConditions));\r\n     
+    break;\r\n    case \"luida_participants_info\":\r\n      $.groupState.participants
+    = arg.participants;\r\n      $.groupState.sessionID = arg.sessionID;\r\n     
+    sender.send(\"betweenSubjectsCondition\", $.state.betweenSubjectsConditions);\r\n     
+    break;\r\n    default:\r\n      break;\r\n  }\r\n});\r\n\r\nfunction updateCondition()
+    {\r\n  if ($.state.trialID >= $.state.trialCount) {\r\n    $.sendSignalCompat(\"this\",
+    \"exp_resetTrials\");\r\n  } else if ($.state.trialID <= -1) {\r\n    reset();\r\n 
+    } else {\r\n    let condition = { ...$.state.betweenSubjectsConditions };\r\n   
+    for (let i = 0; i < $.state.withinSubjectsVariableNames.length; i++) {\r\n     
+    const varName = $.state.withinSubjectsVariableNames[i];\r\n      const varValue
+    =\r\n          within_subjects_variables[i].values[\r\n              $.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]\r\n             
     ];\r\n      condition[varName] = varValue;\r\n    }\r\n    $.groupState.currentCondition
     = condition;\r\n\r\n    // Check if this is the last trial (if true, stop repeating
     trials when next state transition is triggered)\r\n    if (\r\n        $.state.trialCount
@@ -256,25 +268,24 @@ MonoBehaviour:
     within_subjects_variables,\r\n      trialsCountForEachUniqueCondition\r\n   
     );\r\n  } catch (error) {\r\n    $.log(error);\r\n    $.log(\"Within-subjects
     variables are not defined.\");\r\n    initializeWithinSubjectsConditions([],
-    1);\r\n  }\r\n  updateCondition();\r\n}\r\n\r\nfunction initializeRandomBetweenSubjectsConditions()
-    {\r\n  let betweenSubjectsCondition = {};\r\n  try {\r\n    between_subjects_variables.forEach((v)
-    => {\r\n      if (!betweenSubjectsCondition[v.name]) {\r\n        if (v.debugValue)
-    {\r\n          betweenSubjectsCondition[v.name] = v.debugValue;\r\n        }
-    else if (v.isRandom) {\r\n          betweenSubjectsCondition[v.name] =\r\n             
-    v.values[Math.floor(Math.random() * v.values.length)];\r\n        }\r\n     
-    }\r\n    });\r\n  } catch (e) {\r\n    $.log(\"Between-subjects variables are
-    not defined.\");\r\n  }\r\n  $.state.betweenSubjectsConditions = betweenSubjectsCondition;\r\n}\r\n\r\nfunction
-    initializeWithinSubjectsConditions(variables, repeatsPerCond = 1) {\r\n  variables
-    = [...variables.sort((a, b) => a.isRandom - b.isRandom)];\r\n  const varNames
-    = variables.map((v) => v.name);\r\n\r\n  let indicesPerVar = variables.map((v)
-    =>\r\n    Array.from({ length: v.values.length }, (_, i) => i)\r\n  );\r\n  let
-    condIndicesList = indicesPerVar\r\n    .reduce(\r\n      (acc, array) => {\r\n       
-    return acc.flatMap((accItem) =>\r\n          array.map((arrayItem) => [...accItem,
-    arrayItem])\r\n        );\r\n      },\r\n      [[]]\r\n    )\r\n    .flatMap((condIndices)
-    =>\r\n      Array.from({ length: repeatsPerCond }, () => condIndices)\r\n   
-    );\r\n\r\n  let shufflePartitionSize = 0;\r\n  for (let i = 0; i < variables.length;
-    i++) {\r\n    if (variables[i].isRandom) {\r\n      shufflePartitionSize =\r\n       
-    shufflePartitionSize === 0\r\n          ? variables[i].values.length\r\n         
+    1);\r\n  }\r\n  updateCondition();\r\n}\r\n\r\nfunction initializeBetweenSubjectsConditions()
+    {\r\n  // Debug values only \u2014 actual balanced assignment happens in calculateBalancedAssignment()\r\n 
+    // when existing conditions are received from the server via luida_existing_conditions.\r\n 
+    let betweenSubjectsCondition = {};\r\n  try {\r\n    between_subjects_variables.forEach((v)
+    => {\r\n      if (v.debugValue) {\r\n        betweenSubjectsCondition[v.name]
+    = v.debugValue;\r\n      }\r\n    });\r\n  } catch (e) {\r\n    $.log(\"Between-subjects
+    variables are not defined.\");\r\n  }\r\n  $.state.betweenSubjectsConditions
+    = betweenSubjectsCondition;\r\n}\r\n\r\nfunction initializeWithinSubjectsConditions(variables,
+    repeatsPerCond = 1) {\r\n  variables = [...variables.sort((a, b) => a.isRandom
+    - b.isRandom)];\r\n  const varNames = variables.map((v) => v.name);\r\n\r\n 
+    let indicesPerVar = variables.map((v) =>\r\n    Array.from({ length: v.values.length
+    }, (_, i) => i)\r\n  );\r\n  let condIndicesList = indicesPerVar\r\n    .reduce(\r\n     
+    (acc, array) => {\r\n        return acc.flatMap((accItem) =>\r\n          array.map((arrayItem)
+    => [...accItem, arrayItem])\r\n        );\r\n      },\r\n      [[]]\r\n    )\r\n   
+    .flatMap((condIndices) =>\r\n      Array.from({ length: repeatsPerCond }, ()
+    => condIndices)\r\n    );\r\n\r\n  let shufflePartitionSize = 0;\r\n  for (let
+    i = 0; i < variables.length; i++) {\r\n    if (variables[i].isRandom) {\r\n     
+    shufflePartitionSize =\r\n        shufflePartitionSize === 0\r\n          ? variables[i].values.length\r\n         
     : shufflePartitionSize * variables[i].values.length;\r\n    }\r\n  }\r\n  shufflePartitionSize
     *= repeatsPerCond;\r\n\r\n  if (shufflePartitionSize > 0) {\r\n    const result
     = [...condIndicesList]; // Copy the array to avoid mutating the original\r\n   
@@ -286,7 +297,37 @@ MonoBehaviour:
     $.state.trialCount = condIndicesList.length;\r\n}\r\n\r\nfunction shuffleArray(array)
     {\r\n  for (let i = array.length - 1; i > 0; i--) {\r\n    const j = Math.floor(Math.random()
     * (i + 1));\r\n    [array[i], array[j]] = [array[j], array[i]];\r\n  }\r\n  return
-    array;\r\n}\r\n"
+    array;\r\n}\r\n\r\n/**\r\n * Generate Cartesian product of all between-subjects
+    variable values.\r\n * Returns array of combination objects, e.g. [{avatar:\"robot\",difficulty:\"easy\"},
+    ...]\r\n */\r\nfunction generateAllCombinations(variables) {\r\n  if (variables.length
+    === 0) return [{}];\r\n  const first = variables[0];\r\n  const rest = variables.slice(1);\r\n 
+    const restCombinations = generateAllCombinations(rest);\r\n  const combinations
+    = [];\r\n  for (const value of first.values) {\r\n    for (const combo of restCombinations)
+    {\r\n      const newCombo = {};\r\n      newCombo[first.name] = value;\r\n     
+    for (const k in combo) { newCombo[k] = combo[k]; }\r\n      combinations.push(newCombo);\r\n   
+    }\r\n  }\r\n  return combinations;\r\n}\r\n\r\n/**\r\n * Given an array of existing
+    condition objects (from previous sessions),\r\n * find the least-used combination
+    and return it.\r\n * Ties are broken randomly.\r\n */\r\nfunction calculateBalancedAssignment(existingConditions)
+    {\r\n  let variables = [];\r\n  try {\r\n    variables = between_subjects_variables.map(v
+    => ({ name: v.name, values: v.values }));\r\n  } catch (e) {\r\n    return {};\r\n 
+    }\r\n  if (variables.length === 0) return {};\r\n\r\n  const allCombinations
+    = generateAllCombinations(variables);\r\n\r\n  // Build a count for each combination
+    using a stable string key\r\n  const counts = {};\r\n  for (const combo of allCombinations)
+    {\r\n    const key = JSON.stringify(combo, Object.keys(combo).sort());\r\n   
+    counts[key] = 0;\r\n  }\r\n\r\n  // Count occurrences in existing conditions\r\n 
+    for (const cond of existingConditions) {\r\n    if (cond && typeof cond === \"object\")
+    {\r\n      // Normalize to same key format\r\n      const normalized = {};\r\n     
+    for (const combo of allCombinations) {\r\n        for (const k of Object.keys(combo))
+    {\r\n          if (cond[k] !== undefined) normalized[k] = \"\" + cond[k];\r\n       
+    }\r\n        break; // just need the key names from the first combo\r\n     
+    }\r\n      const key = JSON.stringify(normalized, Object.keys(normalized).sort());\r\n     
+    if (key in counts) {\r\n        counts[key]++;\r\n      }\r\n    }\r\n  }\r\n\r\n 
+    // Find minimum count\r\n  let minCount = Infinity;\r\n  for (const key in counts)
+    {\r\n    if (counts[key] < minCount) minCount = counts[key];\r\n  }\r\n\r\n 
+    // Collect all combinations with minimum count\r\n  const leastUsed = allCombinations.filter(combo
+    => {\r\n    const key = JSON.stringify(combo, Object.keys(combo).sort());\r\n   
+    return counts[key] === minCount;\r\n  });\r\n\r\n  // Random tie-break\r\n  return
+    leastUsed[Math.floor(Math.random() * leastUsed.length)];\r\n}\r\n"
 --- !u!114 &4731245737645068636
 MonoBehaviour:
   m_ObjectHideFlags: 0

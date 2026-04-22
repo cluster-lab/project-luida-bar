@@ -100,6 +100,15 @@ Tip: When asking an LLM service for coding assistance, first share the `Asset/Do
   - `y`: `number`
   - `z`: `number`
 
+### `SyncWithParticipantBone(participantIndex, bone, posOffset, rotOffset)`
+
+- **Description**: Reads the world (global) position and rotation of the specified bone on the specified participant's avatar via `PlayerHandle.getHumanoidBonePosition` and `PlayerHandle.getHumanoidBoneRotation`, then applies them to this item with the configured world-space offsets. Position offset is added to the bone's world position; rotation offset (Euler degrees) is pre-multiplied with the bone's world rotation. Typically placed under **During State** so the item follows the bone every frame, but also usable as a one-shot snapshot under **On State Start** / **On State Exit**. Silently no-ops if the participant is not present or the bone is unavailable on the avatar. **Requires the `MovableItem` component on this item.**
+- **Parameters**:
+  - `participantIndex`: `integer` (starts from 1)
+  - `bone`: `string` — one of the `HumanoidBone` enum names (e.g. `Head`, `RightHand`, `Hips`). See `Asset/Doc/CCK-Types.d.ts` for the full list.
+  - `posOffset`: `(x, y, z)` world-space offset in meters added to the bone position.
+  - `rotOffset`: `(x, y, z)` world-space Euler offset in degrees, pre-multiplied with the bone rotation.
+
 ---
 
 ## Child Manipulation
@@ -190,3 +199,24 @@ Tip: When asking an LLM service for coding assistance, first share the `Asset/Do
 - **Description**: Pauses the execution of subsequent actions in the current list for a specified duration. **Note**: This has no direct ClusterScript function equivalent.
 - **Parameters**:
   - `seconds`: `number`
+
+---
+
+## Avatar Management
+
+These actions send messages to the `LUIDA-AvatarSpawner` world item (a `WorldItemReference` that must exist in the scene and carry `AvatarManager.js`). The spawner resolves the participant number to a `PlayerHandle` via `$.groupState.participants` and then creates/destroys the avatar wrapper item for that player. If the participant has not yet been enrolled (i.e., `PARTICIPANTS[participantIndex]` would be `undefined`), the action is logged and silently ignored.
+
+Prerequisite: avatars are registered in the LUIDA Web Console; their IDs are synced into this project via the **LUIDA > Configure experiment automation > Avatars** tab and stored in the `AvatarRegistry` asset. The editor shows the registered IDs as a dropdown.
+
+### `AssignAvatarToParticipant(avatarID, participantIndex)`
+
+- **Description**: Assigns the avatar identified by `avatarID` to the specified participant. Any avatar previously assigned to that participant is unassigned first. The avatar wrapper item is spawned at the participant's current position and continuously syncs its pose to the player (see `AvatarSyncClone.js`). Safe to call repeatedly — re-assigning the same avatar simply replaces the wrapper.
+- **Parameters**:
+  - `avatarID`: `string` — must match an entry in the project's `AvatarRegistry`.
+  - `participantIndex`: `integer` (starts from 1)
+
+### `UnassignAvatarFromParticipant(participantIndex)`
+
+- **Description**: Removes **all** avatar wrapper items currently assigned to the specified participant, restoring their default Cluster avatar.
+- **Parameters**:
+  - `participantIndex`: `integer` (starts from 1)

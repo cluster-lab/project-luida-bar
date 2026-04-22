@@ -1,5 +1,6 @@
 let timer = 0;
 let CONDITION;
+let PARTICIPANTS = [];
 
 $.onStart(() => {
     $.state.last_state_id = 0;
@@ -11,6 +12,13 @@ $.onStart(() => {
 })
 
 $.onUpdate((deltaTime) => {
+    // Refresh every frame so enter/during/exit actions (and helper functions
+    // like SendHaptics) always see the current participant roster and condition.
+    // Do not rely on OnStateEnter alone — $.state persists across script reloads,
+    // so DuringState can resume without OnStateEnter re-running.
+    CONDITION = $.groupState.currentCondition;
+    PARTICIPANTS = [null].concat($.groupState.participants || []);
+
     if ($.getStateCompat("this", "state_exit", "boolean")) {
         $.state.stateExitActionID = 0;
         $.state.last_state_id = $.state.state_id;
@@ -172,8 +180,6 @@ function SendViaOsc(participantId, address, values) {
 }
 
 function OnStateEnter(deltaTime) {
-    CONDITION = $.groupState.currentCondition;
-    PARTICIPANTS = [null].concat($.groupState.participants);
     if (!stateEnterActions[$.state.state_id] || $.state.stateEnterActionID >= stateEnterActions[$.state.state_id].length) return;
     
     while ($.state.stateEnterActionID < stateEnterActions[$.state.state_id].length && stateEnterActions[$.state.state_id][$.state.stateEnterActionID].type !== "sleep") {

@@ -12,16 +12,16 @@ $.onStart(() => {
 });
 
 // --- Resolve target to a PlayerHandle ---
-// target can be: PlayerHandle (from direct callers) or integer (participant index, 0-based)
+// target can be: PlayerHandle (from direct callers) or integer (participant number, 1-based)
 function resolvePlayer(target) {
   if (target === null || target === undefined) return null;
   if (typeof target === "number") {
     const participants = $.groupState.participants;
-    if (!participants || target < 0 || target >= participants.length) {
-      $.log("[AvatarManager] Invalid participant index: " + target);
+    if (!participants || target < 1 || target > participants.length) {
+      $.log("[AvatarManager] Invalid participant #: " + target);
       return null;
     }
-    return participants[target];
+    return participants[target - 1];
   }
   return target;
 }
@@ -99,19 +99,18 @@ $.onUpdate((deltaTime) => {
       $.state.lastCmd = cmd;
 
       const participantNumber = $.getStateCompat("global", "luida_avatar_participant", "integer") || 1;
-      const participantIndex = participantNumber - 1; // Convert 1-based to 0-based for resolvePlayer
 
       if (cmd > 0) {
         // Assign: cmd = avatarIndex + 1 (1-based)
         const avatarIndex = cmd - 1;
-        const player = resolvePlayer(participantIndex);
+        const player = resolvePlayer(participantNumber);
         const avatarID = AVATAR_INDEX_MAP[avatarIndex];
         if (player && avatarID) {
           assignAvatarToPlayer(player, avatarID, null);
         }
       } else if (cmd === -1) {
         // Unassign all avatars from participant
-        const player = resolvePlayer(participantIndex);
+        const player = resolvePlayer(participantNumber);
         if (player) {
           unassignAllFromPlayer(player);
         }
