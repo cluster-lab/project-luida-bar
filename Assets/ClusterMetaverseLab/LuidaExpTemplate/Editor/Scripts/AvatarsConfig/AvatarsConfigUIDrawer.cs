@@ -151,6 +151,40 @@ public static class AvatarsConfigUIDrawer
 
             EditorGUILayout.EndHorizontal();
 
+            // Scale mode (locked to ScaleToPlayer for now)
+            EditorGUILayout.Space(4);
+            EditorGUILayout.BeginHorizontal();
+            GUI.enabled = false;
+            EditorGUILayout.EnumPopup("Scale Mode", AvatarScaleMode.ScaleToPlayer);
+            GUI.enabled = true;
+            if (entry.scaleMode != AvatarScaleMode.ScaleToPlayer)
+            {
+                Undo.RecordObject(registry, "Fix Scale Mode");
+                entry.scaleMode = AvatarScaleMode.ScaleToPlayer;
+                entry.needsRebuild = true;
+                EditorUtility.SetDirty(registry);
+            }
+            var infoIcon = EditorGUIUtility.IconContent("_Help");
+            var iconRect = GUILayoutUtility.GetRect(infoIcon, GUIStyle.none, GUILayout.Width(18), GUILayout.Height(18));
+            GUI.Label(iconRect, new GUIContent(infoIcon.image,
+                "It is not yet available to adjust the player's viewpoint to match the avatar's original size. If needed, use the deprecated avatar configuration form on the LUIDA web console."));
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUI.BeginChangeCheck();
+            EditorGUI.indentLevel++;
+            entry.syncHipsY = EditorGUILayout.ToggleLeft("Sync Hips Y Position", entry.syncHipsY);
+            if (!entry.syncHipsY)
+            {
+                entry.hipsYOffset = EditorGUILayout.FloatField("Hips Y Offset", entry.hipsYOffset);
+            }
+            EditorGUI.indentLevel--;
+            if (EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(registry, "Change Hips Y Settings");
+                entry.needsRebuild = true;
+                EditorUtility.SetDirty(registry);
+            }
+
             // Rebuild button — only shown when entry has pending changes
             EditorGUILayout.Space(4);
             EditorGUILayout.BeginHorizontal();

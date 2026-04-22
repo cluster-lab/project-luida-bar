@@ -496,27 +496,7 @@ public static class AvatarsConfigAssetUtil
         }
     }
 
-    private static string BuildBoneOffsetsJs(List<BoneOffsetData> offsets)
-    {
-        if (offsets == null || offsets.Count == 0) return "null";
 
-        var sb = new System.Text.StringBuilder();
-        sb.Append("{ ");
-        for (int i = 0; i < offsets.Count; i++)
-        {
-            var bo = offsets[i];
-            if (string.IsNullOrEmpty(bo.boneName)) continue;
-            if (i > 0) sb.Append(", ");
-            sb.Append($"\"{EscapeJs(bo.boneName)}\": {{ ");
-            sb.Append($"pos: {{ x: {F(bo.posOffset.x)}, y: {F(bo.posOffset.y)}, z: {F(bo.posOffset.z)} }}, ");
-            sb.Append($"rot: {{ x: {F(bo.rotOffset.x)}, y: {F(bo.rotOffset.y)}, z: {F(bo.rotOffset.z)} }}");
-            sb.Append(" }");
-        }
-        sb.Append(" }");
-        return sb.ToString();
-    }
-
-    private static string F(float v) => v.ToString(CultureInfo.InvariantCulture);
 
     private static string EscapeJs(string s) => s?.Replace("\\", "\\\\").Replace("\"", "\\\"") ?? "";
 

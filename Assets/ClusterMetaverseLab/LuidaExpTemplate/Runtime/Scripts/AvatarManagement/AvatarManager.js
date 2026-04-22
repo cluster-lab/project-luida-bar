@@ -27,7 +27,7 @@ function resolvePlayer(target) {
 }
 
 // --- Core assignment logic ---
-function assignAvatarToPlayer(player, avatarID, boneOffsets) {
+function assignAvatarToPlayer(player, avatarID) {
   if (!player || !player.exists()) {
     $.log("[AvatarManager] Cannot assign avatar: player does not exist");
     return;
@@ -43,7 +43,7 @@ function assignAvatarToPlayer(player, avatarID, boneOffsets) {
       player.getPosition(),
       player.getRotation()
     );
-    handle.send("assignPlayer", { player: player, boneOffsets: boneOffsets || null });
+    handle.send("assignPlayer", { player: player });
 
     const list = $.state.createdAvatars || [];
     list.push(handle);
@@ -73,7 +73,7 @@ $.onReceive((messageType, arg, sender) => {
   if (messageType === "luida_assign_avatar") {
     const player = resolvePlayer(arg.target !== undefined ? arg.target : arg.participantIndex);
     if (player) {
-      assignAvatarToPlayer(player, arg.avatarID, arg.boneOffsets);
+      assignAvatarToPlayer(player, arg.avatarID);
     }
   }
 

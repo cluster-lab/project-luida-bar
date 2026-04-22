@@ -1,5 +1,4 @@
 #if UNITY_EDITOR
-using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using UnityEditor;
@@ -11,10 +10,9 @@ public class LuidaAssignAvatarGimmick : LuidaFakeGimmick
     protected override string TargetPrefabPath => "ClusterMetaverseLab/LuidaExpTemplate/FakeGimmickSources/AssignAvatar";
 
     [Header("Avatar Parameters")]
-    [SerializeField] public bool removeAvatar; // When true, removes avatar instead of assigning
+    [SerializeField] public bool removeAvatar;
     [SerializeField] public string avatarID;
     [SerializeField] public int participantNumber = 1; // 1-based
-    [SerializeField] public List<BoneOffsetData> boneOffsets = new List<BoneOffsetData>();
 
     [SerializeField] private GlobalLogic _participantLogic;
 

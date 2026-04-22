@@ -3,6 +3,12 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
+public enum AvatarScaleMode
+{
+    ScaleToPlayer,
+    OriginalScale,
+}
+
 [Serializable]
 public class AvatarEntry
 {
@@ -13,6 +19,9 @@ public class AvatarEntry
     public bool syncFingers;
     public bool syncFeetToes;
     public bool syncJaw;
+    public AvatarScaleMode scaleMode = AvatarScaleMode.ScaleToPlayer;
+    public bool syncHipsY = true;
+    public float hipsYOffset = 0f;
     public bool needsRebuild;
 }
 

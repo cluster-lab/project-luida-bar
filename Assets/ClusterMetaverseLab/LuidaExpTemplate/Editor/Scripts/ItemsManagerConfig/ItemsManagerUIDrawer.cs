@@ -60,47 +60,13 @@ public static class ItemsManagerUIDrawer
         new StateListeningAction("Send via OSC", "PARTICIPANTS[{_participantId_}].send('sendOsc', {address: '{_address_}', values: [{_values_}] });", new[] { "participantId", "address", "values" }),
         new StateListeningAction("Sleep", "{_seconds_}", new[] { "seconds" }),
         new StateListeningAction("Assign avatar to participant",
-            "$.worldItemReference('LUIDA-AvatarSpawner').send('luida_assign_avatar', { avatarID: '{_avatarID_}', participantIndex: {_participantIndex_}, boneOffsets: {_boneOffsets_} });",
-            new[] { "avatarID", "participantIndex", "boneOffsets" }),
+            "$.worldItemReference('LUIDA-AvatarSpawner').send('luida_assign_avatar', { avatarID: '{_avatarID_}', participantIndex: {_participantIndex_} });",
+            new[] { "avatarID", "participantIndex" }),
         new StateListeningAction("Unassign avatar from participant",
             "$.worldItemReference('LUIDA-AvatarSpawner').send('luida_unassign_avatar', { participantIndex: {_participantIndex_} });",
             new[] { "participantIndex" }),
     };
 
-    // Bone offset data for "Assign avatar to participant" action
-    [System.Serializable]
-    private class BoneOffsetEntry
-    {
-        public string boneName = ""; // HumanoidBone enum name, e.g., "LeftHand"
-        public Vector3 posOffset;
-        public Vector3 rotOffset;
-    }
-
-    [System.Serializable]
-    private class BoneOffsetListWrapper
-    {
-        public List<BoneOffsetEntry> entries = new List<BoneOffsetEntry>();
-    }
-
-    private static readonly string[] AvailableBoneNames = {
-        "Hips", "Spine", "Chest", "Neck", "Head",
-        "LeftShoulder", "LeftUpperArm", "LeftLowerArm", "LeftHand",
-        "RightShoulder", "RightUpperArm", "RightLowerArm", "RightHand",
-        "LeftUpperLeg", "LeftLowerLeg", "LeftFoot", "LeftToes",
-        "RightUpperLeg", "RightLowerLeg", "RightFoot", "RightToes",
-        "Jaw",
-        "LeftThumbProximal", "LeftThumbIntermediate", "LeftThumbDistal",
-        "LeftIndexProximal", "LeftIndexIntermediate", "LeftIndexDistal",
-        "LeftMiddleProximal", "LeftMiddleIntermediate", "LeftMiddleDistal",
-        "LeftRingProximal", "LeftRingIntermediate", "LeftRingDistal",
-        "LeftLittleProximal", "LeftLittleIntermediate", "LeftLittleDistal",
-        "RightThumbProximal", "RightThumbIntermediate", "RightThumbDistal",
-        "RightIndexProximal", "RightIndexIntermediate", "RightIndexDistal",
-        "RightMiddleProximal", "RightMiddleIntermediate", "RightMiddleDistal",
-        "RightRingProximal", "RightRingIntermediate", "RightRingDistal",
-        "RightLittleProximal", "RightLittleIntermediate", "RightLittleDistal",
-    };
-    
     private static GUIStyle _codeTextAreaStyle;
 
     public static void DrawGUI(ItemsManagerConfigTab editor)
@@ -725,75 +691,6 @@ public static class ItemsManagerUIDrawer
                         }
                         currentY += lineHeight + spacing;
 
-                        // boneOffsets — custom list editor
-                        action.variableValues.TryGetValue("boneOffsets_json", out string boJson);
-                        var boWrapper = new BoneOffsetListWrapper();
-                        if (!string.IsNullOrEmpty(boJson))
-                        {
-                            try { JsonUtility.FromJsonOverwrite(boJson, boWrapper); }
-                            catch { boWrapper.entries = new List<BoneOffsetEntry>(); }
-                        }
-                        if (boWrapper.entries == null) boWrapper.entries = new List<BoneOffsetEntry>();
-
-                        EditorGUI.BeginChangeCheck();
-
-                        EditorGUI.LabelField(new Rect(rect.x + 15, currentY, rect.width - 15, lineHeight), "Bone Offsets");
-                        currentY += lineHeight + spacing;
-
-                        // Existing offset rows
-                        for (int bi = boWrapper.entries.Count - 1; bi >= 0; bi--)
-                        {
-                            var boe = boWrapper.entries[bi];
-
-                            // Bone name (dropdown)
-                            int boneIdx = System.Array.IndexOf(AvailableBoneNames, boe.boneName);
-                            if (boneIdx < 0) boneIdx = 0;
-                            Rect boneLabelRect = new Rect(rect.x + 30, currentY, 40, lineHeight);
-                            Rect boneDropRect = new Rect(boneLabelRect.xMax, currentY, 120, lineHeight);
-                            EditorGUI.LabelField(boneLabelRect, "Bone");
-                            boe.boneName = AvailableBoneNames[EditorGUI.Popup(boneDropRect, boneIdx, AvailableBoneNames)];
-
-                            // Remove button
-                            Rect removeRect = new Rect(rect.x + rect.width - 20, currentY, 20, lineHeight);
-                            if (GUI.Button(removeRect, "X"))
-                            {
-                                boWrapper.entries.RemoveAt(bi);
-                            }
-                            currentY += lineHeight + spacing;
-
-                            if (bi < boWrapper.entries.Count) // not removed
-                            {
-                                // Position offset
-                                Rect posLabelRect = new Rect(rect.x + 30, currentY, 30, lineHeight);
-                                Rect posFieldRect = new Rect(posLabelRect.xMax, currentY, rect.width - 60, lineHeight);
-                                EditorGUI.LabelField(posLabelRect, "Pos");
-                                boe.posOffset = EditorGUI.Vector3Field(posFieldRect, "", boe.posOffset);
-                                currentY += lineHeight + spacing;
-
-                                // Rotation offset
-                                Rect rotLabelRect = new Rect(rect.x + 30, currentY, 30, lineHeight);
-                                Rect rotFieldRect = new Rect(rotLabelRect.xMax, currentY, rect.width - 60, lineHeight);
-                                EditorGUI.LabelField(rotLabelRect, "Rot");
-                                boe.rotOffset = EditorGUI.Vector3Field(rotFieldRect, "", boe.rotOffset);
-                                currentY += lineHeight + spacing;
-                            }
-                        }
-
-                        // Add bone offset button
-                        Rect addBtnRect = new Rect(rect.x + 30, currentY, rect.width - 45, lineHeight);
-                        if (GUI.Button(addBtnRect, "+ Add Bone Offset"))
-                        {
-                            boWrapper.entries.Add(new BoneOffsetEntry());
-                        }
-                        currentY += lineHeight + spacing;
-
-                        if (EditorGUI.EndChangeCheck())
-                        {
-                            Undo.RecordObject(itemDataAsset, "Edit Bone Offsets");
-                            action.variableValues["boneOffsets_json"] = JsonUtility.ToJson(boWrapper);
-                            action.variableValues["boneOffsets"] = GenerateBoneOffsetsJsLiteral(boWrapper.entries);
-                            EditorUtility.SetDirty(itemDataAsset);
-                        }
                     }
                     else
                     {
@@ -914,22 +811,6 @@ public static class ItemsManagerUIDrawer
                 {
                     // avatarID row + participantIndex row
                     height += (lineHeight + spacing) * 2;
-                    // "Bone Offsets" label
-                    height += lineHeight + spacing;
-
-                    // Per-bone offset rows
-                    action.variableValues.TryGetValue("boneOffsets_json", out string boJson);
-                    var boWrapper = new BoneOffsetListWrapper();
-                    if (!string.IsNullOrEmpty(boJson))
-                    {
-                        try { JsonUtility.FromJsonOverwrite(boJson, boWrapper); }
-                        catch { boWrapper.entries = new List<BoneOffsetEntry>(); }
-                    }
-                    if (boWrapper.entries == null) boWrapper.entries = new List<BoneOffsetEntry>();
-                    // Each bone offset = 3 rows (bone dropdown, pos, rot)
-                    height += boWrapper.entries.Count * (lineHeight + spacing) * 3;
-                    // "+ Add" button
-                    height += lineHeight + spacing;
                 }
                 else
                 {
@@ -1031,27 +912,6 @@ public static class ItemsManagerUIDrawer
             }
         }
         return string.Join(", ", stringParts);
-    }
-
-    private static string GenerateBoneOffsetsJsLiteral(List<BoneOffsetEntry> entries)
-    {
-        if (entries == null || entries.Count == 0)
-            return "null";
-
-        var sb = new System.Text.StringBuilder();
-        sb.Append("{ ");
-        for (int i = 0; i < entries.Count; i++)
-        {
-            var e = entries[i];
-            if (string.IsNullOrEmpty(e.boneName)) continue;
-            if (i > 0) sb.Append(", ");
-            sb.Append($"[HumanoidBone.{e.boneName}]: {{ ");
-            sb.Append($"pos: {{ x: {e.posOffset.x.ToString(CultureInfo.InvariantCulture)}, y: {e.posOffset.y.ToString(CultureInfo.InvariantCulture)}, z: {e.posOffset.z.ToString(CultureInfo.InvariantCulture)} }}, ");
-            sb.Append($"rot: {{ x: {e.rotOffset.x.ToString(CultureInfo.InvariantCulture)}, y: {e.rotOffset.y.ToString(CultureInfo.InvariantCulture)}, z: {e.rotOffset.z.ToString(CultureInfo.InvariantCulture)} }}");
-            sb.Append(" }");
-        }
-        sb.Append(" }");
-        return sb.ToString();
     }
 
     #endregion

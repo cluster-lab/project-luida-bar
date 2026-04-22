@@ -141,9 +141,8 @@ public static class VrmWrapperBuilder
         Directory.CreateDirectory(WrapperFolder);
         Directory.CreateDirectory(GeneratedFolder);
 
-        // --- Step 1: Discover bone names and skeleton height from the Animator ---
-        float skeletonHeight;
-        var boneNameMap = DiscoverBoneNames(sourceVrmPrefab, entry, out skeletonHeight);
+        // --- Step 1: Discover bone names from the Animator ---
+        var boneNameMap = DiscoverBoneNames(sourceVrmPrefab, entry);
         if (boneNameMap == null || boneNameMap.Count == 0)
         {
             Debug.LogError("[VrmWrapperBuilder] No humanoid bones found. Is the source prefab configured as Humanoid?");
@@ -151,7 +150,7 @@ public static class VrmWrapperBuilder
         }
 
         // --- Step 2: Generate BoneMap.js ---
-        string boneMapJsPath = GenerateBoneMapJs(entry.avatarID, boneNameMap, skeletonHeight);
+        string boneMapJsPath = GenerateBoneMapJs(entry, boneNameMap);
         if (boneMapJsPath == null) return null;
 
         // --- Step 3: Build the wrapper prefab ---
@@ -162,10 +161,8 @@ public static class VrmWrapperBuilder
     /// <summary>
     /// Instantiate the source prefab temporarily to read bone Transform names via Animator.
     /// </summary>
-    private static Dictionary<HumanBodyBones, string> DiscoverBoneNames(GameObject sourceVrmPrefab, AvatarEntry entry, out float skeletonHeight)
+    private static Dictionary<HumanBodyBones, string> DiscoverBoneNames(GameObject sourceVrmPrefab, AvatarEntry entry)
     {
-        skeletonHeight = 0f;
-
         // Instantiate in a preview scene so the Animator binds properly
         var previewScene = EditorSceneManager.NewPreviewScene();
         GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(sourceVrmPrefab, previewScene);
@@ -195,53 +192,24 @@ public static class VrmWrapperBuilder
             }
         }
 
-        // Compute skeleton height from bone chain (pose-independent)
-        skeletonHeight = ComputeSkeletonHeight(animator);
-
         Object.DestroyImmediate(instance);
         EditorSceneManager.ClosePreviewScene(previewScene);
         return result;
     }
 
     /// <summary>
-    /// Compute skeleton height by summing bone chain segment lengths from foot to head.
-    /// This is pose-independent since each segment is a rigid bone length.
-    /// </summary>
-    private static float ComputeSkeletonHeight(Animator animator)
-    {
-        HumanBodyBones[] chain = {
-            HumanBodyBones.LeftFoot,
-            HumanBodyBones.LeftLowerLeg,
-            HumanBodyBones.LeftUpperLeg,
-            HumanBodyBones.Hips,
-            HumanBodyBones.Spine,
-            HumanBodyBones.Chest,
-            HumanBodyBones.Neck,
-            HumanBodyBones.Head,
-        };
-        float totalHeight = 0f;
-        for (int i = 1; i < chain.Length; i++)
-        {
-            Transform a = animator.GetBoneTransform(chain[i - 1]);
-            Transform b = animator.GetBoneTransform(chain[i]);
-            if (a == null || b == null) continue;
-            totalHeight += Vector3.Distance(a.position, b.position);
-        }
-        return totalHeight;
-    }
-
-    /// <summary>
     /// Generate a JS file containing const BONE_MAP and BONE_PARENT literals.
     /// </summary>
-    private static string GenerateBoneMapJs(string avatarID, Dictionary<HumanBodyBones, string> boneNameMap, float skeletonHeight)
+    private static string GenerateBoneMapJs(AvatarEntry entry, Dictionary<HumanBodyBones, string> boneNameMap)
     {
         var sb = new StringBuilder();
-        sb.AppendLine($"// Auto-generated bone map for avatar: {avatarID}");
+        sb.AppendLine($"// Auto-generated bone map for avatar: {entry.avatarID}");
         sb.AppendLine("// Do not edit manually — regenerate via LUIDA Avatars window.");
         sb.AppendLine();
 
-        // Skeleton height for pose-independent scaling
-        sb.AppendLine($"const AVATAR_SKELETON_HEIGHT = {skeletonHeight.ToString(System.Globalization.CultureInfo.InvariantCulture)};");
+        // Sync options
+        sb.AppendLine($"const AVATAR_SYNC_HIPS_Y = {(entry.syncHipsY ? "true" : "false")};");
+        sb.AppendLine($"const AVATAR_HIPS_Y_OFFSET = {entry.hipsYOffset.ToString(System.Globalization.CultureInfo.InvariantCulture)};");
         sb.AppendLine();
 
         // BONE_MAP array
@@ -281,7 +249,7 @@ public static class VrmWrapperBuilder
         }
         sb.AppendLine("};");
 
-        string jsPath = Path.Combine(GeneratedFolder, $"{avatarID}_BoneMap.js");
+        string jsPath = Path.Combine(GeneratedFolder, $"{entry.avatarID}_BoneMap.js");
         File.WriteAllText(jsPath, sb.ToString());
         AssetDatabase.ImportAsset(jsPath, ImportAssetOptions.ForceUpdate);
         return jsPath;

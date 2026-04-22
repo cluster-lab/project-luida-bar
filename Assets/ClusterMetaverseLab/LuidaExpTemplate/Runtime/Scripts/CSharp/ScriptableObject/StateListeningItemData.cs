@@ -73,7 +73,6 @@ public class StateListenerAction: ISerializationCallbackReceiver
 
         // Defaults for avatar assignment
         if (varName == "participantIndex") return "0";
-        if (varName == "boneOffsets") return "null";
         if (varName == "avatarID") return "";
 
         return ""; // Default for any other unhandled variable
