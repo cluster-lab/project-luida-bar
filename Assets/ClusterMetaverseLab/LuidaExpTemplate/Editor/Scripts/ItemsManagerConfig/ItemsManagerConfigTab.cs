@@ -8,17 +8,29 @@ using System.Linq;
 public class ItemsManagerConfigTab : LuidaAutomationConfigTab
 {
     protected override LuidaConfigWindow.TabIndex TabIndex => LuidaConfigWindow.TabIndex.StateListeningItems;
-    
+
+    public const string DragKeyListener = "LuidaItemsManager.Listener";
+
     // State variables accessed by helper classes
     public bool _needsRebuild = true;
+    private bool _pendingUndoRebuild = false;
     public string[] _cachedStateNames = Array.Empty<string>();
     public GameObject[] _cachedItems = Array.Empty<GameObject>();
     public Dictionary<string, ReorderableList> _reorderableLists = new Dictionary<string, ReorderableList>();
+    public Dictionary<(GameObject item, int stateID), Rect> _cellRects = new Dictionary<(GameObject, int), Rect>();
     public string newItemName = string.Empty;
 
     public List<GameObject> stateListeningItems = new List<GameObject>();
     public StateList stateList = null;
     public Dictionary<GameObject, List<StateListener>> stateListenersByItem = new Dictionary<GameObject, List<StateListener>>();
+
+    public class ListenerDragPayload
+    {
+        public StateListeningItemData sourceAsset;
+        public GameObject sourceItem;
+        public int sourceStateID;
+        public StateListener sourceListener;
+    }
 
     [Serializable]
     public class EditorExperimentVariable
@@ -51,19 +63,21 @@ public class ItemsManagerConfigTab : LuidaAutomationConfigTab
         {
             ItemsManagerAssetUtil.RefreshStateList(this);
             ItemsManagerAssetUtil.RefreshExperimentVariablesCache(this);
-            
+
             EditorApplication.hierarchyChanged -= OnHierarchyChanged;
             EditorApplication.projectChanged -= OnProjectChanged;
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+            Undo.undoRedoPerformed -= OnUndoRedoPerformed;
 
             LuidaConfigWindow.OnEditorClosed -= HandleCloseOrFocusLost;
             LuidaConfigWindow.OnEditorClosed -= OnDisable;
             LuidaConfigWindow.OnTabSwitched -= HandleTabSwitched;
-            
+
             EditorApplication.hierarchyChanged += OnHierarchyChanged;
             EditorApplication.projectChanged += OnProjectChanged;
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-            
+            Undo.undoRedoPerformed += OnUndoRedoPerformed;
+
             LuidaConfigWindow.OnEditorClosed += HandleCloseOrFocusLost;
             LuidaConfigWindow.OnEditorClosed += OnDisable;
             LuidaConfigWindow.OnTabSwitched += HandleTabSwitched;
@@ -76,10 +90,18 @@ public class ItemsManagerConfigTab : LuidaAutomationConfigTab
         EditorApplication.hierarchyChanged -= OnHierarchyChanged;
         EditorApplication.projectChanged -= OnProjectChanged;
         EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+        Undo.undoRedoPerformed -= OnUndoRedoPerformed;
 
         LuidaConfigWindow.OnEditorClosed -= HandleCloseOrFocusLost;
         LuidaConfigWindow.OnEditorClosed -= OnDisable;
         LuidaConfigWindow.OnTabSwitched -= HandleTabSwitched;
+    }
+
+    private void OnUndoRedoPerformed()
+    {
+        _needsRebuild = true;
+        _pendingUndoRebuild = true;
+        Repaint();
     }
 
     private void HandleCloseOrFocusLost() => ItemsManagerAssetUtil.ApplyAssetsToScripts(this);
@@ -102,7 +124,20 @@ public class ItemsManagerConfigTab : LuidaAutomationConfigTab
     {
         if (_needsRebuild)
         {
-            RebuildCache();
+            bool showProgress = _pendingUndoRebuild;
+            _pendingUndoRebuild = false;
+            if (showProgress)
+            {
+                EditorUtility.DisplayProgressBar("LUIDA", "Applying undo/redo — please wait…", 0.5f);
+            }
+            try
+            {
+                RebuildCache();
+            }
+            finally
+            {
+                if (showProgress) EditorUtility.ClearProgressBar();
+            }
             _needsRebuild = false;
         }
 

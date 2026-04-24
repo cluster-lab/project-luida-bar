@@ -159,6 +159,19 @@ public class StateListenerAction: ISerializationCallbackReceiver
             variableValues[_variableKeys[i]] = _variableValuesList[i];
         }
     }
+
+    public StateListenerAction Clone()
+    {
+        return new StateListenerAction
+        {
+            predefinedActionTemplate = this.predefinedActionTemplate,
+            customAction = this.customAction,
+            isConditional = this.isConditional,
+            conditionVariable = this.conditionVariable,
+            conditionValue = this.conditionValue,
+            variableValues = new Dictionary<string, string>(this.variableValues ?? new Dictionary<string, string>())
+        };
+    }
 }
 
 [Serializable]
@@ -168,6 +181,15 @@ public class StateListener
     public List<StateListenerAction> onStateStartedActions = new List<StateListenerAction>();
     public List<StateListenerAction> duringStateActions = new List<StateListenerAction>();
     public List<StateListenerAction> onStateExitedActions = new List<StateListenerAction>();
+
+    public StateListener DeepClone(int? newStateID = null)
+    {
+        var copy = new StateListener { stateID = newStateID ?? this.stateID };
+        if (onStateStartedActions != null) foreach (var a in onStateStartedActions) copy.onStateStartedActions.Add(a.Clone());
+        if (duringStateActions != null) foreach (var a in duringStateActions) copy.duringStateActions.Add(a.Clone());
+        if (onStateExitedActions != null) foreach (var a in onStateExitedActions) copy.onStateExitedActions.Add(a.Clone());
+        return copy;
+    }
 }
 
 [Serializable]

@@ -193,7 +193,11 @@ public static class QuestionnaireEditorManager
     public static void DisplayQuestionnaireRow(StateList stateList, SerializedObject serializedStateList, string stateName, int stateIdInAsset)
     {
         int assetQID = (stateList != null && stateIdInAsset >= 0 && stateIdInAsset < stateList.States.Length) ? stateList.States[stateIdInAsset].qID : -1;
-        EditorGUILayout.BeginVertical("box");
+        Rect qBoxRect = EditorGUILayout.BeginVertical("box");
+        if (Event.current.type == EventType.Repaint)
+        {
+            EditorGUI.DrawRect(qBoxRect, new Color(0.95f, 0.85f, 0.40f, 0.22f));
+        }
         EditorGUILayout.LabelField("Questionnaires", GUILayout.Width(100));
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.BeginVertical();

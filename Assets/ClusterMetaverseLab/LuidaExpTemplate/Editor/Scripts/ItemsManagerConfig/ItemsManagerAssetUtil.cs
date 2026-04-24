@@ -237,6 +237,164 @@ public static class ItemsManagerAssetUtil
         }
     }
 
+    public static GameObject DuplicateStateListeningItem(GameObject source, ItemsManagerConfigTab editor)
+    {
+        if (source == null) return null;
+
+        string newName = EditorInputDialog.Show("Duplicate Item", "Enter a name for the copy:", source.name + "_Copy");
+        if (string.IsNullOrEmpty(newName)) return null;
+        if (!Regex.IsMatch(newName, @"^[A-Za-z0-9 _\-\.]+$"))
+        {
+            EditorUtility.DisplayDialog("Error", $"'{newName}' contains characters that are not allowed in a file name.", "OK");
+            return null;
+        }
+        if (editor.stateListeningItems.Any(i => i != null && i.name == newName))
+        {
+            EditorUtility.DisplayDialog("Error", $"An item named '{newName}' already exists.", "OK");
+            return null;
+        }
+
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
+        if (prefab == null) { Debug.LogError($"Prefab not found at path: {PrefabPath}"); return null; }
+
+        GameObject go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+        go.name = newName;
+        Undo.RegisterCreatedObjectUndo(go, "Duplicate item " + newName);
+
+        EnableAccessToConditions(go);
+        AddDataCollectorToWorldItemReferenceList(go);
+
+        string scene = SceneManager.GetActiveScene().name;
+        string scriptFolder = string.Format(ScriptFolderFormat, scene);
+        Directory.CreateDirectory(scriptFolder);
+        string jsPath = Path.Combine(scriptFolder, newName + ".js");
+
+        if (!File.Exists(ScriptTemplatePath))
+        {
+            Debug.LogError($"Script template not found at: {ScriptTemplatePath}");
+            Undo.DestroyObjectImmediate(go);
+            return null;
+        }
+        AssetDatabase.CopyAsset(ScriptTemplatePath, jsPath);
+        AssetDatabase.Refresh();
+
+        var combiner = go.GetComponent<ScriptableClusterScriptCombiner>();
+        if (combiner != null)
+        {
+            var newScriptAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(jsPath);
+            if (newScriptAsset != null)
+            {
+                combiner.ReplaceScript(newScriptAsset, 1, null, 0, true);
+                EditorUtility.SetDirty(combiner);
+            }
+        }
+
+        string listenerDataFolder = Path.Combine(scriptFolder, "StateListeners");
+        Directory.CreateDirectory(listenerDataFolder);
+        string newAssetPath = Path.Combine(listenerDataFolder, newName + ".asset");
+        var newData = ScriptableObject.CreateInstance<StateListeningItemData>();
+
+        string sourceAssetPath = GetItemDataAssetPath(source);
+        var sourceData = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(sourceAssetPath);
+        if (sourceData != null && sourceData.stateListeners != null)
+        {
+            var cloned = new List<StateListener>(sourceData.stateListeners.Length);
+            foreach (var l in sourceData.stateListeners) cloned.Add(l.DeepClone());
+            newData.stateListeners = cloned.ToArray();
+            newData.otherImplementation = sourceData.otherImplementation ?? defaultOtherImplementation;
+        }
+        else
+        {
+            newData.stateListeners = Array.Empty<StateListener>();
+            newData.otherImplementation = defaultOtherImplementation;
+        }
+        AssetDatabase.CreateAsset(newData, newAssetPath);
+
+        editor._needsRebuild = true;
+        return go;
+    }
+
+    public static void DuplicateAction(StateListeningItemData asset, List<StateListenerAction> phaseList, int sourceIndex)
+    {
+        if (asset == null || phaseList == null || sourceIndex < 0 || sourceIndex >= phaseList.Count) return;
+        Undo.RecordObject(asset, "Duplicate Action");
+        phaseList.Insert(sourceIndex + 1, phaseList[sourceIndex].Clone());
+        EditorUtility.SetDirty(asset);
+    }
+
+    public static void DuplicateListenerToState(GameObject item, int sourceStateID, int targetStateID, ItemsManagerConfigTab editor)
+    {
+        if (item == null) return;
+        if (!editor.stateListenersByItem.TryGetValue(item, out var listeners)) return;
+
+        var source = listeners.FirstOrDefault(l => l.stateID == sourceStateID);
+        if (source == null) return;
+        if (listeners.Any(l => l.stateID == targetStateID))
+        {
+            EditorUtility.DisplayDialog("Error", $"State ID {targetStateID} already has a listener on item '{item.name}'.", "OK");
+            return;
+        }
+
+        string assetPath = GetItemDataAssetPath(item);
+        var data = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(assetPath);
+        if (data == null) return;
+
+        Undo.RecordObject(data, "Duplicate Listener");
+        listeners.Add(source.DeepClone(targetStateID));
+        data.stateListeners = listeners.ToArray();
+        EditorUtility.SetDirty(data);
+        editor._needsRebuild = true;
+    }
+
+    public static void MoveListener(
+        ItemsManagerConfigTab.ListenerDragPayload payload,
+        ItemsManagerConfigTab editor,
+        GameObject targetItem, int targetStateID)
+    {
+        if (payload == null || payload.sourceListener == null) return;
+        if (!editor.stateListenersByItem.TryGetValue(payload.sourceItem, out var sourceListeners)) return;
+        if (!editor.stateListenersByItem.TryGetValue(targetItem, out var targetListeners)) return;
+        if (targetListeners.Any(l => l.stateID == targetStateID)) return;
+
+        string targetAssetPath = GetItemDataAssetPath(targetItem);
+        var targetAsset = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(targetAssetPath);
+        if (payload.sourceAsset != null) Undo.RecordObject(payload.sourceAsset, "Move Listener");
+        if (targetAsset != null && targetAsset != payload.sourceAsset) Undo.RecordObject(targetAsset, "Move Listener");
+
+        sourceListeners.Remove(payload.sourceListener);
+        targetListeners.Add(payload.sourceListener.DeepClone(targetStateID));
+
+        if (payload.sourceAsset != null) EditorUtility.SetDirty(payload.sourceAsset);
+        if (targetAsset != null) EditorUtility.SetDirty(targetAsset);
+
+        SyncListenersArray(editor, payload.sourceItem);
+        if (payload.sourceItem != targetItem) SyncListenersArray(editor, targetItem);
+    }
+
+    public static List<StateListenerAction> GetPhaseList(StateListener l, string phaseKey)
+    {
+        if (l == null) return null;
+        switch (phaseKey)
+        {
+            case "OnStateStart": return l.onStateStartedActions;
+            case "DuringState": return l.duringStateActions;
+            case "OnStateExit": return l.onStateExitedActions;
+            default: return null;
+        }
+    }
+
+    private static void SyncListenersArray(ItemsManagerConfigTab editor, GameObject item)
+    {
+        if (item == null) return;
+        string path = GetItemDataAssetPath(item);
+        var data = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(path);
+        if (data != null && editor.stateListenersByItem.TryGetValue(item, out var list))
+        {
+            data.stateListeners = list.ToArray();
+            EditorUtility.SetDirty(data);
+        }
+    }
+
     #endregion
     
     #region JS Generation and Saving
