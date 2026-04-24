@@ -141,6 +141,7 @@ public static class ItemsManagerAssetUtil
 
         EnableAccessToConditions(go);
         AddDataCollectorToWorldItemReferenceList(go);
+        AddAvatarSpawnerToWorldItemReferenceList(go);
 
         string scene = SceneManager.GetActiveScene().name;
         string scriptFolder = string.Format(ScriptFolderFormat, scene);
@@ -623,6 +624,55 @@ public static class ItemsManagerAssetUtil
         }
         else
             Debug.LogError("LUIDA-DataCollector prefab instance not found in the scene.");
+    }
+
+    private static void AddAvatarSpawnerToWorldItemReferenceList(GameObject stateListeningItem)
+    {
+        GameObject spawner = AvatarsConfigAssetUtil.FindSpawnerInScene();
+        if (spawner == null) return; // Spawner not yet in scene — reference will be added when spawner is installed
+
+        var refList = stateListeningItem.GetComponent<WorldItemReferenceList>();
+        if (!refList)
+        {
+            refList = stateListeningItem.AddComponent(typeof(WorldItemReferenceList)) as WorldItemReferenceList;
+        }
+
+        // Check if reference already exists
+        SerializedObject serializedRefList = new SerializedObject(refList);
+        var prop = serializedRefList.FindProperty("worldItemReferences");
+        for (int i = 0; i < prop.arraySize; i++)
+        {
+            if (prop.GetArrayElementAtIndex(i).FindPropertyRelative("id").stringValue == "LUIDA-AvatarSpawner")
+                return; // Already referenced
+        }
+
+        prop.InsertArrayElementAtIndex(prop.arraySize);
+        var refItem = prop.GetArrayElementAtIndex(prop.arraySize - 1);
+        refItem.FindPropertyRelative("id").stringValue = "LUIDA-AvatarSpawner";
+        refItem.FindPropertyRelative("item").objectReferenceValue = spawner.GetComponent<Item>();
+        serializedRefList.ApplyModifiedProperties();
+    }
+
+    /// <summary>
+    /// Called by AvatarsConfigAssetUtil when a spawner is installed into the scene.
+    /// Adds the spawner reference to all existing state-listening items.
+    /// </summary>
+    public static void AddAvatarSpawnerReferenceToAllItems()
+    {
+        GameObject spawner = AvatarsConfigAssetUtil.FindSpawnerInScene();
+        if (spawner == null) return;
+
+        var allSceneRootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
+        foreach (var rootGO in allSceneRootGameObjects)
+        {
+            foreach (var transform in rootGO.GetComponentsInChildren<Transform>(true))
+            {
+                if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(transform.gameObject) == PrefabPath)
+                {
+                    AddAvatarSpawnerToWorldItemReferenceList(transform.gameObject);
+                }
+            }
+        }
     }
 
     #endregion

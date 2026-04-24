@@ -27,6 +27,27 @@ public static class ItemsManagerUIDrawer
 
     private static string docFilePath = "Assets/Doc/LUIDA-StateListeningItemScriptDoc.md";
     private static readonly string codeFontPath = "Assets/Fonts/FiraCode-Regular.ttf";
+
+    private static readonly string[] HumanoidBoneNames =
+    {
+        "Hips", "LeftUpperLeg", "RightUpperLeg", "LeftLowerLeg", "RightLowerLeg",
+        "LeftFoot", "RightFoot", "Spine", "Chest", "Neck", "Head",
+        "LeftShoulder", "RightShoulder", "LeftUpperArm", "RightUpperArm",
+        "LeftLowerArm", "RightLowerArm", "LeftHand", "RightHand",
+        "LeftToes", "RightToes", "LeftEye", "RightEye", "Jaw",
+        "LeftThumbProximal", "LeftThumbIntermediate", "LeftThumbDistal",
+        "LeftIndexProximal", "LeftIndexIntermediate", "LeftIndexDistal",
+        "LeftMiddleProximal", "LeftMiddleIntermediate", "LeftMiddleDistal",
+        "LeftRingProximal", "LeftRingIntermediate", "LeftRingDistal",
+        "LeftLittleProximal", "LeftLittleIntermediate", "LeftLittleDistal",
+        "RightThumbProximal", "RightThumbIntermediate", "RightThumbDistal",
+        "RightIndexProximal", "RightIndexIntermediate", "RightIndexDistal",
+        "RightMiddleProximal", "RightMiddleIntermediate", "RightMiddleDistal",
+        "RightRingProximal", "RightRingIntermediate", "RightRingDistal",
+        "RightLittleProximal", "RightLittleIntermediate", "RightLittleDistal",
+        "UpperChest",
+    };
+
     private static readonly StateListeningAction[] AvailableStateListeningActions =
     {
         new StateListeningAction("Show item", "$.setStateCompat('this', 'exp_showItem', true);"),
@@ -59,8 +80,31 @@ public static class ItemsManagerUIDrawer
             new[] { "participantId", "target", "frequency", "amplitude", "duration" }),
         new StateListeningAction("Send via OSC", "PARTICIPANTS[{_participantId_}].send('sendOsc', {address: '{_address_}', values: [{_values_}] });", new[] { "participantId", "address", "values" }),
         new StateListeningAction("Sleep", "{_seconds_}", new[] { "seconds" }),
+        new StateListeningAction("Assign avatar to participant",
+            "$.worldItemReference('LUIDA-AvatarSpawner').send('luida_assign_avatar', { avatarID: '{_avatarID_}', participantIndex: {_participantIndex_} });",
+            new[] { "avatarID", "participantIndex" }),
+        new StateListeningAction("Unassign avatar from participant",
+            "$.worldItemReference('LUIDA-AvatarSpawner').send('luida_unassign_avatar', { participantIndex: {_participantIndex_} });",
+            new[] { "participantIndex" }),
+        new StateListeningAction("Sync with participant bone",
+            "(() => {\n" +
+            "    try {\n" +
+            "        const player = PARTICIPANTS[{_participantIndex_}];\n" +
+            "        if (!player || !player.exists()) return;\n" +
+            "        const bone = HumanoidBone.{_bone_};\n" +
+            "        const bonePosWorld = player.getHumanoidBonePosition(bone);\n" +
+            "        const boneRotWorld = player.getHumanoidBoneRotation(bone);\n" +
+            "        const posOffset = new Vector3(parseFloat('{_posX_}'), parseFloat('{_posY_}'), parseFloat('{_posZ_}'));\n" +
+            "        const rotOffset = new Quaternion().setFromEulerAngles(new Vector3(parseFloat('{_rotX_}'), parseFloat('{_rotY_}'), parseFloat('{_rotZ_}')));\n" +
+            "        if (bonePosWorld) $.setPosition(bonePosWorld.add(posOffset));\n" +
+            "        if (boneRotWorld) $.setRotation(rotOffset.multiply(boneRotWorld));\n" +
+            "    } catch (e) {\n" +
+            "        $.log('[SyncWithParticipantBone] ' + e + '. Ensure MovableItem is on this item and bone name is valid.');\n" +
+            "    }\n" +
+            "})();",
+            new[] { "participantIndex", "bone", "posX", "posY", "posZ", "rotX", "rotY", "rotZ" }),
     };
-    
+
     private static GUIStyle _codeTextAreaStyle;
 
     private static readonly Color[] ItemColumnAccents = new[]
@@ -605,7 +649,7 @@ public static class ItemsManagerUIDrawer
                     EditorUtility.SetDirty(itemDataAsset);
                 }
 
-                bool requiresMovableItem = new[] { "Set position", "Add position", "Set rotation", "Add rotation" }.Contains(action.predefinedActionTemplate.actionType);
+                bool requiresMovableItem = new[] { "Set position", "Add position", "Set rotation", "Add rotation", "Sync with participant bone" }.Contains(action.predefinedActionTemplate.actionType);
                 if (requiresMovableItem && itemGO.GetComponent<MovableItem>() == null)
                 {
                     Rect warningRect = new Rect(rect.x, currentY, rect.width, lineHeight * 2);
@@ -632,7 +676,7 @@ public static class ItemsManagerUIDrawer
                         Rect idLabelRect = new Rect(rect.x + 15, currentY, labelWidth, lineHeight);
                         Rect idFieldRect = new Rect(idLabelRect.xMax, currentY, rect.width - 15 - labelWidth, lineHeight);
 
-                        EditorGUI.LabelField(idLabelRect, "Participant ID");
+                        EditorGUI.LabelField(idLabelRect, "Participant #");
                         action.variableValues.TryGetValue("participantId", out string currentId);
                         string newId = EditorGUI.TextField(idFieldRect, currentId ?? "");
 
@@ -640,7 +684,7 @@ public static class ItemsManagerUIDrawer
 
                         if (newId != currentId)
                         {
-                            Undo.RecordObject(itemDataAsset, "Edit OSC Participant ID");
+                            Undo.RecordObject(itemDataAsset, "Edit OSC Participant #");
                             action.variableValues["participantId"] = newId;
                             EditorUtility.SetDirty(itemDataAsset);
                         }
@@ -723,7 +767,8 @@ public static class ItemsManagerUIDrawer
                             }
 
                             Rect labelRect = new Rect(rect.x + 15, currentY, labelWidth, lineHeight);
-                            EditorGUI.LabelField(labelRect, variableName);
+                            string label = variableName == "participantId" ? "Participant #" : variableName;
+                            EditorGUI.LabelField(labelRect, label);
                             Rect fieldRect = new Rect(labelRect.xMax, currentY, rect.width - labelRect.width - 15, lineHeight);
                             
                             if (variableName == "target")
@@ -757,7 +802,152 @@ public static class ItemsManagerUIDrawer
                             currentY += lineHeight + spacing;
                         }
                     }
-                    else 
+                    else if (action.predefinedActionTemplate.actionType == "Assign avatar to participant")
+                    {
+                        float labelWidth = 85f;
+
+                        // avatarID dropdown
+                        Rect avatarLabelRect = new Rect(rect.x + 15, currentY, labelWidth, lineHeight);
+                        Rect avatarFieldRect = new Rect(avatarLabelRect.xMax, currentY, rect.width - 15 - labelWidth, lineHeight);
+                        EditorGUI.LabelField(avatarLabelRect, "Avatar ID");
+
+                        action.variableValues.TryGetValue("avatarID", out string currentAvatarID);
+                        currentAvatarID ??= "";
+
+                        var avatarRegistry = AssetDatabase.LoadAssetAtPath<AvatarRegistry>(AvatarsConfigAssetUtil.RegistryPath);
+                        if (avatarRegistry != null && avatarRegistry.entries.Count > 0)
+                        {
+                            string[] avatarIDs = avatarRegistry.GetAvatarIDs();
+                            int selectedAvatarIdx = System.Array.IndexOf(avatarIDs, currentAvatarID);
+                            if (selectedAvatarIdx < 0) selectedAvatarIdx = 0;
+                            int newAvatarIdx = EditorGUI.Popup(avatarFieldRect, selectedAvatarIdx, avatarIDs);
+                            string newAvatarID = avatarIDs[newAvatarIdx];
+                            if (newAvatarID != currentAvatarID)
+                            {
+                                Undo.RecordObject(itemDataAsset, "Change Avatar ID");
+                                action.variableValues["avatarID"] = newAvatarID;
+                                EditorUtility.SetDirty(itemDataAsset);
+                            }
+                        }
+                        else
+                        {
+                            string newAvatarID = EditorGUI.TextField(avatarFieldRect, currentAvatarID);
+                            if (newAvatarID != currentAvatarID)
+                            {
+                                Undo.RecordObject(itemDataAsset, "Change Avatar ID");
+                                action.variableValues["avatarID"] = newAvatarID;
+                                EditorUtility.SetDirty(itemDataAsset);
+                            }
+                        }
+                        currentY += lineHeight + spacing;
+
+                        // participantIndex
+                        Rect pIdxLabelRect = new Rect(rect.x + 15, currentY, labelWidth, lineHeight);
+                        Rect pIdxFieldRect = new Rect(pIdxLabelRect.xMax, currentY, rect.width - 15 - labelWidth, lineHeight);
+                        EditorGUI.LabelField(pIdxLabelRect, "Participant #");
+                        action.variableValues.TryGetValue("participantIndex", out string currentPIdx);
+                        string newPIdx = EditorGUI.TextField(pIdxFieldRect, currentPIdx ?? "1");
+                        newPIdx = ValidateParticipantId(newPIdx);
+                        if (newPIdx != currentPIdx)
+                        {
+                            Undo.RecordObject(itemDataAsset, "Change Participant Index");
+                            action.variableValues["participantIndex"] = newPIdx;
+                            EditorUtility.SetDirty(itemDataAsset);
+                        }
+                        currentY += lineHeight + spacing;
+
+                    }
+                    else if (action.predefinedActionTemplate.actionType == "Unassign avatar from participant")
+                    {
+                        float labelWidth = 85f;
+                        Rect pIdxLabelRect = new Rect(rect.x + 15, currentY, labelWidth, lineHeight);
+                        Rect pIdxFieldRect = new Rect(pIdxLabelRect.xMax, currentY, rect.width - 15 - labelWidth, lineHeight);
+                        EditorGUI.LabelField(pIdxLabelRect, "Participant #");
+                        action.variableValues.TryGetValue("participantIndex", out string currentPIdx);
+                        string newPIdx = EditorGUI.TextField(pIdxFieldRect, currentPIdx ?? "1");
+                        newPIdx = ValidateParticipantId(newPIdx);
+                        if (newPIdx != currentPIdx)
+                        {
+                            Undo.RecordObject(itemDataAsset, "Change Participant Index");
+                            action.variableValues["participantIndex"] = newPIdx;
+                            EditorUtility.SetDirty(itemDataAsset);
+                        }
+                        currentY += lineHeight + spacing;
+                    }
+                    else if (action.predefinedActionTemplate.actionType == "Sync with participant bone")
+                    {
+                        float labelWidth = 85f;
+
+                        // Row 1: Participant #
+                        Rect pIdxLabelRect = new Rect(rect.x + 15, currentY, labelWidth, lineHeight);
+                        Rect pIdxFieldRect = new Rect(pIdxLabelRect.xMax, currentY, rect.width - 15 - labelWidth, lineHeight);
+                        EditorGUI.LabelField(pIdxLabelRect, "Participant #");
+                        action.variableValues.TryGetValue("participantIndex", out string currentPIdx);
+                        string newPIdx = EditorGUI.TextField(pIdxFieldRect, currentPIdx ?? "1");
+                        newPIdx = ValidateParticipantId(newPIdx);
+                        if (newPIdx != currentPIdx)
+                        {
+                            Undo.RecordObject(itemDataAsset, "Change Participant Index");
+                            action.variableValues["participantIndex"] = newPIdx;
+                            EditorUtility.SetDirty(itemDataAsset);
+                        }
+                        currentY += lineHeight + spacing;
+
+                        // Row 2: Bone
+                        Rect boneLabelRect = new Rect(rect.x + 15, currentY, labelWidth, lineHeight);
+                        Rect boneFieldRect = new Rect(boneLabelRect.xMax, currentY, rect.width - 15 - labelWidth, lineHeight);
+                        EditorGUI.LabelField(boneLabelRect, "Bone");
+                        action.variableValues.TryGetValue("bone", out string currentBone);
+                        int selectedBoneIdx = System.Array.IndexOf(HumanoidBoneNames, currentBone);
+                        if (selectedBoneIdx < 0) selectedBoneIdx = System.Array.IndexOf(HumanoidBoneNames, "Head");
+                        if (selectedBoneIdx < 0) selectedBoneIdx = 0;
+                        int newBoneIdx = EditorGUI.Popup(boneFieldRect, selectedBoneIdx, HumanoidBoneNames);
+                        string newBone = HumanoidBoneNames[newBoneIdx];
+                        if (newBone != currentBone)
+                        {
+                            Undo.RecordObject(itemDataAsset, "Change Bone");
+                            action.variableValues["bone"] = newBone;
+                            EditorUtility.SetDirty(itemDataAsset);
+                        }
+                        currentY += lineHeight + spacing;
+
+                        // Rows 3-6: Pos offset label / x y z / Rot offset label / x y z
+                        string[][] offsetRows = new[]
+                        {
+                            new[] { "Pos offset", "posX", "posY", "posZ" },
+                            new[] { "Rot offset", "rotX", "rotY", "rotZ" },
+                        };
+                        float axisLabelWidth = 14f;
+                        float axisFieldWidth = 40f;
+                        float axisSpacing = 8f;
+                        string[] axes = { "x", "y", "z" };
+
+                        foreach (var row in offsetRows)
+                        {
+                            // Label on its own row
+                            EditorGUI.LabelField(new Rect(rect.x + 15, currentY, rect.width - 15, lineHeight), row[0]);
+                            currentY += lineHeight + spacing;
+
+                            // x/y/z on the next row, inline
+                            float x = rect.x + 15;
+                            for (int i = 0; i < 3; i++)
+                            {
+                                string variableName = row[i + 1];
+                                EditorGUI.LabelField(new Rect(x, currentY, axisLabelWidth, lineHeight), axes[i]);
+                                action.variableValues.TryGetValue(variableName, out string currentValue);
+                                string newValue = EditorGUI.TextField(new Rect(x + axisLabelWidth, currentY, axisFieldWidth, lineHeight), currentValue ?? "0");
+                                if (newValue != currentValue)
+                                {
+                                    Undo.RecordObject(itemDataAsset, "Edit Variable " + variableName);
+                                    action.variableValues[variableName] = newValue;
+                                    EditorUtility.SetDirty(itemDataAsset);
+                                }
+                                x += axisLabelWidth + axisFieldWidth + axisSpacing;
+                            }
+                            currentY += lineHeight + spacing;
+                        }
+                    }
+                    else
                     {
                         var variables = action.predefinedActionTemplate.variables;
                         bool allSingleChar = variables.All(v => v.Length == 1);
@@ -843,7 +1033,7 @@ public static class ItemsManagerUIDrawer
                 }
             }
 
-            bool requiresMovableItem = new[] { "Set position", "Add position", "Set rotation", "Add rotation" }.Contains(action.predefinedActionTemplate.actionType);
+            bool requiresMovableItem = new[] { "Set position", "Add position", "Set rotation", "Add rotation", "Sync with participant bone" }.Contains(action.predefinedActionTemplate.actionType);
             if (requiresMovableItem && itemGO.GetComponent<MovableItem>() == null)
             {
                  height += lineHeight * 2 + spacing;
@@ -872,7 +1062,22 @@ public static class ItemsManagerUIDrawer
                     
                     height += wrapper.Arguments.Count * (lineHeight + spacing);
                 }
-                else 
+                else if (action.predefinedActionTemplate.actionType == "Assign avatar to participant")
+                {
+                    // avatarID row + participantIndex row
+                    height += (lineHeight + spacing) * 2;
+                }
+                else if (action.predefinedActionTemplate.actionType == "Unassign avatar from participant")
+                {
+                    // participantIndex row
+                    height += lineHeight + spacing;
+                }
+                else if (action.predefinedActionTemplate.actionType == "Sync with participant bone")
+                {
+                    // participant row, bone row, pos offset label, pos xyz, rot offset label, rot xyz
+                    height += (lineHeight + spacing) * 6;
+                }
+                else
                 {
                     var variables = action.predefinedActionTemplate.variables;
                     bool allSingleChar = variables.All(v => v.Length == 1);
@@ -1077,7 +1282,7 @@ public static class ItemsManagerUIDrawer
         }
         return string.Join(", ", stringParts);
     }
-    
+
     #endregion
 
     #region Hover-to-Zoom TextArea Feature

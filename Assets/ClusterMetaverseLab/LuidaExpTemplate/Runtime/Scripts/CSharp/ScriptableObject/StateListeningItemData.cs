@@ -66,11 +66,15 @@ public class StateListenerAction: ISerializationCallbackReceiver
         if (actionType == "Sleep" && varName == "seconds") return "0"; // Default for Sleep's duration
         
         // Default for numeric vector components and haptics parameters
-        string[] numericVars = { "x", "y", "z", "frequency", "amplitude", "duration" };
+        string[] numericVars = { "x", "y", "z", "posX", "posY", "posZ", "rotX", "rotY", "rotZ", "frequency", "amplitude", "duration" };
         if (numericVars.Contains(varName)) return "0";
         
         if (varName == "target") return "\"right\""; // Default for haptics target (JS string literal)
-        
+
+        // Defaults for avatar assignment
+        if (varName == "participantIndex") return "1";
+        if (varName == "avatarID") return "";
+
         return ""; // Default for any other unhandled variable
     }
 
