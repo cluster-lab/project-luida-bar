@@ -59,13 +59,24 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
         }
     }
 
+    private static readonly Color WithinSubjectsAccent = new Color(0.55f, 0.80f, 0.95f); // sky blue
+    private static readonly Color BetweenSubjectsAccent = new Color(0.40f, 0.60f, 0.90f); // azure blue
+
+    private static Color Tint(Color c, float a) => new Color(c.r, c.g, c.b, a);
+
     private void SetupReorderableLists()
     {
         // === Within-Subjects List ===
         withinSubjectsList = new ReorderableList(withinSubjectsVariables, typeof(ExperimentVariable), true, true, true, true);
 
         withinSubjectsList.drawHeaderCallback = (Rect rect) => {
+            EditorGUI.DrawRect(rect, Tint(WithinSubjectsAccent, 0.22f));
             EditorGUI.LabelField(rect, "Variables for Within-Subject Conditions", EditorStyles.boldLabel);
+        };
+
+        withinSubjectsList.drawElementBackgroundCallback = (Rect rect, int index, bool isActive, bool isFocused) => {
+            float alpha = isActive ? 0.22f : (index % 2 == 0 ? 0.10f : 0.04f);
+            EditorGUI.DrawRect(rect, Tint(WithinSubjectsAccent, alpha));
         };
 
         withinSubjectsList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => {
@@ -111,7 +122,13 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
         betweenSubjectsList = new ReorderableList(betweenSubjectsVariables, typeof(ExperimentVariable), true, true, true, true);
 
         betweenSubjectsList.drawHeaderCallback = (Rect rect) => {
+            EditorGUI.DrawRect(rect, Tint(BetweenSubjectsAccent, 0.22f));
             EditorGUI.LabelField(rect, "Variables for Between-Subject Conditions", EditorStyles.boldLabel);
+        };
+
+        betweenSubjectsList.drawElementBackgroundCallback = (Rect rect, int index, bool isActive, bool isFocused) => {
+            float alpha = isActive ? 0.22f : (index % 2 == 0 ? 0.10f : 0.04f);
+            EditorGUI.DrawRect(rect, Tint(BetweenSubjectsAccent, alpha));
         };
 
         betweenSubjectsList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => {

@@ -63,8 +63,88 @@ public static class ItemsManagerUIDrawer
     
     private static GUIStyle _codeTextAreaStyle;
 
+    private static readonly Color[] ItemColumnAccents = new[]
+    {
+        new Color(0.35f, 0.60f, 0.90f), // blue
+        new Color(0.40f, 0.78f, 0.50f), // green
+        new Color(0.95f, 0.65f, 0.35f), // orange
+        new Color(0.75f, 0.50f, 0.90f), // purple
+        new Color(0.40f, 0.82f, 0.82f), // teal
+        new Color(0.95f, 0.55f, 0.72f), // pink
+        new Color(0.90f, 0.80f, 0.35f), // yellow
+        new Color(0.60f, 0.80f, 0.95f), // sky
+    };
+
+    private static Color GetItemColumnAccent(int columnIndex)
+    {
+        return ItemColumnAccents[((columnIndex % ItemColumnAccents.Length) + ItemColumnAccents.Length) % ItemColumnAccents.Length];
+    }
+
+    private static Color GetRowStripeColor(int rowIndex)
+    {
+        return rowIndex % 2 == 0
+            ? new Color(0.40f, 0.55f, 0.75f, 0.18f)  // cool stripe
+            : new Color(0.55f, 0.55f, 0.58f, 0.10f); // warm stripe
+    }
+
+    private static Color GetCellTint(int columnIndex, int rowIndex)
+    {
+        Color accent = GetItemColumnAccent(columnIndex);
+        float alpha = rowIndex % 2 == 0 ? 0.22f : 0.14f;
+        return new Color(accent.r, accent.g, accent.b, alpha);
+    }
+
+    private static ItemsManagerConfigTab.ListenerDragPayload _pendingListenerPayload;
+
+    private static Texture _dupIconTex;
+    private static bool _dupIconResolved;
+    private static GUIStyle _dragLabelStyle;
+
+    private static GUIStyle GetDragLabelStyle()
+    {
+        if (_dragLabelStyle == null)
+        {
+            _dragLabelStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
+            Color c = EditorGUIUtility.isProSkin
+                ? new Color(0.92f, 0.92f, 0.92f)
+                : new Color(0.20f, 0.20f, 0.20f);
+            _dragLabelStyle.normal.textColor = c;
+            _dragLabelStyle.hover.textColor = c;
+        }
+        return _dragLabelStyle;
+    }
+
+    private static GUIContent DupButtonContent(string tooltip)
+    {
+        if (!_dupIconResolved)
+        {
+            _dupIconResolved = true;
+            string[] candidates = { "TreeEditor.Duplicate", "d_TreeEditor.Duplicate", "Clipboard", "d_Clipboard" };
+            foreach (var name in candidates)
+            {
+                GUIContent content = null;
+                try { content = EditorGUIUtility.IconContent(name); } catch { }
+                if (content != null && content.image != null)
+                {
+                    _dupIconTex = content.image;
+                    break;
+                }
+            }
+        }
+        return _dupIconTex != null
+            ? new GUIContent(_dupIconTex, tooltip)
+            : new GUIContent("+", tooltip);
+    }
+
     public static void DrawGUI(ItemsManagerConfigTab editor)
     {
+        if (Event.current.type == EventType.Layout)
+        {
+            editor._cellRects.Clear();
+        }
+
+        TryStartPendingDrag();
+
         EditorGUI.BeginChangeCheck();
 
         DrawHeader(editor);
@@ -93,13 +173,13 @@ public static class ItemsManagerUIDrawer
     private static void DrawHeader(ItemsManagerConfigTab editor)
     {
         EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("New Item Name", GUILayout.Width(120));
+        EditorGUILayout.LabelField("Name", GUILayout.Width(120));
         editor.newItemName = EditorGUILayout.TextField(editor.newItemName, GUILayout.Width(180));
 
         bool isNameInvalid = string.IsNullOrEmpty(editor.newItemName) || editor.stateListeningItems.Any(i => i != null && i.name == editor.newItemName);
         EditorGUI.BeginDisabledGroup(isNameInvalid);
 
-        if (GUILayout.Button("+ Add state-listening item", GUILayout.Width(180)))
+        if (GUILayout.Button(new GUIContent("+ Add Item", "Create a new item in the scene that can run code during different states."), GUILayout.Width(180)))
         {
             ItemsManagerAssetUtil.CreateStateListeningItem(editor);
             GUIUtility.hotControl = 0; // unfocus text field
@@ -136,23 +216,29 @@ public static class ItemsManagerUIDrawer
     private static void DrawItemHeaders(ItemsManagerConfigTab editor, GUIStyle removeButtonStyle)
     {
         EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("State Name \\ Item Name", EditorStyles.boldLabel, GUILayout.Width(215));
+        EditorGUILayout.LabelField("State ↓  Item →", EditorStyles.boldLabel, GUILayout.Width(215));
         GUILayout.Space(5);
 
-        bool isHeaderDarkColumn = true;
+        int columnIndex = 0;
         foreach (var item in editor._cachedItems)
         {
-            if (item == null) continue;
+            if (item == null) { columnIndex++; continue; }
 
-            GUI.backgroundColor = isHeaderDarkColumn ? new Color(0.3f, 0.3f, 0.3f) : new Color(0.7f, 0.7f, 0.7f);
+            GUI.backgroundColor = GetItemColumnAccent(columnIndex);
             EditorGUILayout.BeginHorizontal("box", GUILayout.Width(240));
 
-            EditorGUILayout.LabelField(item.name, EditorStyles.boldLabel, GUILayout.Width(150));
+            EditorGUILayout.LabelField(item.name, EditorStyles.boldLabel, GUILayout.Width(120));
             EditorGUI.BeginDisabledGroup(true);
             EditorGUILayout.ObjectField(item, typeof(GameObject), true);
             EditorGUI.EndDisabledGroup();
 
-            if (GUILayout.Button("X", removeButtonStyle, GUILayout.Width(25), GUILayout.Height(20)))
+            if (GUILayout.Button(DupButtonContent("Duplicate this item along with all its actions."), GUILayout.Width(25), GUILayout.Height(20)))
+            {
+                ItemsManagerAssetUtil.DuplicateStateListeningItem(item, editor);
+                GUIUtility.ExitGUI();
+            }
+
+            if (GUILayout.Button(new GUIContent("X", "Delete this item, its script, and its saved actions."), removeButtonStyle, GUILayout.Width(25), GUILayout.Height(20)))
             {
                 if (EditorUtility.DisplayDialog("Confirm Removal", $"Are you sure you want to remove '{item.name}' and its associated assets (JS script and StateListenerData asset)?", "Yes, Remove", "No"))
                 {
@@ -161,16 +247,17 @@ public static class ItemsManagerUIDrawer
                 }
             }
             EditorGUILayout.EndHorizontal();
+
             GUILayout.Space(10);
-            isHeaderDarkColumn = !isHeaderDarkColumn;
+            columnIndex++;
         }
         EditorGUILayout.EndHorizontal();
         GUI.backgroundColor = Color.white;
     }
-    
+
     private static void DrawOtherImplementationRow(ItemsManagerConfigTab editor)
     {
-        EditorGUILayout.LabelField("Functions, events, variables not listening to the state machine", EditorStyles.largeLabel);
+        EditorGUILayout.LabelField(new GUIContent("Always-on code (runs regardless of state)", "Functions, events, and variables that run regardless of which state is active."), EditorStyles.largeLabel);
         EditorGUILayout.BeginHorizontal();
 
         EditorGUILayout.BeginVertical(GUILayout.Width(215));
@@ -179,11 +266,12 @@ public static class ItemsManagerUIDrawer
         EditorGUILayout.EndVertical();
         GUILayout.Space(5);
 
-        bool isCellDark = true;
+        int otherRowColumnIndex = 0;
         foreach (var item in editor._cachedItems)
         {
-            if (item == null) continue;
-            Color cellBgColor = isCellDark ? new Color(0.15f, 0.15f, 0.15f, 0.5f) : new Color(0.75f, 0.75f, 0.75f, 0.5f);
+            if (item == null) { otherRowColumnIndex++; continue; }
+            Color accent = GetItemColumnAccent(otherRowColumnIndex);
+            Color cellBgColor = new Color(accent.r, accent.g, accent.b, 0.18f);
             Rect cellRect = EditorGUILayout.BeginVertical("box", GUILayout.Width(238.5f), GUILayout.MinHeight(80));
             EditorGUI.DrawRect(cellRect, cellBgColor);
 
@@ -209,7 +297,7 @@ public static class ItemsManagerUIDrawer
 
             EditorGUILayout.EndVertical();
             GUILayout.Space(10);
-            isCellDark = !isCellDark;
+            otherRowColumnIndex++;
         }
         EditorGUILayout.EndHorizontal();
         GUI.backgroundColor = Color.white;
@@ -217,15 +305,15 @@ public static class ItemsManagerUIDrawer
 
     private static void DrawStateRows(ItemsManagerConfigTab editor, GUIStyle removeButtonStyle)
     {
-        EditorGUILayout.LabelField("Actions listening to the state machine", EditorStyles.largeLabel, GUILayout.Width(300));
+        EditorGUILayout.LabelField("Actions per state", EditorStyles.largeLabel, GUILayout.Width(300));
 
         GUI.backgroundColor = Color.white;
-        bool isBlueRow = true;
 
+        int rowIndex = 0;
         foreach (var stateName in editor._cachedStateNames)
         {
             int stateID = Array.IndexOf(editor._cachedStateNames, stateName);
-            Color rowBgColor = isBlueRow ? new Color(0.6f, 0.6f, 0.8f, 0.3f) : new Color(0.7f, 0.7f, 0.7f, 0.3f);
+            Color rowBgColor = GetRowStripeColor(rowIndex);
 
             Rect rowRect = EditorGUILayout.BeginHorizontal("box");
             EditorGUI.DrawRect(rowRect, rowBgColor);
@@ -233,23 +321,23 @@ public static class ItemsManagerUIDrawer
             EditorGUILayout.LabelField(stateName, EditorStyles.boldLabel, GUILayout.Width(200), GUILayout.ExpandHeight(true));
             GUILayout.Space(15);
 
-            bool isCellDarkColumn = true;
+            int columnIndex = 0;
             foreach (var item in editor._cachedItems)
             {
-                if (item == null) continue;
-                DrawCell(editor, item, stateName, stateID, isCellDarkColumn, removeButtonStyle);
-                isCellDarkColumn = !isCellDarkColumn;
+                if (item == null) { columnIndex++; continue; }
+                DrawCell(editor, item, stateName, stateID, columnIndex, rowIndex, removeButtonStyle);
+                columnIndex++;
             }
 
             EditorGUILayout.EndHorizontal();
-            isBlueRow = !isBlueRow;
+            rowIndex++;
         }
         GUI.backgroundColor = Color.white;
     }
 
-    private static void DrawCell(ItemsManagerConfigTab editor, GameObject item, string stateName, int stateID, bool isDark, GUIStyle removeButtonStyle)
+    private static void DrawCell(ItemsManagerConfigTab editor, GameObject item, string stateName, int stateID, int columnIndex, int rowIndex, GUIStyle removeButtonStyle)
     {
-        Color cellBgColor = isDark ? new Color(0.2f, 0.2f, 0.2f, 0.5f) : new Color(0.8f, 0.8f, 0.8f, 0.5f);
+        Color cellBgColor = GetCellTint(columnIndex, rowIndex);
         Rect cellRectInner = EditorGUILayout.BeginVertical("box", GUILayout.Width(240), GUILayout.MinHeight(20));
         EditorGUI.DrawRect(cellRectInner, cellBgColor);
 
@@ -258,6 +346,9 @@ public static class ItemsManagerUIDrawer
 
         if (listener != null)
         {
+            string itemDataAssetPath = ItemsManagerAssetUtil.GetItemDataAssetPath(item);
+            var itemDataAsset = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(itemDataAssetPath);
+
             DrawReorderableList(editor, item, stateID, "OnStateStart");
             GUILayout.Space(5);
             DrawReorderableList(editor, item, stateID, "DuringState");
@@ -265,18 +356,36 @@ public static class ItemsManagerUIDrawer
             DrawReorderableList(editor, item, stateID, "OnStateExit");
             GUILayout.Space(5);
 
-            if (GUILayout.Button("Remove Listener", removeButtonStyle, GUILayout.Height(20)))
+            EditorGUILayout.BeginHorizontal();
+
+            Rect stripRect = GUILayoutUtility.GetRect(GUIContent.none, EditorStyles.centeredGreyMiniLabel, GUILayout.Height(20), GUILayout.ExpandWidth(true));
+            DrawListenerDragHandle(stripRect, new ItemsManagerConfigTab.ListenerDragPayload
             {
-                if (EditorUtility.DisplayDialog("Confirm Listener Removal", $"Are you sure you want to remove the state listener for state '{stateName}' on item '{item.name}'?", "Yes, Remove", "No"))
+                sourceAsset = itemDataAsset,
+                sourceItem = item,
+                sourceStateID = stateID,
+                sourceListener = listener,
+            });
+
+            var dupContent = new GUIContent("Duplicate ▾", "Duplicate these actions to another state on this item.");
+            Rect dupButtonRect = GUILayoutUtility.GetRect(dupContent, GUI.skin.button, GUILayout.Height(20), GUILayout.Width(80));
+            if (GUI.Button(dupButtonRect, dupContent))
+            {
+                ShowListenerDuplicateDropdown(item, stateID, editor, dupButtonRect);
+            }
+            if (GUILayout.Button(new GUIContent("Clear", "Remove all actions for this item in this state."), removeButtonStyle, GUILayout.Height(20), GUILayout.Width(50)))
+            {
+                if (EditorUtility.DisplayDialog("Confirm Clear", $"Are you sure you want to clear all actions for state '{stateName}' on item '{item.name}'?", "Yes, Clear", "No"))
                 {
                     ItemsManagerAssetUtil.RemoveStateListener(item, stateID, editor);
                     GUIUtility.ExitGUI();
                 }
             }
+            EditorGUILayout.EndHorizontal();
         }
         else
         {
-            if (GUILayout.Button("Add Listener", GUILayout.Height(20)))
+            if (GUILayout.Button(new GUIContent("Use this state", "Add actions that will run during this state."), GUILayout.Height(20)))
             {
                 ItemsManagerAssetUtil.AddStateListener(item, stateID, editor);
                 GUIUtility.ExitGUI();
@@ -284,6 +393,12 @@ public static class ItemsManagerUIDrawer
         }
 
         EditorGUILayout.EndVertical();
+
+        if (Event.current.type == EventType.Repaint)
+            editor._cellRects[(item, stateID)] = cellRectInner;
+
+        HandleListenerDrop(cellRectInner, editor, item, stateID, listener != null);
+
         GUILayout.Space(10);
     }
     
@@ -302,9 +417,9 @@ public static class ItemsManagerUIDrawer
 
             foreach (var listener in listeners)
             {
-                CreateReorderableList(editor, item, itemDataAsset, listener, listener.onStateStartedActions, "On State Start", "OnStateStart");
-                CreateReorderableList(editor, item, itemDataAsset, listener, listener.duringStateActions, "During State", "DuringState");
-                CreateReorderableList(editor, item, itemDataAsset, listener, listener.onStateExitedActions, "On State End", "OnStateExit");
+                CreateReorderableList(editor, item, itemDataAsset, listener, listener.onStateStartedActions, "When entering", "OnStateStart");
+                CreateReorderableList(editor, item, itemDataAsset, listener, listener.duringStateActions, "While in state", "DuringState");
+                CreateReorderableList(editor, item, itemDataAsset, listener, listener.onStateExitedActions, "When leaving", "OnStateExit");
             }
         }
     }
@@ -329,11 +444,12 @@ public static class ItemsManagerUIDrawer
                 float availableWidth = rect.width;
 
                 float ifButtonAndSpacingWidth = isCurrentStateTrialRelated ? 35 + spacing : 0;
-                float dropdownWidth = availableWidth - ifButtonAndSpacingWidth;
+                float dupButtonAndSpacingWidth = 22 + spacing;
+                float dropdownWidth = availableWidth - ifButtonAndSpacingWidth - dupButtonAndSpacingWidth;
                 Rect dropdownRect = new Rect(currentX, currentY, dropdownWidth, lineHeight);
 
                 var options = AvailableStateListeningActions.Select(a => a.actionType).ToList();
-                options.Insert(0, "Select Action");
+                options.Insert(0, "Select action");
                 options.Add("Customized Action");
 
                 int selectedIndex = 0;
@@ -346,6 +462,15 @@ public static class ItemsManagerUIDrawer
 
                 int newIndex = EditorGUI.Popup(dropdownRect, selectedIndex, options.ToArray());
                 currentX += dropdownWidth + spacing;
+
+                Rect dupRect = new Rect(currentX, currentY, 22, lineHeight);
+                if (GUI.Button(dupRect, DupButtonContent("Duplicate this action below this one.")))
+                {
+                    ItemsManagerAssetUtil.DuplicateAction(itemDataAsset, actions, index);
+                    editor._needsRebuild = true;
+                    GUIUtility.ExitGUI();
+                }
+                currentX += 22 + spacing;
 
                 if (isCurrentStateTrialRelated)
                 {
@@ -805,6 +930,110 @@ public static class ItemsManagerUIDrawer
             rl.DoLayoutList();
         }
     }
+
+    #region Context menus
+
+    private static void ShowListenerDuplicateDropdown(GameObject item, int sourceStateID, ItemsManagerConfigTab editor, Rect buttonRect)
+    {
+        var menu = new GenericMenu();
+        editor.stateListenersByItem.TryGetValue(item, out var listeners);
+        var occupiedStateIds = listeners != null
+            ? new HashSet<int>(listeners.Select(l => l.stateID))
+            : new HashSet<int>();
+
+        bool anyTarget = false;
+        for (int i = 0; i < editor._cachedStateNames.Length; i++)
+        {
+            if (i == sourceStateID || occupiedStateIds.Contains(i)) continue;
+            int targetStateId = i;
+            string targetStateName = editor._cachedStateNames[i];
+            menu.AddItem(new GUIContent(targetStateName), false, () =>
+            {
+                ItemsManagerAssetUtil.DuplicateListenerToState(item, sourceStateID, targetStateId, editor);
+            });
+            anyTarget = true;
+        }
+        if (!anyTarget)
+        {
+            menu.AddDisabledItem(new GUIContent("No empty states on this item"));
+        }
+        menu.DropDown(buttonRect);
+    }
+
+    #endregion
+
+    #region Drag and Drop
+
+    private static void TryStartPendingDrag()
+    {
+        var evt = Event.current;
+        if (evt.type == EventType.MouseDrag)
+        {
+            if (_pendingListenerPayload != null)
+            {
+                DragAndDrop.PrepareStartDrag();
+                DragAndDrop.objectReferences = Array.Empty<UnityEngine.Object>();
+                DragAndDrop.SetGenericData(ItemsManagerConfigTab.DragKeyListener, _pendingListenerPayload);
+                DragAndDrop.StartDrag("Move listener");
+                _pendingListenerPayload = null;
+                evt.Use();
+            }
+        }
+        else if (evt.type == EventType.MouseUp || evt.type == EventType.DragExited)
+        {
+            _pendingListenerPayload = null;
+        }
+    }
+
+    private static void DrawListenerDragHandle(Rect rect, ItemsManagerConfigTab.ListenerDragPayload payload)
+    {
+        EditorGUIUtility.AddCursorRect(rect, MouseCursor.Pan);
+        GUI.Label(rect, new GUIContent("≡  Drag to move", "Drag to move these actions to another cell."), GetDragLabelStyle());
+
+        var evt = Event.current;
+        if (evt.type == EventType.MouseDown && evt.button == 0 && rect.Contains(evt.mousePosition))
+        {
+            _pendingListenerPayload = payload;
+            evt.Use();
+        }
+    }
+
+    private static void HandleListenerDrop(Rect rect, ItemsManagerConfigTab editor,
+                                           GameObject targetItem, int targetStateID, bool cellOccupied)
+    {
+        var evt = Event.current;
+        if (evt.type != EventType.DragUpdated && evt.type != EventType.DragPerform) return;
+        if (!rect.Contains(evt.mousePosition)) return;
+
+        var payload = DragAndDrop.GetGenericData(ItemsManagerConfigTab.DragKeyListener) as ItemsManagerConfigTab.ListenerDragPayload;
+        if (payload == null) return;
+
+        bool sameCell = payload.sourceItem == targetItem && payload.sourceStateID == targetStateID;
+
+        if (evt.type == EventType.DragUpdated)
+        {
+            if (sameCell) DragAndDrop.visualMode = DragAndDropVisualMode.None;
+            else if (cellOccupied) DragAndDrop.visualMode = DragAndDropVisualMode.Rejected;
+            else
+            {
+                DragAndDrop.visualMode = DragAndDropVisualMode.Move;
+                EditorGUI.DrawRect(rect, new Color(0.3f, 1f, 0.4f, 0.12f));
+            }
+            evt.Use();
+        }
+        else
+        {
+            if (!sameCell && !cellOccupied)
+            {
+                DragAndDrop.AcceptDrag();
+                ItemsManagerAssetUtil.MoveListener(payload, editor, targetItem, targetStateID);
+                editor._needsRebuild = true;
+            }
+            evt.Use();
+        }
+    }
+
+    #endregion
 
     private static string ValidateParticipantId(string id)
     {

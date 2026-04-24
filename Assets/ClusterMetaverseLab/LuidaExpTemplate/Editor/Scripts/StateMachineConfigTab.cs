@@ -159,12 +159,7 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
         {
             if (i == 0)
             {
-                var boldLargeLabel = new GUIStyle(EditorStyles.largeLabel)
-                {
-                    fontStyle = FontStyle.Bold,
-                    normal = { textColor = Color.white }
-                };
-                EditorGUILayout.LabelField("States Before Trials", boldLargeLabel);
+                DrawDarkLabel("States Before Trials", true, new Color(0.40f, 0.60f, 0.78f, 0.35f));
             }
 
             if (i == trialStartIndex && trialStartIndex >= 0)
@@ -187,20 +182,15 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
                 }
                 GUILayout.Space(20);
                 EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-                DrawDarkLabel("Trial-related States", true);
-                DrawDarkLabel("Automatically repeat " + CalculateTrialCountForCurrentScene().ToString() + " times from 'Trial - Start' to 'Trial - Rest' (repetition time calculated from your configuration for within-subject variables)");
+                DrawDarkLabel("Trial-related States", true, new Color(0.30f, 0.58f, 0.68f, 0.35f));
+                DrawDarkLabel("Automatically repeat " + CalculateTrialCountForCurrentScene().ToString() + " times from 'Trial - Start' to 'Trial - Rest' (repetition time calculated from your configuration for within-subject variables)", false, new Color(0.30f, 0.58f, 0.68f, 0.25f));
             }
 
             if (trialRestIndex >= 0 && i == trialRestIndex + 1)
             {
                 EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
                 GUILayout.Space(20);
-                var boldLargeLabel = new GUIStyle(EditorStyles.largeLabel)
-                {
-                    fontStyle = FontStyle.Bold,
-                    normal = { textColor = Color.white }
-                };
-                EditorGUILayout.LabelField("States After Trials", boldLargeLabel);
+                DrawDarkLabel("States After Trials", true, new Color(0.48f, 0.52f, 0.75f, 0.35f));
             }
 
             if (trialStartIndex != -1 && trialRestIndex != -1 && i == trialRestIndex)
@@ -247,21 +237,27 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
 
                 GUILayout.Space(20);
                 EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-                DrawDarkLabel("The 'End' state should always be the last state.");
+                DrawDarkLabel("The 'End' state should always be the last state.", false, new Color(0.30f, 0.40f, 0.58f, 0.35f));
             }
 
-            bool isHighlight = (trialStartIndex >= 0 && i >= trialStartIndex && trialRestIndex >= 0 && i <= trialRestIndex) || (endIndex >= 0 && i == endIndex);
+            bool isTrialCategory = (trialStartIndex >= 0 && i >= trialStartIndex && trialRestIndex >= 0 && i <= trialRestIndex);
+            bool isEndCategory = (endIndex >= 0 && i == endIndex);
+            bool isBeforeTrials = !isTrialCategory && !isEndCategory && trialStartIndex >= 0 && i < trialStartIndex;
+
+            Color rowAccent;
+            if (isEndCategory) rowAccent = new Color(0.30f, 0.40f, 0.58f);       // muted slate — End
+            else if (isTrialCategory) rowAccent = new Color(0.30f, 0.58f, 0.68f); // muted teal — trial states
+            else if (isBeforeTrials) rowAccent = new Color(0.40f, 0.60f, 0.78f); // muted sky — before trials
+            else rowAccent = new Color(0.48f, 0.52f, 0.75f);                      // muted periwinkle — after trials
 
             Color originalBackgroundColor = GUI.backgroundColor;
             Color originalContentColor = GUI.contentColor;
 
-            if (isHighlight)
+            Rect rowBoxRect = EditorGUILayout.BeginVertical(GUI.skin.box);
+            if (Event.current.type == EventType.Repaint)
             {
-                GUI.backgroundColor = new Color(0.2f, 0.2f, 0.2f, 1f);
-                GUI.contentColor = Color.white;
+                EditorGUI.DrawRect(rowBoxRect, new Color(rowAccent.r, rowAccent.g, rowAccent.b, 0.09f));
             }
-
-            EditorGUILayout.BeginVertical(GUI.skin.box);
             EditorGUILayout.BeginHorizontal();
 
             GUILayout.Space(20);
@@ -990,10 +986,11 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
             UpdateTransitionCurrentStateId(transition, index);
     }
 
-    private void DrawDarkLabel(string text, bool isLarge = false)
+    private void DrawDarkLabel(string text, bool isLarge = false, Color? bgColor = null)
     {
         var rect = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight * (isLarge ? 1.2f : 1f));
-        EditorGUI.DrawRect(rect, new Color(0.15f, 0.15f, 0.15f, 1f));
+        Color bg = bgColor ?? new Color(0.15f, 0.15f, 0.15f, 1f);
+        EditorGUI.DrawRect(rect, bg);
 
         Color originalContent = GUI.contentColor;
         GUI.contentColor = Color.white;

@@ -8,17 +8,28 @@ using System.Linq;
 public class ItemsManagerConfigTab : LuidaAutomationConfigTab
 {
     protected override LuidaConfigWindow.TabIndex TabIndex => LuidaConfigWindow.TabIndex.StateListeningItems;
-    
+
+    public const string DragKeyListener = "LuidaItemsManager.Listener";
+
     // State variables accessed by helper classes
     public bool _needsRebuild = true;
     public string[] _cachedStateNames = Array.Empty<string>();
     public GameObject[] _cachedItems = Array.Empty<GameObject>();
     public Dictionary<string, ReorderableList> _reorderableLists = new Dictionary<string, ReorderableList>();
+    public Dictionary<(GameObject item, int stateID), Rect> _cellRects = new Dictionary<(GameObject, int), Rect>();
     public string newItemName = string.Empty;
 
     public List<GameObject> stateListeningItems = new List<GameObject>();
     public StateList stateList = null;
     public Dictionary<GameObject, List<StateListener>> stateListenersByItem = new Dictionary<GameObject, List<StateListener>>();
+
+    public class ListenerDragPayload
+    {
+        public StateListeningItemData sourceAsset;
+        public GameObject sourceItem;
+        public int sourceStateID;
+        public StateListener sourceListener;
+    }
 
     [Serializable]
     public class EditorExperimentVariable
