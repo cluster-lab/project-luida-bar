@@ -374,11 +374,24 @@ public class ExpIdentifierConfigTab : EditorWindow
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
         }
 
+        // Preserve any existing allowedPlatforms line (it's owned by the
+        // upload pipeline, which fetches the value from the web console
+        // at upload time and bakes it in here). If absent, default to []
+        // so test-mode runs in the local editor have no platform filter.
+        string existingAllowedPlatforms = "[]";
+        if (File.Exists(filePath))
+        {
+            string prev = File.ReadAllText(filePath);
+            var match = Regex.Match(prev, @"allowedPlatforms\s*=\s*(\[[^\]]*\]);");
+            if (match.Success) existingAllowedPlatforms = match.Groups[1].Value;
+        }
+
         string content =
             $"expID = \"{expID}\";\n" +
             $"token = \"{token}\";\n" +
             $"callExternalEndpointID = \"{callExternalEndpointID}\";\n" +
             $"pNum = {pNum};\n" +
+            $"allowedPlatforms = {existingAllowedPlatforms};\n" +
             $"isTestMode = true;\n";
 
         File.WriteAllText(filePath, content);

@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using UnityEditor;
@@ -48,6 +49,19 @@ public class LuidaAssignAvatarGimmick : LuidaFakeGimmick
 
         if (_participantLogic != null)
             PatchStatementToInteger(_participantLogic, "luida_avatar_participant", participantNumber);
+    }
+
+    protected override void CollectExtraHiddenLogics(List<GlobalLogic> list)
+    {
+        if (_participantLogic != null) list.Add(_participantLogic);
+    }
+
+    // Cluster's venue validator rejects Player-target gimmick keys outside of
+    // PlayerLocalUI canvases, which the avatar spawner is not. Force any other
+    // value (including legacy Player serialized in older scenes) onto Item.
+    protected override CustomGimmickTarget ResolveTarget(CustomGimmickTarget configured)
+    {
+        return configured == CustomGimmickTarget.Player ? CustomGimmickTarget.Item : configured;
     }
 }
 #endif

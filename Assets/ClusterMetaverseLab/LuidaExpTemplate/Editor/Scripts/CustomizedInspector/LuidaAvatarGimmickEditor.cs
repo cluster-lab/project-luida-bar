@@ -15,19 +15,31 @@ public class LuidaAssignAvatarGimmickEditor : Editor
 
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Gimmick Signal", EditorStyles.boldLabel);
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("target"), new GUIContent("Trigger Target"));
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("key"), new GUIContent("Trigger Key"));
 
         var targetProp = serializedObject.FindProperty("target");
+        // Player target is unsupported here: CCK rejects Player keys outside PlayerLocalUI.
+        if (targetProp.enumValueIndex == (int)CustomGimmickTarget.Player)
+        {
+            targetProp.enumValueIndex = (int)CustomGimmickTarget.Item;
+        }
+        var allowedValues = new[] { CustomGimmickTarget.Item, CustomGimmickTarget.Global, CustomGimmickTarget.This };
+        var allowedLabels = new[] { "Item", "Global", "This" };
+        int activeIdx = System.Array.IndexOf(allowedValues, (CustomGimmickTarget)targetProp.enumValueIndex);
+        if (activeIdx < 0) activeIdx = 0;
+        int newActiveIdx = EditorGUILayout.Popup("Trigger Target", activeIdx, allowedLabels);
+        if (newActiveIdx != activeIdx)
+        {
+            targetProp.enumValueIndex = (int)allowedValues[newActiveIdx];
+        }
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("key"), new GUIContent("Trigger Key"));
+
         var targetEnum = (CustomGimmickTarget)targetProp.enumValueIndex;
         if (targetEnum == CustomGimmickTarget.Item)
         {
             EditorGUILayout.PropertyField(serializedObject.FindProperty("item"), new GUIContent("Target Item"));
         }
 
-        string targetHint = targetEnum == CustomGimmickTarget.Player
-            ? "Triggered by a player action (e.g., interact gimmick).\nThe gimmick key listens for player-scoped signals."
-            : targetEnum == CustomGimmickTarget.Global
+        string targetHint = targetEnum == CustomGimmickTarget.Global
             ? "Triggered by a global signal.\nUse $.setStateCompat('global', '<key>', true) to fire."
             : "Triggered from the same item.\nUse $.sendSignalCompat('this', '<key>') from ClusterScript, or wire a CCK trigger gimmick to this signal.";
         EditorGUILayout.HelpBox(targetHint, MessageType.Info);

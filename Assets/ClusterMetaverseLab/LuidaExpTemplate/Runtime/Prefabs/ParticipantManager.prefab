@@ -226,135 +226,158 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\ncallExternalEndpointID
-    = \"callExternalEndpointID_example\";\r\nisTestMode = true;\r\npNum = 1;\r\n\r\nconst
-    REJECTION_GATE_POS = new Vector3(-100, -100, -100);\r\n\r\n$.onStart(() => {\r\n 
-    $.state.isBetweenSubjectsConditionsSet = false;\r\n  $.groupState.isParticipantsEnough
-    = false;\r\n  $.groupState.sessionID = Date.now() + \"_\" +  (Math.random() +
-    1).toString(36).substring(2, 8);\r\n  $.groupState.participants = []; // array
-    of PlayerHandle who are currently in the experiment\r\n  $.state.participantsEnvInfo
-    = [];\r\n  $.state.idfc2userId = {};\r\n  $.state.timer = 0;\r\n  $.state.pendingEligibilityChecks
-    = {};\r\n  $.state.rejectionQueue = [];\r\n  $.state.isProcessingRejection =
-    false;\r\n  $.state.rejectionTimer = 0;\r\n  $.state.isSessionApproved = false;\r\n 
-    $.state.existingConditions = null;  // existing conditions from server for balancing\r\n 
-    $.state.betweenSubjectsConfig = [];  // populated by ConditionManager message\r\n 
-    $.state.eligibleCount = 0;  // only confirmed-eligible players count toward pNum\r\n\r\n 
-    // Place world gate at remote position and keep it enabled\r\n  $.subNode(\"WorldGateToLuidaBar\").setPosition(REJECTION_GATE_POS);\r\n 
-    $.subNode(\"WorldGateToLuidaBar\").setEnabled(false);\r\n})\r\n\r\n$.onUpdate((deltaTime)
-    => {\r\n    if (!$.groupState.isParticipantsEnough) {\r\n        $.state.timer
-    += deltaTime;\r\n        if ($.state.timer >= 1){\r\n            $.state.timer
-    = 0;\r\n            let pIdfcs = $.groupState.participants.map(p => p.idfc);\r\n           
-    const newPlayers = $.getPlayersNear($.getPosition(), Infinity)\r\n               
-    .filter(p => !pIdfcs.includes(p.idfc));\r\n            if (newPlayers.length
-    > 0) {\r\n                for (const newPlayer of newPlayers) {\r\n                   
-    $.groupState.participants = [ ...$.groupState.participants, newPlayer ];\r\n                   
-    $.setPlayerScript(newPlayer);\r\n                    newPlayer.send(\"initializeParticipant\",
-    true);\r\n                }\r\n            }\r\n            // pNum check moved
-    to onExternalCallEnd \u2014 only eligible players count\r\n        }\r\n    }
-    else if ($.state.isBetweenSubjectsConditionsSet) { // participants are enough
-    & conditions are set\r\n        $.state.isBetweenSubjectsConditionsSet = false;\r\n       
-    if (!isTestMode) {\r\n            let request = {\r\n                type: \"uploadCustomData\",\r\n               
-    data: {\r\n                    pInfo: $.state.participantsEnvInfo.map(info =>
-    ({ ts: Date.now(), sID: $.groupState.sessionID || \"\", ...info })),\r\n                   
-    idfc2userId: $.state.idfc2userId\r\n                },\r\n                token:
-    token || \"\",\r\n                eID: expID || \"\",\r\n                sID:
-    $.groupState.sessionID || \"\"\r\n            };\r\n            $.callExternal(new
-    ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), \"customDataUploaded\");\r\n       
-    }\r\n    }\r\n\r\n    // Process rejection queue: teleport rejected players to
-    remote world gate one at a time\r\n    if ($.state.rejectionQueue.length > 0
-    && !$.state.isProcessingRejection) {\r\n        const rejection = $.state.rejectionQueue[0];\r\n       
-    const allPlayers = $.getPlayersNear($.getPosition(), Infinity);\r\n        const
-    player = allPlayers.find(p => p.idfc === rejection.idfc);\r\n\r\n        if (!player)
-    {\r\n            // Player already left, skip\r\n            $.state.rejectionQueue
-    = $.state.rejectionQueue.slice(1);\r\n        } else {\r\n            $.state.isProcessingRejection
-    = true;\r\n            $.state.rejectionTimer = 0;\r\n            // Teleport
-    player to the gate (convert item-local to global coords)\r\n            $.subNode(\"WorldGateToLuidaBar\").setEnabled(true);\r\n           
-    const itemPos = $.getPosition();\r\n            player.setPosition(new Vector3(\r\n               
-    REJECTION_GATE_POS.x + itemPos.x,\r\n                REJECTION_GATE_POS.y + itemPos.y
-    + 0.5,\r\n                REJECTION_GATE_POS.z + itemPos.z\r\n            ));\r\n           
+  sourceCode: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
+    = \"callExternalEndpointID_example\";\npNum = 1;\nallowedPlatforms = [];\nisTestMode
+    = true;\n\r\nconst REJECTION_GATE_POS = new Vector3(-100, 100, -100);\n\n// Local
+    mirror of the web console's `allowedPlatforms`. The editor fetches\n// this from
+    the backend at upload time and bakes it into ExpIdentifiers.js,\n// so the value
+    here matches what the researcher set on the web console.\n// In local-editor
+    test mode the bake step does not run and the array is\n// empty, which this helper
+    treats as \"no restriction\" \u2014 matching the\n// backend's validatePlatform
+    convention. Used only on the non-test-mode\n// path as defense in depth (the
+    backend remains authoritative).\nfunction isPlatformAllowedLocally(envInfo) {\n   
+    if (typeof allowedPlatforms === \"undefined\" || !Array.isArray(allowedPlatforms)
+    || allowedPlatforms.length === 0) {\n        return true;\n    }\n    if (!envInfo)
+    return true;\n    return (envInfo.isVr && allowedPlatforms.indexOf(\"VR\") !==
+    -1)\n        || (envInfo.isWindows && allowedPlatforms.indexOf(\"WINDOWS\") !==
+    -1)\n        || (envInfo.isMacOs && allowedPlatforms.indexOf(\"MACOS\") !== -1)\n       
+    || (envInfo.isAndroid && allowedPlatforms.indexOf(\"ANDROID\") !== -1)\n       
+    || (envInfo.isIos && allowedPlatforms.indexOf(\"IOS\") !== -1);\n}\n\nfunction
+    enqueueRejection(idfc, reason) {\n    $.log(\"Rejected \" + idfc + \": \" + (reason
+    || \"unknown\"));\n    $.groupState.participants = $.groupState.participants.filter(\n       
+    p => p.idfc !== idfc\n    );\n    $.state.participantsEnvInfo = $.state.participantsEnvInfo.filter(\n       
+    info => info.idfc !== idfc\n    );\n    let cleanedIdfc2userId = { ...$.state.idfc2userId
+    };\n    delete cleanedIdfc2userId[idfc];\n    $.state.idfc2userId = cleanedIdfc2userId;\n   
+    $.state.rejectionQueue = [...$.state.rejectionQueue, { idfc: idfc }];\n}\n\n$.onStart(()
+    => {\n  // Diagnostic: surfaces what was actually baked into the uploaded world.\n 
+    // If isTestMode is true on a non-test deployment, the upload pipeline\n  //
+    didn't flip it and platform/eligibility checks are silently skipped.\n  $.log(\"LUIDA
+    boot: isTestMode=\" + isTestMode\n        + \" allowedPlatforms=\" + JSON.stringify(typeof
+    allowedPlatforms !== \"undefined\" ? allowedPlatforms : null)\n        + \" expID=\"
+    + (typeof expID !== \"undefined\" ? expID : null)\n        + \" pNum=\" + (typeof
+    pNum !== \"undefined\" ? pNum : null));\n\n  $.state.isBetweenSubjectsConditionsSet
+    = false;\n  $.groupState.isParticipantsEnough = false;\n  $.groupState.sessionID
+    = Date.now() + \"_\" +  (Math.random() + 1).toString(36).substring(2, 8);\n 
+    $.groupState.participants = []; // array of PlayerHandle who are currently in
+    the experiment\n  $.state.participantsEnvInfo = [];\n  $.state.idfc2userId =
+    {};\n  $.state.timer = 0;\n  $.state.pendingEligibilityChecks = {};\n  $.state.rejectionQueue
+    = [];\n  $.state.isProcessingRejection = false;\n  $.state.rejectionTimer = 0;\n 
+    $.state.isSessionApproved = false;\n  $.state.existingConditions = null;  //
+    existing conditions from server for balancing\n  $.state.betweenSubjectsConfig
+    = [];  // populated by ConditionManager message\n  $.state.eligibleCount = 0; 
+    // only confirmed-eligible players count toward pNum\n\n  // Place world gate
+    at remote position and keep it enabled\n  $.subNode(\"WorldGateToLuidaBar\").setPosition(REJECTION_GATE_POS);\n 
+    $.subNode(\"WorldGateToLuidaBar\").setEnabled(false);\n})\n\n$.onUpdate((deltaTime)
+    => {\n    if (!$.groupState.isParticipantsEnough) {\n        $.state.timer +=
+    deltaTime;\n        if ($.state.timer >= 1){\n            $.state.timer = 0;\n           
+    let pIdfcs = $.groupState.participants.map(p => p.idfc);\n            const newPlayers
+    = $.getPlayersNear($.getPosition(), Infinity)\n                .filter(p => !pIdfcs.includes(p.idfc));\n           
+    if (newPlayers.length > 0) {\n                for (const newPlayer of newPlayers)
+    {\n                    $.groupState.participants = [ ...$.groupState.participants,
+    newPlayer ];\n                    $.setPlayerScript(newPlayer);\n                   
+    newPlayer.send(\"initializeParticipant\", true);\n                }\n           
+    }\n            // pNum check moved to onExternalCallEnd \u2014 only eligible
+    players count\n        }\n    } else if ($.state.isBetweenSubjectsConditionsSet)
+    { // participants are enough & conditions are set\n        $.state.isBetweenSubjectsConditionsSet
+    = false;\n        if (!isTestMode) {\n            let request = {\n               
+    type: \"uploadCustomData\",\n                data: {\n                    pInfo:
+    $.state.participantsEnvInfo.map(info => ({ ts: Date.now(), sID: $.groupState.sessionID
+    || \"\", ...info })),\n                    idfc2userId: $.state.idfc2userId\n               
+    },\n                token: token || \"\",\n                eID: expID || \"\",\n               
+    sID: $.groupState.sessionID || \"\"\n            };\n            $.callExternal(new
+    ExternalEndpointId(callExternalEndpointID), JSON.stringify(request), \"customDataUploaded\");\n       
+    }\n    }\n\n    // Process rejection queue: teleport rejected players to remote
+    world gate one at a time\n    if ($.state.rejectionQueue.length > 0 && !$.state.isProcessingRejection)
+    {\n        const rejection = $.state.rejectionQueue[0];\n        const allPlayers
+    = $.getPlayersNear($.getPosition(), Infinity);\n        const player = allPlayers.find(p
+    => p.idfc === rejection.idfc);\n\n        if (!player) {\n            // Player
+    already left, skip\n            $.state.rejectionQueue = $.state.rejectionQueue.slice(1);\n       
+    } else {\n            $.state.isProcessingRejection = true;\n            $.state.rejectionTimer
+    = 0;\n            // Teleport player to the gate (convert item-local to global
+    coords)\n            $.subNode(\"WorldGateToLuidaBar\").setEnabled(true);\n           
+    const itemPos = $.getPosition();\n            player.setPosition(new Vector3(\n               
+    REJECTION_GATE_POS.x + itemPos.x,\n                REJECTION_GATE_POS.y + itemPos.y
+    + 0.5,\n                REJECTION_GATE_POS.z + itemPos.z\n            ));\n           
     $.log(\"Rejection: teleported player \" + rejection.idfc + \" to remote world
-    gate\");\r\n        }\r\n    }\r\n\r\n    if ($.state.isProcessingRejection)
-    {\r\n        $.state.rejectionTimer += deltaTime;\r\n        if ($.state.rejectionTimer
-    >= 1.5) {\r\n            const processed = $.state.rejectionQueue[0];\r\n           
-    $.state.rejectionQueue = $.state.rejectionQueue.slice(1);\r\n            $.state.isProcessingRejection
-    = false;\r\n            $.state.rejectionTimer = 0;\r\n            $.subNode(\"WorldGateToLuidaBar\").setEnabled(false);\r\n           
+    gate\");\n        }\n    }\n\n    if ($.state.isProcessingRejection) {\n       
+    $.state.rejectionTimer += deltaTime;\n        if ($.state.rejectionTimer >= 1.5)
+    {\n            const processed = $.state.rejectionQueue[0];\n            $.state.rejectionQueue
+    = $.state.rejectionQueue.slice(1);\n            $.state.isProcessingRejection
+    = false;\n            $.state.rejectionTimer = 0;\n            $.subNode(\"WorldGateToLuidaBar\").setEnabled(false);\n           
     $.log(\"Rejection: finished processing player \" + (processed ? processed.idfc
-    : \"unknown\"));\r\n        }\r\n    }\r\n})\r\n\r\n$.onReceive((messageType,
-    arg, sender) => {\r\n    switch (messageType) {\r\n        case \"betweenSubjectsCondition\":\r\n           
-    $.state.betweenSubjectsConditions = arg;\r\n            $.state.isBetweenSubjectsConditionsSet
-    = true;\r\n            if (!isTestMode) {\r\n                // Save conditions
-    to backend\r\n                let saveConditionsRequest = {\r\n                   
-    type: \"saveSessionConditions\",\r\n                    token: token || \"\",\r\n                   
-    eID: expID || \"\",\r\n                    sID: $.groupState.sessionID || \"\",\r\n                   
-    betweenSubjectsConditions: arg\r\n                };\r\n                $.callExternal(new
+    : \"unknown\"));\n        }\n    }\n})\n\n$.onReceive((messageType, arg, sender)
+    => {\n    switch (messageType) {\n        case \"betweenSubjectsCondition\":\n           
+    $.state.betweenSubjectsConditions = arg;\n            $.state.isBetweenSubjectsConditionsSet
+    = true;\n            if (!isTestMode) {\n                // Save conditions to
+    backend\n                let saveConditionsRequest = {\n                    type:
+    \"saveSessionConditions\",\n                    token: token || \"\",\n                   
+    eID: expID || \"\",\n                    sID: $.groupState.sessionID || \"\",\n                   
+    betweenSubjectsConditions: arg\n                };\n                $.callExternal(new
     ExternalEndpointId(callExternalEndpointID), JSON.stringify(saveConditionsRequest),
-    \"sessionConditionsSaved\");\r\n            }\r\n            break;\r\n       
-    case \"betweenSubjectsConfig\":\r\n            $.state.betweenSubjectsConfig
-    = arg;\r\n            $.log(\"Received betweenSubjectsConfig: \" + JSON.stringify(arg));\r\n           
-    break;\r\n        case \"envInfoResponse\":\r\n            // Store envInfo\r\n           
-    $.state.participantsEnvInfo = [\r\n              ...$.state.participantsEnvInfo,\r\n             
-    { idfc: sender.idfc, envInfo: arg }\r\n            ];\r\n            let idfc2userId
-    = { ...$.state.idfc2userId };\r\n            idfc2userId[sender.idfc] = sender.userId;\r\n           
-    $.state.idfc2userId = idfc2userId;\r\n\r\n            if (isTestMode) {\r\n               
-    // In test mode, skip eligibility check and treat as eligible\r\n               
-    $.state.eligibleCount++;\r\n                if (!$.groupState.isParticipantsEnough
-    && $.state.eligibleCount >= pNum) {\r\n                    HandleParticipantsEnough();\r\n               
-    }\r\n            } else {\r\n                // Check eligibility via backend
-    API\r\n                let pendingChecks = { ...$.state.pendingEligibilityChecks
-    };\r\n                pendingChecks[sender.idfc] = true;\r\n                $.state.pendingEligibilityChecks
-    = pendingChecks;\r\n\r\n                // Build eligibility request\r\n               
-    let eligibilityRequest = {\r\n                    type: \"checkJoinEligibility\",\r\n                   
-    token: token || \"\",\r\n                    eID: expID || \"\",\r\n                   
-    sID: $.groupState.sessionID || \"\",\r\n                    envInfo: [arg]\r\n               
-    };\r\n\r\n                // Until session is approved, also include betweenSubjectsConfig
-    for session check\r\n                if (!$.state.isSessionApproved && $.state.betweenSubjectsConfig.length
-    > 0) {\r\n                    eligibilityRequest.betweenSubjectsConfig = $.state.betweenSubjectsConfig;\r\n               
-    }\r\n\r\n                $.callExternal(\r\n                    new ExternalEndpointId(callExternalEndpointID),\r\n                   
-    JSON.stringify(eligibilityRequest),\r\n                    \"joinEligibilityChecked_\"
-    + sender.idfc\r\n                );\r\n            }\r\n            break;\r\n       
-    default:\r\n            break;\r\n    }\r\n}, { item: true, player: true });\r\n\r\nfunction
-    HandleParticipantsEnough() {\r\n  $.log(\"Participants are enough to start the
-    experiment.\");\r\n  $.groupState.isParticipantsEnough = true;\r\n  $.sendSignalCompat(\"this\",
-    \"exp_playersAreEnough\");\r\n  $.sendSignalCompat(\"this\", \"exp_StartStateTransition\");\r\n\r\n 
-    const conditionManager = $.worldItemReference(\"ConditionManager\");\r\n  if
-    (conditionManager) {\r\n    // If server returned existing conditions, send them
-    for local balancing\r\n    if ($.state.isSessionApproved && $.state.existingConditions)
-    {\r\n      conditionManager.send(\"luida_existing_conditions\", $.state.existingConditions);\r\n   
-    }\r\n    conditionManager.send(\"luida_participants_info\", {\r\n      participants:
-    $.groupState.participants,\r\n      sessionID: $.groupState.sessionID\r\n   
-    });\r\n  }\r\n}\r\n\r\n$.onExternalCallEnd((res, meta, err) => {\r\n  if (meta.startsWith(\"joinEligibilityChecked_\"))
-    {\r\n    const idfc = meta.replace(\"joinEligibilityChecked_\", \"\");\r\n\r\n   
-    // Clear pending check regardless of outcome\r\n    let pendingChecks = { ...$.state.pendingEligibilityChecks
-    };\r\n    delete pendingChecks[idfc];\r\n    $.state.pendingEligibilityChecks
-    = pendingChecks;\r\n\r\n    if (res == null) {\r\n      // Graceful degradation:
-    treat as eligible so experiment can proceed with local conditions\r\n      $.log(\"Eligibility
-    check ERROR for \" + idfc + \": \" + err);\r\n      $.state.eligibleCount++;\r\n     
-    if (!$.groupState.isParticipantsEnough && $.state.eligibleCount >= pNum) {\r\n       
-    HandleParticipantsEnough();\r\n      }\r\n      return;\r\n    }\r\n\r\n    const
-    parsedRes = JSON.parse(res);\r\n\r\n    if (!parsedRes.eligible) {\r\n      $.log(\"Rejected
-    \" + idfc + \": \" + (parsedRes.reason || \"unknown\"));\r\n      // Remove ineligible
-    participant and all their data\r\n      $.groupState.participants = $.groupState.participants.filter(\r\n       
-    p => p.idfc !== idfc\r\n      );\r\n      $.state.participantsEnvInfo = $.state.participantsEnvInfo.filter(\r\n       
-    info => info.idfc !== idfc\r\n      );\r\n      let cleanedIdfc2userId = { ...$.state.idfc2userId
-    };\r\n      delete cleanedIdfc2userId[idfc];\r\n      $.state.idfc2userId = cleanedIdfc2userId;\r\n     
-    // Enqueue for isolated rejection via remote world gate\r\n      $.state.rejectionQueue
-    = [...$.state.rejectionQueue, { idfc: idfc }];\r\n      return;\r\n    }\r\n\r\n   
-    // Player is eligible\r\n    $.state.eligibleCount++;\r\n\r\n    // Check if
-    response includes session status info (existing conditions for local balancing)\r\n   
-    if (parsedRes.existingConditions !== undefined) {\r\n      $.state.isSessionApproved
-    = true;\r\n      $.state.existingConditions = parsedRes.existingConditions;\r\n     
-    $.log(\"Session approved. Existing conditions: \" + JSON.stringify(parsedRes.existingConditions));\r\n   
-    }\r\n\r\n    // Check pNum \u2014 only after eligibility is confirmed\r\n   
-    if (!$.groupState.isParticipantsEnough && $.state.eligibleCount >= pNum) {\r\n     
-    HandleParticipantsEnough();\r\n    }\r\n    return;\r\n  }\r\n\r\n  if (meta
-    === \"sessionConditionsSaved\") {\r\n    if (res == null) {\r\n      $.log(\"saveSessionConditions
-    ERROR: \" + err);\r\n    } else {\r\n      $.log(\"Session conditions saved:
-    \" + JSON.stringify(res));\r\n    }\r\n    return;\r\n  }\r\n\r\n  if (meta ===
-    \"customDataUploaded\") {\r\n    if (res == null) {\r\n      $.log(\"callExternal
-    ERROR: \" + err);\r\n      return;\r\n    }\r\n    $.log(\"Response after customDataUploaded
-    called: \" + JSON.stringify(res));\r\n    return;\r\n  }\r\n\r\n  // Fallback
-    for unknown meta\r\n  if (res == null) {\r\n    $.log(\"callExternal ERROR (\"
-    + meta + \"): \" + err);\r\n  }\r\n});\r\n"
+    \"sessionConditionsSaved\");\n            }\n            break;\n        case
+    \"betweenSubjectsConfig\":\n            $.state.betweenSubjectsConfig = arg;\n           
+    $.log(\"Received betweenSubjectsConfig: \" + JSON.stringify(arg));\n           
+    break;\n        case \"envInfoResponse\":\n            // Store envInfo\n           
+    $.state.participantsEnvInfo = [\n              ...$.state.participantsEnvInfo,\n             
+    { idfc: sender.idfc, envInfo: arg }\n            ];\n            let idfc2userId
+    = { ...$.state.idfc2userId };\n            idfc2userId[sender.idfc] = sender.userId;\n           
+    $.state.idfc2userId = idfc2userId;\n\n            if (isTestMode) {\n               
+    // Local editor test mode: skip both backend eligibility and\n               
+    // platform filtering so any device can drive the experiment.\n               
+    $.state.eligibleCount++;\n                if (!$.groupState.isParticipantsEnough
+    && $.state.eligibleCount >= pNum) {\n                    HandleParticipantsEnough();\n               
+    }\n            } else {\n                // Defense in depth: reject mismatched
+    platforms locally before\n                // the backend round-trip, in case
+    the backend platform list\n                // drifts from what was baked into
+    ExpIdentifiers.js.\n                if (!isPlatformAllowedLocally(arg)) {\n                   
+    enqueueRejection(sender.idfc, \"PLATFORM_NOT_ALLOWED\");\n                   
+    break;\n                }\n\n                // Check eligibility via backend
+    API\n                let pendingChecks = { ...$.state.pendingEligibilityChecks
+    };\n                pendingChecks[sender.idfc] = true;\n                $.state.pendingEligibilityChecks
+    = pendingChecks;\n\n                // Build eligibility request\n               
+    let eligibilityRequest = {\n                    type: \"checkJoinEligibility\",\n                   
+    token: token || \"\",\n                    eID: expID || \"\",\n                   
+    sID: $.groupState.sessionID || \"\",\n                    envInfo: [arg]\n               
+    };\n\n                // Until session is approved, also include betweenSubjectsConfig
+    for session check\n                if (!$.state.isSessionApproved && $.state.betweenSubjectsConfig.length
+    > 0) {\n                    eligibilityRequest.betweenSubjectsConfig = $.state.betweenSubjectsConfig;\n               
+    }\n\n                $.callExternal(\n                    new ExternalEndpointId(callExternalEndpointID),\n                   
+    JSON.stringify(eligibilityRequest),\n                    \"joinEligibilityChecked_\"
+    + sender.idfc\n                );\n            }\n            break;\n       
+    default:\n            break;\n    }\n}, { item: true, player: true });\n\nfunction
+    HandleParticipantsEnough() {\n  $.log(\"Participants are enough to start the
+    experiment.\");\n  $.groupState.isParticipantsEnough = true;\n  $.sendSignalCompat(\"this\",
+    \"exp_playersAreEnough\");\n  $.sendSignalCompat(\"this\", \"exp_StartStateTransition\");\n\n 
+    const conditionManager = $.worldItemReference(\"ConditionManager\");\n  if (conditionManager)
+    {\n    // If server returned existing conditions, send them for local balancing\n   
+    if ($.state.isSessionApproved && $.state.existingConditions) {\n      conditionManager.send(\"luida_existing_conditions\",
+    $.state.existingConditions);\n    }\n    conditionManager.send(\"luida_participants_info\",
+    {\n      participants: $.groupState.participants,\n      sessionID: $.groupState.sessionID\n   
+    });\n  }\n}\n\n$.onExternalCallEnd((res, meta, err) => {\n  if (meta.startsWith(\"joinEligibilityChecked_\"))
+    {\n    const idfc = meta.replace(\"joinEligibilityChecked_\", \"\");\n\n    //
+    Clear pending check regardless of outcome\n    let pendingChecks = { ...$.state.pendingEligibilityChecks
+    };\n    delete pendingChecks[idfc];\n    $.state.pendingEligibilityChecks = pendingChecks;\n\n   
+    if (res == null) {\n      // Graceful degradation: treat as eligible so experiment
+    can proceed with local conditions\n      $.log(\"Eligibility check ERROR for
+    \" + idfc + \": \" + err);\n      $.state.eligibleCount++;\n      if (!$.groupState.isParticipantsEnough
+    && $.state.eligibleCount >= pNum) {\n        HandleParticipantsEnough();\n     
+    }\n      return;\n    }\n\n    const parsedRes = JSON.parse(res);\n\n    if (!parsedRes.eligible)
+    {\n      enqueueRejection(idfc, parsedRes.reason);\n      return;\n    }\n\n   
+    // Player is eligible\n    $.state.eligibleCount++;\n\n    // Check if response
+    includes session status info (existing conditions for local balancing)\n    if
+    (parsedRes.existingConditions !== undefined) {\n      $.state.isSessionApproved
+    = true;\n      $.state.existingConditions = parsedRes.existingConditions;\n     
+    $.log(\"Session approved. Existing conditions: \" + JSON.stringify(parsedRes.existingConditions));\n   
+    }\n\n    // Check pNum \u2014 only after eligibility is confirmed\n    if (!$.groupState.isParticipantsEnough
+    && $.state.eligibleCount >= pNum) {\n      HandleParticipantsEnough();\n    }\n   
+    return;\n  }\n\n  if (meta === \"sessionConditionsSaved\") {\n    if (res ==
+    null) {\n      $.log(\"saveSessionConditions ERROR: \" + err);\n    } else {\n     
+    $.log(\"Session conditions saved: \" + JSON.stringify(res));\n    }\n    return;\n 
+    }\n\n  if (meta === \"customDataUploaded\") {\n    if (res == null) {\n     
+    $.log(\"callExternal ERROR: \" + err);\n      return;\n    }\n    $.log(\"Response
+    after customDataUploaded called: \" + JSON.stringify(res));\n    return;\n  }\n\n 
+    // Fallback for unknown meta\n  if (res == null) {\n    $.log(\"callExternal
+    ERROR (\" + meta + \"): \" + err);\n  }\n});\n"
 --- !u!114 &2089283526597471262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -767,12 +790,12 @@ PrefabInstance:
     - target: {fileID: 2263574305700755212, guid: 5475fa3e27333b2419a0bb8086303137,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2263574305700755212, guid: 5475fa3e27333b2419a0bb8086303137,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2263574305700755212, guid: 5475fa3e27333b2419a0bb8086303137,
         type: 3}
