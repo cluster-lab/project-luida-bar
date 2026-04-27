@@ -15,12 +15,53 @@ public class CombineAllBeforePlayOrBuild
     static CombineAllBeforePlayOrBuild()
     {
         WorldUploadEvents.RegisterOnWorldUploadStart(OnWorldUploadStarted, -1);
+        WorldUploadEvents.RegisterOnWorldUploadEnd(OnWorldUploadEnded, -1);
         EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
         EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
     }
 
+    private static void RunCSCombiner()
+    {
+        AvatarsConfigAssetUtil.GenerateAvatarGimmickTriggerConfig();
+
+        Type csCombinerType = Type.GetType("Assets.KaomoLab.CSCombiner.CSCombiner, Assembly-CSharp-Editor");
+        if (csCombinerType != null)
+        {
+            var method = csCombinerType.GetMethod("CombineAll", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+            method?.Invoke(null, null);
+        }
+    }
+
     static bool OnWorldUploadStarted(WorldUploadStartEventData data)
     {
+        // Loud beacon: if you don't see this red line in the Unity console
+        // when you start an upload, the new build of this file isn't live
+        // (compile error somewhere in the project, or Auto Refresh is off).
+        Debug.LogError("[LUIDA] OnWorldUploadStarted fired");
+
+        // The combine-and-bake pipeline runs synchronously below in the
+        // common case, but defers via EditorApplication.delayCall when a
+        // LuidaConfigWindow is open (see OnPlayModeStateChanged). The
+        // upload itself does NOT wait for delayCall, so an upload kicked
+        // off with the window open would ship a stale combined script
+        // (most importantly with isTestMode = true, which silently
+        // disables eligibility/platform checks at runtime). Refuse the
+        // upload in that case and tell the user to close the window.
+        var luidaWindow = Resources.FindObjectsOfTypeAll<LuidaConfigWindow>().FirstOrDefault();
+        if (luidaWindow != null)
+        {
+            EditorUtility.DisplayDialog(
+                "LUIDA: Close configuration window before uploading",
+                "The LUIDA configuration window is open. The pre-upload " +
+                "combine step would be deferred and the world would be " +
+                "uploaded with a stale script (e.g. isTestMode = true, " +
+                "which disables platform/eligibility rejection).\n\n" +
+                "Close the LUIDA window and try the upload again.",
+                "OK"
+            );
+            return false;
+        }
+
         ExperimentVariablesConfigTab.ResetAllDebugValues();
         _isWorldUpload = true;
         OnPlayModeStateChanged(PlayModeStateChange.ExitingEditMode);
@@ -65,6 +106,9 @@ public class CombineAllBeforePlayOrBuild
             SetTestModeInExpIdentifiers(false);
         }
 
+        // Remove orphaned/broken GlobalLogic components before validation runs.
+        GlobalLogicScrubber.ScrubActiveScene();
+
         // Regenerate avatar gimmick trigger config before combining
         AvatarsConfigAssetUtil.GenerateAvatarGimmickTriggerConfig();
 
@@ -75,11 +119,24 @@ public class CombineAllBeforePlayOrBuild
             method?.Invoke(null, null);
         }
 
-        if (_isWorldUpload)
-        {
-            SetTestModeInExpIdentifiers(true);
-            _isWorldUpload = false;
-        }
+        // The restore-to-test-mode step that used to live here ran inside
+        // the same call as the upload-state bake, but CCK's TryExportAssets
+        // can re-fire CSCombiner (via its own playModeStateChanged listeners
+        // or domain reloads triggered by BuildAssetBundles) AFTER we'd
+        // already restored the source — so the prefab got re-baked with
+        // test-mode-state and the upload shipped that. The restore now
+        // lives in OnWorldUploadEnded, which fires after CCK has finished
+        // serializing and uploading the bundle.
+    }
+
+    static void OnWorldUploadEnded(WorldUploadEndEventData data)
+    {
+        if (!_isWorldUpload) return;
+        Debug.Log($"[LUIDA] OnWorldUploadEnded fired (success={data.Success}). Restoring test-mode source.");
+        SetTestModeInExpIdentifiers(true);
+        RunCSCombiner();
+        AssetDatabase.SaveAssets();
+        _isWorldUpload = false;
     }
 
     private static void SetTestModeInExpIdentifiers(bool isTestMode)
@@ -101,4 +158,5 @@ public class CombineAllBeforePlayOrBuild
         File.WriteAllText(ExpIdentifiersPath, content);
         AssetDatabase.ImportAsset(ExpIdentifiersPath, ImportAssetOptions.ForceSynchronousImport);
     }
+
 }

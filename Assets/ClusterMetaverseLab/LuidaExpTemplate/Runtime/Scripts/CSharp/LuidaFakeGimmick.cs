@@ -35,6 +35,9 @@ public abstract class LuidaFakeGimmick : MonoBehaviour
             return;
         }
 
+        var resolved = ResolveTarget(target);
+        if (resolved != target) target = resolved;
+
         if (!copiedComponent)
         {
             GameObject targetPrefab = (GameObject)Resources.Load(TargetPrefabPath);
@@ -73,7 +76,7 @@ public abstract class LuidaFakeGimmick : MonoBehaviour
         if (keyField != null)
         {
             GimmickTarget parsedTarget = target == CustomGimmickTarget.This ? GimmickTarget.Item : (GimmickTarget)target;
-            keyField.SetValue(gimmickKey, new GimmickKey(parsedTarget, key));
+            keyField.SetValue(gimmickKey, new GimmickKey(parsedTarget, key ?? string.Empty));
         }
         if (itemField != null)
         {
@@ -206,13 +209,29 @@ public abstract class LuidaFakeGimmick : MonoBehaviour
 
     private void OnDestroy()
     {
-        /*
-        if (!Application.isPlaying)
+        if (Application.isPlaying) return;
+
+        var owner = gameObject;
+        var toDestroy = new System.Collections.Generic.List<GlobalLogic>();
+        if (copiedComponent != null) toDestroy.Add(copiedComponent);
+        CollectExtraHiddenLogics(toDestroy);
+        if (toDestroy.Count == 0) return;
+
+        // Defer so we can tell apart "user removed this component" (owner survives)
+        // from "scene/GameObject is being unloaded" (owner becomes Unity-null).
+        EditorApplication.delayCall += () =>
         {
-            RemoveCopiedComponent();
-        }
-        */
+            if (owner == null) return;
+            foreach (var c in toDestroy)
+            {
+                if (c != null) DestroyImmediate(c);
+            }
+        };
     }
+
+    protected virtual void CollectExtraHiddenLogics(System.Collections.Generic.List<GlobalLogic> list) { }
+
+    protected virtual CustomGimmickTarget ResolveTarget(CustomGimmickTarget configured) => configured;
 
     private void RemoveCopiedComponent()
     {
@@ -220,7 +239,6 @@ public abstract class LuidaFakeGimmick : MonoBehaviour
         {
             DestroyImmediate(copiedComponent);
             copiedComponent = null;
-            Debug.Log("Copied GlobalLogic component removed.");
         }
     }
 }

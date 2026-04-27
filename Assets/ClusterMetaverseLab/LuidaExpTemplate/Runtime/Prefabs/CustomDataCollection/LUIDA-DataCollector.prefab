@@ -68,8 +68,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "expID = \"expID_example\";\r\ntoken = \"token_example\";\r\ncallExternalEndpointID
-    = \"callExternalEndpointID_example\";\r\nisTestMode = true;\r\npNum = 1;\r\n\r\nconst
+  sourceCode: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
+    = \"callExternalEndpointID_example\";\npNum = 1;\nisTestMode = true;\n\r\nconst
     uploadInterval = 1;\r\nconst dataLengthPerUpload = 100;\r\nconst dataByteLengthPerUpload
     = 100000; // 102400\r\n\r\n$.onStart(() => {\r\n    $.state.customData = [];\r\n   
     $.state.uploadIndex = 0;\r\n    $.state.elapsedTime = 0;\r\n    // $.state.dataLength

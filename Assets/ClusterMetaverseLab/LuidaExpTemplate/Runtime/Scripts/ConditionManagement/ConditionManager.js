@@ -29,17 +29,20 @@ $.onReceive((messageType, arg, sender) => {
     case "luida_existing_conditions":
       // Receive existing conditions array from server, compute balanced assignment locally
       let assignedConditions = calculateBalancedAssignment(arg);
-      // Apply debug overrides
-      try {
-        between_subjects_variables.forEach(v => {
-          if (v.debugValue) {
-            assignedConditions[v.name] = v.debugValue;
-          }
-        });
-      } catch (e) { /* between_subjects_variables not defined */ }
+      // Debug overrides apply only in editor test mode — never on the uploaded world,
+      // so a stray debugValue can't silently replace a server-balanced condition.
+      if (isTestMode) {
+        try {
+          between_subjects_variables.forEach(v => {
+            if (v.debugValue) {
+              assignedConditions[v.name] = v.debugValue;
+            }
+          });
+        } catch (e) { /* between_subjects_variables not defined */ }
+      }
       $.state.betweenSubjectsConditions = assignedConditions;
       $.state.isServerAssigned = true;
-      $.log("Conditions balanced locally (debug overrides applied): " + JSON.stringify(assignedConditions));
+      $.log("Conditions balanced locally" + (isTestMode ? " (debug overrides applied)" : "") + ": " + JSON.stringify(assignedConditions));
       break;
     case "luida_participants_info":
       $.groupState.participants = arg.participants;
@@ -105,17 +108,21 @@ function reset() {
 }
 
 function initializeBetweenSubjectsConditions() {
-  // Debug values only — actual balanced assignment happens in calculateBalancedAssignment()
-  // when existing conditions are received from the server via luida_existing_conditions.
+  // In editor test mode, seed conditions from debugValue so the experiment can run
+  // standalone. On the uploaded world, leave the bag empty — the balanced assignment
+  // comes from calculateBalancedAssignment() once the server returns existing conditions
+  // via luida_existing_conditions, and no debug value should ever leak into that path.
   let betweenSubjectsCondition = {};
-  try {
-    between_subjects_variables.forEach((v) => {
-      if (v.debugValue) {
-        betweenSubjectsCondition[v.name] = v.debugValue;
-      }
-    });
-  } catch (e) {
-    $.log("Between-subjects variables are not defined.");
+  if (isTestMode) {
+    try {
+      between_subjects_variables.forEach((v) => {
+        if (v.debugValue) {
+          betweenSubjectsCondition[v.name] = v.debugValue;
+        }
+      });
+    } catch (e) {
+      $.log("Between-subjects variables are not defined.");
+    }
   }
   $.state.betweenSubjectsConditions = betweenSubjectsCondition;
 }

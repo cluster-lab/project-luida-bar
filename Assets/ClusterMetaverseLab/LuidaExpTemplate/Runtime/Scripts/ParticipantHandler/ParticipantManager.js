@@ -1,6 +1,27 @@
-const REJECTION_GATE_POS = new Vector3(-100, -100, -100);
+const REJECTION_GATE_POS = new Vector3(-100, 100, -100);
+
+function enqueueRejection(idfc, reason) {
+    $.log("Rejected " + idfc + ": " + (reason || "unknown"));
+    $.groupState.participants = $.groupState.participants.filter(
+        p => p.idfc !== idfc
+    );
+    $.state.participantsEnvInfo = $.state.participantsEnvInfo.filter(
+        info => info.idfc !== idfc
+    );
+    let cleanedIdfc2userId = { ...$.state.idfc2userId };
+    delete cleanedIdfc2userId[idfc];
+    $.state.idfc2userId = cleanedIdfc2userId;
+    $.state.rejectionQueue = [...$.state.rejectionQueue, { idfc: idfc }];
+}
 
 $.onStart(() => {
+  // Diagnostic: surfaces what was actually baked into the uploaded world.
+  // If isTestMode is true on a non-test deployment, the upload pipeline
+  // didn't flip it and platform/eligibility checks are silently skipped.
+  $.log("LUIDA boot: isTestMode=" + isTestMode
+        + " expID=" + (typeof expID !== "undefined" ? expID : null)
+        + " pNum=" + (typeof pNum !== "undefined" ? pNum : null));
+
   $.state.isBetweenSubjectsConditionsSet = false;
   $.groupState.isParticipantsEnough = false;
   $.groupState.sessionID = Date.now() + "_" +  (Math.random() + 1).toString(36).substring(2, 8);
@@ -125,7 +146,8 @@ $.onReceive((messageType, arg, sender) => {
             $.state.idfc2userId = idfc2userId;
 
             if (isTestMode) {
-                // In test mode, skip eligibility check and treat as eligible
+                // Local editor test mode: skip both backend eligibility and
+                // platform filtering so any device can drive the experiment.
                 $.state.eligibleCount++;
                 if (!$.groupState.isParticipantsEnough && $.state.eligibleCount >= pNum) {
                     HandleParticipantsEnough();
@@ -203,19 +225,7 @@ $.onExternalCallEnd((res, meta, err) => {
     const parsedRes = JSON.parse(res);
 
     if (!parsedRes.eligible) {
-      $.log("Rejected " + idfc + ": " + (parsedRes.reason || "unknown"));
-      // Remove ineligible participant and all their data
-      $.groupState.participants = $.groupState.participants.filter(
-        p => p.idfc !== idfc
-      );
-      $.state.participantsEnvInfo = $.state.participantsEnvInfo.filter(
-        info => info.idfc !== idfc
-      );
-      let cleanedIdfc2userId = { ...$.state.idfc2userId };
-      delete cleanedIdfc2userId[idfc];
-      $.state.idfc2userId = cleanedIdfc2userId;
-      // Enqueue for isolated rejection via remote world gate
-      $.state.rejectionQueue = [...$.state.rejectionQueue, { idfc: idfc }];
+      enqueueRejection(idfc, parsedRes.reason);
       return;
     }
 
