@@ -227,40 +227,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
   sourceCode: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
-    = \"callExternalEndpointID_example\";\npNum = 1;\nallowedPlatforms = [];\nisTestMode
-    = true;\n\r\nconst REJECTION_GATE_POS = new Vector3(-100, 100, -100);\n\n// Local
-    mirror of the web console's `allowedPlatforms`. The editor fetches\n// this from
-    the backend at upload time and bakes it into ExpIdentifiers.js,\n// so the value
-    here matches what the researcher set on the web console.\n// In local-editor
-    test mode the bake step does not run and the array is\n// empty, which this helper
-    treats as \"no restriction\" \u2014 matching the\n// backend's validatePlatform
-    convention. Used only on the non-test-mode\n// path as defense in depth (the
-    backend remains authoritative).\nfunction isPlatformAllowedLocally(envInfo) {\n   
-    if (typeof allowedPlatforms === \"undefined\" || !Array.isArray(allowedPlatforms)
-    || allowedPlatforms.length === 0) {\n        return true;\n    }\n    if (!envInfo)
-    return true;\n    return (envInfo.isVr && allowedPlatforms.indexOf(\"VR\") !==
-    -1)\n        || (envInfo.isWindows && allowedPlatforms.indexOf(\"WINDOWS\") !==
-    -1)\n        || (envInfo.isMacOs && allowedPlatforms.indexOf(\"MACOS\") !== -1)\n       
-    || (envInfo.isAndroid && allowedPlatforms.indexOf(\"ANDROID\") !== -1)\n       
-    || (envInfo.isIos && allowedPlatforms.indexOf(\"IOS\") !== -1);\n}\n\nfunction
-    enqueueRejection(idfc, reason) {\n    $.log(\"Rejected \" + idfc + \": \" + (reason
-    || \"unknown\"));\n    $.groupState.participants = $.groupState.participants.filter(\n       
-    p => p.idfc !== idfc\n    );\n    $.state.participantsEnvInfo = $.state.participantsEnvInfo.filter(\n       
+    = \"callExternalEndpointID_example\";\npNum = 1;\nisTestMode = true;\n\r\nconst
+    REJECTION_GATE_POS = new Vector3(-100, 100, -100);\n\nfunction enqueueRejection(idfc,
+    reason) {\n    $.log(\"Rejected \" + idfc + \": \" + (reason || \"unknown\"));\n   
+    $.groupState.participants = $.groupState.participants.filter(\n        p => p.idfc
+    !== idfc\n    );\n    $.state.participantsEnvInfo = $.state.participantsEnvInfo.filter(\n       
     info => info.idfc !== idfc\n    );\n    let cleanedIdfc2userId = { ...$.state.idfc2userId
     };\n    delete cleanedIdfc2userId[idfc];\n    $.state.idfc2userId = cleanedIdfc2userId;\n   
     $.state.rejectionQueue = [...$.state.rejectionQueue, { idfc: idfc }];\n}\n\n$.onStart(()
     => {\n  // Diagnostic: surfaces what was actually baked into the uploaded world.\n 
     // If isTestMode is true on a non-test deployment, the upload pipeline\n  //
     didn't flip it and platform/eligibility checks are silently skipped.\n  $.log(\"LUIDA
-    boot: isTestMode=\" + isTestMode\n        + \" allowedPlatforms=\" + JSON.stringify(typeof
-    allowedPlatforms !== \"undefined\" ? allowedPlatforms : null)\n        + \" expID=\"
-    + (typeof expID !== \"undefined\" ? expID : null)\n        + \" pNum=\" + (typeof
-    pNum !== \"undefined\" ? pNum : null));\n\n  $.state.isBetweenSubjectsConditionsSet
-    = false;\n  $.groupState.isParticipantsEnough = false;\n  $.groupState.sessionID
-    = Date.now() + \"_\" +  (Math.random() + 1).toString(36).substring(2, 8);\n 
-    $.groupState.participants = []; // array of PlayerHandle who are currently in
-    the experiment\n  $.state.participantsEnvInfo = [];\n  $.state.idfc2userId =
-    {};\n  $.state.timer = 0;\n  $.state.pendingEligibilityChecks = {};\n  $.state.rejectionQueue
+    boot: isTestMode=\" + isTestMode\n        + \" expID=\" + (typeof expID !== \"undefined\"
+    ? expID : null)\n        + \" pNum=\" + (typeof pNum !== \"undefined\" ? pNum
+    : null));\n\n  $.state.isBetweenSubjectsConditionsSet = false;\n  $.groupState.isParticipantsEnough
+    = false;\n  $.groupState.sessionID = Date.now() + \"_\" +  (Math.random() + 1).toString(36).substring(2,
+    8);\n  $.groupState.participants = []; // array of PlayerHandle who are currently
+    in the experiment\n  $.state.participantsEnvInfo = [];\n  $.state.idfc2userId
+    = {};\n  $.state.timer = 0;\n  $.state.pendingEligibilityChecks = {};\n  $.state.rejectionQueue
     = [];\n  $.state.isProcessingRejection = false;\n  $.state.rejectionTimer = 0;\n 
     $.state.isSessionApproved = false;\n  $.state.existingConditions = null;  //
     existing conditions from server for balancing\n  $.state.betweenSubjectsConfig
@@ -326,14 +310,9 @@ MonoBehaviour:
     // platform filtering so any device can drive the experiment.\n               
     $.state.eligibleCount++;\n                if (!$.groupState.isParticipantsEnough
     && $.state.eligibleCount >= pNum) {\n                    HandleParticipantsEnough();\n               
-    }\n            } else {\n                // Defense in depth: reject mismatched
-    platforms locally before\n                // the backend round-trip, in case
-    the backend platform list\n                // drifts from what was baked into
-    ExpIdentifiers.js.\n                if (!isPlatformAllowedLocally(arg)) {\n                   
-    enqueueRejection(sender.idfc, \"PLATFORM_NOT_ALLOWED\");\n                   
-    break;\n                }\n\n                // Check eligibility via backend
-    API\n                let pendingChecks = { ...$.state.pendingEligibilityChecks
-    };\n                pendingChecks[sender.idfc] = true;\n                $.state.pendingEligibilityChecks
+    }\n            } else {\n                // Check eligibility via backend API\n               
+    let pendingChecks = { ...$.state.pendingEligibilityChecks };\n               
+    pendingChecks[sender.idfc] = true;\n                $.state.pendingEligibilityChecks
     = pendingChecks;\n\n                // Build eligibility request\n               
     let eligibilityRequest = {\n                    type: \"checkJoinEligibility\",\n                   
     token: token || \"\",\n                    eID: expID || \"\",\n                   

@@ -4,8 +4,6 @@ using UnityEditor;
 using System;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
 
 [InitializeOnLoad]
@@ -13,17 +11,6 @@ public class CombineAllBeforePlayOrBuild
 {
     private static bool _isWorldUpload = false;
     private const string ExpIdentifiersPath = "Assets/_Experiment_/Settings/ExpIdentifiers.js";
-    private const string ClusterApiUrl = "https://luida.cluster.mu/api/cluster";
-
-    // Set in OnWorldUploadStarted from the web console's questInfo response,
-    // baked into ExpIdentifiers.js by CombineAll right before CSCombiner runs,
-    // and cleared back to [] after the upload so local test-mode runs are
-    // never platform-filtered in the editor.
-    private static string[] _pendingAllowedPlatforms = null;
-
-    [Serializable] private class ClusterApiResponseEnvelope { public string response; public string verify; }
-    [Serializable] private class QuestInfoEnvelope { public QuestInfo quest; }
-    [Serializable] private class QuestInfo { public string[] allowedPlatforms; }
 
     static CombineAllBeforePlayOrBuild()
     {
@@ -75,37 +62,6 @@ public class CombineAllBeforePlayOrBuild
             return false;
         }
 
-        // Pull allowedPlatforms from the web console so the uploaded world
-        // has the same platform restriction the researcher configured there.
-        // The user is the single source of truth (web console) — not Unity.
-        string expID = ReadExpIDFromExpIdentifiers();
-        if (string.IsNullOrEmpty(expID) || expID == "expID_example")
-        {
-            Debug.LogWarning("LUIDA: expID is not configured; uploading without an allowedPlatforms restriction.");
-            _pendingAllowedPlatforms = new string[0];
-        }
-        else
-        {
-            try
-            {
-                _pendingAllowedPlatforms = FetchAllowedPlatformsFromBackend(expID);
-                Debug.Log($"LUIDA: Fetched allowedPlatforms = [{string.Join(", ", _pendingAllowedPlatforms)}] for eID {expID}.");
-            }
-            catch (Exception ex)
-            {
-                EditorUtility.DisplayDialog(
-                    "LUIDA: Failed to fetch platform config",
-                    "Could not fetch this experiment's allowedPlatforms from " +
-                    "the LUIDA web console. Aborting upload to avoid shipping " +
-                    "a world with the wrong platform restriction.\n\n" +
-                    "Error: " + ex.Message,
-                    "OK"
-                );
-                _pendingAllowedPlatforms = null;
-                return false;
-            }
-        }
-
         ExperimentVariablesConfigTab.ResetAllDebugValues();
         _isWorldUpload = true;
         OnPlayModeStateChanged(PlayModeStateChange.ExitingEditMode);
@@ -148,7 +104,6 @@ public class CombineAllBeforePlayOrBuild
         if (_isWorldUpload)
         {
             SetTestModeInExpIdentifiers(false);
-            SetAllowedPlatformsInExpIdentifiers(_pendingAllowedPlatforms ?? new string[0]);
         }
 
         // Remove orphaned/broken GlobalLogic components before validation runs.
@@ -179,10 +134,8 @@ public class CombineAllBeforePlayOrBuild
         if (!_isWorldUpload) return;
         Debug.Log($"[LUIDA] OnWorldUploadEnded fired (success={data.Success}). Restoring test-mode source.");
         SetTestModeInExpIdentifiers(true);
-        SetAllowedPlatformsInExpIdentifiers(new string[0]);
         RunCSCombiner();
         AssetDatabase.SaveAssets();
-        _pendingAllowedPlatforms = null;
         _isWorldUpload = false;
     }
 
@@ -206,87 +159,4 @@ public class CombineAllBeforePlayOrBuild
         AssetDatabase.ImportAsset(ExpIdentifiersPath, ImportAssetOptions.ForceSynchronousImport);
     }
 
-    private static string ReadExpIDFromExpIdentifiers()
-    {
-        if (!File.Exists(ExpIdentifiersPath)) return null;
-        string content = File.ReadAllText(ExpIdentifiersPath);
-        var match = Regex.Match(content, @"expID\s*=\s*""([^""]+)"";");
-        return match.Success ? match.Groups[1].Value : null;
-    }
-
-    private static void SetAllowedPlatformsInExpIdentifiers(string[] platforms)
-    {
-        if (!File.Exists(ExpIdentifiersPath)) return;
-
-        var quoted = (platforms ?? new string[0]).Select(p => "\"" + p + "\"");
-        string replacement = $"allowedPlatforms = [{string.Join(", ", quoted)}];";
-
-        string content = File.ReadAllText(ExpIdentifiersPath);
-        if (Regex.IsMatch(content, @"allowedPlatforms\s*=\s*\[[^\]]*\];"))
-        {
-            content = Regex.Replace(content, @"allowedPlatforms\s*=\s*\[[^\]]*\];", replacement);
-        }
-        else
-        {
-            content += "\n" + replacement + "\n";
-        }
-
-        File.WriteAllText(ExpIdentifiersPath, content);
-        AssetDatabase.ImportAsset(ExpIdentifiersPath, ImportAssetOptions.ForceSynchronousImport);
-    }
-
-    private static string[] FetchAllowedPlatformsFromBackend(string expID)
-    {
-        // Mirrors the runtime callExternal contract: route.ts unwraps
-        // body.request as a JSON string then dispatches by `type`.
-        string innerJson = "{\"type\":\"questInfo\",\"id\":\"" + expID + "\"}";
-        string outerJson = "{\"request\":\"" + innerJson.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"}";
-
-        var req = (HttpWebRequest)WebRequest.Create(ClusterApiUrl);
-        req.Method = "POST";
-        req.ContentType = "application/json";
-        req.Timeout = 15000;
-        req.ReadWriteTimeout = 15000;
-
-        var bodyBytes = Encoding.UTF8.GetBytes(outerJson);
-        req.ContentLength = bodyBytes.Length;
-        using (var stream = req.GetRequestStream())
-        {
-            stream.Write(bodyBytes, 0, bodyBytes.Length);
-        }
-
-        string responseText;
-        try
-        {
-            using (var resp = (HttpWebResponse)req.GetResponse())
-            using (var reader = new StreamReader(resp.GetResponseStream(), Encoding.UTF8))
-            {
-                responseText = reader.ReadToEnd();
-            }
-        }
-        catch (WebException wex)
-        {
-            // Surface the server's actual error body (e.g. "Quest not found")
-            // instead of the generic "The remote server returned an error" message.
-            string detail = wex.Message;
-            if (wex.Response is HttpWebResponse errResp)
-            {
-                using (var reader = new StreamReader(errResp.GetResponseStream(), Encoding.UTF8))
-                {
-                    detail = $"HTTP {(int)errResp.StatusCode}: {reader.ReadToEnd()}";
-                }
-            }
-            throw new Exception("questInfo request failed — " + detail, wex);
-        }
-
-        var envelope = JsonUtility.FromJson<ClusterApiResponseEnvelope>(responseText);
-        if (envelope == null || string.IsNullOrEmpty(envelope.response))
-            throw new Exception("Empty or malformed response from /api/cluster questInfo: " + responseText);
-
-        var quest = JsonUtility.FromJson<QuestInfoEnvelope>(envelope.response);
-        if (quest?.quest == null)
-            throw new Exception("questInfo response missing `quest` field — check that eID is valid. Inner: " + envelope.response);
-
-        return quest.quest.allowedPlatforms ?? new string[0];
-    }
 }

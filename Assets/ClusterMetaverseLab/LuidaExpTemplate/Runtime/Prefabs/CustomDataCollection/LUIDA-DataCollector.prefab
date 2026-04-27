@@ -69,16 +69,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
   sourceCode: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
-    = \"callExternalEndpointID_example\";\npNum = 1;\nallowedPlatforms = [];\nisTestMode
-    = true;\n\r\nconst uploadInterval = 1;\r\nconst dataLengthPerUpload = 100;\r\nconst
-    dataByteLengthPerUpload = 100000; // 102400\r\n\r\n$.onStart(() => {\r\n    $.state.customData
-    = [];\r\n    $.state.uploadIndex = 0;\r\n    $.state.elapsedTime = 0;\r\n   
-    // $.state.dataLength = 0;\r\n    $.state.steps = 0;\r\n    $.state.isUploading
-    = false;\r\n})\r\n\r\n$.onUpdate((deltaTime) => {\r\n    if ($.getStateCompat(\"this\",
-    \"exp_recordCustomData\", \"boolean\")) {\r\n        $.setStateCompat(\"this\",
-    \"exp_recordCustomData\", false);\r\n        recordData();\r\n    }\r\n    if
-    ($.getStateCompat(\"this\", \"exp_uploadCustomData\", \"boolean\")) {\r\n       
-    if ($.state.uploadIndex === 0) {\r\n            uploadDataInit();\r\n           
+    = \"callExternalEndpointID_example\";\npNum = 1;\nisTestMode = true;\n\r\nconst
+    uploadInterval = 1;\r\nconst dataLengthPerUpload = 100;\r\nconst dataByteLengthPerUpload
+    = 100000; // 102400\r\n\r\n$.onStart(() => {\r\n    $.state.customData = [];\r\n   
+    $.state.uploadIndex = 0;\r\n    $.state.elapsedTime = 0;\r\n    // $.state.dataLength
+    = 0;\r\n    $.state.steps = 0;\r\n    $.state.isUploading = false;\r\n})\r\n\r\n$.onUpdate((deltaTime)
+    => {\r\n    if ($.getStateCompat(\"this\", \"exp_recordCustomData\", \"boolean\"))
+    {\r\n        $.setStateCompat(\"this\", \"exp_recordCustomData\", false);\r\n       
+    recordData();\r\n    }\r\n    if ($.getStateCompat(\"this\", \"exp_uploadCustomData\",
+    \"boolean\")) {\r\n        if ($.state.uploadIndex === 0) {\r\n            uploadDataInit();\r\n           
     $.setStateCompat(\"this\", \"exp_uploadCustomData\", false);\r\n        }\r\n   
     }\r\n    if ($.state.isUploading) {\r\n        $.state.elapsedTime = $.state.elapsedTime
     + deltaTime;\r\n        if ($.state.elapsedTime >= uploadInterval && $.state.uploadIndex

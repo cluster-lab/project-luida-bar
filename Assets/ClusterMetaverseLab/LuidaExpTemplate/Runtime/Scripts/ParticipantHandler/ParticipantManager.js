@@ -1,24 +1,5 @@
 const REJECTION_GATE_POS = new Vector3(-100, 100, -100);
 
-// Local mirror of the web console's `allowedPlatforms`. The editor fetches
-// this from the backend at upload time and bakes it into ExpIdentifiers.js,
-// so the value here matches what the researcher set on the web console.
-// In local-editor test mode the bake step does not run and the array is
-// empty, which this helper treats as "no restriction" — matching the
-// backend's validatePlatform convention. Used only on the non-test-mode
-// path as defense in depth (the backend remains authoritative).
-function isPlatformAllowedLocally(envInfo) {
-    if (typeof allowedPlatforms === "undefined" || !Array.isArray(allowedPlatforms) || allowedPlatforms.length === 0) {
-        return true;
-    }
-    if (!envInfo) return true;
-    return (envInfo.isVr && allowedPlatforms.indexOf("VR") !== -1)
-        || (envInfo.isWindows && allowedPlatforms.indexOf("WINDOWS") !== -1)
-        || (envInfo.isMacOs && allowedPlatforms.indexOf("MACOS") !== -1)
-        || (envInfo.isAndroid && allowedPlatforms.indexOf("ANDROID") !== -1)
-        || (envInfo.isIos && allowedPlatforms.indexOf("IOS") !== -1);
-}
-
 function enqueueRejection(idfc, reason) {
     $.log("Rejected " + idfc + ": " + (reason || "unknown"));
     $.groupState.participants = $.groupState.participants.filter(
@@ -38,7 +19,6 @@ $.onStart(() => {
   // If isTestMode is true on a non-test deployment, the upload pipeline
   // didn't flip it and platform/eligibility checks are silently skipped.
   $.log("LUIDA boot: isTestMode=" + isTestMode
-        + " allowedPlatforms=" + JSON.stringify(typeof allowedPlatforms !== "undefined" ? allowedPlatforms : null)
         + " expID=" + (typeof expID !== "undefined" ? expID : null)
         + " pNum=" + (typeof pNum !== "undefined" ? pNum : null));
 
@@ -173,14 +153,6 @@ $.onReceive((messageType, arg, sender) => {
                     HandleParticipantsEnough();
                 }
             } else {
-                // Defense in depth: reject mismatched platforms locally before
-                // the backend round-trip, in case the backend platform list
-                // drifts from what was baked into ExpIdentifiers.js.
-                if (!isPlatformAllowedLocally(arg)) {
-                    enqueueRejection(sender.idfc, "PLATFORM_NOT_ALLOWED");
-                    break;
-                }
-
                 // Check eligibility via backend API
                 let pendingChecks = { ...$.state.pendingEligibilityChecks };
                 pendingChecks[sender.idfc] = true;

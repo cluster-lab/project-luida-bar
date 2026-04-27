@@ -238,15 +238,17 @@ MonoBehaviour:
     arg, sender) => {\r\n  switch (messageType) {\r\n    case \"luida_existing_conditions\":\r\n     
     // Receive existing conditions array from server, compute balanced assignment
     locally\r\n      let assignedConditions = calculateBalancedAssignment(arg);\r\n     
-    // Apply debug overrides\r\n      try {\r\n        between_subjects_variables.forEach(v
-    => {\r\n          if (v.debugValue) {\r\n            assignedConditions[v.name]
-    = v.debugValue;\r\n          }\r\n        });\r\n      } catch (e) { /* between_subjects_variables
-    not defined */ }\r\n      $.state.betweenSubjectsConditions = assignedConditions;\r\n     
-    $.state.isServerAssigned = true;\r\n      $.log(\"Conditions balanced locally
-    (debug overrides applied): \" + JSON.stringify(assignedConditions));\r\n     
-    break;\r\n    case \"luida_participants_info\":\r\n      $.groupState.participants
-    = arg.participants;\r\n      $.groupState.sessionID = arg.sessionID;\r\n     
-    sender.send(\"betweenSubjectsCondition\", $.state.betweenSubjectsConditions);\r\n     
+    // Debug overrides apply only in editor test mode \u2014 never on the uploaded
+    world,\r\n      // so a stray debugValue can't silently replace a server-balanced
+    condition.\r\n      if (isTestMode) {\r\n        try {\r\n          between_subjects_variables.forEach(v
+    => {\r\n            if (v.debugValue) {\r\n              assignedConditions[v.name]
+    = v.debugValue;\r\n            }\r\n          });\r\n        } catch (e) { /*
+    between_subjects_variables not defined */ }\r\n      }\r\n      $.state.betweenSubjectsConditions
+    = assignedConditions;\r\n      $.state.isServerAssigned = true;\r\n      $.log(\"Conditions
+    balanced locally\" + (isTestMode ? \" (debug overrides applied)\" : \"\") + \":
+    \" + JSON.stringify(assignedConditions));\r\n      break;\r\n    case \"luida_participants_info\":\r\n     
+    $.groupState.participants = arg.participants;\r\n      $.groupState.sessionID
+    = arg.sessionID;\r\n      sender.send(\"betweenSubjectsCondition\", $.state.betweenSubjectsConditions);\r\n     
     break;\r\n    default:\r\n      break;\r\n  }\r\n});\r\n\r\nfunction updateCondition()
     {\r\n  if ($.state.trialID >= $.state.trialCount) {\r\n    $.sendSignalCompat(\"this\",
     \"exp_resetTrials\");\r\n  } else if ($.state.trialID <= -1) {\r\n    reset();\r\n 
@@ -269,12 +271,15 @@ MonoBehaviour:
     );\r\n  } catch (error) {\r\n    $.log(error);\r\n    $.log(\"Within-subjects
     variables are not defined.\");\r\n    initializeWithinSubjectsConditions([],
     1);\r\n  }\r\n  updateCondition();\r\n}\r\n\r\nfunction initializeBetweenSubjectsConditions()
-    {\r\n  // Debug values only \u2014 actual balanced assignment happens in calculateBalancedAssignment()\r\n 
-    // when existing conditions are received from the server via luida_existing_conditions.\r\n 
-    let betweenSubjectsCondition = {};\r\n  try {\r\n    between_subjects_variables.forEach((v)
-    => {\r\n      if (v.debugValue) {\r\n        betweenSubjectsCondition[v.name]
-    = v.debugValue;\r\n      }\r\n    });\r\n  } catch (e) {\r\n    $.log(\"Between-subjects
-    variables are not defined.\");\r\n  }\r\n  $.state.betweenSubjectsConditions
+    {\r\n  // In editor test mode, seed conditions from debugValue so the experiment
+    can run\r\n  // standalone. On the uploaded world, leave the bag empty \u2014
+    the balanced assignment\r\n  // comes from calculateBalancedAssignment() once
+    the server returns existing conditions\r\n  // via luida_existing_conditions,
+    and no debug value should ever leak into that path.\r\n  let betweenSubjectsCondition
+    = {};\r\n  if (isTestMode) {\r\n    try {\r\n      between_subjects_variables.forEach((v)
+    => {\r\n        if (v.debugValue) {\r\n          betweenSubjectsCondition[v.name]
+    = v.debugValue;\r\n        }\r\n      });\r\n    } catch (e) {\r\n      $.log(\"Between-subjects
+    variables are not defined.\");\r\n    }\r\n  }\r\n  $.state.betweenSubjectsConditions
     = betweenSubjectsCondition;\r\n}\r\n\r\nfunction initializeWithinSubjectsConditions(variables,
     repeatsPerCond = 1) {\r\n  variables = [...variables.sort((a, b) => a.isRandom
     - b.isRandom)];\r\n  const varNames = variables.map((v) => v.name);\r\n\r\n 
