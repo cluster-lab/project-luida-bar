@@ -1,270 +1,474 @@
-using UnityEditor;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using ClusterVR.CreatorKit.Item.Implements;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEditorInternal;
+using UnityEngine;
 
+/// <summary>
+/// Standalone editor window for configuring the LUIDA Data Collector.
+///
+/// Layout:
+///   Mode toggle:  [Builder] [Code Mode]
+///   Section A:    "Collected data items" — labels & types that the gimmick
+///                 and the SendDataToCollector action can write.
+///   Section B:    "Fields to be saved" — what shows up in the uploaded JSON.
+///   Suffix:       optional Custom JS appended after the fields dict.
+///
+/// In Code mode the field list is replaced by a raw JS textarea; Section A
+/// stays editable (it drives the CCK sync header).
+///
+/// Opened from the menu: LUIDA → Configure data collector.
+/// </summary>
 public class DataCollectorConfigTab : EditorWindow
 {
-    private const string DataCollectorPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/CustomDataCollection/LUIDA-DataCollector.prefab";
-    private const string ExpManagersWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/LUIDA-ExpManagers.prefab";
-    private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
+    private const string ExperimentScenesPath = "Assets/_Experiment_/Scenes/";
 
-    private const string IdentifiersAssetPath = "Assets/_Experiment_/Settings/ExpIdentifiers.js";
-    private const string CalculatorTemplateAssetPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/CustomDataCollection/CustomDataCalculatorTemplate.js";
-    private const string DataCollectorScriptFolderPath = "Assets/_Experiment_/Scripts/DataCollectors/";
+    private LuidaDataCollectorConfig _config;
+    private ReorderableList _labelList;
+    private ReorderableList _fieldList;
+    private Vector2 _scrollPosition;
+    private string _lastTrackedScene;
 
-    private GameObject dataCollector; // Only one instance allowed
-    private JavaScriptAsset calculatorAsset;
-    private Vector2 scrollPosition;
-
-    // Store custom data list names and their corresponding calculation scripts
-    private string customDataCalculationScript = "return { foo: 'bar' };";
-    private bool isSubscribed = false;
-
-    public void OnEnable()
+    [MenuItem("LUIDA/Configure data collector")]
+    public static void ShowWindow()
     {
-        // Find or create the Custom Data Collector on window enable
-        FindOrCreateCustomDataCollector();
-        LoadCustomDataScript();
-
-        if (!isSubscribed)
-        {
-            LuidaConfigWindow.OnEditorClosed += SaveChangesToScript;
-            LuidaConfigWindow.OnEditorClosed += OnDisable;
-            isSubscribed = true;
-        }
+        GetWindow<DataCollectorConfigTab>("LUIDA Data Collector");
     }
 
-    public void OnDisable()
+    private void OnEnable()
     {
-        if (isSubscribed)
-        {
-            LuidaConfigWindow.OnEditorClosed -= SaveChangesToScript;
-            LuidaConfigWindow.OnEditorClosed -= OnDisable;
-            isSubscribed = false;
-        }
+        titleContent = new GUIContent("LUIDA Data Collector");
+        EditorSceneManager.activeSceneChangedInEditMode -= HandleSceneChanged;
+        EditorSceneManager.activeSceneChangedInEditMode += HandleSceneChanged;
+        ReloadForActiveScene();
     }
 
-    public void OnGUI()
+    private void OnDisable()
     {
-        GUILayout.Label("Here you can edit the script to define what and how to save custom data", EditorStyles.largeLabel);
+        EditorSceneManager.activeSceneChangedInEditMode -= HandleSceneChanged;
+    }
 
-        if (dataCollector == null)
+    private void OnDestroy()
+    {
+        if (_config != null) SaveAndCombine();
+    }
+
+    private void HandleSceneChanged(UnityEngine.SceneManagement.Scene previous, UnityEngine.SceneManagement.Scene current)
+    {
+        if (_config != null) SaveAndCombine();
+        ReloadForActiveScene();
+        Repaint();
+    }
+
+    private void ReloadForActiveScene()
+    {
+        _config = null;
+        _labelList = null;
+        _fieldList = null;
+        _lastTrackedScene = EditorSceneManager.GetActiveScene().name;
+        EnsureConfigLoaded();
+        BuildLabelList();
+        BuildFieldList();
+    }
+
+    private void EnsureConfigLoaded()
+    {
+        if (_config != null) return;
+        if (!IsExperimentSceneActive()) return;
+        _config = DataCollectorCreateMenu.FindOrCreateBuilderConfig();
+        if (_config != null) LuidaDataCollectorConfigMigrator.Migrate(_config);
+    }
+
+    private bool IsExperimentSceneActive()
+    {
+        string scenePath = EditorSceneManager.GetActiveScene().path;
+        return !string.IsNullOrEmpty(scenePath) && scenePath.StartsWith(ExperimentScenesPath);
+    }
+
+    // ─── OnGUI ──────────────────────────────────────────────────────────
+
+    private void OnGUI()
+    {
+        string activeSceneName = EditorSceneManager.GetActiveScene().name;
+        if (activeSceneName != _lastTrackedScene)
         {
-            FindOrCreateCustomDataCollector();
+            ReloadForActiveScene();
+        }
+
+        if (!IsExperimentSceneActive())
+        {
+            EditorGUILayout.HelpBox(
+                "Open a LUIDA experiment scene (under Assets/_Experiment_/Scenes/) to configure the data collector.\n" +
+                "Use LUIDA → Configure experiment automation to create one.",
+                MessageType.Info);
+            return;
+        }
+
+        EnsureConfigLoaded();
+        if (_config == null)
+        {
+            EditorGUILayout.HelpBox(
+                "Could not locate or create the DataCollector config asset. " +
+                "Save the scene first, then reopen this window.",
+                MessageType.Warning);
+            return;
+        }
+
+        _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
+
+        DrawModeToggle();
+        EditorGUILayout.Space();
+        DrawDataCollectorPresenceCheck();
+        EditorGUILayout.Space();
+
+        DrawLabelSection();    // Section A — always visible in both modes
+        EditorGUILayout.Space();
+
+        if (_config.useCustomCodeMode)
+        {
+            DrawCodeModeUI();
         }
         else
         {
-            EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Double click this field to edit the script:");
-            GUI.enabled = false; // Disable GUI interaction for the next control
-            EditorGUILayout.ObjectField(calculatorAsset, typeof(ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset), false);
-            GUI.enabled = true; // Re-enable GUI interaction
-            EditorGUILayout.Space();
-
-            EditorGUILayout.LabelField("Or edit it directly in the textarea below:");
-            customDataCalculationScript = EditorGUILayout.TextArea(customDataCalculationScript, GUILayout.Height(300));
-
-            EditorGUILayout.Space();
-
-            EditorGUILayout.LabelField("Available variables within the script: ", GUILayout.Width(200));
-            EditorGUILayout.LabelField("CONDITION", EditorStyles.boldLabel, GUILayout.Width(100));
-            EditorGUILayout.HelpBox("⋅ Values are determined by your configured experimental variables and vary across trials.\n⋅ Only available during the trial states if you have enabled the LUIDA experiment progress automation feature.\n⋅ Use CONDITION[\"variable_name\"] to reference a specific condition within the current trial.", MessageType.Info);
-
-            EditorGUILayout.LabelField("PARTICIPANTS", EditorStyles.boldLabel);
-            EditorGUILayout.HelpBox("⋅ An array of PlayerHandle of the participants joining this experiment.\n⋅ Use `PARTICIPANTS[1]` to retrieve the first participant, `PARTICIPANTS[2]` to retrieve the second participant, and so on.", MessageType.Info);
-
-            EditorGUILayout.LabelField("COLLECTED_DATA", EditorStyles.boldLabel);
-            EditorGUILayout.HelpBox("⋅ The collected data you send to the LUIDA data collector using the SendDataToCollector action/function.\n⋅ Use `COLLECTED_DATA[your_data_label]` to retrieve the value.", MessageType.Info);
-
-            EditorGUILayout.Space(30);
-            EditorGUILayout.HelpBox("Ensure returning something in the end of the code block.\ne.g., `return { score: 100 };", MessageType.Warning);
+            DrawBuilderModeUI();
         }
+
+        EditorGUILayout.Space();
+        DrawSaveActions();
+
+        EditorGUILayout.EndScrollView();
     }
 
-    private void FindOrCreateCustomDataCollector()
-    {
-        FindCustomDataCollector();
-        if (dataCollector == null) CreateCustomDataCollector();
-        if (calculatorAsset == null) DuplicateAndSetupCalculatorScript();
-        EnsureAccessToExpConditions();
-    }
+    // ─── Mode toggle ────────────────────────────────────────────────────
 
-    private void FindCustomDataCollector()
+    private void DrawModeToggle()
     {
-        GameObject[] rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
+        EditorGUILayout.BeginHorizontal();
+        bool isBuilder = !_config.useCustomCodeMode;
 
-        foreach (GameObject obj in rootObjects)
+        // Plain Buttons (not Toggles) so a click unambiguously "requests this mode".
+        // The active one is highlighted via backgroundColor.
+        GUI.backgroundColor = isBuilder ? new Color(0.4f, 0.8f, 0.5f) : Color.white;
+        if (GUILayout.Button("  Builder  ", GUILayout.Height(24), GUILayout.Width(110)))
         {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == DataCollectorPrefabPath)
+            if (!isBuilder) SwitchToBuilder();
+        }
+        GUI.backgroundColor = !isBuilder ? new Color(0.95f, 0.7f, 0.3f) : Color.white;
+        if (GUILayout.Button("  Code Mode  ", GUILayout.Height(24), GUILayout.Width(110)))
+        {
+            if (isBuilder) SwitchToCode();
+        }
+        GUI.backgroundColor = Color.white;
+
+        GUILayout.FlexibleSpace();
+        EditorGUILayout.LabelField(
+            _config.useCustomCodeMode ? "Editing raw JS body" : "Editing fields visually",
+            EditorStyles.miniLabel,
+            GUILayout.Width(160));
+        EditorGUILayout.EndHorizontal();
+    }
+
+    private void SwitchToCode()
+    {
+        if (!EditorUtility.DisplayDialog(
+            "Switch to Code Mode?",
+            "Switching to Code Mode will seed the raw JS area with the current Builder output. " +
+            "After that, the Builder field list will no longer drive saved JS — your raw JS will. " +
+            "Switch back later to discard the raw JS and use Builder again.",
+            "Switch", "Cancel")) return;
+
+        Undo.RecordObject(_config, "Switch to Code Mode");
+        _config.rawJs = LuidaDataCollectorJsGenerator.GenerateBuilderBodyOnly(_config);
+        _config.useCustomCodeMode = true;
+        EditorUtility.SetDirty(_config);
+    }
+
+    private void SwitchToBuilder()
+    {
+        if (!EditorUtility.DisplayDialog(
+            "Switch to Builder Mode?",
+            "Switching back to Builder Mode will discard your hand-edited raw JS. " +
+            "The field list will drive the saved JS instead. Continue?",
+            "Discard raw JS", "Cancel")) return;
+
+        Undo.RecordObject(_config, "Switch to Builder Mode");
+        _config.useCustomCodeMode = false;
+        _config.rawJs = string.Empty;
+        EditorUtility.SetDirty(_config);
+    }
+
+    // ─── Section A — Collected data items ───────────────────────────────
+
+    private void BuildLabelList()
+    {
+        if (_config == null) return;
+        _labelList = new ReorderableList(_config.collectedLabels, typeof(CollectedLabel), true, true, true, true)
+        {
+            drawHeaderCallback = rect => EditorGUI.LabelField(rect, "Label                          Type"),
+            elementHeight = CalculatorFieldDrawers.LineH + 6f,
+            drawElementCallback = (rect, index, isActive, isFocused) =>
             {
-                dataCollector = obj;
-                calculatorAsset = FindExistingCalculatorScript();
-                return;
-            }
-        }
+                if (index < 0 || index >= _config.collectedLabels.Count) return;
+                var entry = _config.collectedLabels[index];
+                if (entry == null) return;
 
-        dataCollector = null;
-        calculatorAsset = null;
-    }
+                float typeWidth = 110f, badgeWidth = 46f, gap = 6f;
+                float labelWidth = rect.width - typeWidth - badgeWidth - 2 * gap;
 
-    private void CreateCustomDataCollector()
-    {
-        GameObject dataCollectorPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(DataCollectorPrefabPath);
-        if (dataCollectorPrefab == null)
-        {
-            Debug.LogError("DataCollector prefab not found at path: " + DataCollectorPrefabPath);
-            return;
-        }
-        GameObject newCollectorInstance = (GameObject)PrefabUtility.InstantiatePrefab(dataCollectorPrefab);
-        newCollectorInstance.name = "LUIDA-DataCollector";
-        dataCollector = newCollectorInstance;
-    }
+                Rect labelRect = new Rect(rect.x, rect.y + 2, labelWidth, CalculatorFieldDrawers.LineH);
+                Rect typeRect  = new Rect(labelRect.xMax + gap, rect.y + 2, typeWidth, CalculatorFieldDrawers.LineH);
+                Rect badgeRect = new Rect(typeRect.xMax + gap, rect.y + 2, badgeWidth, CalculatorFieldDrawers.LineH);
 
-    private ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset FindExistingCalculatorScript()
-    {
-        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        string calculatorPath = $"{DataCollectorScriptFolderPath}{sceneName}.js";
-        var asset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(calculatorPath);
-        return asset;
-    }
-
-    private void DuplicateAndSetupCalculatorScript()
-    {
-        var identifiersAsset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(IdentifiersAssetPath);
-        var calculatorTemplateAsset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(CalculatorTemplateAssetPath);
-
-        if (identifiersAsset == null || calculatorTemplateAsset == null)
-        {
-            Debug.LogError("Failed to load Identifiers or Calculator Template assets.");
-            return;
-        }
-
-        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        string newCalculatorPath = $"{DataCollectorScriptFolderPath}{sceneName}.js";
-
-        if (!Directory.Exists(DataCollectorScriptFolderPath))
-        {
-            Directory.CreateDirectory(DataCollectorScriptFolderPath);
-        }
-
-        AssetDatabase.CopyAsset(CalculatorTemplateAssetPath, newCalculatorPath);
-        AssetDatabase.Refresh();
-
-        var newCalculatorAsset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(newCalculatorPath);
-        if (newCalculatorAsset == null)
-        {
-            Debug.LogError("Failed to duplicate the Calculator template asset.");
-            return;
-        }
-
-        AssignScriptToCombiner(dataCollector, newCalculatorAsset);
-        calculatorAsset = newCalculatorAsset;
-    }
-
-    private void EnsureAccessToExpConditions()
-    {
-        var itemGroupMember = dataCollector.GetComponent<ItemGroupMember>()
-            ?? (dataCollector.AddComponent(typeof(ItemGroupMember)) as ItemGroupMember);
-
-        foreach (GameObject obj in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
-        {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) != ExpManagersWrapperPrefabPath) continue;
-            for (int i = 0; i < obj.transform.childCount; i++)
-            {
-                Transform child = obj.transform.GetChild(i);
-                if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == ConditionManagerPrefabPath)
+                EditorGUI.BeginChangeCheck();
+                string newLabel = EditorGUI.TextField(labelRect, entry.label ?? string.Empty);
+                if (EditorGUI.EndChangeCheck() && newLabel != entry.label)
                 {
-                    ItemGroupHost host = child.GetComponent<ItemGroupHost>();
-                    if (host != null)
-                    {
-                        SerializedObject serializedItemGroupMember = new SerializedObject(itemGroupMember);
-                        serializedItemGroupMember.FindProperty("host").objectReferenceValue = host;
-                        serializedItemGroupMember.ApplyModifiedProperties();
-                    }
+                    Undo.RecordObject(_config, "Edit collected label");
+                    entry.label = newLabel;
+                    EditorUtility.SetDirty(_config);
                 }
-            }
-        }
-    }
 
-    private void SaveChangesToScript()
-    {
-        if (calculatorAsset == null)
-        {
-            Debug.LogError("Calculator asset is null.");
-            return;
-        }
+                EditorGUI.BeginChangeCheck();
+                var picked = (CollectedValueType)EditorGUI.EnumPopup(typeRect, entry.type);
+                if (EditorGUI.EndChangeCheck() && picked != entry.type)
+                {
+                    Undo.RecordObject(_config, "Edit collected type");
+                    entry.type = picked;
+                    EditorUtility.SetDirty(_config);
+                }
 
-        if (dataCollector == null)
-        {
-            Debug.LogError("Custom data collector Gameobject is null.");
-            return;
-        }
-
-        // Write the script content to the file
-        string path = AssetDatabase.GetAssetPath(calculatorAsset);
-        File.WriteAllText(path, customDataCalculationScript);
-        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
-
-        var scriptCombiner = dataCollector.GetComponent<ScriptableClusterScriptCombiner>();
-        if (scriptCombiner != null)
-        {
-            scriptCombiner.CombineScripts();
-        }
-        else
-        {
-            Debug.LogError("ScriptableClusterScriptCombiner component not found on: " + dataCollector.name);
-        }
-
-        Debug.Log($"Custom data collector's script saved to {path}");
-    }
-
-    private void AssignScriptToCombiner(GameObject collectorInstance, ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset scriptAsset)
-    {
-        var scriptCombiner = collectorInstance.GetComponent<ScriptableClusterScriptCombiner>();
-        if (scriptCombiner != null)
-        {
-            var identifiersAsset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(IdentifiersAssetPath);
-            if (identifiersAsset == null)
+                var (badgeText, color) = CalculatorTypeBadge.ForCollectedValueType(entry.type);
+                CalculatorTypeBadge.Draw(badgeRect, badgeText, color);
+            },
+            onAddCallback = list =>
             {
-                Debug.LogError("Failed to load Identifiers asset.");
-                return;
-            }
+                Undo.RecordObject(_config, "Add collected label");
+                _config.collectedLabels.Add(new CollectedLabel
+                {
+                    label = $"label{_config.collectedLabels.Count + 1}",
+                    type = CollectedValueType.Integer,
+                });
+                EditorUtility.SetDirty(_config);
+            },
+            onRemoveCallback = list =>
+            {
+                if (list.index < 0 || list.index >= _config.collectedLabels.Count) return;
+                Undo.RecordObject(_config, "Remove collected label");
+                _config.collectedLabels.RemoveAt(list.index);
+                EditorUtility.SetDirty(_config);
+            },
+            onReorderCallback = list => EditorUtility.SetDirty(_config),
+        };
+    }
 
-            scriptCombiner.ReplaceScript(identifiersAsset, 0, null, 0, false);
-            scriptCombiner.ReplaceScript(scriptAsset, 2, null, 0, true);
+    private void DrawLabelSection()
+    {
+        GUILayout.Label("Collected data items", EditorStyles.largeLabel);
+        EditorGUILayout.HelpBox(
+            "Labels & types that LuidaSendDataToCollectorGimmick and the state-listening " +
+            "\"Send data to collector\" action can write into $.groupState.collectedData. " +
+            "These appear as dropdown options in the field sources below and in the gimmick inspector. " +
+            "String-typed items can only be set by the action (CCK can't carry strings).",
+            MessageType.Info);
 
-            EditorUtility.SetDirty(scriptCombiner);
-            EditorUtility.SetDirty(identifiersAsset);
-            EditorUtility.SetDirty(scriptAsset);
+        if (_labelList == null) BuildLabelList();
+        if (_labelList != null) _labelList.DoLayoutList();
 
-            AssetDatabase.SaveAssets();
-        }
-        else
+        WarnLabelIssues();
+    }
+
+    private void WarnLabelIssues()
+    {
+        var seen = new HashSet<string>();
+        var collisions = new HashSet<string>();
+        var invalid = new List<string>();
+        foreach (var l in _config.collectedLabels)
         {
-            Debug.LogError("ScriptableClusterScriptCombiner component not found on the DataCollector instance.");
+            if (l == null) continue;
+            string n = l.label ?? string.Empty;
+            if (!string.IsNullOrEmpty(n) && !seen.Add(n)) collisions.Add(n);
+            if (!string.IsNullOrEmpty(n) && !LuidaDataCollectorJsGenerator.IsValidFieldName(n)) invalid.Add(n);
+        }
+        if (collisions.Count > 0)
+            EditorGUILayout.HelpBox("Duplicate labels: " + string.Join(", ", collisions), MessageType.Error);
+        if (invalid.Count > 0)
+            EditorGUILayout.HelpBox(
+                "Invalid label names (must be letters/digits/underscores; cannot start with a digit): " +
+                string.Join(", ", invalid),
+                MessageType.Warning);
+    }
+
+    // ─── Section B — Fields to be saved (Builder mode) ──────────────────
+
+    private void DrawBuilderModeUI()
+    {
+        GUILayout.Label("Fields to be saved", EditorStyles.largeLabel);
+        EditorGUILayout.HelpBox(
+            "Each row becomes one entry of the JSON object uploaded per recording tick. " +
+            "Pick a Source per field — Builder maps to ClusterScript types: " +
+            "Bool (green), Int/Num (blue), Vec2/Vec3 (purple), Str (orange). " +
+            "Use Arithmetic for + − × ÷ on multiple operands, Conditional for if/else.",
+            MessageType.Info);
+
+        DrawFieldList();
+    }
+
+    private void BuildFieldList()
+    {
+        if (_config == null) return;
+        _fieldList = new ReorderableList(_config.fields, typeof(DataCollectorField), true, true, true, true)
+        {
+            drawHeaderCallback = rect => EditorGUI.LabelField(rect, "Name           Source                       Type"),
+            elementHeightCallback = index =>
+            {
+                if (index < 0 || index >= _config.fields.Count) return CalculatorFieldDrawers.LineStep;
+                return CalculatorFieldDrawers.ComputeFieldHeight(_config.fields[index]);
+            },
+            drawElementCallback = (rect, index, isActive, isFocused) =>
+            {
+                if (index < 0 || index >= _config.fields.Count) return;
+                var field = _config.fields[index];
+                if (field == null) return;
+
+                int captured = index;
+                CalculatorFieldDrawers.DrawField(rect, field, _config, () =>
+                {
+                    Undo.RecordObject(_config, "Remove field");
+                    if (captured >= 0 && captured < _config.fields.Count)
+                        _config.fields.RemoveAt(captured);
+                    EditorUtility.SetDirty(_config);
+                    GUIUtility.ExitGUI();
+                });
+            },
+            onAddCallback = list =>
+            {
+                Undo.RecordObject(_config, "Add field");
+                string defaultLabel = _config.collectedLabels.Count > 0 ? _config.collectedLabels[0].label : "";
+                _config.fields.Add(new DataCollectorField
+                {
+                    fieldName = $"field{_config.fields.Count + 1}",
+                    source = DataFieldSourceKind.Collected,
+                    collectedLabel = defaultLabel,
+                });
+                EditorUtility.SetDirty(_config);
+            },
+            onRemoveCallback = list =>
+            {
+                if (list.index < 0 || list.index >= _config.fields.Count) return;
+                Undo.RecordObject(_config, "Remove field");
+                _config.fields.RemoveAt(list.index);
+                EditorUtility.SetDirty(_config);
+            },
+            onReorderCallback = list => EditorUtility.SetDirty(_config),
+        };
+    }
+
+    private void DrawFieldList()
+    {
+        if (_fieldList == null) BuildFieldList();
+        if (_fieldList == null) return;
+        _fieldList.DoLayoutList();
+
+        var seen = new HashSet<string>();
+        var collisions = new HashSet<string>();
+        var invalid = new List<string>();
+        foreach (var f in _config.fields)
+        {
+            if (f == null) continue;
+            string n = f.fieldName ?? string.Empty;
+            if (!string.IsNullOrEmpty(n) && !seen.Add(n)) collisions.Add(n);
+            if (!string.IsNullOrEmpty(n) && !LuidaDataCollectorJsGenerator.IsValidFieldName(n)) invalid.Add(n);
+        }
+        if (collisions.Count > 0)
+            EditorGUILayout.HelpBox("Duplicate field names: " + string.Join(", ", collisions), MessageType.Error);
+        if (invalid.Count > 0)
+            EditorGUILayout.HelpBox(
+                "Invalid field names (must be letters/digits/underscores; cannot start with a digit): " +
+                string.Join(", ", invalid) + ". These fields are skipped during JS generation.",
+                MessageType.Warning);
+    }
+
+    // ─── Code mode ──────────────────────────────────────────────────────
+
+    private void DrawCodeModeUI()
+    {
+        GUILayout.Label("Calculator body (Code mode)", EditorStyles.largeLabel);
+        EditorGUILayout.HelpBox(
+            "This is the full body of saveData(). The CCK sync header is still auto-prepended " +
+            "on Save for registered labels — do not edit between the AUTO-GENERATED markers " +
+            "in the written .js file. End with `return { ... };`.",
+            MessageType.Info);
+
+        EditorGUI.BeginChangeCheck();
+        var newRaw = EditorGUILayout.TextArea(_config.rawJs ?? string.Empty, GUILayout.MinHeight(360));
+        if (EditorGUI.EndChangeCheck() && newRaw != _config.rawJs)
+        {
+            Undo.RecordObject(_config, "Edit raw calculator JS");
+            _config.rawJs = newRaw;
+            EditorUtility.SetDirty(_config);
         }
     }
 
-    private void LoadCustomDataScript()
-    {
-        if (calculatorAsset == null)
-        {
-            return;
-        }
+    // ─── Top-of-window status ───────────────────────────────────────────
 
-        string path = AssetDatabase.GetAssetPath(calculatorAsset);
-        if (File.Exists(path))
+    private void DrawDataCollectorPresenceCheck()
+    {
+        var collector = Object.FindObjectOfType<LuidaDataCollector>();
+        if (collector == null)
         {
-            customDataCalculationScript = File.ReadAllText(path);
+            EditorGUILayout.HelpBox(
+                "No LUIDA-DataCollector is present in this scene. " +
+                "Use GameObject → LUIDA → Data Collector to add one. " +
+                "Until then, any gimmick writes are silent no-ops.",
+                MessageType.Warning);
+
+            if (GUILayout.Button("Create LUIDA-DataCollector in this scene", GUILayout.Height(24)))
+            {
+                DataCollectorCreateMenu.CreateDataCollectorInScene(registerUndo: true, selectObject: false);
+                ReloadForActiveScene();
+                GUIUtility.ExitGUI();
+            }
         }
-        else
+    }
+
+    // ─── Save / preview ─────────────────────────────────────────────────
+
+    private void DrawSaveActions()
+    {
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Preview generated JS", GUILayout.Height(26)))
         {
-            Debug.LogError("Script file not found at path: " + path);
+            string preview = LuidaDataCollectorJsGenerator.Generate(_config);
+            OpenPreviewWindow(preview);
         }
+        if (GUILayout.Button("Save & Combine", GUILayout.Height(26)))
+        {
+            SaveAndCombine();
+        }
+        EditorGUILayout.EndHorizontal();
+    }
+
+    private static void OpenPreviewWindow(string content)
+    {
+        if (EditorWindow.HasOpenInstances<TextAreaOverlayWindow>()) return;
+        var mouse = Event.current != null ? GUIUtility.GUIToScreenPoint(Event.current.mousePosition)
+                                          : new Vector2(400, 400);
+        Rect popupRect = new Rect(mouse.x - 320, mouse.y, 640, 480);
+        var style = new GUIStyle(EditorStyles.textArea)
+        {
+            wordWrap = false,
+            richText = false,
+            font = EditorStyles.miniFont,
+        };
+        TextAreaOverlayWindow.Show(popupRect, content, _ => { /* read-only preview */ }, style);
+    }
+
+    private void SaveAndCombine()
+    {
+        if (_config == null) return;
+        DataCollectorJsSaver.WriteAndCombine(_config);
+        AssetDatabase.SaveAssets();
     }
 }
+#endif

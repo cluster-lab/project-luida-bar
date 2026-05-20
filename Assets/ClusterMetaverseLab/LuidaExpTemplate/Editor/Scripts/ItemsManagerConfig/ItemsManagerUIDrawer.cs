@@ -71,9 +71,9 @@ public static class ItemsManagerUIDrawer
             "$.subNode('{_childName_}').setRotation($.subNode('{_childName_}').getRotation().multiply(new Quaternion().setFromEulerAngles(new Vector3({_x_}, {_y_}, {_z_}))))",
             new[] { "childName", "x", "y", "z" }),
         new StateListeningAction("To next state", "$.sendSignalCompat('this', 'state_triggerTransition');"),
-        new StateListeningAction("Send data to collector", "if (!$.groupState.collectedData) $.groupState.collectedData = {};\n    let collectedData = $.groupState.collectedData;\n    collectedData['{_label_}'] = {_value_};\n    $.groupState.collectedData = collectedData;", new[] { "label", "value" }),
-        new StateListeningAction("Process and save collected data", "$.sendSignalCompat('this', 'exp_recordCustomData');"),
-        new StateListeningAction("Upload collected data", "$.sendSignalCompat('this', 'exp_uploadCustomData');"),
+        new StateListeningAction("Send data to collector", "if (!$.groupState.collectedData) $.groupState.collectedData = {};\n    let collectedData = $.groupState.collectedData;\n    collectedData['{_label_}'] = {_value_};\n    $.groupState.collectedData = collectedData;", new[] { "label", "value" }, _displayLabel: "Add value to collector"),
+        new StateListeningAction("Process and save collected data", "$.sendSignalCompat('this', 'exp_recordCustomData');", _displayLabel: "Save row to buffer"),
+        new StateListeningAction("Upload collected data", "$.sendSignalCompat('this', 'exp_uploadCustomData');", _displayLabel: "Submit collected data"),
         new StateListeningAction("Set text", "$.subNode('Text').setText(`{_text_}`);", new[] { "text" }),
         new StateListeningAction("Send Haptics",
             "PARTICIPANTS[{_participantId_}].send('haptics', {target: {_target_}, frequency: {_frequency_}, amplitude: {_amplitude_}, duration: {_duration_}});",
@@ -492,7 +492,9 @@ public static class ItemsManagerUIDrawer
                 float dropdownWidth = availableWidth - ifButtonAndSpacingWidth - dupButtonAndSpacingWidth;
                 Rect dropdownRect = new Rect(currentX, currentY, dropdownWidth, lineHeight);
 
-                var options = AvailableStateListeningActions.Select(a => a.actionType).ToList();
+                // Display labels: fall back to actionType when no displayLabel is set.
+                // Selection logic below still keys off actionType (the serialization key).
+                var options = AvailableStateListeningActions.Select(a => a.GetDisplayLabel()).ToList();
                 options.Insert(0, "Select action");
                 options.Add("Customized Action");
 
@@ -997,13 +999,33 @@ public static class ItemsManagerUIDrawer
                                 {
                                     Rect labelRect = new Rect(rect.x + 15, currentY, EditorGUIUtility.labelWidth * 0.6f, lineHeight);
                                     EditorGUI.LabelField(labelRect, variableName);
-                                    Rect fieldRect = new Rect(labelRect.xMax, currentY, rect.width - labelRect.width - 15, lineHeight);
+                                    // For the "Send data to collector" action's label input, append a small ⚙
+                                    // button that opens the LUIDA Data Collector window so users can manage
+                                    // registered labels without leaving the action UI.
+                                    bool isCollectorLabelField =
+                                        action.predefinedActionTemplate.actionType == "Send data to collector"
+                                        && variableName == "label";
+                                    float configButtonWidth = isCollectorLabelField ? 26f : 0f;
+                                    Rect fieldRect = new Rect(labelRect.xMax, currentY,
+                                        rect.width - labelRect.width - 15 - configButtonWidth - (configButtonWidth > 0 ? 4f : 0f),
+                                        lineHeight);
                                     string newValue = EditorGUI.TextField(fieldRect, currentValue);
                                     if (newValue != currentValue)
                                     {
                                         Undo.RecordObject(itemDataAsset, "Edit Variable " + variableName);
                                         action.variableValues[variableName] = newValue;
                                         EditorUtility.SetDirty(itemDataAsset);
+                                    }
+                                    if (isCollectorLabelField)
+                                    {
+                                        Rect btnRect = new Rect(fieldRect.xMax + 4f, currentY, configButtonWidth, lineHeight);
+                                        var btn = EditorGUIUtility.IconContent("d_Settings@2x");
+                                        if (btn == null || btn.image == null) btn = new GUIContent("⚙");
+                                        btn.tooltip = "Open the LUIDA Data Collector configuration window";
+                                        if (GUI.Button(btnRect, btn, EditorStyles.miniButton))
+                                        {
+                                            DataCollectorConfigTab.ShowWindow();
+                                        }
                                     }
                                     currentY += lineHeight + spacing;
                                 }

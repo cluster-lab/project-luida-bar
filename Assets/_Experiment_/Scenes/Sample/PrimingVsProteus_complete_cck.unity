@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17412737, g: 0.21774727, b: 0.29994345, a: 1}
+  m_IndirectSpecularColor: {r: 0.17412753, g: 0.21774767, b: 0.29994398, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -730,8 +730,6 @@ GameObject:
   - component: {fileID: 622263567}
   - component: {fileID: 622263574}
   - component: {fileID: 622263573}
-  - component: {fileID: 622263576}
-  - component: {fileID: 622263575}
   m_Layer: 0
   m_Name: SafeRoadCheckPoint
   m_TagString: Untagged
@@ -788,16 +786,6 @@ MonoBehaviour:
     type: 0
     value:
       boolValue: 0
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
-  - target: 4
-    specifiedTargetItem: {fileID: 0}
-    key: isSafeRoad
-    type: 1
-    value:
-      boolValue: 1
       floatValue: 0
       integerValue: 0
       vector2Value: {x: 0, y: 0}
@@ -886,8 +874,88 @@ MonoBehaviour:
     - singleStatement:
         targetState:
           target: 2
+          key: luida_collect_isSafeRoad
+          parameterType: 1
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 1
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+    - singleStatement:
+        targetState:
+          target: 2
           key: exp_recordCustomData
-          parameterType: 0
+          parameterType: 1
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 1
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+    - singleStatement:
+        targetState:
+          target: 2
+          key: exp_uploadCustomData
+          parameterType: 1
         expression:
           type: 0
           value:
@@ -932,88 +1000,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 622263566}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 838eb61fdcc13c74ebe52340ebdb826c, type: 3}
+  m_Script: {fileID: 11500000, guid: bd3c4ce209fc76b42b4138c809a18253, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   copiedComponent: {fileID: 622263573}
   target: 3
   key: saveData
   item: {fileID: 622263569}
---- !u!114 &622263575
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 622263566}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 0
-      key: saveData
-    item: {fileID: 622263569}
-  logic:
-    statements:
-    - singleStatement:
-        targetState:
-          target: 2
-          key: exp_uploadCustomData
-          parameterType: 0
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 1
-              boolValue: 1
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 2
-              key: 
-              type: 6
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 0
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 2
-                  key: 
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
---- !u!114 &622263576
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 622263566}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4b03a4561acce04d98f7f9459a22b85, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  copiedComponent: {fileID: 622263575}
-  target: 3
-  key: saveData
-  item: {fileID: 622263569}
+  doAdd: 1
+  doSave: 1
+  doSubmit: 1
+  label: isSafeRoad
+  valueType: 1
+  boolValue: 1
+  floatValue: 0
+  integerValue: 0
+  vector2Value: {x: 0, y: 0}
+  vector3Value: {x: 0, y: 0, z: 0}
 --- !u!1001 &736593713
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1699,31 +1702,31 @@ PrefabInstance:
         = [];\r\n  for (const value of first.values) {\r\n    for (const combo of
         restCombinations) {\r\n      const newCombo = {};\r\n      newCombo[first.name]
         = value;\r\n      for (const k in combo) { newCombo[k] = combo[k]; }\r\n     
-        combinations.push(newCombo);\r\n    }\r\n  }\r\n  return combinations;\r\n}\r\n\r\n/**\r\n
-        * Given an array of existing condition objects (from previous sessions),\r\n
-        * find the least-used combination and return it.\r\n * Ties are broken randomly.\r\n
-        */\r\nfunction calculateBalancedAssignment(existingConditions) {\r\n  let
-        variables = [];\r\n  try {\r\n    variables = between_subjects_variables.map(v
-        => ({ name: v.name, values: v.values }));\r\n  } catch (e) {\r\n    return
-        {};\r\n  }\r\n  if (variables.length === 0) return {};\r\n\r\n  const allCombinations
-        = generateAllCombinations(variables);\r\n\r\n  // Build a count for each
-        combination using a stable string key\r\n  const counts = {};\r\n  for (const
-        combo of allCombinations) {\r\n    const key = JSON.stringify(combo, Object.keys(combo).sort());\r\n   
-        counts[key] = 0;\r\n  }\r\n\r\n  // Count occurrences in existing conditions\r\n 
-        for (const cond of existingConditions) {\r\n    if (cond && typeof cond ===
-        \"object\") {\r\n      // Normalize to same key format\r\n      const normalized
-        = {};\r\n      for (const combo of allCombinations) {\r\n        for (const
-        k of Object.keys(combo)) {\r\n          if (cond[k] !== undefined) normalized[k]
-        = \"\" + cond[k];\r\n        }\r\n        break; // just need the key names
-        from the first combo\r\n      }\r\n      const key = JSON.stringify(normalized,
-        Object.keys(normalized).sort());\r\n      if (key in counts) {\r\n       
-        counts[key]++;\r\n      }\r\n    }\r\n  }\r\n\r\n  // Find minimum count\r\n 
-        let minCount = Infinity;\r\n  for (const key in counts) {\r\n    if (counts[key]
-        < minCount) minCount = counts[key];\r\n  }\r\n\r\n  // Collect all combinations
-        with minimum count\r\n  const leastUsed = allCombinations.filter(combo =>
-        {\r\n    const key = JSON.stringify(combo, Object.keys(combo).sort());\r\n   
-        return counts[key] === minCount;\r\n  });\r\n\r\n  // Random tie-break\r\n 
-        return leastUsed[Math.floor(Math.random() * leastUsed.length)];\r\n}\r\n"
+        combinations.push(newCombo);\r\n    }\r\n  }\r\n  return combinations;\r\n}\r\n\r\n/**\r\n*
+        Given an array of existing condition objects (from previous sessions),\r\n*
+        find the least-used combination and return it.\r\n * Ties are broken randomly.\r\n*/\r\nfunction
+        calculateBalancedAssignment(existingConditions) {\r\n  let variables = [];\r\n 
+        try {\r\n    variables = between_subjects_variables.map(v => ({ name: v.name,
+        values: v.values }));\r\n  } catch (e) {\r\n    return {};\r\n  }\r\n  if
+        (variables.length === 0) return {};\r\n\r\n  const allCombinations = generateAllCombinations(variables);\r\n\r\n 
+        // Build a count for each combination using a stable string key\r\n  const
+        counts = {};\r\n  for (const combo of allCombinations) {\r\n    const key
+        = JSON.stringify(combo, Object.keys(combo).sort());\r\n    counts[key] =
+        0;\r\n  }\r\n\r\n  // Count occurrences in existing conditions\r\n  for (const
+        cond of existingConditions) {\r\n    if (cond && typeof cond === \"object\")
+        {\r\n      // Normalize to same key format\r\n      const normalized = {};\r\n     
+        for (const combo of allCombinations) {\r\n        for (const k of Object.keys(combo))
+        {\r\n          if (cond[k] !== undefined) normalized[k] = \"\" + cond[k];\r\n       
+        }\r\n        break; // just need the key names from the first combo\r\n     
+        }\r\n      const key = JSON.stringify(normalized, Object.keys(normalized).sort());\r\n     
+        if (key in counts) {\r\n        counts[key]++;\r\n      }\r\n    }\r\n  }\r\n\r\n 
+        // Find minimum count\r\n  let minCount = Infinity;\r\n  for (const key in
+        counts) {\r\n    if (counts[key] < minCount) minCount = counts[key];\r\n 
+        }\r\n\r\n  // Collect all combinations with minimum count\r\n  const leastUsed
+        = allCombinations.filter(combo => {\r\n    const key = JSON.stringify(combo,
+        Object.keys(combo).sort());\r\n    return counts[key] === minCount;\r\n 
+        });\r\n\r\n  // Random tie-break\r\n  return leastUsed[Math.floor(Math.random()
+        * leastUsed.length)];\r\n}\r\n"
       objectReference: {fileID: 0}
     - target: {fileID: 3321547682731800438, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
@@ -3604,32 +3607,29 @@ PrefabInstance:
         () {\r\n    let returnData = $.state.customData;\r\n    if (!Array.isArray(returnData))
         returnData = [];\r\n    const CONDITION = $.groupState.currentCondition;\r\n   
         const PARTICIPANTS = [null].concat($.groupState.participants);\r\n    const
-        COLLECTED_DATA = $.groupState.collectedData;\r\n    function saveData() {\r\n\r\n/*\r\n#
-        Available Variables in LUIDA Data Collector Script\r\n\r\nThe script for
-        LUIDA Data Collector is primarily to be written using ClusterScript (https://docs.cluster.mu/script/index.html).\r\n\r\nWe
-        also provide the following variables that work with LUIDA-only features.\r\n\r\nTip:
-        When asking an LLM service for coding assistance, first share the `Asset/Doc/CCK-Types.d.ts`
-        file and this comment section with it.\r\n\r\n### CONDITION\r\n    - Only
-        available if **LUIDA experiment progress automation feature is enabled and
-        during the trial states** (e.g., `Trial - Start`, `Trial - Rest`).\r\n   
-        - Contains values from your configured experimental variables for the current
-        trial.\r\n    - Use `CONDITION[\"your_variable_name\"]` to retrieve a specific
-        condition value within the current trial.\r\n\r\n### PARTICIPANTS\r\n   
-        - An array of PlayerHandle of the participants joining this experiment.\"\r\n   
-        - Use `PARTICIPANTS[1]` to retrieve the first participant, `PARTICIPANTS[2]`
-        to retrieve the second participant, etc.\r\n\r\n### COLLECTED_DATA\r\n   
-        - Contains data that are sent from state-listening items' `Send Data To Collector`
-        action or a customized action script's `SendDataToCollector(\"your_data_label\",
-        your_data_value)` function.\r\n    - Use `COLLECTED_DATA[\"your_data_label\"]`
-        to retrieve specific values.\r\n\r\n---\r\n\r\n**Important Note:** The script
-        **must return a value** at the end of its code block.\r\n\r\nExamples:\r\n   
-        - return { score: 100 };`\r\n    - const answer = $.getStateCompat('global',
-        'count', 'integer') > 5; return { isLarger: answer };`\r\n*/\r\nreturn {\r\n   
-        video:  $.getStateCompat(\"global\", \"isElderVideo\",   \"boolean\") ? \"Elder\"
-        : \"Young\",\r\n    avatar: $.getStateCompat(\"global\", \"isElderAvatar\", 
-        \"boolean\") ? \"Elder\" : \"Young\",\r\n    road:   $.getStateCompat(\"global\",
-        \"isSafeRoad\",     \"boolean\") ? \"Safe\"  : \"Danger\",\r\n};\r\n\r\n   
-        return {};\r\n  }\r\n  returnData.push(saveData());\r\n  return returnData;\r\n}\r\n"
+        COLLECTED_DATA = $.groupState.collectedData;\r\n    function saveData() {\r\n\r\n//
+        === LUIDA AUTO-GENERATED (do not edit between markers) ===\n// Regenerated
+        from LuidaDataCollectorConfig \u2014 manual edits inside this block will
+        be lost.\n(function syncFromCck() {\n    if (!$.groupState.collectedData)
+        $.groupState.collectedData = {};\n    const cd = $.groupState.collectedData;\n   
+        let changed = false;\n    // Label: isElderVideo (Bool)\n    {\n        const
+        v = $.getStateCompat(\"global\", \"luida_collect_isElderVideo\", \"boolean\");\n       
+        if (v !== undefined && cd[\"isElderVideo\"] !== v) {\n            cd[\"isElderVideo\"]
+        = v; changed = true;\n        }\n    }\n    // Label: isElderAvatar (Bool)\n   
+        {\n        const v = $.getStateCompat(\"global\", \"luida_collect_isElderAvatar\",
+        \"boolean\");\n        if (v !== undefined && cd[\"isElderAvatar\"] !== v)
+        {\n            cd[\"isElderAvatar\"] = v; changed = true;\n        }\n   
+        }\n    // Label: isSafeRoad (Bool)\n    {\n        const v = $.getStateCompat(\"global\",
+        \"luida_collect_isSafeRoad\", \"boolean\");\n        if (v !== undefined
+        && cd[\"isSafeRoad\"] !== v) {\n            cd[\"isSafeRoad\"] = v; changed
+        = true;\n        }\n    }\n    if (changed) $.groupState.collectedData =
+        cd;\n})();\n// Rebind COLLECTED_DATA so this saveData() call sees just-synced
+        values.\nconst COLLECTED_DATA = $.groupState.collectedData;\n// === LUIDA
+        AUTO-GENERATED END ===\n\nconst fields = {\n    video: ((COLLECTED_DATA[\"isElderVideo\"]
+        === true) ? \"Elder\" : \"Young\"),\n    avatar: ((COLLECTED_DATA[\"isElderAvatar\"]
+        === true) ? \"Elder\" : \"Young\"),\n    road: ((COLLECTED_DATA[\"isSafeRoad\"]
+        === true) ? \"Safe\" : \"Danger\"),\n};\nreturn fields;\n\r\n    return {};\r\n 
+        }\r\n  returnData.push(saveData());\r\n  return returnData;\r\n}\r\n"
       objectReference: {fileID: 0}
     - target: {fileID: 8273925800708392170, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
@@ -4198,7 +4198,7 @@ MonoBehaviour:
               type: 3
               boolValue: 1
               floatValue: 0
-              integerValue: 2
+              integerValue: 1
               vector2Value: {x: 0, y: 0}
               vector3Value: {x: 0, y: 0, z: 0}
             sourceState:
@@ -4433,8 +4433,6 @@ GameObject:
   - component: {fileID: 2052356193}
   - component: {fileID: 2052356200}
   - component: {fileID: 2052356199}
-  - component: {fileID: 2052356202}
-  - component: {fileID: 2052356201}
   m_Layer: 0
   m_Name: DangerousRoadCheckPoint
   m_TagString: Untagged
@@ -4489,16 +4487,6 @@ MonoBehaviour:
     specifiedTargetItem: {fileID: 0}
     key: saveData
     type: 0
-    value:
-      boolValue: 0
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
-  - target: 4
-    specifiedTargetItem: {fileID: 0}
-    key: isSafeRoad
-    type: 1
     value:
       boolValue: 0
       floatValue: 0
@@ -4589,8 +4577,88 @@ MonoBehaviour:
     - singleStatement:
         targetState:
           target: 2
+          key: luida_collect_isSafeRoad
+          parameterType: 1
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 0
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+    - singleStatement:
+        targetState:
+          target: 2
           key: exp_recordCustomData
-          parameterType: 0
+          parameterType: 1
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 1
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+    - singleStatement:
+        targetState:
+          target: 2
+          key: exp_uploadCustomData
+          parameterType: 1
         expression:
           type: 0
           value:
@@ -4635,88 +4703,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 2052356192}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 838eb61fdcc13c74ebe52340ebdb826c, type: 3}
+  m_Script: {fileID: 11500000, guid: bd3c4ce209fc76b42b4138c809a18253, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   copiedComponent: {fileID: 2052356199}
   target: 3
   key: saveData
   item: {fileID: 2052356195}
---- !u!114 &2052356201
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2052356192}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 0
-      key: saveData
-    item: {fileID: 2052356195}
-  logic:
-    statements:
-    - singleStatement:
-        targetState:
-          target: 2
-          key: exp_uploadCustomData
-          parameterType: 0
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 1
-              boolValue: 1
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 2
-              key: 
-              type: 6
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 0
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 2
-                  key: 
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
---- !u!114 &2052356202
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2052356192}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4b03a4561acce04d98f7f9459a22b85, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  copiedComponent: {fileID: 2052356201}
-  target: 3
-  key: saveData
-  item: {fileID: 2052356195}
+  doAdd: 1
+  doSave: 1
+  doSubmit: 1
+  label: isSafeRoad
+  valueType: 1
+  boolValue: 0
+  floatValue: 0
+  integerValue: 0
+  vector2Value: {x: 0, y: 0}
+  vector3Value: {x: 0, y: 0, z: 0}
 --- !u!1 &2114810937
 GameObject:
   m_ObjectHideFlags: 0

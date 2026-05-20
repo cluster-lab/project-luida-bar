@@ -197,6 +197,125 @@ public abstract class LuidaFakeGimmick : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Patches the first statement in a GlobalLogic to set a typed Global state.
+    /// Thin wrapper around PatchStatementAt with statementIndex = 0, kept for
+    /// the existing single-statement fake gimmicks.
+    /// </summary>
+    public static void PatchStatementToConstant(object globalLogic, string stateKey, int parameterTypeIndex, object value)
+    {
+        PatchStatementAt(globalLogic, 0, stateKey, parameterTypeIndex, value);
+    }
+
+    /// <summary>
+    /// Patches statements[statementIndex] in a GlobalLogic to set a typed Global
+    /// state. Used by the merged data-collection gimmick which needs to write
+    /// multiple statements (Add → Save → Submit) from one GlobalLogic.
+    /// </summary>
+    /// <param name="globalLogic">The GlobalLogic component to patch (object so reflection callers can pass any type).</param>
+    /// <param name="statementIndex">Index into logic.statements (0-based).</param>
+    /// <param name="stateKey">The global state key the statement should write to.</param>
+    /// <param name="parameterTypeIndex">ParameterType enum value: 1=Bool, 2=Float, 3=Integer, 4=Vector2, 5=Vector3.</param>
+    /// <param name="value">A value whose runtime type matches parameterTypeIndex (bool/float/int/Vector2/Vector3).</param>
+    public static void PatchStatementAt(object globalLogic, int statementIndex, string stateKey, int parameterTypeIndex, object value)
+    {
+        if (globalLogic == null) return;
+        string typedFieldName = parameterTypeIndex switch
+        {
+            1 => "boolValue",
+            2 => "floatValue",
+            3 => "integerValue",
+            4 => "vector2Value",
+            5 => "vector3Value",
+            _ => null,
+        };
+        if (typedFieldName == null)
+        {
+            Debug.LogWarning($"[LuidaFakeGimmick] PatchStatementAt: unsupported parameterTypeIndex={parameterTypeIndex}.");
+            return;
+        }
+
+        try
+        {
+            var logicField = globalLogic.GetType().GetField("logic", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (logicField == null) return;
+            var logic = logicField.GetValue(globalLogic);
+            if (logic == null) return;
+
+            var statementsField = logic.GetType().GetField("statements", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (statementsField == null) return;
+            var statements = statementsField.GetValue(logic);
+            if (statements == null) return;
+
+            var statementsType = statements.GetType();
+            var countProp = statementsType.GetProperty("Count") ?? statementsType.GetProperty("Length");
+            if (countProp == null) return;
+            int count = (int)countProp.GetValue(statements);
+            if (statementIndex < 0 || statementIndex >= count)
+            {
+                Debug.LogWarning($"[LuidaFakeGimmick] PatchStatementAt: statementIndex {statementIndex} out of range (count={count}).");
+                return;
+            }
+
+            var indexer = statementsType.GetProperty("Item");
+            object stmt = indexer != null
+                ? indexer.GetValue(statements, new object[] { statementIndex })
+                : ((System.Array)statements).GetValue(statementIndex);
+            if (stmt == null) return;
+
+            var singleField = stmt.GetType().GetField("singleStatement", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (singleField == null) return;
+            var single = singleField.GetValue(stmt);
+            if (single == null) return;
+
+            // Patch targetState: key + parameterType matching value type.
+            var tsField = single.GetType().GetField("targetState", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (tsField != null)
+            {
+                var ts = tsField.GetValue(single);
+                var tsKey = ts.GetType().GetField("key", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                if (tsKey != null) tsKey.SetValue(ts, stateKey);
+                var tsPT = ts.GetType().GetField("parameterType", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                if (tsPT != null) tsPT.SetValue(ts, parameterTypeIndex);
+                tsField.SetValue(single, ts);
+            }
+
+            // Patch expression constant: type + typed value field.
+            var exprField = single.GetType().GetField("expression", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (exprField != null)
+            {
+                var expr = exprField.GetValue(single);
+                var valField = expr.GetType().GetField("value", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                if (valField != null)
+                {
+                    var val = valField.GetValue(expr);
+                    var constField = val.GetType().GetField("constant", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                    if (constField != null)
+                    {
+                        var c = constField.GetValue(val);
+                        var cType = c.GetType().GetField("type", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                        if (cType != null) cType.SetValue(c, parameterTypeIndex);
+                        var typedField = c.GetType().GetField(typedFieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                        if (typedField != null) typedField.SetValue(c, value);
+                        constField.SetValue(val, c);
+                    }
+                    valField.SetValue(expr, val);
+                }
+                exprField.SetValue(single, expr);
+            }
+
+            singleField.SetValue(stmt, single);
+            if (indexer != null)
+                indexer.SetValue(statements, stmt, new object[] { statementIndex });
+            statementsField.SetValue(logic, statements);
+            logicField.SetValue(globalLogic, logic);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"[LuidaFakeGimmick] PatchStatementAt failed: {e.Message}");
+        }
+    }
+
     private T CopyComponent<T>(T original, GameObject destination) where T : Component
     {
         T copy = destination.AddComponent<T>();

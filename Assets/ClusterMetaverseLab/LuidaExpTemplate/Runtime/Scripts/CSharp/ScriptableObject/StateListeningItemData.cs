@@ -7,15 +7,22 @@ using System.Linq;
 [Serializable]
 public struct StateListeningAction
 {
+    /// <summary>Serialization key. Used for selection lookup + special-case dispatch in the drawer. Do not rename.</summary>
     public string actionType;
+    /// <summary>Optional UI label shown in the action dropdown. Falls back to actionType when null/empty.</summary>
+    public string displayLabel;
     public string codeSnippet;
     public string[] variables;
-    public StateListeningAction(string _actionType, string _codeSnippet, string[] _variables = null)
+    public StateListeningAction(string _actionType, string _codeSnippet, string[] _variables = null, string _displayLabel = null)
     {
         actionType = _actionType;
         codeSnippet = _codeSnippet;
         variables = _variables ?? Array.Empty<string>();
+        displayLabel = _displayLabel;
     }
+
+    public string GetDisplayLabel()
+        => string.IsNullOrEmpty(displayLabel) ? actionType : displayLabel;
 }
 
 [Serializable]
