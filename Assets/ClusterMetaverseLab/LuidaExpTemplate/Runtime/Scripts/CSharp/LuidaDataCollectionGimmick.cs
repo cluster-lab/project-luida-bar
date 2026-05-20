@@ -68,13 +68,16 @@ public class LuidaDataCollectionGimmick : LuidaFakeGimmick
             PatchStatementAt(CopiedComponent, 0, "luida_noop_add", 1, false);
         }
 
-        // Phase 2 — Save row (fire exp_recordCustomData)
-        PatchStatementAt(CopiedComponent, 1,
-            doSave ? "exp_recordCustomData" : "luida_noop_save", 1, true);
+        // Phase 2 — Save row (fire exp_recordCustomData). Signal, not Bool: the
+        // LUIDA-DataCollector's listener only re-fires on a fresh timestamp, and
+        // a constant Bool's encoded timestamp never changes (true → epoch+1ms),
+        // so a Bool write would only trigger the first save in a session.
+        PatchStatementAtSignal(CopiedComponent, 1,
+            doSave ? "exp_recordCustomData" : "luida_noop_save");
 
-        // Phase 3 — Submit (fire exp_uploadCustomData)
-        PatchStatementAt(CopiedComponent, 2,
-            doSubmit ? "exp_uploadCustomData" : "luida_noop_submit", 1, true);
+        // Phase 3 — Submit (fire exp_uploadCustomData). Same Signal rationale.
+        PatchStatementAtSignal(CopiedComponent, 2,
+            doSubmit ? "exp_uploadCustomData" : "luida_noop_submit");
     }
 
     // Player target is not meaningful here (the data sink is a singleton item).

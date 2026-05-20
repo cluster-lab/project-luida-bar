@@ -95,7 +95,7 @@ MonoBehaviour:
         targetState:
           target: 2
           key: exp_recordCustomData
-          parameterType: 1
+          parameterType: 0
         expression:
           type: 0
           value:
@@ -135,7 +135,7 @@ MonoBehaviour:
         targetState:
           target: 2
           key: exp_uploadCustomData
-          parameterType: 1
+          parameterType: 0
         expression:
           type: 0
           value:

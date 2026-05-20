@@ -21,11 +21,73 @@ MonoBehaviour:
   - label: isSafeRoad
     type: 1
   fields:
+  - fieldName: avatar
+    source: 7
+    collectedLabel: isElderAvatar
+    globalStateKey: 
+    globalStateType: 0
+    conditionVariableName: 
+    jsExpression: 
+    directValueKind: 0
+    arithmeticOperands: []
+    conditionalLhs:
+      kind: 6
+      label: isElderAvatar
+      stateKey: isElderAvatar
+      stateType: 1
+      jsExpression: 
+      directValueKind: 0
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    conditionalOp: 0
+    conditionalRhs:
+      kind: 8
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: true
+      directValueKind: 2
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    conditionalThen:
+      kind: 8
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: Elder
+      directValueKind: 1
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    conditionalElse:
+      kind: 8
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: Young
+      directValueKind: 1
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    legacyCckGimmickValueType: 0
+    legacyStateScope: 0
+    legacyStateKey: 
+    legacyStateType: 0
+    legacyCollectedDataLabel: 
+    legacyLiteralKind: 0
+    legacyLiteralValue: 
+    legacyCustomJsExpression: 
   - fieldName: video
     source: 7
     collectedLabel: isElderVideo
     globalStateKey: 
-    globalStateType: 0
+    globalStateType: 1
     conditionVariableName: 
     jsExpression: 
     directValueKind: 0
@@ -67,10 +129,10 @@ MonoBehaviour:
         legacyStateScope: 0
       opToNext: 0
     conditionalLhs:
-      kind: 5
+      kind: 6
       label: isElderVideo
-      stateKey: 
-      stateType: 3
+      stateKey: isElderVideo
+      stateType: 1
       jsExpression: 
       directValueKind: 0
       legacyLiteralKind: 0
@@ -103,68 +165,6 @@ MonoBehaviour:
     conditionalElse:
       kind: 8
       label: Young
-      stateKey: 
-      stateType: 3
-      jsExpression: Young
-      directValueKind: 1
-      legacyLiteralKind: 0
-      legacyLiteralValue: 
-      legacyCustomJs: 
-      legacyStateScope: 0
-    legacyCckGimmickValueType: 0
-    legacyStateScope: 0
-    legacyStateKey: 
-    legacyStateType: 0
-    legacyCollectedDataLabel: 
-    legacyLiteralKind: 0
-    legacyLiteralValue: 
-    legacyCustomJsExpression: 
-  - fieldName: avatar
-    source: 7
-    collectedLabel: isElderAvatar
-    globalStateKey: 
-    globalStateType: 0
-    conditionVariableName: 
-    jsExpression: 
-    directValueKind: 0
-    arithmeticOperands: []
-    conditionalLhs:
-      kind: 5
-      label: isElderAvatar
-      stateKey: 
-      stateType: 3
-      jsExpression: 
-      directValueKind: 0
-      legacyLiteralKind: 0
-      legacyLiteralValue: 
-      legacyCustomJs: 
-      legacyStateScope: 0
-    conditionalOp: 0
-    conditionalRhs:
-      kind: 8
-      label: 
-      stateKey: 
-      stateType: 3
-      jsExpression: true
-      directValueKind: 2
-      legacyLiteralKind: 0
-      legacyLiteralValue: 
-      legacyCustomJs: 
-      legacyStateScope: 0
-    conditionalThen:
-      kind: 8
-      label: 
-      stateKey: 
-      stateType: 3
-      jsExpression: Elder
-      directValueKind: 1
-      legacyLiteralKind: 0
-      legacyLiteralValue: 
-      legacyCustomJs: 
-      legacyStateScope: 0
-    conditionalElse:
-      kind: 8
-      label: 
       stateKey: 
       stateType: 3
       jsExpression: Young

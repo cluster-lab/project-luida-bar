@@ -208,6 +208,104 @@ public abstract class LuidaFakeGimmick : MonoBehaviour
     }
 
     /// <summary>
+    /// Patches statements[statementIndex] to fire a Signal (parameterType 0) at the
+    /// given state key. The expression's constant is forced to Bool true (the "should
+    /// we fire?" condition the executor evaluates for Signal targets).
+    ///
+    /// Signal — not Bool — is required for trigger-style writes that need to fire
+    /// listeners every time. CCK's Logic.Run() rejects events whose TimeStamp is not
+    /// strictly greater than lastTriggeredAt; for a Bool target, the GimmickValue's
+    /// TimeStamp is derived from the bool's underlying double (true → epoch+1ms), so
+    /// writing Bool true repeatedly stops firing after the first invocation. Signal
+    /// targets always carry a fresh DateTime, so listeners fire on every write.
+    /// </summary>
+    public static void PatchStatementAtSignal(object globalLogic, int statementIndex, string stateKey)
+    {
+        if (globalLogic == null) return;
+
+        try
+        {
+            var logicField = globalLogic.GetType().GetField("logic", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (logicField == null) return;
+            var logic = logicField.GetValue(globalLogic);
+            if (logic == null) return;
+
+            var statementsField = logic.GetType().GetField("statements", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (statementsField == null) return;
+            var statements = statementsField.GetValue(logic);
+            if (statements == null) return;
+
+            var statementsType = statements.GetType();
+            var countProp = statementsType.GetProperty("Count") ?? statementsType.GetProperty("Length");
+            if (countProp == null) return;
+            int count = (int)countProp.GetValue(statements);
+            if (statementIndex < 0 || statementIndex >= count)
+            {
+                Debug.LogWarning($"[LuidaFakeGimmick] PatchStatementAtSignal: statementIndex {statementIndex} out of range (count={count}).");
+                return;
+            }
+
+            var indexer = statementsType.GetProperty("Item");
+            object stmt = indexer != null
+                ? indexer.GetValue(statements, new object[] { statementIndex })
+                : ((System.Array)statements).GetValue(statementIndex);
+            if (stmt == null) return;
+
+            var singleField = stmt.GetType().GetField("singleStatement", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (singleField == null) return;
+            var single = singleField.GetValue(stmt);
+            if (single == null) return;
+
+            // targetState: key + parameterType = 0 (Signal).
+            var tsField = single.GetType().GetField("targetState", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (tsField != null)
+            {
+                var ts = tsField.GetValue(single);
+                var tsKey = ts.GetType().GetField("key", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                if (tsKey != null) tsKey.SetValue(ts, stateKey);
+                var tsPT = ts.GetType().GetField("parameterType", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                if (tsPT != null) tsPT.SetValue(ts, 0);
+                tsField.SetValue(single, ts);
+            }
+
+            // expression constant: Bool true — the condition the executor checks
+            // before emitting the signal (see LogicExecutor.RunSingleStatement).
+            var exprField = single.GetType().GetField("expression", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (exprField != null)
+            {
+                var expr = exprField.GetValue(single);
+                var valField = expr.GetType().GetField("value", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                if (valField != null)
+                {
+                    var val = valField.GetValue(expr);
+                    var constField = val.GetType().GetField("constant", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                    if (constField != null)
+                    {
+                        var c = constField.GetValue(val);
+                        var cType = c.GetType().GetField("type", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                        if (cType != null) cType.SetValue(c, 1);
+                        var cBool = c.GetType().GetField("boolValue", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                        if (cBool != null) cBool.SetValue(c, true);
+                        constField.SetValue(val, c);
+                    }
+                    valField.SetValue(expr, val);
+                }
+                exprField.SetValue(single, expr);
+            }
+
+            singleField.SetValue(stmt, single);
+            if (indexer != null)
+                indexer.SetValue(statements, stmt, new object[] { statementIndex });
+            statementsField.SetValue(logic, statements);
+            logicField.SetValue(globalLogic, logic);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"[LuidaFakeGimmick] PatchStatementAtSignal failed: {e.Message}");
+        }
+    }
+
+    /// <summary>
     /// Patches statements[statementIndex] in a GlobalLogic to set a typed Global
     /// state. Used by the merged data-collection gimmick which needs to write
     /// multiple statements (Add → Save → Submit) from one GlobalLogic.

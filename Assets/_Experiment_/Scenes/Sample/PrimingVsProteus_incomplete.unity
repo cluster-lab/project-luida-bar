@@ -217,386 +217,43 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!1 &215214481
+--- !u!1 &105185487
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 8
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 215214490}
-  - component: {fileID: 215214489}
-  - component: {fileID: 215214488}
-  - component: {fileID: 215214487}
-  - component: {fileID: 215214486}
-  - component: {fileID: 215214485}
-  - component: {fileID: 215214484}
-  - component: {fileID: 215214492}
-  - component: {fileID: 215214491}
+  - component: {fileID: 105185488}
   m_Layer: 0
-  m_Name: LUIDA-AvatarSpawner
+  m_Name: States
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &215214484
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 215214481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b331e57100a4127901fa699e619e234, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  host: {fileID: 930668818}
---- !u!114 &215214485
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 215214481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02f60bfc9a2c4b04bcd3524b54a1e838, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  worldItemTemplates:
-  - id: ElderAvatar
-    worldItemTemplate: {fileID: 8304027138371031478, guid: 70a172e9cbf4f8c44875feba0b057264,
-      type: 3}
-    itemTemplateId:
-      value: 0
-  - id: YoungAvatar
-    worldItemTemplate: {fileID: 2043519658070911829, guid: 04d734e222ac01d48aa407195294ae95,
-      type: 3}
-    itemTemplateId:
-      value: 0
---- !u!114 &215214486
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 215214481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10b3caec32abe904d82759e5a64eb598, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  useMovingPlatform: 1
-  movingPlatformHorizontalInertia: 0
-  movingPlatformVerticalInertia: 1
-  useMantling: 1
-  useWorldShadow: 1
-  useHUDType: 1
-  useCustomClippingPlanes: 1
-  nearPlane: 0.1
-  farPlane: 1000
-  enableCrouchWalk: 1
-  writeOwnAvatarSilhouetteStencil: 0
---- !u!114 &215214487
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 215214481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 466c56cb3cb32ec48b21ffb81ad21213, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  clusterScripts:
-  - {fileID: 5022602860645237092, guid: 4169c2db386e84f46a680b5f66fd442c, type: 3}
-  - {fileID: 5022602860645237092, guid: 44e5a1d1d327ba545a99233a35dc19d7, type: 3}
-  playerScripts: []
-  clusterScriptMD5s: []
-  playerScriptMD5s: []
---- !u!114 &215214488
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 215214481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e61061896c654489a41575fc291bf4a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sourceCodeAsset: {fileID: 0}
-  sourceCode: "// Auto-generated avatar command config\r\nconst AVATAR_INDEX_MAP
-    = [\"ElderAvatar\", \"YoungAvatar\"];\r\n\r\n// ===== LUIDA Avatar Manager =====\n//
-    Runs on the LUIDA-AvatarSpawner item.\n// Reads AVATAR_INDEX_MAP from the prepended
-    constants header.\n//\n// Supports two input paths:\n//   1. Direct messages:
-    luida_assign_avatar / luida_unassign_avatar (from state-listening items)\n//  
-    2. Gimmick integer commands: polls global states \"luida_avatar_cmd\" + \"luida_avatar_participant\"\n\n$.onStart(()
-    => {\n  $.state.createdAvatars = []; // flat list of created avatar item handles\n 
-    $.state.lastCmd = 0;         // last processed command value\n});\n\n// --- Resolve
-    target to a PlayerHandle ---\n// target can be: PlayerHandle (from direct callers)
-    or integer (participant number, 1-based)\nfunction resolvePlayer(target) {\n 
-    if (target === null || target === undefined) return null;\n  if (typeof target
-    === \"number\") {\n    const participants = $.groupState.participants;\n    if
-    (!participants || target < 1 || target > participants.length) {\n      $.log(\"[AvatarManager]
-    Invalid participant #: \" + target);\n      return null;\n    }\n    return participants[target
-    - 1];\n  }\n  return target;\n}\n\n// --- Core assignment logic ---\nfunction
-    assignAvatarToPlayer(player, avatarID) {\n  if (!player || !player.exists())
-    {\n    $.log(\"[AvatarManager] Cannot assign avatar: player does not exist\");\n   
-    return;\n  }\n\n  // Remove any existing avatars for this player first\n  unassignAllFromPlayer(player);\n\n 
-    // Spawn the wrapper item\n  try {\n    const handle = $.createItem(\n      new
-    WorldItemTemplateId(avatarID),\n      player.getPosition(),\n      player.getRotation()\n   
-    );\n    handle.send(\"assignPlayer\", { player: player });\n\n    const list
-    = $.state.createdAvatars || [];\n    list.push(handle);\n    $.state.createdAvatars
-    = list;\n\n    $.log(\"[AvatarManager] Assigned avatar '\" + avatarID + \"' to
-    player \" + player.userDisplayName);\n  } catch (e) {\n    $.log(\"[AvatarManager]
-    createItem failed (rate limit?): \" + e);\n  }\n}\n\nfunction unassignAllFromPlayer(player)
-    {\n  if (!player) return;\n\n  const list = $.state.createdAvatars || [];\n 
-    for (let i = 0; i < list.length; i++) {\n    try {\n      list[i].send(\"unassignIfPlayer\",
-    player.id);\n    } catch (e) { /* item may already be gone */ }\n  }\n\n  $.log(\"[AvatarManager]
-    Unassigned all avatars from player \" + player.userDisplayName);\n}\n\n// ---
-    Message handlers (for state-listening items) ---\n$.onReceive((messageType, arg,
-    sender) => {\n  if (messageType === \"luida_assign_avatar\") {\n    const player
-    = resolvePlayer(arg.target !== undefined ? arg.target : arg.participantIndex);\n   
-    if (player) {\n      assignAvatarToPlayer(player, arg.avatarID);\n    }\n  }\n\n 
-    if (messageType === \"luida_unassign_avatar\") {\n    const player = resolvePlayer(arg.target
-    !== undefined ? arg.target : arg.participantIndex);\n    if (player) {\n     
-    unassignAllFromPlayer(player);\n    }\n  }\n});\n\n// --- Gimmick trigger polling
-    (integer command) ---\n// Polls two global integer states:\n//   \"luida_avatar_cmd\"        
-    - action (>0 = assign avatar at index cmd-1, -1 = unassign)\n//   \"luida_avatar_participant\"
-    - participant number (1-based)\n// After handling, sends a single reset signal
-    to clear both.\n$.onUpdate((deltaTime) => {\n  if (typeof AVATAR_INDEX_MAP ===
-    \"undefined\") return;\n\n  try {\n    const cmd = $.getStateCompat(\"global\",
-    \"luida_avatar_cmd\", \"integer\");\n    if (cmd !== 0 && cmd !== $.state.lastCmd)
-    {\n      $.state.lastCmd = cmd;\n\n      const participantNumber = $.getStateCompat(\"global\",
-    \"luida_avatar_participant\", \"integer\") || 1;\n\n      if (cmd > 0) {\n       
-    // Assign: cmd = avatarIndex + 1 (1-based)\n        const avatarIndex = cmd -
-    1;\n        const player = resolvePlayer(participantNumber);\n        const avatarID
-    = AVATAR_INDEX_MAP[avatarIndex];\n        if (player && avatarID) {\n         
-    assignAvatarToPlayer(player, avatarID, null);\n        }\n      } else if (cmd
-    === -1) {\n        // Unassign all avatars from participant\n        const player
-    = resolvePlayer(participantNumber);\n        if (player) {\n          unassignAllFromPlayer(player);\n       
-    }\n      }\n\n      // Reset both global states via CCK GlobalLogic on the spawner\n     
-    $.sendSignalCompat(\"this\", \"luida_avatar_cmd_reset\");\n    }\n\n    if (cmd
-    === 0 && $.state.lastCmd !== 0) {\n      $.state.lastCmd = 0;\n    }\n  } catch
-    (e) {\n    $.log(\"[AvatarManager] Gimmick trigger poll error: \" + e);\n  }\n});\n"
---- !u!114 &215214489
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 215214481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id:
-    value: 0
-  itemName: 
-  size: {x: 0, y: 0, z: 0}
---- !u!4 &215214490
+--- !u!4 &105185488
 Transform:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 8
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 215214481}
+  m_GameObject: {fileID: 105185487}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 14
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &215214491
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 215214481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 0
-      key: luida_avatar_cmd_reset
-    item: {fileID: 215214489}
-  logic:
-    statements:
-    - singleStatement:
-        targetState:
-          target: 2
-          key: luida_avatar_participant
-          parameterType: 2
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 3
-              boolValue: 0
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 2
-              key: 
-              type: 6
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 0
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 2
-                  key: 
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
---- !u!114 &215214492
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 215214481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 0
-      key: luida_avatar_cmd_reset
-    item: {fileID: 215214489}
-  logic:
-    statements:
-    - singleStatement:
-        targetState:
-          target: 2
-          key: luida_avatar_cmd
-          parameterType: 2
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 3
-              boolValue: 0
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 2
-              key: 
-              type: 6
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 0
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 2
-                  key: 
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
---- !u!1 &338937692
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 338937695}
-  - component: {fileID: 338937694}
-  - component: {fileID: 338937693}
-  m_Layer: 0
-  m_Name: Questionnaire_1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &338937693
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 338937692}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce2b9f4eb5444df69e31db5c54e12447, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 2
-      key: showQuestionnaire
-    item: {fileID: 0}
---- !u!114 &338937694
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 338937692}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e112fac93e464a09921b89a7ca572df1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  qId: 1
---- !u!4 &338937695
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 338937692}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 12}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1327047743}
-  m_Father: {fileID: 0}
-  m_RootOrder: 15
+  - {fileID: 2001704332}
+  - {fileID: 809444060}
+  - {fileID: 873566572}
+  - {fileID: 1267596545}
+  - {fileID: 1329663698}
+  - {fileID: 999815086}
+  - {fileID: 1691579917}
+  m_Father: {fileID: 930668819}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &402078345
 GameObject:
@@ -702,18 +359,56 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 930668817}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &563110105 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4634395038771438842, guid: c429a845517c96a419988cd638c846f1,
-    type: 3}
-  m_PrefabInstance: {fileID: 930668817}
+--- !u!1 &575443992
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 575443993}
+  - component: {fileID: 575443994}
+  m_Layer: 0
+  m_Name: Outro
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &575443993
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 575443992}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1401815968}
+  m_Father: {fileID: 1806453325}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &575443994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 575443992}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6487efbf7339493cb3e1fa581f53b763, type: 3}
+  m_Script: {fileID: 11500000, guid: ce2b9f4eb5444df69e31db5c54e12447, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 0
+      key: state_isActive
+    item: {fileID: 999815087}
 --- !u!1 &622263566
 GameObject:
   m_ObjectHideFlags: 0
@@ -725,11 +420,6 @@ GameObject:
   - component: {fileID: 622263572}
   - component: {fileID: 622263571}
   - component: {fileID: 622263570}
-  - component: {fileID: 622263569}
-  - component: {fileID: 622263568}
-  - component: {fileID: 622263567}
-  - component: {fileID: 622263574}
-  - component: {fileID: 622263573}
   m_Layer: 0
   m_Name: SafeRoadCheckPoint
   m_TagString: Untagged
@@ -737,85 +427,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &622263567
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 622263566}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce2b9f4eb5444df69e31db5c54e12447, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 2
-      key: showCheckPoint
-    item: {fileID: 0}
---- !u!114 &622263568
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 622263566}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba507dbcf46b94a9895daa4d46e12805, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item: {fileID: 622263569}
-  collisionEventType: 0
-  collisionType: -1
-  triggers:
-  - target: 4
-    specifiedTargetItem: {fileID: 0}
-    key: showCheckPoint
-    type: 1
-    value:
-      boolValue: 0
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
-  - target: 0
-    specifiedTargetItem: {fileID: 0}
-    key: saveData
-    type: 0
-    value:
-      boolValue: 0
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
-  - target: 4
-    specifiedTargetItem: {fileID: 0}
-    key: showQuestionnaire
-    type: 1
-    value:
-      boolValue: 1
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
---- !u!114 &622263569
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 622263566}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id:
-    value: 0
-  itemName: 
-  size: {x: 0, y: 0, z: 0}
 --- !u!65 &622263570
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -850,173 +461,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &622263573
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 622263566}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 0
-      key: saveData
-    item: {fileID: 622263569}
-  logic:
-    statements:
-    - singleStatement:
-        targetState:
-          target: 2
-          key: luida_collect_isSafeRoad
-          parameterType: 1
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 1
-              boolValue: 1
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 2
-              key: 
-              type: 6
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 0
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 2
-                  key: 
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
-    - singleStatement:
-        targetState:
-          target: 2
-          key: exp_recordCustomData
-          parameterType: 0
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 1
-              boolValue: 1
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 2
-              key: 
-              type: 6
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 0
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 2
-                  key: 
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
-    - singleStatement:
-        targetState:
-          target: 2
-          key: exp_uploadCustomData
-          parameterType: 0
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 1
-              boolValue: 1
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 2
-              key: 
-              type: 6
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 0
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 2
-                  key: 
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
---- !u!114 &622263574
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 622263566}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd3c4ce209fc76b42b4138c809a18253, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  copiedComponent: {fileID: 622263573}
-  target: 3
-  key: saveData
-  item: {fileID: 622263569}
-  doAdd: 1
-  doSave: 1
-  doSubmit: 1
-  label: isSafeRoad
-  valueType: 1
-  boolValue: 1
-  floatValue: 0
-  integerValue: 0
-  vector2Value: {x: 0, y: 0}
-  vector3Value: {x: 0, y: 0, z: 0}
 --- !u!1001 &736593713
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1116,29 +562,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 950ef4235907d2645a1c71a84a5d8814, type: 3}
---- !u!1 &736593714 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7928075190467909775, guid: 950ef4235907d2645a1c71a84a5d8814,
-    type: 3}
-  m_PrefabInstance: {fileID: 736593713}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &736593715
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 736593714}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce2b9f4eb5444df69e31db5c54e12447, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 2
-      key: showElderVideo
-    item: {fileID: 0}
 --- !u!1001 &740794595
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1293,6 +716,418 @@ Transform:
   m_Father: {fileID: 2029845015}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &801258164
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 801258173}
+  - component: {fileID: 801258172}
+  - component: {fileID: 801258171}
+  - component: {fileID: 801258170}
+  - component: {fileID: 801258169}
+  - component: {fileID: 801258168}
+  - component: {fileID: 801258167}
+  - component: {fileID: 801258166}
+  - component: {fileID: 801258165}
+  m_Layer: 0
+  m_Name: LUIDA-AvatarSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &801258165
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 801258164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 0
+      key: luida_avatar_cmd_reset
+    item: {fileID: 801258172}
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 2
+          key: luida_avatar_participant
+          parameterType: 2
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 3
+              boolValue: 0
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &801258166
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 801258164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 0
+      key: luida_avatar_cmd_reset
+    item: {fileID: 801258172}
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 2
+          key: luida_avatar_cmd
+          parameterType: 2
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 3
+              boolValue: 0
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &801258167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 801258164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b331e57100a4127901fa699e619e234, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  host: {fileID: 930668818}
+--- !u!114 &801258168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 801258164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02f60bfc9a2c4b04bcd3524b54a1e838, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldItemTemplates:
+  - id: ElderAvatar
+    worldItemTemplate: {fileID: 8304027138371031478, guid: 70a172e9cbf4f8c44875feba0b057264,
+      type: 3}
+    itemTemplateId:
+      value: 0
+  - id: YoungAvatar
+    worldItemTemplate: {fileID: 2043519658070911829, guid: 04d734e222ac01d48aa407195294ae95,
+      type: 3}
+    itemTemplateId:
+      value: 0
+--- !u!114 &801258169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 801258164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10b3caec32abe904d82759e5a64eb598, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useMovingPlatform: 1
+  movingPlatformHorizontalInertia: 0
+  movingPlatformVerticalInertia: 1
+  useMantling: 1
+  useWorldShadow: 1
+  useHUDType: 1
+  useCustomClippingPlanes: 1
+  nearPlane: 0.1
+  farPlane: 1000
+  enableCrouchWalk: 1
+  writeOwnAvatarSilhouetteStencil: 0
+--- !u!114 &801258170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 801258164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466c56cb3cb32ec48b21ffb81ad21213, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clusterScripts:
+  - {fileID: 5022602860645237092, guid: 4169c2db386e84f46a680b5f66fd442c, type: 3}
+  - {fileID: 5022602860645237092, guid: 44e5a1d1d327ba545a99233a35dc19d7, type: 3}
+  playerScripts: []
+  clusterScriptMD5s: []
+  playerScriptMD5s: []
+--- !u!114 &801258171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 801258164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61061896c654489a41575fc291bf4a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourceCodeAsset: {fileID: 0}
+  sourceCode: "// Auto-generated avatar command config\r\nconst AVATAR_INDEX_MAP
+    = [\"ElderAvatar\", \"YoungAvatar\"];\r\n\r\n// ===== LUIDA Avatar Manager =====\n//
+    Runs on the LUIDA-AvatarSpawner item.\n// Reads AVATAR_INDEX_MAP from the prepended
+    constants header.\n//\n// Supports two input paths:\n//   1. Direct messages:
+    luida_assign_avatar / luida_unassign_avatar (from state-listening items)\n//  
+    2. Gimmick integer commands: polls global states \"luida_avatar_cmd\" + \"luida_avatar_participant\"\n\n$.onStart(()
+    => {\n  $.state.createdAvatars = []; // flat list of created avatar item handles\n 
+    $.state.lastCmd = 0;         // last processed command value\n});\n\n// --- Resolve
+    target to a PlayerHandle ---\n// target can be: PlayerHandle (from direct callers)
+    or integer (participant number, 1-based)\nfunction resolvePlayer(target) {\n 
+    if (target === null || target === undefined) return null;\n  if (typeof target
+    === \"number\") {\n    const participants = $.groupState.participants;\n    if
+    (!participants || target < 1 || target > participants.length) {\n      $.log(\"[AvatarManager]
+    Invalid participant #: \" + target);\n      return null;\n    }\n    return participants[target
+    - 1];\n  }\n  return target;\n}\n\n// --- Core assignment logic ---\nfunction
+    assignAvatarToPlayer(player, avatarID) {\n  if (!player || !player.exists())
+    {\n    $.log(\"[AvatarManager] Cannot assign avatar: player does not exist\");\n   
+    return;\n  }\n\n  // Remove any existing avatars for this player first\n  unassignAllFromPlayer(player);\n\n 
+    // Spawn the wrapper item\n  try {\n    const handle = $.createItem(\n      new
+    WorldItemTemplateId(avatarID),\n      player.getPosition(),\n      player.getRotation()\n   
+    );\n    handle.send(\"assignPlayer\", { player: player });\n\n    const list
+    = $.state.createdAvatars || [];\n    list.push(handle);\n    $.state.createdAvatars
+    = list;\n\n    $.log(\"[AvatarManager] Assigned avatar '\" + avatarID + \"' to
+    player \" + player.userDisplayName);\n  } catch (e) {\n    $.log(\"[AvatarManager]
+    createItem failed (rate limit?): \" + e);\n  }\n}\n\nfunction unassignAllFromPlayer(player)
+    {\n  if (!player) return;\n\n  const list = $.state.createdAvatars || [];\n 
+    for (let i = 0; i < list.length; i++) {\n    try {\n      list[i].send(\"unassignIfPlayer\",
+    player.id);\n    } catch (e) { /* item may already be gone */ }\n  }\n\n  $.log(\"[AvatarManager]
+    Unassigned all avatars from player \" + player.userDisplayName);\n}\n\n// ---
+    Message handlers (for state-listening items) ---\n$.onReceive((messageType, arg,
+    sender) => {\n  if (messageType === \"luida_assign_avatar\") {\n    const player
+    = resolvePlayer(arg.target !== undefined ? arg.target : arg.participantIndex);\n   
+    if (player) {\n      assignAvatarToPlayer(player, arg.avatarID);\n    }\n  }\n\n 
+    if (messageType === \"luida_unassign_avatar\") {\n    const player = resolvePlayer(arg.target
+    !== undefined ? arg.target : arg.participantIndex);\n    if (player) {\n     
+    unassignAllFromPlayer(player);\n    }\n  }\n});\n\n// --- Gimmick trigger polling
+    (integer command) ---\n// Polls two global integer states:\n//   \"luida_avatar_cmd\"        
+    - action (>0 = assign avatar at index cmd-1, -1 = unassign)\n//   \"luida_avatar_participant\"
+    - participant number (1-based)\n// After handling, sends a single reset signal
+    to clear both.\n$.onUpdate((deltaTime) => {\n  if (typeof AVATAR_INDEX_MAP ===
+    \"undefined\") return;\n\n  try {\n    const cmd = $.getStateCompat(\"global\",
+    \"luida_avatar_cmd\", \"integer\");\n    if (cmd !== 0 && cmd !== $.state.lastCmd)
+    {\n      $.state.lastCmd = cmd;\n\n      const participantNumber = $.getStateCompat(\"global\",
+    \"luida_avatar_participant\", \"integer\") || 1;\n\n      if (cmd > 0) {\n       
+    // Assign: cmd = avatarIndex + 1 (1-based)\n        const avatarIndex = cmd -
+    1;\n        const player = resolvePlayer(participantNumber);\n        const avatarID
+    = AVATAR_INDEX_MAP[avatarIndex];\n        if (player && avatarID) {\n         
+    assignAvatarToPlayer(player, avatarID, null);\n        }\n      } else if (cmd
+    === -1) {\n        // Unassign all avatars from participant\n        const player
+    = resolvePlayer(participantNumber);\n        if (player) {\n          unassignAllFromPlayer(player);\n       
+    }\n      }\n\n      // Reset both global states via CCK GlobalLogic on the spawner\n     
+    $.sendSignalCompat(\"this\", \"luida_avatar_cmd_reset\");\n    }\n\n    if (cmd
+    === 0 && $.state.lastCmd !== 0) {\n      $.state.lastCmd = 0;\n    }\n  } catch
+    (e) {\n    $.log(\"[AvatarManager] Gimmick trigger poll error: \" + e);\n  }\n});\n"
+--- !u!114 &801258172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 801258164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id:
+    value: 0
+  itemName: 
+  size: {x: 0, y: 0, z: 0}
+--- !u!4 &801258173
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 801258164}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 15
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &809444059
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 105185488}
+    m_Modifications:
+    - target: {fileID: 3594218895443089411, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_Name
+      value: Avatar
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: key.key
+      value: state_enter
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
+--- !u!4 &809444060 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 809444059}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &814595607
 GameObject:
   m_ObjectHideFlags: 0
@@ -1408,6 +1243,101 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 828225983}
   m_Mesh: {fileID: 4300000, guid: f9f571ff5f7df4b8e97c0b5cc019d9ef, type: 3}
+--- !u!1001 &873566571
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 105185488}
+    m_Modifications:
+    - target: {fileID: 3594218895443089411, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_Name
+      value: Video
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: key.key
+      value: state_enter
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
+--- !u!4 &873566572 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 873566571}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &876203313
 GameObject:
   m_ObjectHideFlags: 0
@@ -1454,8 +1384,8 @@ PrefabInstance:
     - target: {fileID: 320188938653792925, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
-        = \"callExternalEndpointID_example\";\npNum = 1;\nisTestMode = true;\n\r\nconst
+      value: "expID = \"expID_example\";\ntoken = \"67680240-fcf8-48e7-b989-de658d6dad27\";\ncallExternalEndpointID
+        = \"312c0b31-7b26-4aa6-a4b2-67eaa459d3d1\";\npNum = 1;\nisTestMode = true;\n\r\nconst
         REJECTION_GATE_POS = new Vector3(-100, 100, -100);\n\nfunction enqueueRejection(idfc,
         reason) {\n    $.log(\"Rejected \" + idfc + \": \" + (reason || \"unknown\"));\n   
         $.groupState.participants = $.groupState.participants.filter(\n        p
@@ -1610,14 +1540,29 @@ PrefabInstance:
       propertyPath: id.value
       value: 7924656228234659285
       objectReference: {fileID: 0}
+    - target: {fileID: 2948447358681182120, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: clusterScripts.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2948447358681182120, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[0]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: b9d359bafecbd1f498d60502e43bdd45,
+        type: 3}
     - target: {fileID: 2963938157378484328, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: sourceCode
-      value: "const trialsCountForEachUniqueCondition = 1;\r\nconst within_subjects_variables
-        = [\r\n];\r\nconst between_subjects_variables = [\r\n];\r\nconst state_names
-        = [];\r\n\r\n$.onStart(() => {\r\n  $.state.isServerAssigned = false;\r\n 
-        initializeBetweenSubjectsConditions();\r\n  reset();\r\n\r\n  // Send between-subjects
-        config to ParticipantManager for eligibility checks\r\n  const pm = $.worldItemReference(\"ParticipantManager\");\r\n 
+      value: "const trialsCountForEachUniqueCondition = 1;\nconst within_subjects_variables
+        = [\n];\nconst between_subjects_variables = [\n    { name: \"avatar\", values:
+        [\"young\", \"elder\"], isRandom: true, debugValue: null },\n    { name:
+        \"video\", values: [\"young\", \"elder\"], isRandom: true, debugValue: null
+        },\n];\nconst state_names = [\"Start\", \"Avatar\", \"Video\", \"Trial -
+        Start\", \"Trial - Rest\", \"Outro\", \"End\"];\n\r\n$.onStart(() => {\r\n 
+        $.state.isServerAssigned = false;\r\n  initializeBetweenSubjectsConditions();\r\n 
+        reset();\r\n\r\n  // Send between-subjects config to ParticipantManager for
+        eligibility checks\r\n  const pm = $.worldItemReference(\"ParticipantManager\");\r\n 
         if (pm) {\r\n    let bsc = [];\r\n    try {\r\n      bsc = between_subjects_variables.map(v
         => ({ name: v.name, values: v.values }));\r\n    } catch (e) { /* between_subjects_variables
         not defined */ }\r\n    pm.send(\"betweenSubjectsConfig\", bsc);\r\n  }\r\n});\r\n\r\n$.onUpdate(()
@@ -1905,7 +1850,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6487efbf7339493cb3e1fa581f53b763, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &930668826 stripped
+--- !u!4 &930668819 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8428161057630051971, guid: c429a845517c96a419988cd638c846f1,
+    type: 3}
+  m_PrefabInstance: {fileID: 930668817}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &930668820 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4634395038771438842, guid: c429a845517c96a419988cd638c846f1,
+    type: 3}
+  m_PrefabInstance: {fileID: 930668817}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6487efbf7339493cb3e1fa581f53b763, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &930668821 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2963938157378484330, guid: c429a845517c96a419988cd638c846f1,
     type: 3}
@@ -1962,6 +1925,108 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 10, y: 0.1, z: 10}
   m_Center: {x: 0, y: -0.05, z: 0}
+--- !u!1001 &999815085
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 105185488}
+    m_Modifications:
+    - target: {fileID: 3594218895443089411, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_Name
+      value: Outro
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
+--- !u!4 &999815086 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 999815085}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &999815087 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3594218895443089410, guid: 3105867d6c14a45979c616d46caf8a2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 999815085}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1008175989
 GameObject:
   m_ObjectHideFlags: 0
@@ -1975,7 +2040,6 @@ GameObject:
   - component: {fileID: 1008175992}
   - component: {fileID: 1008175991}
   - component: {fileID: 1008175990}
-  - component: {fileID: 1008175995}
   m_Layer: 0
   m_Name: Mirror
   m_TagString: Untagged
@@ -2071,25 +2135,8 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1008175995
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1008175989}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce2b9f4eb5444df69e31db5c54e12447, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 2
-      key: showMirror
-    item: {fileID: 0}
 --- !u!1 &1060673527
 GameObject:
   m_ObjectHideFlags: 0
@@ -2102,11 +2149,6 @@ GameObject:
   - component: {fileID: 1060673535}
   - component: {fileID: 1060673534}
   - component: {fileID: 1060673533}
-  - component: {fileID: 1060673532}
-  - component: {fileID: 1060673531}
-  - component: {fileID: 1060673530}
-  - component: {fileID: 1060673529}
-  - component: {fileID: 1060673528}
   m_Layer: 14
   m_Name: StartVideoButton
   m_TagString: Untagged
@@ -2114,174 +2156,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1060673528
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1060673527}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce2b9f4eb5444df69e31db5c54e12447, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 0
-      key: showButton
-    item: {fileID: 1060673532}
---- !u!114 &1060673529
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1060673527}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5eadc47e8f964e87aae22996c282c981, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 0
-      key: showVideo
-    item: {fileID: 1060673532}
-  delayTimeSeconds: 5
-  triggers:
-  - target: 4
-    specifiedTargetItem: {fileID: 0}
-    key: showElderVideo
-    type: 1
-    value:
-      boolValue: 0
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
-  - target: 4
-    specifiedTargetItem: {fileID: 0}
-    key: showRunningVideo
-    type: 1
-    value:
-      boolValue: 0
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
---- !u!114 &1060673530
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1060673527}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4facf580bbce4a8ca569b43b5db5cf5a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 0
-      key: showVideo
-    item: {fileID: 1060673532}
-  choices:
-  - weight: 0.5
-    triggers:
-    - target: 4
-      specifiedTargetItem: {fileID: 0}
-      key: showElderVideo
-      type: 1
-      value:
-        boolValue: 1
-        floatValue: 0
-        integerValue: 0
-        vector2Value: {x: 0, y: 0}
-        vector3Value: {x: 0, y: 0, z: 0}
-    - target: 4
-      specifiedTargetItem: {fileID: 0}
-      key: isElderVideo
-      type: 1
-      value:
-        boolValue: 1
-        floatValue: 0
-        integerValue: 0
-        vector2Value: {x: 0, y: 0}
-        vector3Value: {x: 0, y: 0, z: 0}
-  - weight: 0.5
-    triggers:
-    - target: 4
-      specifiedTargetItem: {fileID: 0}
-      key: showRunningVideo
-      type: 1
-      value:
-        boolValue: 1
-        floatValue: 0
-        integerValue: 0
-        vector2Value: {x: 0, y: 0}
-        vector3Value: {x: 0, y: 0, z: 0}
-    - target: 4
-      specifiedTargetItem: {fileID: 0}
-      key: isElderVideo
-      type: 1
-      value:
-        boolValue: 0
-        floatValue: 0
-        integerValue: 0
-        vector2Value: {x: 0, y: 0}
-        vector3Value: {x: 0, y: 0, z: 0}
---- !u!114 &1060673531
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1060673527}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2872ae1873cd4546a4cf7dae626612b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item: {fileID: 1060673532}
-  triggers:
-  - target: 0
-    specifiedTargetItem: {fileID: 0}
-    key: showVideo
-    type: 0
-    value:
-      boolValue: 0
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
-  - target: 0
-    specifiedTargetItem: {fileID: 0}
-    key: showButton
-    type: 1
-    value:
-      boolValue: 0
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
---- !u!114 &1060673532
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1060673527}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id:
-    value: 0
-  itemName: 
-  size: {x: 0, y: 0, z: 0}
 --- !u!65 &1060673533
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2359,7 +2233,7 @@ Transform:
   m_Children:
   - {fileID: 1719041801}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1083183914
 PrefabInstance:
@@ -2460,29 +2334,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 950ef4235907d2645a1c71a84a5d8814, type: 3}
---- !u!1 &1083183915 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7928075190467909775, guid: 950ef4235907d2645a1c71a84a5d8814,
-    type: 3}
-  m_PrefabInstance: {fileID: 1083183914}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1083183916
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1083183915}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce2b9f4eb5444df69e31db5c54e12447, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 2
-      key: showRunningVideo
-    item: {fileID: 0}
 --- !u!1 &1110214976
 GameObject:
   m_ObjectHideFlags: 0
@@ -2644,6 +2495,201 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1154936610}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1175846232
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: worldItemReferences.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: worldItemReferences.Array.data[0].id
+      value: luida-data-collector
+      objectReference: {fileID: 0}
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: worldItemReferences.Array.data[1].id
+      value: LUIDA-AvatarSpawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: worldItemReferences.Array.data[0].item
+      value: 
+      objectReference: {fileID: 1789991090}
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: worldItemReferences.Array.data[1].item
+      value: 
+      objectReference: {fileID: 801258172}
+    - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: clusterScripts.Array.data[1]
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: cecc3d289f7c9f04b959be712eb4f99d,
+        type: 3}
+    - target: {fileID: 5660514857068071925, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_Name
+      value: Test
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758608954925073686, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: host
+      value: 
+      objectReference: {fileID: 930668818}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: de40e14777f5f4d3190981c4f4b1cddf, type: 3}
+--- !u!1001 &1267596544
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 105185488}
+    m_Modifications:
+    - target: {fileID: 3594218895443089411, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_Name
+      value: Trial - Start
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
+--- !u!4 &1267596545 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1267596544}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1313341879
 GameObject:
   m_ObjectHideFlags: 0
@@ -2741,12 +2787,112 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1313341879}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1001 &1327047742
+--- !u!1001 &1329663697
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 338937695}
+    m_TransformParent: {fileID: 105185488}
+    m_Modifications:
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1033989870613135740, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: key.key
+      value: state_enter
+      objectReference: {fileID: 0}
+    - target: {fileID: 1414860490831393443, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[1].value.constant.integerValue
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1414860490831393443, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: logic.statements.Array.data[2].singleStatement.expression.operatorExpression.operands.Array.data[2].value.constant.integerValue
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2832236690738518313, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: m_Name
+      value: Trial - Rest
+      objectReference: {fileID: 0}
+    - target: {fileID: 5561156735572448556, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6425654970097300135, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e1774295c75ae6d44a372c9862cfe6ab, type: 3}
+--- !u!4 &1329663698 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 692604469628602319, guid: e1774295c75ae6d44a372c9862cfe6ab,
+    type: 3}
+  m_PrefabInstance: {fileID: 1329663697}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1401815967
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 575443993}
     m_Modifications:
     - target: {fileID: 679173099575055621, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
@@ -2768,7 +2914,7 @@ PrefabInstance:
         type: 3}
       propertyPath: host
       value: 
-      objectReference: {fileID: 563110105}
+      objectReference: {fileID: 930668820}
     - target: {fileID: 5697374075333026450, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
       propertyPath: m_RootOrder
@@ -2832,8 +2978,8 @@ PrefabInstance:
     - target: {fileID: 5697374075709122390, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
-        = \"callExternalEndpointID_example\";\npNum = 1;\nisTestMode = true;\n\r\n$.onStart(()
+      value: "expID = \"expID_example\";\ntoken = \"67680240-fcf8-48e7-b989-de658d6dad27\";\ncallExternalEndpointID
+        = \"312c0b31-7b26-4aa6-a4b2-67eaa459d3d1\";\npNum = 1;\nisTestMode = true;\n\r\n$.onStart(()
         => {\r\n    reset();\r\n    $.state.isParticipantAssigned = false;\r\n   
         $.groupState.qCompletedCount = 0;\r\n});\r\n\r\n$.onUpdate((deltaTime) =>
         {\r\n    if (!$.state.isParticipantAssigned && $.groupState.isParticipantsEnough)
@@ -3008,11 +3154,6 @@ PrefabInstance:
         {\r\n                    n: \"WaitingText\",\r\n                    e: false\r\n               
         });\r\n            });\r\n            reset();\r\n        }\r\n    }\r\n});\r\n"
       objectReference: {fileID: 0}
-    - target: {fileID: 6901064461653237453, guid: 5fc328789f6f647509a5de61027d8680,
-        type: 3}
-      propertyPath: logic.statements.Array.size
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8437594677551052287, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
       propertyPath: worldItemReferences.Array.size
@@ -3037,30 +3178,30 @@ PrefabInstance:
         type: 3}
       propertyPath: worldItemReferences.Array.data[0].item
       value: 
-      objectReference: {fileID: 930668826}
+      objectReference: {fileID: 930668821}
     - target: {fileID: 8437594677551052287, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
       propertyPath: worldItemReferences.Array.data[1].item
       value: 
-      objectReference: {fileID: 1327047744}
+      objectReference: {fileID: 1401815969}
     - target: {fileID: 8437594677551052287, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
       propertyPath: worldItemReferences.Array.data[2].item
       value: 
-      objectReference: {fileID: 1327047745}
+      objectReference: {fileID: 1401815970}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5fc328789f6f647509a5de61027d8680, type: 3}
---- !u!4 &1327047743 stripped
+--- !u!4 &1401815968 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5697374075333026450, guid: 5fc328789f6f647509a5de61027d8680,
     type: 3}
-  m_PrefabInstance: {fileID: 1327047742}
+  m_PrefabInstance: {fileID: 1401815967}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1327047744 stripped
+--- !u!114 &1401815969 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5697374076976329125, guid: 5fc328789f6f647509a5de61027d8680,
     type: 3}
-  m_PrefabInstance: {fileID: 1327047742}
+  m_PrefabInstance: {fileID: 1401815967}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
@@ -3068,11 +3209,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1327047745 stripped
+--- !u!114 &1401815970 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5697374075919056181, guid: 5fc328789f6f647509a5de61027d8680,
     type: 3}
-  m_PrefabInstance: {fileID: 1327047742}
+  m_PrefabInstance: {fileID: 1401815967}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
@@ -3358,6 +3499,96 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1623542149}
   m_Mesh: {fileID: 4300000, guid: f9f571ff5f7df4b8e97c0b5cc019d9ef, type: 3}
+--- !u!1001 &1691579916
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 105185488}
+    m_Modifications:
+    - target: {fileID: 3594218895443089411, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_Name
+      value: End
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029515173940019084, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
+--- !u!4 &1691579917 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1691579916}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1717258452
 GameObject:
   m_ObjectHideFlags: 0
@@ -3392,7 +3623,7 @@ Transform:
   - {fileID: 402078346}
   - {fileID: 1821085633}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1719041800
 GameObject:
@@ -3482,7 +3713,7 @@ Transform:
   - {fileID: 1434940727}
   - {fileID: 814595608}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1789991089
 PrefabInstance:
@@ -3495,7 +3726,7 @@ PrefabInstance:
         type: 3}
       propertyPath: clusterScripts.Array.data[2]
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: f6d16369d6c03d34caa772137385e088,
+      objectReference: {fileID: 5022602860645237092, guid: 45739e7188e6c0d438235c0992a2be56,
         type: 3}
     - target: {fileID: 5964733846762761523, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
@@ -3560,8 +3791,8 @@ PrefabInstance:
     - target: {fileID: 5964733846762761526, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
-        = \"callExternalEndpointID_example\";\npNum = 1;\nisTestMode = true;\n\r\nconst
+      value: "expID = \"expID_example\";\ntoken = \"67680240-fcf8-48e7-b989-de658d6dad27\";\ncallExternalEndpointID
+        = \"312c0b31-7b26-4aa6-a4b2-67eaa459d3d1\";\npNum = 1;\nisTestMode = true;\n\r\nconst
         uploadInterval = 1;\r\nconst dataLengthPerUpload = 100;\r\nconst dataByteLengthPerUpload
         = 100000; // 102400\r\n\r\n$.onStart(() => {\r\n    $.state.customData =
         [];\r\n    $.state.uploadIndex = 0;\r\n    $.state.elapsedTime = 0;\r\n   
@@ -3612,25 +3843,14 @@ PrefabInstance:
         from LuidaDataCollectorConfig \u2014 manual edits inside this block will
         be lost.\n(function syncFromCck() {\n    if (!$.groupState.collectedData)
         $.groupState.collectedData = {};\n    const cd = $.groupState.collectedData;\n   
-        let changed = false;\n    // Label: isElderVideo (Bool)\n    {\n        const
-        v = $.getStateCompat(\"global\", \"luida_collect_isElderVideo\", \"boolean\");\n       
-        if (v !== undefined && cd[\"isElderVideo\"] !== v) {\n            cd[\"isElderVideo\"]
-        = v; changed = true;\n        }\n    }\n    // Label: isElderAvatar (Bool)\n   
-        {\n        const v = $.getStateCompat(\"global\", \"luida_collect_isElderAvatar\",
-        \"boolean\");\n        if (v !== undefined && cd[\"isElderAvatar\"] !== v)
-        {\n            cd[\"isElderAvatar\"] = v; changed = true;\n        }\n   
-        }\n    // Label: isSafeRoad (Bool)\n    {\n        const v = $.getStateCompat(\"global\",
-        \"luida_collect_isSafeRoad\", \"boolean\");\n        if (v !== undefined
-        && cd[\"isSafeRoad\"] !== v) {\n            cd[\"isSafeRoad\"] = v; changed
-        = true;\n        }\n    }\n    if (changed) $.groupState.collectedData =
-        cd;\n})();\n// Rebind COLLECTED_DATA so this saveData() call sees just-synced
+        let changed = false;\n    // Label: label1 (Integer)\n    {\n        const
+        v = $.getStateCompat(\"global\", \"luida_collect_label1\", \"integer\");\n       
+        if (v !== undefined && cd[\"label1\"] !== v) {\n            cd[\"label1\"]
+        = v; changed = true;\n        }\n    }\n    if (changed) $.groupState.collectedData
+        = cd;\n})();\n// Rebind COLLECTED_DATA so this saveData() call sees just-synced
         values.\nconst COLLECTED_DATA = $.groupState.collectedData;\n// === LUIDA
-        AUTO-GENERATED END ===\n\nconst fields = {\n    avatar: (($.getStateCompat(\"global\",
-        \"isElderAvatar\", \"boolean\") === true) ? \"Elder\" : \"Young\"),\n   
-        video: (($.getStateCompat(\"global\", \"isElderVideo\", \"boolean\") ===
-        true) ? \"Elder\" : \"Young\"),\n    road: ((COLLECTED_DATA[\"isSafeRoad\"]
-        === true) ? \"Safe\" : \"Danger\"),\n};\nreturn fields;\n\r\n    return {};\r\n 
-        }\r\n  returnData.push(saveData());\r\n  return returnData;\r\n}\r\n"
+        AUTO-GENERATED END ===\n\nconst fields = {\n};\nreturn fields;\n\r\n    return
+        {};\r\n  }\r\n  returnData.push(saveData());\r\n  return returnData;\r\n}\r\n"
       objectReference: {fileID: 0}
     - target: {fileID: 8273925800708392170, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
@@ -3641,10 +3861,54 @@ PrefabInstance:
         type: 3}
       propertyPath: calculationScript
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: f6d16369d6c03d34caa772137385e088,
+      objectReference: {fileID: 5022602860645237092, guid: 45739e7188e6c0d438235c0992a2be56,
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 964d6187f971a8f43b4ee67279f1ef90, type: 3}
+--- !u!114 &1789991090 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5964733846762761527, guid: 964d6187f971a8f43b4ee67279f1ef90,
+    type: 3}
+  m_PrefabInstance: {fileID: 1789991089}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &1806453324
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1806453325}
+  m_Layer: 0
+  m_Name: LUIDA-QuestionnaireByState
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1806453325
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1806453324}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 575443993}
+  m_Father: {fileID: 0}
+  m_RootOrder: 16
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1821085632
 GameObject:
   m_ObjectHideFlags: 0
@@ -3839,7 +4103,7 @@ Transform:
   m_Children:
   - {fileID: 760541663}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1934229620
 GameObject:
@@ -3853,17 +4117,6 @@ GameObject:
   - component: {fileID: 1934229628}
   - component: {fileID: 1934229627}
   - component: {fileID: 1934229626}
-  - component: {fileID: 1934229625}
-  - component: {fileID: 1934229624}
-  - component: {fileID: 1934229623}
-  - component: {fileID: 1934229622}
-  - component: {fileID: 1934229621}
-  - component: {fileID: 1934229635}
-  - component: {fileID: 1934229634}
-  - component: {fileID: 1934229633}
-  - component: {fileID: 1934229632}
-  - component: {fileID: 1934229631}
-  - component: {fileID: 1934229630}
   m_Layer: 14
   m_Name: StartAvatarButton
   m_TagString: Untagged
@@ -3871,164 +4124,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1934229621
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1934229620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce2b9f4eb5444df69e31db5c54e12447, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 0
-      key: showButton
-    item: {fileID: 1934229625}
---- !u!114 &1934229622
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1934229620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5eadc47e8f964e87aae22996c282c981, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 0
-      key: assignAvatar
-    item: {fileID: 1934229625}
-  delayTimeSeconds: 5
-  triggers:
-  - target: 4
-    specifiedTargetItem: {fileID: 0}
-    key: showMirror
-    type: 1
-    value:
-      boolValue: 0
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
---- !u!114 &1934229623
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1934229620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4facf580bbce4a8ca569b43b5db5cf5a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 0
-      key: assignAvatar
-    item: {fileID: 1934229625}
-  choices:
-  - weight: 0.5
-    triggers:
-    - target: 4
-      specifiedTargetItem: {fileID: 0}
-      key: isElderAvatar
-      type: 1
-      value:
-        boolValue: 1
-        floatValue: 0
-        integerValue: 0
-        vector2Value: {x: 0, y: 0}
-        vector3Value: {x: 0, y: 0, z: 0}
-    - target: 4
-      specifiedTargetItem: {fileID: 0}
-      key: assignElderAvatar
-      type: 0
-      value:
-        boolValue: 1
-        floatValue: 0
-        integerValue: 0
-        vector2Value: {x: 0, y: 0}
-        vector3Value: {x: 0, y: 0, z: 0}
-  - weight: 0.5
-    triggers:
-    - target: 4
-      specifiedTargetItem: {fileID: 0}
-      key: isElderAvatar
-      type: 1
-      value:
-        boolValue: 0
-        floatValue: 0
-        integerValue: 0
-        vector2Value: {x: 0, y: 0}
-        vector3Value: {x: 0, y: 0, z: 0}
-    - target: 4
-      specifiedTargetItem: {fileID: 0}
-      key: assignYoungAvatar
-      type: 0
-      value:
-        boolValue: 0
-        floatValue: 0
-        integerValue: 0
-        vector2Value: {x: 0, y: 0}
-        vector3Value: {x: 0, y: 0, z: 0}
---- !u!114 &1934229624
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1934229620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2872ae1873cd4546a4cf7dae626612b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item: {fileID: 1934229625}
-  triggers:
-  - target: 0
-    specifiedTargetItem: {fileID: 0}
-    key: assignAvatar
-    type: 0
-    value:
-      boolValue: 0
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
-  - target: 0
-    specifiedTargetItem: {fileID: 0}
-    key: showButton
-    type: 1
-    value:
-      boolValue: 0
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
---- !u!114 &1934229625
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1934229620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id:
-    value: 0
-  itemName: 
-  size: {x: 0, y: 0, z: 0}
 --- !u!65 &1934229626
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4106,284 +4201,88 @@ Transform:
   m_Children:
   - {fileID: 1424352414}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1934229630
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1934229620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 0
-      key: 
-    item: {fileID: 0}
-  logic:
-    statements:
-    - singleStatement:
-        targetState:
-          target: 2
-          key: luida_avatar_participant
-          parameterType: 2
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 3
-              boolValue: 1
-              floatValue: 0
-              integerValue: 1
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 2
-              key: 
-              type: 6
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 0
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 2
-                  key: 
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
---- !u!114 &1934229631
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1934229620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 2
-      key: assignYoungAvatar
-    item: {fileID: 1934229625}
-  logic:
-    statements:
-    - singleStatement:
-        targetState:
-          target: 2
-          key: luida_avatar_cmd
-          parameterType: 2
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 3
-              boolValue: 1
-              floatValue: 0
-              integerValue: 2
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 2
-              key: 
-              type: 6
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 0
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 2
-                  key: 
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
---- !u!114 &1934229632
-MonoBehaviour:
+--- !u!1001 &2001704331
+PrefabInstance:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 105185488}
+    m_Modifications:
+    - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_Name
+      value: Start
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256630647012936787, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: delayTimeSeconds
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3105867d6c14a45979c616d46caf8a2e, type: 3}
+--- !u!4 &2001704332 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8453442887558843104, guid: 3105867d6c14a45979c616d46caf8a2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 2001704331}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1934229620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5cdf6ee41b1915b4e94ddc41398e1eb0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  copiedComponent: {fileID: 1934229631}
-  target: 2
-  key: assignYoungAvatar
-  item: {fileID: 1934229625}
-  removeAvatar: 0
-  avatarID: YoungAvatar
-  participantNumber: 1
-  _participantLogic: {fileID: 1934229630}
---- !u!114 &1934229633
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1934229620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 0
-      key: 
-    item: {fileID: 0}
-  logic:
-    statements:
-    - singleStatement:
-        targetState:
-          target: 2
-          key: luida_avatar_participant
-          parameterType: 2
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 3
-              boolValue: 1
-              floatValue: 0
-              integerValue: 1
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 2
-              key: 
-              type: 6
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 0
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 2
-                  key: 
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
---- !u!114 &1934229634
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1934229620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 2
-      key: assignElderAvatar
-    item: {fileID: 1934229625}
-  logic:
-    statements:
-    - singleStatement:
-        targetState:
-          target: 2
-          key: luida_avatar_cmd
-          parameterType: 2
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 3
-              boolValue: 1
-              floatValue: 0
-              integerValue: 1
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 2
-              key: 
-              type: 6
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 0
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 2
-                  key: 
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
---- !u!114 &1934229635
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1934229620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5cdf6ee41b1915b4e94ddc41398e1eb0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  copiedComponent: {fileID: 1934229634}
-  target: 2
-  key: assignElderAvatar
-  item: {fileID: 1934229625}
-  removeAvatar: 0
-  avatarID: ElderAvatar
-  participantNumber: 1
-  _participantLogic: {fileID: 1934229633}
 --- !u!1 &2029845014
 GameObject:
   m_ObjectHideFlags: 0
@@ -4416,7 +4315,7 @@ Transform:
   - {fileID: 787405257}
   - {fileID: 1604143552}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2052356192
 GameObject:
@@ -4429,9 +4328,6 @@ GameObject:
   - component: {fileID: 2052356198}
   - component: {fileID: 2052356197}
   - component: {fileID: 2052356196}
-  - component: {fileID: 2052356195}
-  - component: {fileID: 2052356194}
-  - component: {fileID: 2052356193}
   - component: {fileID: 2052356200}
   - component: {fileID: 2052356199}
   m_Layer: 0
@@ -4441,85 +4337,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2052356193
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2052356192}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce2b9f4eb5444df69e31db5c54e12447, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 2
-      key: showCheckPoint
-    item: {fileID: 0}
---- !u!114 &2052356194
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2052356192}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba507dbcf46b94a9895daa4d46e12805, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item: {fileID: 2052356195}
-  collisionEventType: 0
-  collisionType: -1
-  triggers:
-  - target: 4
-    specifiedTargetItem: {fileID: 0}
-    key: showCheckPoint
-    type: 1
-    value:
-      boolValue: 0
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
-  - target: 0
-    specifiedTargetItem: {fileID: 0}
-    key: saveData
-    type: 0
-    value:
-      boolValue: 0
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
-  - target: 4
-    specifiedTargetItem: {fileID: 0}
-    key: showQuestionnaire
-    type: 1
-    value:
-      boolValue: 1
-      floatValue: 0
-      integerValue: 0
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
---- !u!114 &2052356195
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2052356192}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id:
-    value: 0
-  itemName: 
-  size: {x: 0, y: 0, z: 0}
 --- !u!65 &2052356196
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4554,7 +4371,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2052356199
 MonoBehaviour:
@@ -4571,21 +4388,21 @@ MonoBehaviour:
   globalGimmickKey:
     key:
       target: 0
-      key: saveData
-    item: {fileID: 2052356195}
+      key: 
+    item: {fileID: 0}
   logic:
     statements:
     - singleStatement:
         targetState:
           target: 2
-          key: luida_collect_isSafeRoad
-          parameterType: 1
+          key: luida_collect_label1
+          parameterType: 3
         expression:
           type: 0
           value:
             type: 0
             constant:
-              type: 1
+              type: 3
               boolValue: 0
               floatValue: 0
               integerValue: 0
@@ -4618,7 +4435,7 @@ MonoBehaviour:
     - singleStatement:
         targetState:
           target: 2
-          key: exp_recordCustomData
+          key: luida_noop_save
           parameterType: 0
         expression:
           type: 0
@@ -4658,7 +4475,7 @@ MonoBehaviour:
     - singleStatement:
         targetState:
           target: 2
-          key: exp_uploadCustomData
+          key: luida_noop_submit
           parameterType: 0
         expression:
           type: 0
@@ -4708,14 +4525,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   copiedComponent: {fileID: 2052356199}
-  target: 3
-  key: saveData
-  item: {fileID: 2052356195}
+  target: 0
+  key: 
+  item: {fileID: 0}
   doAdd: 1
-  doSave: 1
-  doSubmit: 1
-  label: isSafeRoad
-  valueType: 1
+  doSave: 0
+  doSubmit: 0
+  label: label1
+  valueType: 3
   boolValue: 0
   floatValue: 0
   integerValue: 0

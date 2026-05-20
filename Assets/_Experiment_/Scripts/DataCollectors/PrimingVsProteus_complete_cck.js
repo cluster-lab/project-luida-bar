@@ -32,8 +32,8 @@ const COLLECTED_DATA = $.groupState.collectedData;
 // === LUIDA AUTO-GENERATED END ===
 
 const fields = {
-    video: ((COLLECTED_DATA["isElderVideo"] === true) ? "Elder" : "Young"),
-    avatar: ((COLLECTED_DATA["isElderAvatar"] === true) ? "Elder" : "Young"),
+    avatar: (($.getStateCompat("global", "isElderAvatar", "boolean") === true) ? "Elder" : "Young"),
+    video: (($.getStateCompat("global", "isElderVideo", "boolean") === true) ? "Elder" : "Young"),
     road: ((COLLECTED_DATA["isSafeRoad"] === true) ? "Safe" : "Danger"),
 };
 return fields;
