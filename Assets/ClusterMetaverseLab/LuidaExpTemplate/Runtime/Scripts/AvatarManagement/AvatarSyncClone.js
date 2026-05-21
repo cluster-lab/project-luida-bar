@@ -11,6 +11,8 @@ $.onStart(() => {
   $.state.player = null;
   $.state.needsScale = false;
   $.state.scaled = false;
+  $.state.poseWaitTime = 0;
+  $.state.warnedNoPose = false;
 
   // Cache bone sub-node references using the baked-in BONE_MAP
   boneNodes = [];
@@ -71,6 +73,23 @@ function multiplyQuaternions(q1, q2) {
 $.onUpdate((deltaTime) => {
   const player = $.state.player;
   if (!player || !player.exists()) return;
+
+  // Diagnostic: if pose data is still null 3s after the wrapper got its player,
+  // log once. Helps surface the rare "AvatarManager timed out and spawned the
+  // wrapper anyway, but pose data never arrived" case to the experimenter.
+  // Behavior unchanged — the existing `if (!boneRot) continue;` skip handles
+  // the actual sync.
+  const hipsRotProbe = player.getHumanoidBoneRotation(HumanoidBone.Hips);
+  if (!hipsRotProbe) {
+    $.state.poseWaitTime += deltaTime;
+    if (!$.state.warnedNoPose && $.state.poseWaitTime > 3) {
+      $.log("[AvatarSyncClone] Player pose still null after 3s — avatar may stay in T-pose");
+      $.state.warnedNoPose = true;
+    }
+  } else if ($.state.warnedNoPose) {
+    $.log("[AvatarSyncClone] Pose data now available; sync resuming");
+    $.state.warnedNoPose = false;
+  }
 
   // Sync root position and rotation from player
   const pos = player.getPosition();
