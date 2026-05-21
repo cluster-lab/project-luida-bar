@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17412753, g: 0.21774767, b: 0.29994398, a: 1}
+  m_IndirectSpecularColor: {r: 0.17412737, g: 0.21774727, b: 0.29994345, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -504,12 +504,17 @@ PrefabInstance:
         } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(deltaTime);\n           
         $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
         = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\r\n    1: [\n        { type: \"sleep\", value: 3 },\r\n       
+        stateEnterActions = {\n    1: [\n        { type: \"sleep\", value: 3 },\n       
         { type: \"exec\", action: (deltaTime) => {\n            $.setStateCompat('this',
-        'exp_showItem', true);\n        } },\r\n        { type: \"sleep\", value:
-        10 },\r\n        { type: \"exec\", action: (deltaTime) => {\n           
-        $.setStateCompat('this', 'exp_showItem', false);\n        } }\r\n    ]\r\n};\n\r\nconst
-        duringStateActions = {\r\n};\n\r\nconst stateExitActions = {\r\n};"
+        'exp_showItem', true);\n        } },\n        { type: \"sleep\", value: 10
+        },\n        { type: \"exec\", action: (deltaTime) => {\n            $.setStateCompat('this',
+        'exp_showItem', false);\n        } }\n    ]\n};\n\nconst duringStateActions
+        = {\n};\n\nconst stateExitActions = {\n};"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: id.value
+      value: 18004722533144653794
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -586,6 +591,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 105185488}
     m_Modifications:
+    - target: {fileID: 3594218895443089410, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: id.value
+      value: 1444179313716628353
+      objectReference: {fileID: 0}
     - target: {fileID: 3594218895443089411, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
@@ -927,15 +937,20 @@ PrefabInstance:
         } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(deltaTime);\n           
         $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
         = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\r\n    1: [\n        { type: \"exec\", action: (deltaTime)
+        stateEnterActions = {\n    1: [\n        { type: \"exec\", action: (deltaTime)
         => {\n            $.setStateCompat('this', 'exp_showItem', true);\n       
-        } }\r\n    ]\r\n};\n\r\nconst duringStateActions = {\r\n};\n\r\nconst stateExitActions
-        = {\r\n    1: [\n        { type: \"exec\", action: (deltaTime) => {\n           
-        $.setStateCompat('this', 'exp_showItem', false);\n        } }\r\n    ]\r\n};\r\n\n\n$.onCollide((collision)
+        } }\n    ]\n};\n\nconst duringStateActions = {\n};\n\nconst stateExitActions
+        = {\n    1: [\n        { type: \"exec\", action: (deltaTime) => {\n           
+        $.setStateCompat('this', 'exp_showItem', false);\n        } }\n    ]\n};\n\n\n$.onCollide((collision)
         => {\n    if (!$.groupState.collectedData) $.groupState.collectedData = {};\n       
         let collectedData = $.groupState.collectedData;\n        collectedData['bridge']
         = 'danger';\n        $.groupState.collectedData = collectedData;\n    $.sendSignalCompat('this',
         'exp_recordCustomData');\n    $.sendSignalCompat('this', 'state_triggerTransition');\n});"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: id.value
+      value: 3668809597465609212
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -1096,8 +1111,8 @@ PrefabInstance:
     - target: {fileID: 5697374075709122390, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
-        = \"callExternalEndpointID_example\";\npNum = 1;\nisTestMode = true;\n\r\n$.onStart(()
+      value: "expID = \"6a0ecd827a126ec11267980b\";\ntoken = \"bd82d51c-2f32-4d16-b919-33b6542b379a\";\ncallExternalEndpointID
+        = \"61c788d9-0da3-40aa-b5c2-f8858727c894\";\npNum = 1;\nisTestMode = false;\n\r\n$.onStart(()
         => {\r\n    reset();\r\n    $.state.isParticipantAssigned = false;\r\n   
         $.groupState.qCompletedCount = 0;\r\n});\r\n\r\n$.onUpdate((deltaTime) =>
         {\r\n    if (!$.state.isParticipantAssigned && $.groupState.isParticipantsEnough)
@@ -1271,6 +1286,11 @@ PrefabInstance:
         $.groupState.participants.forEach(p => {\r\n                p.send(\"setQuestionnaireUI\",
         {\r\n                    n: \"WaitingText\",\r\n                    e: false\r\n               
         });\r\n            });\r\n            reset();\r\n        }\r\n    }\r\n});\r\n"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5697374076674148509, guid: 5fc328789f6f647509a5de61027d8680,
+        type: 3}
+      propertyPath: id.value
+      value: 12343754394691997656
       objectReference: {fileID: 0}
     - target: {fileID: 8437594677551052287, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
@@ -1543,21 +1563,26 @@ PrefabInstance:
         } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(deltaTime);\n           
         $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
         = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\r\n    0: [\n        { type: \"exec\", action: (deltaTime)
+        stateEnterActions = {\n    0: [\n        { type: \"exec\", action: (deltaTime)
         => {\n            $.setStateCompat('this', 'exp_showItem', true);\n       
-        } },\r\n        { type: \"exec\", action: (deltaTime) => {\n            $.subNode('Text').setText(`Welcome.
+        } },\n        { type: \"exec\", action: (deltaTime) => {\n            $.subNode('Text').setText(`Welcome.
         In this experiment,\n            you will embody an avatar to pass a bridge.`);\n       
-        } }\r\n    ],\r\n    1: [\n        { type: \"exec\", action: (deltaTime)
-        => {\n            $.setStateCompat('this', 'exp_showItem', true);\n       
-        } },\r\n        { type: \"exec\", action: (deltaTime) => {\n            $.subNode('Text').setText(`Preparing
-        trial...`);\n        } },\r\n        { type: \"sleep\", value: 3 },\r\n       
+        } }\n    ],\n    1: [\n        { type: \"exec\", action: (deltaTime) => {\n           
+        $.setStateCompat('this', 'exp_showItem', true);\n        } },\n        {
+        type: \"exec\", action: (deltaTime) => {\n            $.subNode('Text').setText(`Preparing
+        trial...`);\n        } },\n        { type: \"sleep\", value: 3 },\n       
         { type: \"exec\", action: (deltaTime) => {\n            $.subNode('Text').setText(`Look
-        in the mirror`);\n        } },\r\n        { type: \"sleep\", value: 10 },\r\n       
+        in the mirror`);\n        } },\n        { type: \"sleep\", value: 10 },\n       
         { type: \"exec\", action: (deltaTime) => {\n            $.subNode('Text').setText(`Walk
-        to the other side\n            via one of the bridges`);\n        } }\r\n   
-        ]\r\n};\n\r\nconst duringStateActions = {\r\n};\n\r\nconst stateExitActions
-        = {\r\n    1: [\n        { type: \"exec\", action: (deltaTime) => {\n           
-        $.setStateCompat('this', 'exp_showItem', false);\n        } }\r\n    ]\r\n};"
+        to the other side\n            via one of the bridges`);\n        } }\n   
+        ]\n};\n\nconst duringStateActions = {\n};\n\nconst stateExitActions = {\n   
+        1: [\n        { type: \"exec\", action: (deltaTime) => {\n            $.setStateCompat('this',
+        'exp_showItem', false);\n        } }\n    ]\n};"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: id.value
+      value: 15707091950422714134
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -1904,6 +1929,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 105185488}
     m_Modifications:
+    - target: {fileID: 3594218895443089410, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: id.value
+      value: 724957472617224553
+      objectReference: {fileID: 0}
     - target: {fileID: 3594218895443089411, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
@@ -2256,20 +2286,25 @@ PrefabInstance:
         } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(deltaTime);\n           
         $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
         = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\r\n    1: [\n        { type: \"exec\", action: (deltaTime)
+        stateEnterActions = {\n    1: [\n        { type: \"exec\", action: (deltaTime)
         => {\n            PARTICIPANTS[1].setPosition(new Vector3(0, 0, -2));\n       
-        } },\r\n        { type: \"exec\", action: (deltaTime) => {\n            $.worldItemReference('LUIDA-AvatarSpawner').send('luida_unassign_avatar',
-        { participantIndex: 1 });\n        } },\r\n        { type: \"sleep\", value:
-        3 },\r\n        { type: \"exec\", action: (deltaTime) => {\n            if
+        } },\n        { type: \"exec\", action: (deltaTime) => {\n            $.worldItemReference('LUIDA-AvatarSpawner').send('luida_unassign_avatar',
+        { participantIndex: 1 });\n        } },\n        { type: \"sleep\", value:
+        3 },\n        { type: \"exec\", action: (deltaTime) => {\n            if
         (CONDITION['avatar'] === 'elder') {\n              $.worldItemReference('LUIDA-AvatarSpawner').send('luida_assign_avatar',
         { avatarID: 'ElderAvatar', participantIndex: 1 });\n            }\n       
-        } },\r\n        { type: \"exec\", action: (deltaTime) => {\n            if
+        } },\n        { type: \"exec\", action: (deltaTime) => {\n            if
         (CONDITION['avatar'] === 'young') {\n              $.worldItemReference('LUIDA-AvatarSpawner').send('luida_assign_avatar',
         { avatarID: 'YoungAvatar', participantIndex: 1 });\n            }\n       
-        } }\r\n    ]\r\n};\n\r\nconst duringStateActions = {\r\n};\n\r\nconst stateExitActions
-        = {\r\n    2: [\n        { type: \"exec\", action: (deltaTime) => {\n           
+        } }\n    ]\n};\n\nconst duringStateActions = {\n};\n\nconst stateExitActions
+        = {\n    2: [\n        { type: \"exec\", action: (deltaTime) => {\n           
         $.worldItemReference('LUIDA-AvatarSpawner').send('luida_unassign_avatar',
-        { participantIndex: 1 });\n        } }\r\n    ]\r\n};"
+        { participantIndex: 1 });\n        } }\n    ]\n};"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: id.value
+      value: 3561456726635296099
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -2379,8 +2414,8 @@ PrefabInstance:
     - target: {fileID: 320188938653792925, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
-        = \"callExternalEndpointID_example\";\npNum = 1;\nisTestMode = true;\n\r\nconst
+      value: "expID = \"6a0ecd827a126ec11267980b\";\ntoken = \"bd82d51c-2f32-4d16-b919-33b6542b379a\";\ncallExternalEndpointID
+        = \"61c788d9-0da3-40aa-b5c2-f8858727c894\";\npNum = 1;\nisTestMode = false;\n\r\nconst
         REJECTION_GATE_POS = new Vector3(-100, 100, -100);\n\nfunction enqueueRejection(idfc,
         reason) {\n    $.log(\"Rejected \" + idfc + \": \" + (reason || \"unknown\"));\n   
         $.groupState.participants = $.groupState.participants.filter(\n        p
@@ -2530,6 +2565,11 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 2325036410138020620, guid: c429a845517c96a419988cd638c846f1,
+        type: 3}
+      propertyPath: id.value
+      value: 2511509635715431071
+      objectReference: {fileID: 0}
     - target: {fileID: 2788665037610529933, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: id.value
@@ -2552,7 +2592,7 @@ PrefabInstance:
       value: "const trialsCountForEachUniqueCondition = 1;\nconst within_subjects_variables
         = [\n    { name: \"avatar\", values: [\"elder\", \"young\"], isRandom: true
         },\n];\nconst between_subjects_variables = [\n];\nconst state_names = [\"Intro\",
-        \"Trial - Start\", \"Trial - Rest\", \"End\"];\n\r\nlet isTestMode = true;
+        \"Trial - Start\", \"Trial - Rest\", \"End\"];\n\r\nlet isTestMode = false;
         // flipped to false by the pre-upload build step\r\n\r\n$.onStart(() => {\r\n 
         $.state.isServerAssigned = false;\r\n  initializeBetweenSubjectsConditions();\r\n 
         reset();\r\n\r\n  // Send between-subjects config to ParticipantManager for
@@ -3111,6 +3151,11 @@ PrefabInstance:
       propertyPath: logic.statements.Array.data[0].singleStatement.expression.value.constant.integerValue
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 5561156735572448557, guid: e1774295c75ae6d44a372c9862cfe6ab,
+        type: 3}
+      propertyPath: id.value
+      value: 13891470314612783489
+      objectReference: {fileID: 0}
     - target: {fileID: 6425654970097300135, guid: e1774295c75ae6d44a372c9862cfe6ab,
         type: 3}
       propertyPath: logic.statements.Array.data[1].singleStatement.expression.value.constant.integerValue
@@ -3473,12 +3518,17 @@ PrefabInstance:
         } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(deltaTime);\n           
         $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
         = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\r\n    1: [\n        { type: \"sleep\", value: 13 },\r\n       
+        stateEnterActions = {\n    1: [\n        { type: \"sleep\", value: 13 },\n       
         { type: \"exec\", action: (deltaTime) => {\n            $.setStateCompat('this',
-        'exp_showItem', true);\n        } }\r\n    ]\r\n};\n\r\nconst duringStateActions
-        = {\r\n};\n\r\nconst stateExitActions = {\r\n    1: [\n        { type: \"exec\",
+        'exp_showItem', true);\n        } }\n    ]\n};\n\nconst duringStateActions
+        = {\n};\n\nconst stateExitActions = {\n    1: [\n        { type: \"exec\",
         action: (deltaTime) => {\n            $.setStateCompat('this', 'exp_showItem',
-        false);\n        } }\r\n    ]\r\n};"
+        false);\n        } }\n    ]\n};"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: id.value
+      value: 5346882605774776806
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -3836,7 +3886,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clusterScripts:
-  - {fileID: 5022602860645237092, guid: 5a11675a6c4b4ed44a06418a86435db8, type: 3}
+  - {fileID: 5022602860645237092, guid: 4169c2db386e84f46a680b5f66fd442c, type: 3}
   - {fileID: 5022602860645237092, guid: 44e5a1d1d327ba545a99233a35dc19d7, type: 3}
   playerScripts: []
   clusterScriptMD5s: []
@@ -3983,7 +4033,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id:
-    value: 0
+    value: 3986024330650799386
   itemName: 
   size: {x: 0, y: 0, z: 0}
 --- !u!4 &1581153921
@@ -4320,6 +4370,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 105185488}
     m_Modifications:
+    - target: {fileID: 3594218895443089410, guid: 3105867d6c14a45979c616d46caf8a2e,
+        type: 3}
+      propertyPath: id.value
+      value: 4703120460788748887
+      objectReference: {fileID: 0}
     - target: {fileID: 6593878843264390150, guid: 3105867d6c14a45979c616d46caf8a2e,
         type: 3}
       propertyPath: m_Name
@@ -4507,8 +4562,8 @@ PrefabInstance:
     - target: {fileID: 5964733846762761526, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
-        = \"callExternalEndpointID_example\";\npNum = 1;\nisTestMode = true;\n\r\nconst
+      value: "expID = \"6a0ecd827a126ec11267980b\";\ntoken = \"bd82d51c-2f32-4d16-b919-33b6542b379a\";\ncallExternalEndpointID
+        = \"61c788d9-0da3-40aa-b5c2-f8858727c894\";\npNum = 1;\nisTestMode = false;\n\r\nconst
         uploadInterval = 1;\r\nconst dataLengthPerUpload = 100;\r\nconst dataByteLengthPerUpload
         = 100000; // 102400\r\n\r\n$.onStart(() => {\r\n    $.state.customData =
         [];\r\n    $.state.uploadIndex = 0;\r\n    $.state.elapsedTime = 0;\r\n   
@@ -4562,6 +4617,11 @@ PrefabInstance:
         END ===\n\nconst fields = {\n    avatar: CONDITION[\"avatar\"],\n    bridge:
         COLLECTED_DATA[\"bridge\"],\n};\nreturn fields;\n\r\n    return {};\r\n 
         }\r\n  returnData.push(saveData());\r\n  return returnData;\r\n}\r\n"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5964733846762761527, guid: 964d6187f971a8f43b4ee67279f1ef90,
+        type: 3}
+      propertyPath: id.value
+      value: 366153860172867118
       objectReference: {fileID: 0}
     - target: {fileID: 8273925800708392170, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
@@ -4923,15 +4983,20 @@ PrefabInstance:
         } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(deltaTime);\n           
         $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
         = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\r\n    1: [\n        { type: \"exec\", action: (deltaTime)
+        stateEnterActions = {\n    1: [\n        { type: \"exec\", action: (deltaTime)
         => {\n            $.setStateCompat('this', 'exp_showItem', true);\n       
-        } }\r\n    ]\r\n};\n\r\nconst duringStateActions = {\r\n};\n\r\nconst stateExitActions
-        = {\r\n    1: [\n        { type: \"exec\", action: (deltaTime) => {\n           
-        $.setStateCompat('this', 'exp_showItem', false);\n        } }\r\n    ]\r\n};\r\n\n\n$.onCollide((collision)
+        } }\n    ]\n};\n\nconst duringStateActions = {\n};\n\nconst stateExitActions
+        = {\n    1: [\n        { type: \"exec\", action: (deltaTime) => {\n           
+        $.setStateCompat('this', 'exp_showItem', false);\n        } }\n    ]\n};\n\n\n$.onCollide((collision)
         => {\n    if (!$.groupState.collectedData) $.groupState.collectedData = {};\n       
         let collectedData = $.groupState.collectedData;\n        collectedData['bridge']
         = 'safe';\n        $.groupState.collectedData = collectedData;\n    $.sendSignalCompat('this',
         'exp_recordCustomData');\n    $.sendSignalCompat('this', 'state_triggerTransition');\n});"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: id.value
+      value: 6672048491850940880
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -5309,15 +5374,20 @@ PrefabInstance:
         } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(deltaTime);\n           
         $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
         = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\r\n    3: [\n        { type: \"exec\", action: (deltaTime)
+        stateEnterActions = {\n    3: [\n        { type: \"exec\", action: (deltaTime)
         => {\n            $.setStateCompat('this', 'exp_showItem', true);\n       
-        } },\r\n        { type: \"exec\", action: (deltaTime) => {\n            $.subNode('Text').setText(`Thank
+        } },\n        { type: \"exec\", action: (deltaTime) => {\n            $.subNode('Text').setText(`Thank
         you!\n            You can now leave by\n            stepping on the portal\n           
-        in front of you`);\n        } },\r\n        { type: \"exec\", action: (deltaTime)
+        in front of you`);\n        } },\n        { type: \"exec\", action: (deltaTime)
         => {\n            $.sendSignalCompat('this', 'exp_uploadCustomData');\n       
-        } }\r\n    ]\r\n};\n\r\nconst duringStateActions = {\r\n};\n\r\nconst stateExitActions
-        = {\r\n    3: [\n        { type: \"exec\", action: (deltaTime) => {\n           
-        $.setStateCompat('this', 'exp_showItem', false);\n        } }\r\n    ]\r\n};"
+        } }\n    ]\n};\n\nconst duringStateActions = {\n};\n\nconst stateExitActions
+        = {\n    3: [\n        { type: \"exec\", action: (deltaTime) => {\n           
+        $.setStateCompat('this', 'exp_showItem', false);\n        } }\n    ]\n};"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: id.value
+      value: 4018243581702168521
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071931, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
