@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17412737, g: 0.21774727, b: 0.29994345, a: 1}
+  m_IndirectSpecularColor: {r: 0.17412753, g: 0.21774767, b: 0.29994398, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -217,323 +217,6 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!1 &215214481
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 215214490}
-  - component: {fileID: 215214489}
-  - component: {fileID: 215214488}
-  - component: {fileID: 215214487}
-  - component: {fileID: 215214486}
-  - component: {fileID: 215214485}
-  - component: {fileID: 215214484}
-  - component: {fileID: 215214492}
-  - component: {fileID: 215214491}
-  m_Layer: 0
-  m_Name: LUIDA-AvatarSpawner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &215214484
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 215214481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b331e57100a4127901fa699e619e234, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  host: {fileID: 930668818}
---- !u!114 &215214485
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 215214481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02f60bfc9a2c4b04bcd3524b54a1e838, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  worldItemTemplates:
-  - id: ElderAvatar
-    worldItemTemplate: {fileID: 8304027138371031478, guid: 70a172e9cbf4f8c44875feba0b057264,
-      type: 3}
-    itemTemplateId:
-      value: 0
-  - id: YoungAvatar
-    worldItemTemplate: {fileID: 2043519658070911829, guid: 04d734e222ac01d48aa407195294ae95,
-      type: 3}
-    itemTemplateId:
-      value: 0
---- !u!114 &215214486
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 215214481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10b3caec32abe904d82759e5a64eb598, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  useMovingPlatform: 1
-  movingPlatformHorizontalInertia: 0
-  movingPlatformVerticalInertia: 1
-  useMantling: 1
-  useWorldShadow: 1
-  useHUDType: 1
-  useCustomClippingPlanes: 1
-  nearPlane: 0.1
-  farPlane: 1000
-  enableCrouchWalk: 1
-  writeOwnAvatarSilhouetteStencil: 0
---- !u!114 &215214487
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 215214481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 466c56cb3cb32ec48b21ffb81ad21213, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  clusterScripts:
-  - {fileID: 5022602860645237092, guid: 4169c2db386e84f46a680b5f66fd442c, type: 3}
-  - {fileID: 5022602860645237092, guid: 44e5a1d1d327ba545a99233a35dc19d7, type: 3}
-  playerScripts: []
-  clusterScriptMD5s: []
-  playerScriptMD5s: []
---- !u!114 &215214488
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 215214481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e61061896c654489a41575fc291bf4a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sourceCodeAsset: {fileID: 0}
-  sourceCode: "// Auto-generated avatar command config\r\nconst AVATAR_INDEX_MAP
-    = [\"ElderAvatar\", \"YoungAvatar\"];\r\n\r\n// ===== LUIDA Avatar Manager =====\n//
-    Runs on the LUIDA-AvatarSpawner item.\n// Reads AVATAR_INDEX_MAP from the prepended
-    constants header.\n//\n// Supports two input paths:\n//   1. Direct messages:
-    luida_assign_avatar / luida_unassign_avatar (from state-listening items)\n//  
-    2. Gimmick integer commands: polls global states \"luida_avatar_cmd\" + \"luida_avatar_participant\"\n\n$.onStart(()
-    => {\n  $.state.createdAvatars = []; // flat list of created avatar item handles\n 
-    $.state.lastCmd = 0;         // last processed command value\n});\n\n// --- Resolve
-    target to a PlayerHandle ---\n// target can be: PlayerHandle (from direct callers)
-    or integer (participant number, 1-based)\nfunction resolvePlayer(target) {\n 
-    if (target === null || target === undefined) return null;\n  if (typeof target
-    === \"number\") {\n    const participants = $.groupState.participants;\n    if
-    (!participants || target < 1 || target > participants.length) {\n      $.log(\"[AvatarManager]
-    Invalid participant #: \" + target);\n      return null;\n    }\n    return participants[target
-    - 1];\n  }\n  return target;\n}\n\n// --- Core assignment logic ---\nfunction
-    assignAvatarToPlayer(player, avatarID) {\n  if (!player || !player.exists())
-    {\n    $.log(\"[AvatarManager] Cannot assign avatar: player does not exist\");\n   
-    return;\n  }\n\n  // Remove any existing avatars for this player first\n  unassignAllFromPlayer(player);\n\n 
-    // Spawn the wrapper item\n  try {\n    const handle = $.createItem(\n      new
-    WorldItemTemplateId(avatarID),\n      player.getPosition(),\n      player.getRotation()\n   
-    );\n    handle.send(\"assignPlayer\", { player: player });\n\n    const list
-    = $.state.createdAvatars || [];\n    list.push(handle);\n    $.state.createdAvatars
-    = list;\n\n    $.log(\"[AvatarManager] Assigned avatar '\" + avatarID + \"' to
-    player \" + player.userDisplayName);\n  } catch (e) {\n    $.log(\"[AvatarManager]
-    createItem failed (rate limit?): \" + e);\n  }\n}\n\nfunction unassignAllFromPlayer(player)
-    {\n  if (!player) return;\n\n  const list = $.state.createdAvatars || [];\n 
-    for (let i = 0; i < list.length; i++) {\n    try {\n      list[i].send(\"unassignIfPlayer\",
-    player.id);\n    } catch (e) { /* item may already be gone */ }\n  }\n\n  $.log(\"[AvatarManager]
-    Unassigned all avatars from player \" + player.userDisplayName);\n}\n\n// ---
-    Message handlers (for state-listening items) ---\n$.onReceive((messageType, arg,
-    sender) => {\n  if (messageType === \"luida_assign_avatar\") {\n    const player
-    = resolvePlayer(arg.target !== undefined ? arg.target : arg.participantIndex);\n   
-    if (player) {\n      assignAvatarToPlayer(player, arg.avatarID);\n    }\n  }\n\n 
-    if (messageType === \"luida_unassign_avatar\") {\n    const player = resolvePlayer(arg.target
-    !== undefined ? arg.target : arg.participantIndex);\n    if (player) {\n     
-    unassignAllFromPlayer(player);\n    }\n  }\n});\n\n// --- Gimmick trigger polling
-    (integer command) ---\n// Polls two global integer states:\n//   \"luida_avatar_cmd\"        
-    - action (>0 = assign avatar at index cmd-1, -1 = unassign)\n//   \"luida_avatar_participant\"
-    - participant number (1-based)\n// After handling, sends a single reset signal
-    to clear both.\n$.onUpdate((deltaTime) => {\n  if (typeof AVATAR_INDEX_MAP ===
-    \"undefined\") return;\n\n  try {\n    const cmd = $.getStateCompat(\"global\",
-    \"luida_avatar_cmd\", \"integer\");\n    if (cmd !== 0 && cmd !== $.state.lastCmd)
-    {\n      $.state.lastCmd = cmd;\n\n      const participantNumber = $.getStateCompat(\"global\",
-    \"luida_avatar_participant\", \"integer\") || 1;\n\n      if (cmd > 0) {\n       
-    // Assign: cmd = avatarIndex + 1 (1-based)\n        const avatarIndex = cmd -
-    1;\n        const player = resolvePlayer(participantNumber);\n        const avatarID
-    = AVATAR_INDEX_MAP[avatarIndex];\n        if (player && avatarID) {\n         
-    assignAvatarToPlayer(player, avatarID, null);\n        }\n      } else if (cmd
-    === -1) {\n        // Unassign all avatars from participant\n        const player
-    = resolvePlayer(participantNumber);\n        if (player) {\n          unassignAllFromPlayer(player);\n       
-    }\n      }\n\n      // Reset both global states via CCK GlobalLogic on the spawner\n     
-    $.sendSignalCompat(\"this\", \"luida_avatar_cmd_reset\");\n    }\n\n    if (cmd
-    === 0 && $.state.lastCmd !== 0) {\n      $.state.lastCmd = 0;\n    }\n  } catch
-    (e) {\n    $.log(\"[AvatarManager] Gimmick trigger poll error: \" + e);\n  }\n});\n"
---- !u!114 &215214489
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 215214481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id:
-    value: 0
-  itemName: 
-  size: {x: 0, y: 0, z: 0}
---- !u!4 &215214490
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 215214481}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 14
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &215214491
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 215214481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 0
-      key: luida_avatar_cmd_reset
-    item: {fileID: 215214489}
-  logic:
-    statements:
-    - singleStatement:
-        targetState:
-          target: 2
-          key: luida_avatar_participant
-          parameterType: 2
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 3
-              boolValue: 0
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 2
-              key: 
-              type: 6
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 0
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 2
-                  key: 
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
---- !u!114 &215214492
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 215214481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalGimmickKey:
-    key:
-      target: 0
-      key: luida_avatar_cmd_reset
-    item: {fileID: 215214489}
-  logic:
-    statements:
-    - singleStatement:
-        targetState:
-          target: 2
-          key: luida_avatar_cmd
-          parameterType: 2
-        expression:
-          type: 0
-          value:
-            type: 0
-            constant:
-              type: 3
-              boolValue: 0
-              floatValue: 0
-              integerValue: 0
-              vector2Value: {x: 0, y: 0}
-              vector3Value: {x: 0, y: 0, z: 0}
-            sourceState:
-              target: 2
-              key: 
-              type: 6
-          operatorExpression:
-            operator: 0
-            operands:
-            - type: 0
-              value:
-                type: 0
-                constant:
-                  type: 1
-                  boolValue: 0
-                  floatValue: 0
-                  integerValue: 0
-                  vector2Value: {x: 0, y: 0}
-                  vector3Value: {x: 0, y: 0, z: 0}
-                sourceState:
-                  target: 2
-                  key: 
-                  type: 6
-              operatorExpression:
-                operator: 0
-                operands: []
 --- !u!1 &338937692
 GameObject:
   m_ObjectHideFlags: 0
@@ -596,8 +279,387 @@ Transform:
   m_Children:
   - {fileID: 1327047743}
   m_Father: {fileID: 0}
+  m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &339300288
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 339300297}
+  - component: {fileID: 339300296}
+  - component: {fileID: 339300295}
+  - component: {fileID: 339300294}
+  - component: {fileID: 339300293}
+  - component: {fileID: 339300292}
+  - component: {fileID: 339300291}
+  - component: {fileID: 339300299}
+  - component: {fileID: 339300298}
+  m_Layer: 0
+  m_Name: LUIDA-AvatarSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &339300291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 339300288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b331e57100a4127901fa699e619e234, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  host: {fileID: 930668818}
+--- !u!114 &339300292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 339300288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02f60bfc9a2c4b04bcd3524b54a1e838, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldItemTemplates:
+  - id: ElderAvatar
+    worldItemTemplate: {fileID: 1296173670861363423, guid: f4ba1f26c94b02d4ba31dfa750296b29,
+      type: 3}
+    itemTemplateId:
+      value: 0
+  - id: YoungAvatar
+    worldItemTemplate: {fileID: 3438399199968005745, guid: 4deaa090c61b34e4b8de481208e4ee9c,
+      type: 3}
+    itemTemplateId:
+      value: 0
+--- !u!114 &339300293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 339300288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10b3caec32abe904d82759e5a64eb598, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useMovingPlatform: 1
+  movingPlatformHorizontalInertia: 0
+  movingPlatformVerticalInertia: 1
+  useMantling: 1
+  useWorldShadow: 1
+  useHUDType: 1
+  useCustomClippingPlanes: 1
+  nearPlane: 0.1
+  farPlane: 1000
+  enableCrouchWalk: 1
+  writeOwnAvatarSilhouetteStencil: 0
+--- !u!114 &339300294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 339300288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466c56cb3cb32ec48b21ffb81ad21213, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clusterScripts:
+  - {fileID: 5022602860645237092, guid: 5a11675a6c4b4ed44a06418a86435db8, type: 3}
+  - {fileID: 5022602860645237092, guid: 44e5a1d1d327ba545a99233a35dc19d7, type: 3}
+  playerScripts: []
+  clusterScriptMD5s: []
+  playerScriptMD5s: []
+--- !u!114 &339300295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 339300288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61061896c654489a41575fc291bf4a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourceCodeAsset: {fileID: 0}
+  sourceCode: "// Auto-generated avatar command config\r\nconst AVATAR_INDEX_MAP
+    = [\"ElderAvatar\", \"YoungAvatar\"];\r\n\r\n// ===== LUIDA Avatar Manager =====\n//
+    Runs on the LUIDA-AvatarSpawner item.\n// Reads AVATAR_INDEX_MAP from the prepended
+    constants header.\n//\n// Supports two input paths:\n//   1. Direct messages:
+    luida_assign_avatar / luida_unassign_avatar (from state-listening items)\n//  
+    2. Gimmick integer commands: polls global states \"luida_avatar_cmd\" + \"luida_avatar_participant\"\n//\n//
+    Both paths route through tryExecuteOrQueue, which defers execution until the\n//
+    target participant is \"ready\" (in $.groupState.participants, exists(), and\n//
+    has humanoid pose data) \u2014 see #avatar-fake-gimmick-race-fix. Falls back
+    to\n// best-effort execution after MAX_WAIT_SECONDS to keep behavior bounded.\n\nconst
+    MAX_WAIT_SECONDS = 5;\n\n$.onStart(() => {\n  $.state.createdAvatars = []; //
+    flat list of created avatar item handles\n  $.state.lastCmd = 0;         // last
+    processed command value\n  // One slot per participant number; later commands
+    overwrite earlier ones.\n  // Entry: { op: 'assign'|'unassign', avatarID?: string,
+    waitTime: number }\n  $.state.pendingByParticipant = {};\n});\n\n// --- Resolve
+    target to a PlayerHandle ---\n// target can be: PlayerHandle (from direct callers)
+    or integer (participant number, 1-based).\n// Returns null silently when out
+    of bounds \u2014 the readiness queue is responsible\n// for distinguishing \"not
+    registered yet\" (transient) from \"never will be\"\n// (timeout warning fires
+    after MAX_WAIT_SECONDS).\nfunction resolvePlayer(target) {\n  if (target ===
+    null || target === undefined) return null;\n  if (typeof target === \"number\")
+    {\n    const participants = $.groupState.participants;\n    if (!participants
+    || target < 1 || target > participants.length) return null;\n    return participants[target
+    - 1];\n  }\n  return target;\n}\n\n// --- Core assignment logic ---\nfunction
+    assignAvatarToPlayer(player, avatarID) {\n  if (!player || !player.exists())
+    {\n    $.log(\"[AvatarManager] Cannot assign avatar: player does not exist\");\n   
+    return;\n  }\n\n  // Remove any existing avatars for this player first\n  unassignAllFromPlayer(player);\n\n 
+    // Spawn the wrapper item\n  try {\n    const handle = $.createItem(\n      new
+    WorldItemTemplateId(avatarID),\n      player.getPosition(),\n      player.getRotation()\n   
+    );\n    handle.send(\"assignPlayer\", { player: player });\n\n    const list
+    = $.state.createdAvatars || [];\n    list.push(handle);\n    $.state.createdAvatars
+    = list;\n\n    $.log(\"[AvatarManager] Assigned avatar '\" + avatarID + \"' to
+    player \" + player.userDisplayName);\n  } catch (e) {\n    $.log(\"[AvatarManager]
+    createItem failed (rate limit?): \" + e);\n  }\n}\n\nfunction unassignAllFromPlayer(player)
+    {\n  if (!player) return;\n\n  const list = $.state.createdAvatars || [];\n 
+    for (let i = 0; i < list.length; i++) {\n    try {\n      list[i].send(\"unassignIfPlayer\",
+    player.id);\n    } catch (e) { /* item may already be gone */ }\n  }\n\n  $.log(\"[AvatarManager]
+    Unassigned all avatars from player \" + player.userDisplayName);\n}\n\n// ---
+    Readiness gate ---\n// A participant is \"ready\" to receive an avatar command
+    when they're enrolled\n// in $.groupState.participants, their PlayerHandle exists,
+    and Cluster has\n// finished populating their humanoid pose data. The third gate
+    is what\n// AvatarSyncClone actually needs to drive the bones \u2014 without
+    it, the wrapper\n// can spawn but stay in T-pose if pose data never arrives before
+    sync starts.\nfunction isPlayerReady(player) {\n  if (!player || !player.exists())
+    return false;\n  try {\n    return player.getHumanoidBoneRotation(HumanoidBone.Hips)
+    != null;\n  } catch (e) {\n    return false;\n  }\n}\n\n// Execute a queued payload
+    now. No readiness check \u2014 caller is responsible.\n// Returns true on success,
+    false on no-op (e.g. participant disappeared).\nfunction executePayload(payload,
+    participantNumber) {\n  const player = resolvePlayer(participantNumber);\n  if
+    (!player) return false;\n  if (payload.op === \"assign\") {\n    if (!payload.avatarID)
+    return false;\n    assignAvatarToPlayer(player, payload.avatarID);\n    return
+    true;\n  }\n  if (payload.op === \"unassign\") {\n    unassignAllFromPlayer(player);\n   
+    return true;\n  }\n  return false;\n}\n\nfunction clearPending(participantNumber)
+    {\n  if (!$.state.pendingByParticipant[participantNumber]) return;\n  const next
+    = { ...$.state.pendingByParticipant };\n  delete next[participantNumber];\n 
+    $.state.pendingByParticipant = next;\n}\n\nfunction queuePending(payload, participantNumber)
+    {\n  const next = { ...$.state.pendingByParticipant };\n  next[participantNumber]
+    = {\n    op: payload.op,\n    avatarID: payload.avatarID,\n    waitTime: 0\n 
+    };\n  $.state.pendingByParticipant = next;\n}\n\n// Tries to execute now. If
+    the participant isn't ready, queues the payload\n// (overwriting any older queued
+    payload for the same participant, so rapid\n// re-triggers resolve to the latest
+    command).\nfunction tryExecuteOrQueue(payload, participantNumber) {\n  const
+    player = resolvePlayer(participantNumber);\n  if (isPlayerReady(player)) {\n   
+    executePayload(payload, participantNumber);\n    clearPending(participantNumber);\n   
+    return;\n  }\n  queuePending(payload, participantNumber);\n  $.log(\"[AvatarManager]
+    Participant \" + participantNumber +\n        \" not ready \u2014 queued op=\"
+    + payload.op +\n        (payload.avatarID ? (\" avatarID=\" + payload.avatarID)
+    : \"\"));\n}\n\n// --- Message handlers (for state-listening items) ---\n$.onReceive((messageType,
+    arg, sender) => {\n  if (messageType === \"luida_assign_avatar\") {\n    const
+    participantNumber = arg.target !== undefined ? arg.target : arg.participantIndex;\n   
+    if (typeof participantNumber !== \"number\") return;\n    tryExecuteOrQueue({
+    op: \"assign\", avatarID: arg.avatarID }, participantNumber);\n  }\n\n  if (messageType
+    === \"luida_unassign_avatar\") {\n    const participantNumber = arg.target !==
+    undefined ? arg.target : arg.participantIndex;\n    if (typeof participantNumber
+    !== \"number\") return;\n    tryExecuteOrQueue({ op: \"unassign\" }, participantNumber);\n 
+    }\n});\n\n// --- Gimmick trigger polling (integer command) ---\n// Polls two
+    global integer states:\n//   \"luida_avatar_cmd\"         - action (>0 = assign
+    avatar at index cmd-1, -1 = unassign)\n//   \"luida_avatar_participant\" - participant
+    number (1-based)\n// After handling, sends a single reset signal to clear both.\n$.onUpdate((deltaTime)
+    => {\n  if (typeof AVATAR_INDEX_MAP === \"undefined\") return;\n\n  try {\n   
+    const cmd = $.getStateCompat(\"global\", \"luida_avatar_cmd\", \"integer\");\n   
+    if (cmd !== 0 && cmd !== $.state.lastCmd) {\n      $.state.lastCmd = cmd;\n\n     
+    const participantNumber = $.getStateCompat(\"global\", \"luida_avatar_participant\",
+    \"integer\") || 1;\n\n      if (cmd > 0) {\n        // Assign: cmd = avatarIndex
+    + 1 (1-based)\n        const avatarID = AVATAR_INDEX_MAP[cmd - 1];\n        if
+    (avatarID) {\n          tryExecuteOrQueue({ op: \"assign\", avatarID: avatarID
+    }, participantNumber);\n        }\n      } else if (cmd === -1) {\n        tryExecuteOrQueue({
+    op: \"unassign\" }, participantNumber);\n      }\n\n      // Reset both global
+    states via CCK GlobalLogic on the spawner.\n      // Fired immediately on pickup
+    (not after the work completes) so the\n      // gimmick stays re-triggerable
+    while the command is still queued.\n      $.sendSignalCompat(\"this\", \"luida_avatar_cmd_reset\");\n   
+    }\n\n    if (cmd === 0 && $.state.lastCmd !== 0) {\n      $.state.lastCmd = 0;\n   
+    }\n  } catch (e) {\n    $.log(\"[AvatarManager] Gimmick trigger poll error: \"
+    + e);\n  }\n\n  // --- Retry queued commands ---\n  // For each pending entry:
+    execute if the participant is now ready, time out\n  // after MAX_WAIT_SECONDS,
+    otherwise just advance waitTime. Uses the\n  // immutable-copy pattern so $.state
+    propagates.\n  const pending = $.state.pendingByParticipant;\n  if (!pending)
+    return;\n  let nextPending = pending;\n  let dirty = false;\n  for (const key
+    in pending) {\n    if (!Object.prototype.hasOwnProperty.call(pending, key)) continue;\n   
+    const entry = pending[key];\n    const participantNum = parseInt(key, 10);\n   
+    const player = resolvePlayer(participantNum);\n\n    if (isPlayerReady(player))
+    {\n      const payload = { op: entry.op, avatarID: entry.avatarID };\n      executePayload(payload,
+    participantNum);\n      $.log(\"[AvatarManager] Deferred op=\" + entry.op +\n           
+    (entry.avatarID ? (\" avatarID=\" + entry.avatarID) : \"\") +\n            \"
+    executed for participant \" + key +\n            \" after \" + entry.waitTime.toFixed(2)
+    + \"s\");\n      if (!dirty) { nextPending = { ...pending }; dirty = true; }\n     
+    delete nextPending[key];\n      continue;\n    }\n\n    const newWait = entry.waitTime
+    + deltaTime;\n    if (newWait >= MAX_WAIT_SECONDS) {\n      $.log(\"[AvatarManager]
+    WARN: timeout (\" + MAX_WAIT_SECONDS +\n            \"s) waiting for participant
+    \" + key +\n            \" \u2014 executing op=\" + entry.op + \" anyway\");\n     
+    const payload = { op: entry.op, avatarID: entry.avatarID };\n      executePayload(payload,
+    participantNum);\n      if (!dirty) { nextPending = { ...pending }; dirty = true;
+    }\n      delete nextPending[key];\n      continue;\n    }\n\n    if (!dirty)
+    { nextPending = { ...pending }; dirty = true; }\n    nextPending[key] = { op:
+    entry.op, avatarID: entry.avatarID, waitTime: newWait };\n  }\n  if (dirty) $.state.pendingByParticipant
+    = nextPending;\n});\n"
+--- !u!114 &339300296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 339300288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id:
+    value: 0
+  itemName: 
+  size: {x: 0, y: 0, z: 0}
+--- !u!4 &339300297
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 339300288}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &339300298
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 339300288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 0
+      key: luida_avatar_cmd_reset
+    item: {fileID: 339300296}
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 2
+          key: luida_avatar_participant
+          parameterType: 2
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 3
+              boolValue: 0
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &339300299
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 339300288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 0
+      key: luida_avatar_cmd_reset
+    item: {fileID: 339300296}
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 2
+          key: luida_avatar_cmd
+          parameterType: 2
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 3
+              boolValue: 0
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
 --- !u!1 &402078345
 GameObject:
   m_ObjectHideFlags: 0

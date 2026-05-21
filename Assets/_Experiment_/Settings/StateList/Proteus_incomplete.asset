@@ -14,24 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   States:
   - StateName: Start
-    DestStateName: Avatar
+    DestStateName: Intro
     HasExitTime: 0
     ExitTime: 3
     IsRepeated: 0
     RepeatDestStateName: Start
     RepeatCount: 1
     qID: 0
-  - StateName: Avatar
-    DestStateName: Video
-    HasExitTime: 1
-    ExitTime: 20
-    IsRepeated: 0
-    RepeatDestStateName: 
-    RepeatCount: 1
-    qID: 0
-  - StateName: Video
+  - StateName: Intro
     DestStateName: Trial - Start
-    HasExitTime: 1
+    HasExitTime: 0
     ExitTime: 20
     IsRepeated: 0
     RepeatDestStateName: 
@@ -47,7 +39,7 @@ MonoBehaviour:
     qID: 0
   - StateName: Trial - Rest
     DestStateName: Outro
-    HasExitTime: 1
+    HasExitTime: 0
     ExitTime: 0
     IsRepeated: 0
     RepeatDestStateName: Trial - Task
