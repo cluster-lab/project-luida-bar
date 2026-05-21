@@ -1,3 +1,5 @@
+let isTestMode = true; // flipped to false by the pre-upload build step
+
 $.onStart(() => {
   $.state.isServerAssigned = false;
   initializeBetweenSubjectsConditions();

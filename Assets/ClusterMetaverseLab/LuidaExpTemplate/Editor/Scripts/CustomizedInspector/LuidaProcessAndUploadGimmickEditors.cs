@@ -11,7 +11,7 @@ public class LuidaProcessDataAndSaveToCollectionGimmickEditor : Editor
     {
         EditorGUILayout.HelpBox(
             "This gimmick is deprecated. For new setups, use the merged " +
-            "LuidaDataCollectionGimmick with the 'Save row' phase enabled. " +
+            "LuidaDataCollectionGimmick with the 'Save pushed data' phase enabled. " +
             "Existing instances still work.",
             MessageType.Warning);
         DrawDefaultInspector();
@@ -25,7 +25,7 @@ public class LuidaUploadCollectedDataGimmickEditor : Editor
     {
         EditorGUILayout.HelpBox(
             "This gimmick is deprecated. For new setups, use the merged " +
-            "LuidaDataCollectionGimmick with the 'Submit' phase enabled. " +
+            "LuidaDataCollectionGimmick with the 'Upload saved data' phase enabled. " +
             "Existing instances still work.",
             MessageType.Warning);
         DrawDefaultInspector();

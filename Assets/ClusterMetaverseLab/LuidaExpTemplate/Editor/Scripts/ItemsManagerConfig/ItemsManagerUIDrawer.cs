@@ -83,8 +83,8 @@ public static class ItemsManagerUIDrawer
 
         // Data collection
         new StateListeningAction("Send data to collector", "if (!$.groupState.collectedData) $.groupState.collectedData = {};\n    let collectedData = $.groupState.collectedData;\n    collectedData['{_label_}'] = {_value_};\n    $.groupState.collectedData = collectedData;", new[] { "label", "value" }, _displayLabel: "Push data to collector", _category: "Data collection"),
-        new StateListeningAction("Process and save collected data", "$.sendSignalCompat('this', 'exp_recordCustomData');", _displayLabel: "Save pushed data to buffer", _category: "Data collection"),
-        new StateListeningAction("Upload collected data", "$.sendSignalCompat('this', 'exp_uploadCustomData');", _category: "Data collection"),
+        new StateListeningAction("Process and save collected data", "$.sendSignalCompat('this', 'exp_recordCustomData');", _displayLabel: "Save pushed data in collector", _category: "Data collection"),
+        new StateListeningAction("Upload collected data", "$.sendSignalCompat('this', 'exp_uploadCustomData');", _displayLabel: "Upload saved data from collector", _category: "Data collection"),
 
         // Participant — transform
         new StateListeningAction("Set participant position",
@@ -336,6 +336,452 @@ public static class ItemsManagerUIDrawer
         return _dupIconTex != null
             ? new GUIContent(_dupIconTex, tooltip)
             : new GUIContent("+", tooltip);
+    }
+
+    // ─── "Push data to collector" action helpers ────────────────────────
+    // The action snippet is:
+    //   collectedData['{_label_}'] = {_value_};
+    // We render label as a registry-backed dropdown and value as a type-aware
+    // editor whose output is assembled into variableValues["value"] as the JS
+    // expression to substitute. Vector components and the string buffer are
+    // stashed in auxiliary keys (value_x/y/z, value_str) so the per-component
+    // UI state survives repaints without round-tripping through the JS text.
+
+    private const string NumberPattern = @"-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?";
+    private static readonly Regex Vector2Regex = new Regex(
+        @"^\s*new\s+Vector2\s*\(\s*(" + NumberPattern + @")\s*,\s*(" + NumberPattern + @")\s*\)\s*$", RegexOptions.Compiled);
+    private static readonly Regex Vector3Regex = new Regex(
+        @"^\s*new\s+Vector3\s*\(\s*(" + NumberPattern + @")\s*,\s*(" + NumberPattern + @")\s*,\s*(" + NumberPattern + @")\s*\)\s*$", RegexOptions.Compiled);
+
+    /// <summary>Looks up the CollectedValueType for the picked label. Returns null when label is empty or not registered.</summary>
+    private static CollectedValueType? ResolvePushCollectorType(string label, LuidaDataCollectorConfig config)
+    {
+        if (string.IsNullOrEmpty(label) || config == null) return null;
+        var entry = config.FindCollectedLabel(label);
+        return entry?.type;
+    }
+
+    /// <summary>JS expression used as the initial value when the picked label's type changes.</summary>
+    private static string DefaultValueJsFor(CollectedValueType type)
+    {
+        switch (type)
+        {
+            case CollectedValueType.Bool:    return "false";
+            case CollectedValueType.Float:   return "0";
+            case CollectedValueType.Integer: return "0";
+            case CollectedValueType.Vector2: return "new Vector2(0, 0)";
+            case CollectedValueType.Vector3: return "new Vector3(0, 0, 0)";
+            case CollectedValueType.String:  return "''";
+        }
+        return "";
+    }
+
+    /// <summary>Best-effort: strip a single matched pair of surrounding ' or " quotes from a JS string literal.</summary>
+    private static string StripStringQuotes(string js)
+    {
+        if (string.IsNullOrEmpty(js)) return string.Empty;
+        string s = js.Trim();
+        if (s.Length >= 2 && (s[0] == '\'' || s[0] == '"') && s[s.Length - 1] == s[0])
+            return UnescapeJsString(s.Substring(1, s.Length - 2));
+        return js;
+    }
+
+    private static string UnescapeJsString(string s)
+    {
+        if (string.IsNullOrEmpty(s)) return string.Empty;
+        var sb = new System.Text.StringBuilder(s.Length);
+        for (int i = 0; i < s.Length; i++)
+        {
+            if (s[i] == '\\' && i + 1 < s.Length)
+            {
+                char n = s[i + 1];
+                switch (n)
+                {
+                    case '\\': sb.Append('\\'); i++; break;
+                    case '\'': sb.Append('\''); i++; break;
+                    case '"':  sb.Append('"');  i++; break;
+                    case 'n':  sb.Append('\n'); i++; break;
+                    case 'r':  sb.Append('\r'); i++; break;
+                    case 't':  sb.Append('\t'); i++; break;
+                    default:   sb.Append(s[i]); break;
+                }
+            }
+            else sb.Append(s[i]);
+        }
+        return sb.ToString();
+    }
+
+    private static string EscapeJsStringLiteral(string s)
+    {
+        if (string.IsNullOrEmpty(s)) return string.Empty;
+        var sb = new System.Text.StringBuilder(s.Length);
+        foreach (char c in s)
+        {
+            switch (c)
+            {
+                case '\\': sb.Append("\\\\"); break;
+                case '\'': sb.Append("\\'"); break;
+                case '\n': sb.Append("\\n"); break;
+                case '\r': sb.Append("\\r"); break;
+                case '\t': sb.Append("\\t"); break;
+                default:   sb.Append(c); break;
+            }
+        }
+        return sb.ToString();
+    }
+
+    /// <summary>Compact ⚙ button that opens the LUIDA Data Collector window.</summary>
+    private static void DrawCollectorConfigGearButton(Rect rect)
+    {
+        var btn = EditorGUIUtility.IconContent("d_Settings@2x");
+        if (btn == null || btn.image == null) btn = new GUIContent("⚙");
+        btn.tooltip = "Open the LUIDA Data Collector configuration window";
+        if (GUI.Button(rect, btn, EditorStyles.miniButton))
+        {
+            DataCollectorConfigTab.ShowWindow();
+        }
+    }
+
+    /// <summary>
+    /// Height of the "Push data to collector" action body (excluding the action
+    /// row + conditional rows shared with other actions). Mirrors DrawPushDataToCollectorAction.
+    /// </summary>
+    private static float GetPushDataToCollectorActionHeight(StateListenerAction action, float lineHeight, float spacing)
+    {
+        var config = DataCollectorGimmickShared.FindBuilderConfig();
+        string[] registered = config?.GetCollectedLabelNames(false) ?? new string[0];
+
+        if (registered.Length == 0)
+        {
+            // helpbox (2 lines + spacing) + button (1 line + spacing)
+            return lineHeight * 3 + spacing * 2;
+        }
+
+        action.variableValues.TryGetValue("label", out string currentLabel);
+        currentLabel ??= "";
+
+        float h = lineHeight + spacing; // label dropdown row
+
+        var resolvedType = ResolvePushCollectorType(currentLabel, config);
+        if (!resolvedType.HasValue)
+        {
+            h += lineHeight + spacing; // value (raw JS) row
+            if (!string.IsNullOrEmpty(currentLabel))
+                h += lineHeight + spacing; // stale-label warning
+            return h;
+        }
+
+        switch (resolvedType.Value)
+        {
+            case CollectedValueType.Vector2:
+                h += (lineHeight + spacing) * 2; // "Value" label + x/y inline
+                break;
+            case CollectedValueType.Vector3:
+                h += (lineHeight + spacing) * 2; // "Value" label + x/y/z inline
+                break;
+            case CollectedValueType.String:
+                h += lineHeight + spacing; // single value row
+                break;
+            default:
+                h += lineHeight + spacing; // single-row editor
+                break;
+        }
+        return h;
+    }
+
+    /// <summary>
+    /// Draws the body of the "Push data to collector" action: a registry-backed
+    /// label dropdown (or empty-state CTA when no labels exist) and a type-aware
+    /// value editor whose output is assembled into variableValues["value"] as the
+    /// JS expression substituted into the action snippet.
+    /// </summary>
+    private static void DrawPushDataToCollectorAction(
+        Rect rect, ref float currentY, float lineHeight, float spacing,
+        StateListenerAction action, StateListeningItemData itemDataAsset)
+    {
+        float labelColumnWidth = 85f;
+        var config = DataCollectorGimmickShared.FindBuilderConfig();
+        string[] registered = config?.GetCollectedLabelNames(false) ?? new string[0];
+
+        if (registered.Length == 0)
+        {
+            Rect helpRect = new Rect(rect.x + 15, currentY, rect.width - 30, lineHeight * 2);
+            EditorGUI.HelpBox(helpRect,
+                "No collected-data items defined yet. Add one in the Data Collector configuration window first.",
+                MessageType.Info);
+            currentY += lineHeight * 2 + spacing;
+
+            Rect btnRect = new Rect(rect.x + 15, currentY, rect.width - 30, lineHeight);
+            if (GUI.Button(btnRect, new GUIContent("Add data to collect…", "Open the LUIDA Data Collector configuration window")))
+            {
+                DataCollectorConfigTab.ShowWindow();
+            }
+            currentY += lineHeight + spacing;
+            return;
+        }
+
+        action.variableValues.TryGetValue("label", out string currentLabel);
+        currentLabel ??= "";
+
+        // ─── Row 1: Label dropdown + ⚙ ─────────────────────────────────
+        Rect labelLabelRect = new Rect(rect.x + 15, currentY, labelColumnWidth, lineHeight);
+        EditorGUI.LabelField(labelLabelRect, "Label");
+
+        const float gearWidth = 26f, gearGap = 4f;
+        Rect labelDropdownRect = new Rect(
+            labelLabelRect.xMax, currentY,
+            rect.width - labelColumnWidth - 15 - gearWidth - gearGap, lineHeight);
+        Rect gearRect = new Rect(labelDropdownRect.xMax + gearGap, currentY, gearWidth, lineHeight);
+
+        var displayList = new List<string>(registered);
+        int selectedIdx = displayList.IndexOf(currentLabel);
+        bool stale = selectedIdx < 0 && !string.IsNullOrEmpty(currentLabel);
+        if (stale)
+        {
+            displayList.Insert(0, currentLabel + "  (not registered)");
+            selectedIdx = 0;
+        }
+        int newIdx = EditorGUI.Popup(labelDropdownRect, selectedIdx, displayList.ToArray());
+        DrawCollectorConfigGearButton(gearRect);
+
+        if (newIdx >= 0)
+        {
+            string newLabel;
+            if (stale && newIdx == 0) newLabel = currentLabel; // kept stale entry
+            else
+            {
+                int registeredIdx = stale ? newIdx - 1 : newIdx;
+                newLabel = (registeredIdx >= 0 && registeredIdx < registered.Length) ? registered[registeredIdx] : currentLabel;
+            }
+            if (newLabel != currentLabel)
+            {
+                Undo.RecordObject(itemDataAsset, "Change Collector Label");
+                action.variableValues["label"] = newLabel;
+                // Reset value-related state when switching to a different label —
+                // type may have changed, so old per-component aux state is invalid.
+                var newType = ResolvePushCollectorType(newLabel, config);
+                action.variableValues["value"] = newType.HasValue ? DefaultValueJsFor(newType.Value) : "";
+                action.variableValues.Remove("value_x");
+                action.variableValues.Remove("value_y");
+                action.variableValues.Remove("value_z");
+                action.variableValues.Remove("value_str");
+                EditorUtility.SetDirty(itemDataAsset);
+                currentLabel = newLabel;
+            }
+        }
+        currentY += lineHeight + spacing;
+
+        // ─── Row 2+: Typed value editor ────────────────────────────────
+        var resolvedType = ResolvePushCollectorType(currentLabel, config);
+        if (!resolvedType.HasValue)
+        {
+            // Stale or empty label — fall back to a raw JS text field so the
+            // generated snippet still has something sane.
+            Rect rawLabelRect = new Rect(rect.x + 15, currentY, labelColumnWidth, lineHeight);
+            Rect rawFieldRect = new Rect(rawLabelRect.xMax, currentY, rect.width - labelColumnWidth - 30, lineHeight);
+            EditorGUI.LabelField(rawLabelRect, "Value (JS)");
+            action.variableValues.TryGetValue("value", out string rawCurrent);
+            string rawNew = EditorGUI.TextField(rawFieldRect, rawCurrent ?? "");
+            if (rawNew != rawCurrent)
+            {
+                Undo.RecordObject(itemDataAsset, "Edit Collector Value");
+                action.variableValues["value"] = rawNew;
+                EditorUtility.SetDirty(itemDataAsset);
+            }
+            currentY += lineHeight + spacing;
+
+            if (!string.IsNullOrEmpty(currentLabel))
+            {
+                Rect noteRect = new Rect(rect.x + 15, currentY, rect.width - 30, lineHeight);
+                EditorGUI.HelpBox(noteRect,
+                    $"Label '{currentLabel}' is not registered. Pick one above or add it in the Data Collector config.",
+                    MessageType.Warning);
+                currentY += lineHeight + spacing;
+            }
+            return;
+        }
+
+        DrawPushCollectorTypedValueEditor(rect, ref currentY, lineHeight, spacing,
+            action, itemDataAsset, resolvedType.Value, labelColumnWidth);
+    }
+
+    /// <summary>
+    /// Typed value editor switched by the registered label's CollectedValueType.
+    /// Writes the JS expression to variableValues["value"] and keeps per-component
+    /// aux state in value_x / value_y / value_z / value_str so the per-field UI
+    /// survives repaints without parsing the assembled JS each frame.
+    /// </summary>
+    private static void DrawPushCollectorTypedValueEditor(
+        Rect rect, ref float currentY, float lineHeight, float spacing,
+        StateListenerAction action, StateListeningItemData itemDataAsset,
+        CollectedValueType type, float labelColumnWidth)
+    {
+        action.variableValues.TryGetValue("value", out string currentJs);
+        currentJs ??= "";
+
+        switch (type)
+        {
+            case CollectedValueType.Bool:
+            {
+                // Normalize stale free-form text to a clean "true"/"false" on first draw.
+                string trimmed = currentJs.Trim();
+                bool isCleanBool = trimmed == "true" || trimmed == "false";
+                if (!isCleanBool)
+                {
+                    bool inferred = trimmed.Equals("true", StringComparison.OrdinalIgnoreCase);
+                    action.variableValues["value"] = inferred ? "true" : "false";
+                    EditorUtility.SetDirty(itemDataAsset);
+                    currentJs = action.variableValues["value"];
+                }
+
+                Rect lblRect = new Rect(rect.x + 15, currentY, labelColumnWidth, lineHeight);
+                Rect fieldRect = new Rect(lblRect.xMax, currentY, rect.width - labelColumnWidth - 30, lineHeight);
+                EditorGUI.LabelField(lblRect, "Value");
+                bool current = currentJs == "true";
+                bool picked = EditorGUI.Toggle(fieldRect, current);
+                if (picked != current)
+                {
+                    Undo.RecordObject(itemDataAsset, "Edit Collector Value");
+                    action.variableValues["value"] = picked ? "true" : "false";
+                    EditorUtility.SetDirty(itemDataAsset);
+                }
+                currentY += lineHeight + spacing;
+                break;
+            }
+
+            case CollectedValueType.Float:
+            case CollectedValueType.Integer:
+            {
+                if (string.IsNullOrEmpty(currentJs))
+                {
+                    action.variableValues["value"] = "0";
+                    currentJs = "0";
+                    EditorUtility.SetDirty(itemDataAsset);
+                }
+
+                Rect lblRect = new Rect(rect.x + 15, currentY, labelColumnWidth, lineHeight);
+                Rect fieldRect = new Rect(lblRect.xMax, currentY, rect.width - labelColumnWidth - 30, lineHeight);
+                EditorGUI.LabelField(lblRect, "Value");
+                string newText = EditorGUI.TextField(fieldRect, currentJs);
+                if (newText != currentJs)
+                {
+                    Undo.RecordObject(itemDataAsset, "Edit Collector Value");
+                    action.variableValues["value"] = newText;
+                    EditorUtility.SetDirty(itemDataAsset);
+                }
+                currentY += lineHeight + spacing;
+                break;
+            }
+
+            case CollectedValueType.String:
+            {
+                // Seed aux + re-emit value as a clean JS string literal on first draw
+                // so older free-form values get normalized to 'text' form.
+                bool wasSeededThisDraw = !action.variableValues.ContainsKey("value_str");
+                string strBuf;
+                if (wasSeededThisDraw)
+                {
+                    strBuf = StripStringQuotes(currentJs);
+                    action.variableValues["value_str"] = strBuf;
+                    action.variableValues["value"] = "'" + EscapeJsStringLiteral(strBuf) + "'";
+                    EditorUtility.SetDirty(itemDataAsset);
+                }
+                else
+                {
+                    action.variableValues.TryGetValue("value_str", out strBuf);
+                    strBuf ??= string.Empty;
+                }
+
+                Rect lblRect = new Rect(rect.x + 15, currentY, labelColumnWidth, lineHeight);
+                Rect fieldRect = new Rect(lblRect.xMax, currentY, rect.width - labelColumnWidth - 30, lineHeight);
+                EditorGUI.LabelField(lblRect, "Value");
+                string newStr = EditorGUI.TextField(fieldRect, strBuf);
+                if (newStr != strBuf)
+                {
+                    Undo.RecordObject(itemDataAsset, "Edit Collector Value");
+                    action.variableValues["value_str"] = newStr;
+                    action.variableValues["value"] = "'" + EscapeJsStringLiteral(newStr) + "'";
+                    EditorUtility.SetDirty(itemDataAsset);
+                }
+                currentY += lineHeight + spacing;
+                break;
+            }
+
+            case CollectedValueType.Vector2:
+            case CollectedValueType.Vector3:
+            {
+                int dim = type == CollectedValueType.Vector2 ? 2 : 3;
+                string[] aux = { "value_x", "value_y", "value_z" };
+
+                // Seed aux keys from the current JS expression once. Also re-emit
+                // the assembled "value" so a pre-migration raw JS body that we
+                // couldn't parse doesn't keep producing broken JS.
+                bool wasSeededThisDraw = !action.variableValues.ContainsKey(aux[0]);
+                if (wasSeededThisDraw)
+                {
+                    string[] seeded = SeedVectorAuxFromJs(currentJs, dim);
+                    for (int i = 0; i < dim; i++) action.variableValues[aux[i]] = seeded[i];
+                    action.variableValues["value"] = AssembleVectorJs(action, dim);
+                    EditorUtility.SetDirty(itemDataAsset);
+                }
+
+                EditorGUI.LabelField(new Rect(rect.x + 15, currentY, rect.width - 30, lineHeight), "Value");
+                currentY += lineHeight + spacing;
+
+                float axisLabelW = 14f, axisFieldW = 50f, axisGap = 8f;
+                float x = rect.x + 15;
+                string[] axes = { "x", "y", "z" };
+                bool changed = false;
+                for (int i = 0; i < dim; i++)
+                {
+                    EditorGUI.LabelField(new Rect(x, currentY, axisLabelW, lineHeight), axes[i]);
+                    action.variableValues.TryGetValue(aux[i], out string axisCurrent);
+                    axisCurrent ??= "0";
+                    string axisNew = EditorGUI.TextField(new Rect(x + axisLabelW, currentY, axisFieldW, lineHeight), axisCurrent);
+                    if (axisNew != axisCurrent)
+                    {
+                        Undo.RecordObject(itemDataAsset, "Edit Collector Value");
+                        action.variableValues[aux[i]] = axisNew;
+                        changed = true;
+                    }
+                    x += axisLabelW + axisFieldW + axisGap;
+                }
+                if (changed)
+                {
+                    action.variableValues["value"] = AssembleVectorJs(action, dim);
+                    EditorUtility.SetDirty(itemDataAsset);
+                }
+                currentY += lineHeight + spacing;
+                break;
+            }
+        }
+    }
+
+    /// <summary>Best-effort: extract Vector2/Vector3 components from "new VectorN(x, y[, z])". Falls back to "0" per axis.</summary>
+    private static string[] SeedVectorAuxFromJs(string js, int dim)
+    {
+        var result = new string[] { "0", "0", "0" };
+        if (string.IsNullOrEmpty(js)) return result;
+        var rx = dim == 2 ? Vector2Regex : Vector3Regex;
+        var m = rx.Match(js);
+        if (m.Success)
+        {
+            for (int i = 0; i < dim; i++) result[i] = m.Groups[i + 1].Value;
+        }
+        return result;
+    }
+
+    private static string AssembleVectorJs(StateListenerAction action, int dim)
+    {
+        action.variableValues.TryGetValue("value_x", out string xv);
+        action.variableValues.TryGetValue("value_y", out string yv);
+        action.variableValues.TryGetValue("value_z", out string zv);
+        xv = string.IsNullOrWhiteSpace(xv) ? "0" : xv.Trim();
+        yv = string.IsNullOrWhiteSpace(yv) ? "0" : yv.Trim();
+        zv = string.IsNullOrWhiteSpace(zv) ? "0" : zv.Trim();
+        return dim == 2
+            ? $"new Vector2({xv}, {yv})"
+            : $"new Vector3({xv}, {yv}, {zv})";
     }
 
     public static void DrawGUI(ItemsManagerConfigTab editor)
@@ -777,13 +1223,34 @@ public static class ItemsManagerUIDrawer
         }
     }
 
+    /// <summary>Seed text for a freshly created Customized Action. When the action lives inside an event handler,
+    /// the seed leads with a comment listing that event's callback parameters so the user can discover what's available.</summary>
+    private static string BuildCustomizedActionSeed(string eventType)
+    {
+        const string defaultBody = "// Your custom ClusterScript code here\n";
+        if (string.IsNullOrEmpty(eventType)) return defaultBody;
+        if (!TryGetEventDefinition(eventType, out var def)) return defaultBody;
+
+        string sig = def.parameterSignature;
+        if (string.IsNullOrEmpty(sig)) return defaultBody;
+        string trimmed = sig.Trim();
+        if (trimmed.StartsWith("(") && trimmed.EndsWith(")"))
+            trimmed = trimmed.Substring(1, trimmed.Length - 2);
+        trimmed = trimmed.Trim();
+        if (string.IsNullOrEmpty(trimmed)) return defaultBody;
+
+        return $"// Available parameter(s) from {eventType}: {trimmed}\n" + defaultBody;
+    }
+
     /// <summary>
     /// Apply the user's action-type selection to a single StateListenerAction. Called from the
     /// GenericMenu callback that backs the action-type dropdown — extracted from the inline path
     /// so it can run asynchronously after the menu closes.
     /// </summary>
     /// <param name="newIndex">0 = "Select action" (clear); customizedActionIndex = "Customized Action"; otherwise 1-based index into AvailableStateListeningActions.</param>
-    private static void ApplyActionSelection(StateListeningItemData itemDataAsset, StateListenerAction action, int newIndex, int customizedActionIndex, GameObject itemGO, ItemsManagerConfigTab editor)
+    /// <param name="eventType">When set, indicates the action lives inside the corresponding always-on event handler.
+    /// Used to seed the Customized Action body with a comment listing that event's callback parameters.</param>
+    private static void ApplyActionSelection(StateListeningItemData itemDataAsset, StateListenerAction action, int newIndex, int customizedActionIndex, GameObject itemGO, ItemsManagerConfigTab editor, string eventType = null)
     {
         Undo.RecordObject(itemDataAsset, "Change Action Type");
         if (newIndex == 0)
@@ -795,7 +1262,7 @@ public static class ItemsManagerUIDrawer
         else if (newIndex == customizedActionIndex)
         {
             action.predefinedActionTemplate = new StateListeningAction("Customized Action", "", null);
-            action.customAction = "// Your custom ClusterScript code here\n";
+            action.customAction = BuildCustomizedActionSeed(eventType);
             action.variableValues.Clear();
         }
         else
@@ -850,7 +1317,8 @@ public static class ItemsManagerUIDrawer
             editor, itemGO, itemDataAsset, listener: null, actions: handler.actions,
             header: "Actions", keySuffix: null,
             allowConditionalUnconditionally: true,
-            excludeActionTypes: new HashSet<string> { "Sleep" });
+            excludeActionTypes: new HashSet<string> { "Sleep" },
+            eventType: handler.eventType);
     }
 
     /// <summary>Builds the StateListenerAction ReorderableList. Two call paths:
@@ -861,7 +1329,8 @@ public static class ItemsManagerUIDrawer
         StateListeningItemData itemDataAsset, StateListener listener,
         List<StateListenerAction> actions, string header, string keySuffix,
         bool allowConditionalUnconditionally = false,
-        HashSet<string> excludeActionTypes = null)
+        HashSet<string> excludeActionTypes = null,
+        string eventType = null)
     {
         string key = (listener != null && keySuffix != null) ? $"{itemGO.GetInstanceID()}_{listener.stateID}_{keySuffix}" : null;
         bool isCurrentStateTrialRelated = listener != null && ItemsManagerAssetUtil.IsTrialRelatedState(listener.stateID, editor.stateList);
@@ -916,11 +1385,12 @@ public static class ItemsManagerUIDrawer
                     var capturedEditor = editor;
                     int capturedSelectedIndex = selectedIndex;
                     int capturedCustomizedIndex = customizedActionIndex;
+                    string capturedEventType = eventType;
 
                     var menu = new GenericMenu();
                     menu.AddItem(new GUIContent("Select action"), capturedSelectedIndex == 0, () =>
                     {
-                        ApplyActionSelection(capturedItemDataAsset, capturedAction, 0, capturedCustomizedIndex, capturedItemGO, capturedEditor);
+                        ApplyActionSelection(capturedItemDataAsset, capturedAction, 0, capturedCustomizedIndex, capturedItemGO, capturedEditor, capturedEventType);
                     });
                     menu.AddSeparator("");
                     for (int i = 0; i < AvailableStateListeningActions.Length; i++)
@@ -930,13 +1400,13 @@ public static class ItemsManagerUIDrawer
                         if (excludeActionTypes != null && excludeActionTypes.Contains(a.actionType)) continue;
                         menu.AddItem(new GUIContent(a.GetMenuPath()), capturedSelectedIndex == captured, () =>
                         {
-                            ApplyActionSelection(capturedItemDataAsset, capturedAction, captured, capturedCustomizedIndex, capturedItemGO, capturedEditor);
+                            ApplyActionSelection(capturedItemDataAsset, capturedAction, captured, capturedCustomizedIndex, capturedItemGO, capturedEditor, capturedEventType);
                         });
                     }
                     menu.AddSeparator("");
                     menu.AddItem(new GUIContent("Customized Action"), capturedSelectedIndex == capturedCustomizedIndex, () =>
                     {
-                        ApplyActionSelection(capturedItemDataAsset, capturedAction, capturedCustomizedIndex, capturedCustomizedIndex, capturedItemGO, capturedEditor);
+                        ApplyActionSelection(capturedItemDataAsset, capturedAction, capturedCustomizedIndex, capturedCustomizedIndex, capturedItemGO, capturedEditor, capturedEventType);
                     });
                     menu.DropDown(dropdownRect);
                 }
@@ -1376,6 +1846,10 @@ public static class ItemsManagerUIDrawer
                             currentY += lineHeight + spacing;
                         }
                     }
+                    else if (action.predefinedActionTemplate.actionType == "Send data to collector")
+                    {
+                        DrawPushDataToCollectorAction(rect, ref currentY, lineHeight, spacing, action, itemDataAsset);
+                    }
                     else
                     {
                         var variables = action.predefinedActionTemplate.variables;
@@ -1413,7 +1887,7 @@ public static class ItemsManagerUIDrawer
                                     currentY += lineHeight + spacing;
                                     float textAreaHeight = lineHeight * 2;
                                     Rect textAreaRect = new Rect(rect.x + 15, currentY, rect.width - 15, textAreaHeight);
-                                    
+
                                     DrawHoverableTextArea(textAreaRect, currentValue, (newValue) => {
                                         Undo.RecordObject(itemDataAsset, "Edit Variable " + variableName);
                                         action.variableValues[variableName] = newValue;
@@ -1426,15 +1900,8 @@ public static class ItemsManagerUIDrawer
                                 {
                                     Rect labelRect = new Rect(rect.x + 15, currentY, EditorGUIUtility.labelWidth * 0.6f, lineHeight);
                                     EditorGUI.LabelField(labelRect, variableName);
-                                    // For the "Send data to collector" action's label input, append a small ⚙
-                                    // button that opens the LUIDA Data Collector window so users can manage
-                                    // registered labels without leaving the action UI.
-                                    bool isCollectorLabelField =
-                                        action.predefinedActionTemplate.actionType == "Send data to collector"
-                                        && variableName == "label";
-                                    float configButtonWidth = isCollectorLabelField ? 26f : 0f;
                                     Rect fieldRect = new Rect(labelRect.xMax, currentY,
-                                        rect.width - labelRect.width - 15 - configButtonWidth - (configButtonWidth > 0 ? 4f : 0f),
+                                        rect.width - labelRect.width - 15,
                                         lineHeight);
                                     string newValue = EditorGUI.TextField(fieldRect, currentValue);
                                     if (newValue != currentValue)
@@ -1442,17 +1909,6 @@ public static class ItemsManagerUIDrawer
                                         Undo.RecordObject(itemDataAsset, "Edit Variable " + variableName);
                                         action.variableValues[variableName] = newValue;
                                         EditorUtility.SetDirty(itemDataAsset);
-                                    }
-                                    if (isCollectorLabelField)
-                                    {
-                                        Rect btnRect = new Rect(fieldRect.xMax + 4f, currentY, configButtonWidth, lineHeight);
-                                        var btn = EditorGUIUtility.IconContent("d_Settings@2x");
-                                        if (btn == null || btn.image == null) btn = new GUIContent("⚙");
-                                        btn.tooltip = "Open the LUIDA Data Collector configuration window";
-                                        if (GUI.Button(btnRect, btn, EditorStyles.miniButton))
-                                        {
-                                            DataCollectorConfigTab.ShowWindow();
-                                        }
                                     }
                                     currentY += lineHeight + spacing;
                                 }
@@ -1533,6 +1989,10 @@ public static class ItemsManagerUIDrawer
                 {
                     // participant row, axis-row label, xyz inline
                     height += (lineHeight + spacing) * 3;
+                }
+                else if (action.predefinedActionTemplate.actionType == "Send data to collector")
+                {
+                    height += GetPushDataToCollectorActionHeight(action, lineHeight, spacing);
                 }
                 else
                 {

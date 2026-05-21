@@ -267,9 +267,10 @@ public class DataCollectorConfigTab : EditorWindow
         GUILayout.Label("Collected data items", EditorStyles.largeLabel);
         EditorGUILayout.HelpBox(
             "Labels & types that LuidaSendDataToCollectorGimmick and the state-listening " +
-            "\"Send data to collector\" action can write into $.groupState.collectedData. " +
-            "These appear as dropdown options in the field sources below and in the gimmick inspector. " +
-            "String-typed items can only be set by the action (CCK can't carry strings).",
+            "\"Push data to collector\" action can write into $.groupState.collectedData. " +
+            "These appear as dropdown options in the field sources below and in the gimmick inspector.\n\n" +
+            "⚠ String-typed items can only be set via the state-listening action — the data-collection " +
+            "fake gimmick cannot transport strings through CCK (ConstantValue has no string slot).",
             MessageType.Info);
 
         if (_labelList == null) BuildLabelList();
@@ -283,12 +284,14 @@ public class DataCollectorConfigTab : EditorWindow
         var seen = new HashSet<string>();
         var collisions = new HashSet<string>();
         var invalid = new List<string>();
+        var stringLabels = new List<string>();
         foreach (var l in _config.collectedLabels)
         {
             if (l == null) continue;
             string n = l.label ?? string.Empty;
             if (!string.IsNullOrEmpty(n) && !seen.Add(n)) collisions.Add(n);
             if (!string.IsNullOrEmpty(n) && !LuidaDataCollectorJsGenerator.IsValidFieldName(n)) invalid.Add(n);
+            if (!string.IsNullOrEmpty(n) && l.type == CollectedValueType.String) stringLabels.Add(n);
         }
         if (collisions.Count > 0)
             EditorGUILayout.HelpBox("Duplicate labels: " + string.Join(", ", collisions), MessageType.Error);
@@ -296,6 +299,12 @@ public class DataCollectorConfigTab : EditorWindow
             EditorGUILayout.HelpBox(
                 "Invalid label names (must be letters/digits/underscores; cannot start with a digit): " +
                 string.Join(", ", invalid),
+                MessageType.Warning);
+        if (stringLabels.Count > 0)
+            EditorGUILayout.HelpBox(
+                $"String-typed labels are write-only via the state-listening \"Push data to collector\" action — " +
+                $"the data-collection fake gimmick can't transport strings through CCK ConstantValue. " +
+                $"Affected: {string.Join(", ", stringLabels)}.",
                 MessageType.Warning);
     }
 

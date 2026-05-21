@@ -308,7 +308,7 @@ public abstract class LuidaFakeGimmick : MonoBehaviour
     /// <summary>
     /// Patches statements[statementIndex] in a GlobalLogic to set a typed Global
     /// state. Used by the merged data-collection gimmick which needs to write
-    /// multiple statements (Add → Save → Submit) from one GlobalLogic.
+    /// multiple statements (Push → Save → Upload) from one GlobalLogic.
     /// </summary>
     /// <param name="globalLogic">The GlobalLogic component to patch (object so reflection callers can pass any type).</param>
     /// <param name="statementIndex">Index into logic.statements (0-based).</param>

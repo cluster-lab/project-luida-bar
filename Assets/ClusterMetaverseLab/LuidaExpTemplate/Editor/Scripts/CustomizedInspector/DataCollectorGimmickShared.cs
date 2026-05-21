@@ -8,7 +8,7 @@ using UnityEngine;
 /// inspector and the new merged LuidaDataCollectionGimmick inspector.
 ///
 /// The two gimmicks happen to expose identical field NAMES for the
-/// "Add value" sub-controls (label / valueType / boolValue / floatValue /
+/// "Push data" sub-controls (label / valueType / boolValue / floatValue /
 /// integerValue / vector2Value / vector3Value), so these helpers operate on
 /// the SerializedObject without needing the concrete class.
 /// </summary>
@@ -65,14 +65,30 @@ public static class DataCollectorGimmickShared
 
         string[] registered = config?.GetCollectedLabelNames(true) ?? new string[0];
 
+        // Count String-typed labels that are intentionally hidden from this gimmick.
+        // The data-collection fake gimmick routes the value through CCK ConstantValue,
+        // which can't carry strings — they only flow through the "Push data to
+        // collector" state-listening action. Surface this so users don't wonder why
+        // their String labels are missing from the dropdown.
+        int hiddenStringLabels = 0;
+        if (config != null)
+        {
+            foreach (var l in config.collectedLabels)
+            {
+                if (l != null && !string.IsNullOrEmpty(l.label) && l.type == CollectedValueType.String)
+                    hiddenStringLabels++;
+            }
+        }
+
         if (registered.Length == 0)
         {
             // No candidates — surface the only sensible next action: open the
             // config window and add a label there. Manual typing is intentionally
             // not offered (it would let users desync from the registry).
-            EditorGUILayout.HelpBox(
-                "No collected-data items defined yet. Add one in the Data Collector configuration window first.",
-                MessageType.Info);
+            string emptyHint = hiddenStringLabels > 0
+                ? $"No CCK-compatible collected-data items defined yet ({hiddenStringLabels} String-typed item(s) exist but can't be sent by this gimmick — use the \"Push data to collector\" state-listening action for strings)."
+                : "No collected-data items defined yet. Add one in the Data Collector configuration window first.";
+            EditorGUILayout.HelpBox(emptyHint, MessageType.Info);
             if (GUILayout.Button("Add data to collect…", GUILayout.Height(24)))
             {
                 DataCollectorConfigTab.ShowWindow();
@@ -106,6 +122,13 @@ public static class DataCollectorGimmickShared
             EditorGUILayout.HelpBox(
                 $"'{labelProp.stringValue}' is not a valid identifier. Use letters, digits, underscores; must not start with a digit.",
                 MessageType.Error);
+        }
+
+        if (hiddenStringLabels > 0)
+        {
+            EditorGUILayout.HelpBox(
+                $"{hiddenStringLabels} String-typed item(s) registered but hidden — CCK can't transport strings, so they can only be set via the \"Push data to collector\" state-listening action.",
+                MessageType.None);
         }
     }
 

@@ -5,14 +5,14 @@ using UnityEngine;
 /// Merged data-collection fake gimmick. Runs up to three pipeline phases in
 /// fixed order on a single trigger:
 ///
-///   1. Add value   — writes (label, value) into the staging dict
-///                    ($.groupState.collectedData) via global state
-///                    luida_collect_&lt;label&gt;.
-///   2. Save row    — fires `exp_recordCustomData` so the calculator
-///                    snapshots the staging dict and pushes one row into
-///                    the upload buffer.
-///   3. Submit      — fires `exp_uploadCustomData` so the buffer is flushed
-///                    to the LUIDA backend via $.callExternal.
+///   1. Push data        — writes (label, value) into the staging dict
+///                          ($.groupState.collectedData) via global state
+///                          luida_collect_&lt;label&gt;.
+///   2. Save pushed data — fires `exp_recordCustomData` so the calculator
+///                          snapshots the staging dict and pushes one row into
+///                          the upload buffer.
+///   3. Upload saved data — fires `exp_uploadCustomData` so the buffer is flushed
+///                          to the LUIDA backend via $.callExternal.
 ///
 /// Disabled phases are no-ops (they patch their underlying statement to
 /// write to a `luida_noop_*` key that nobody reads).
@@ -29,11 +29,11 @@ public class LuidaDataCollectionGimmick : LuidaFakeGimmick
         => "ClusterMetaverseLab/LuidaExpTemplate/FakeGimmickSources/DataCollection";
 
     [Header("Pipeline phases (run in order)")]
-    [SerializeField] public bool doAdd    = true;   // Phase 1 — "Add value"
-    [SerializeField] public bool doSave   = false;  // Phase 2 — "Save row"
-    [SerializeField] public bool doSubmit = false;  // Phase 3 — "Submit"
+    [SerializeField] public bool doAdd    = true;   // Phase 1 — "Push data"
+    [SerializeField] public bool doSave   = false;  // Phase 2 — "Save pushed data"
+    [SerializeField] public bool doSubmit = false;  // Phase 3 — "Upload saved data"
 
-    [Header("Add value (used only when 'Add value' is enabled)")]
+    [Header("Push data (used only when 'Push data' is enabled)")]
     [SerializeField] public string label;
     [SerializeField] public CckCollectedValueType valueType = CckCollectedValueType.Integer;
 
@@ -45,7 +45,7 @@ public class LuidaDataCollectionGimmick : LuidaFakeGimmick
 
     protected override void OnAfterCopiedComponentSetup()
     {
-        // Phase 1 — Add value into staging dict (via luida_collect_<label>)
+        // Phase 1 — Push data into staging dict (via luida_collect_<label>)
         if (doAdd && !string.IsNullOrEmpty(label))
         {
             object typedValue;
@@ -68,14 +68,14 @@ public class LuidaDataCollectionGimmick : LuidaFakeGimmick
             PatchStatementAt(CopiedComponent, 0, "luida_noop_add", 1, false);
         }
 
-        // Phase 2 — Save row (fire exp_recordCustomData). Signal, not Bool: the
+        // Phase 2 — Save pushed data (fire exp_recordCustomData). Signal, not Bool: the
         // LUIDA-DataCollector's listener only re-fires on a fresh timestamp, and
         // a constant Bool's encoded timestamp never changes (true → epoch+1ms),
         // so a Bool write would only trigger the first save in a session.
         PatchStatementAtSignal(CopiedComponent, 1,
             doSave ? "exp_recordCustomData" : "luida_noop_save");
 
-        // Phase 3 — Submit (fire exp_uploadCustomData). Same Signal rationale.
+        // Phase 3 — Upload saved data (fire exp_uploadCustomData). Same Signal rationale.
         PatchStatementAtSignal(CopiedComponent, 2,
             doSubmit ? "exp_uploadCustomData" : "luida_noop_submit");
     }

@@ -13,7 +13,7 @@ using UnityEngine;
 /// state-listening item "Send Data To Collector" action or call
 /// SendDataToCollector("label", "stringValue") in custom code instead.
 /// </summary>
-[System.Obsolete("Use LuidaDataCollectionGimmick (the merged data-collection gimmick) instead. The 'Add value' phase covers what this component does. Existing instances still work.", false)]
+[System.Obsolete("Use LuidaDataCollectionGimmick (the merged data-collection gimmick) instead. The 'Push data' phase covers what this component does. Existing instances still work.", false)]
 [ExecuteInEditMode]
 public class LuidaSendDataToCollectorGimmick : LuidaFakeGimmick
 {

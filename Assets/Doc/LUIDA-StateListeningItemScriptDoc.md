@@ -152,7 +152,7 @@ This doc covers two distinct categories of LUIDA helpers; they are NOT interchan
 
 ## Data Logging
 
-These helpers correspond to the predefined editor actions **Push data to collector** (action type `Send data to collector`), **Save pushed data to buffer** (action type `Process and save collected data`), and **Upload collected data** respectively. The callable JS helpers below remain valid from inside a Customized Action body.
+These helpers correspond to the predefined editor actions **Push data to collector** (action type `Send data to collector`), **Save pushed data in collector** (action type `Process and save collected data`), and **Upload saved data from collector** (action type `Upload collected data`) respectively. The callable JS helpers below remain valid from inside a Customized Action body.
 
 ### `SendDataToCollector(label, value)`
 
@@ -163,12 +163,12 @@ These helpers correspond to the predefined editor actions **Push data to collect
 
 ### `ProcessAndSaveCollectedData()`
 
-- **Description**: Snapshots the current scratchpad into the upload buffer as one row, then clears the scratchpad. Does not upload. Equivalent editor action: **Save pushed data to buffer**.
+- **Description**: Snapshots the current scratchpad into the upload buffer as one row, then clears the scratchpad. Does not upload. Equivalent editor action: **Save pushed data in collector**.
 - **Parameters**: None
 
 ### `UploadCollectedData()`
 
-- **Description**: Flushes the upload buffer to the Web Console via `exp_uploadCustomData`. Equivalent editor action: **Upload collected data**.
+- **Description**: Flushes the upload buffer to the Web Console via `exp_uploadCustomData`. Equivalent editor action: **Upload saved data from collector**.
 - **Parameters**: None
 
 ---

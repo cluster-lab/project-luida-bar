@@ -14,7 +14,7 @@ public class LuidaSendDataToCollectorGimmickEditor : Editor
 
         EditorGUILayout.HelpBox(
             "This gimmick is deprecated. For new setups, use the merged " +
-            "LuidaDataCollectionGimmick with the 'Add value' phase enabled. " +
+            "LuidaDataCollectionGimmick with the 'Push data' phase enabled. " +
             "Existing instances still work.",
             MessageType.Warning);
 

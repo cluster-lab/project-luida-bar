@@ -36,7 +36,7 @@ public class LuidaDataCollectionGimmickEditor : Editor
         var doSaveProp   = serializedObject.FindProperty("doSave");
         var doSubmitProp = serializedObject.FindProperty("doSubmit");
 
-        doAddProp.boolValue    = EditorGUILayout.ToggleLeft("Add value", doAddProp.boolValue);
+        doAddProp.boolValue    = EditorGUILayout.ToggleLeft("Push data", doAddProp.boolValue);
         if (doAddProp.boolValue)
         {
             EditorGUI.indentLevel++;
@@ -55,8 +55,8 @@ public class LuidaDataCollectionGimmickEditor : Editor
             EditorGUI.indentLevel--;
         }
 
-        doSaveProp.boolValue   = EditorGUILayout.ToggleLeft("Save row",  doSaveProp.boolValue);
-        doSubmitProp.boolValue = EditorGUILayout.ToggleLeft("Submit",     doSubmitProp.boolValue);
+        doSaveProp.boolValue   = EditorGUILayout.ToggleLeft("Save pushed data",  doSaveProp.boolValue);
+        doSubmitProp.boolValue = EditorGUILayout.ToggleLeft("Upload saved data", doSubmitProp.boolValue);
 
         bool anyEnabled = doAddProp.boolValue || doSaveProp.boolValue || doSubmitProp.boolValue;
         if (!anyEnabled)
