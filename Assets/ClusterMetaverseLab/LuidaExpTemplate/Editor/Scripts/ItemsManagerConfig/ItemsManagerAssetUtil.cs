@@ -753,13 +753,24 @@ public static class ItemsManagerAssetUtil
             refList = stateListeningItem.AddComponent(typeof(WorldItemReferenceList)) as WorldItemReferenceList;
         }
 
-        // Check if reference already exists
+        // If an entry already exists with this id, rebind its item slot when missing
+        // (e.g. after a previous spawner GameObject was deleted/recreated, leaving a
+        // dangling null reference). Without this rebind, $.worldItemReference(...).send(...)
+        // silently no-ops at runtime.
         SerializedObject serializedRefList = new SerializedObject(refList);
         var prop = serializedRefList.FindProperty("worldItemReferences");
         for (int i = 0; i < prop.arraySize; i++)
         {
-            if (prop.GetArrayElementAtIndex(i).FindPropertyRelative("id").stringValue == "LUIDA-AvatarSpawner")
-                return; // Already referenced
+            var entry = prop.GetArrayElementAtIndex(i);
+            if (entry.FindPropertyRelative("id").stringValue != "LUIDA-AvatarSpawner") continue;
+
+            var itemProp = entry.FindPropertyRelative("item");
+            if (itemProp.objectReferenceValue == null)
+            {
+                itemProp.objectReferenceValue = spawner.GetComponent<Item>();
+                serializedRefList.ApplyModifiedProperties();
+            }
+            return;
         }
 
         prop.InsertArrayElementAtIndex(prop.arraySize);

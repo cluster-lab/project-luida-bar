@@ -387,6 +387,11 @@ public static class AvatarsConfigAssetUtil
         if (templateList == null)
             templateList = spawner.AddComponent<WorldItemTemplateList>();
         PopulateTemplateList(templateList, registry);
+
+        // Repair any state-listener worldItemReferences whose item slot went null
+        // after a previous spawner GameObject was deleted/recreated.
+        ItemsManagerAssetUtil.AddAvatarSpawnerReferenceToAllItems();
+
         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
     }
 
