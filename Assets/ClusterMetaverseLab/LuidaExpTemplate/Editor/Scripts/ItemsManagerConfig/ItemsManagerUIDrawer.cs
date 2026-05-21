@@ -1664,7 +1664,17 @@ public static class ItemsManagerUIDrawer
                         action.variableValues.TryGetValue("avatarID", out string currentAvatarID);
                         currentAvatarID ??= "";
 
-                        var avatarRegistry = AssetDatabase.LoadAssetAtPath<AvatarRegistry>(AvatarsConfigAssetUtil.RegistryPath);
+                        // Registry is scoped to the state-listener's own scene. With
+                        // additive scene loading the active scene may differ from
+                        // itemGO.scene, so read from the GameObject's scene to keep
+                        // each scene's avatar set isolated.
+                        string avatarSceneFolder = AvatarsConfigAssetUtil.SanitizeSceneFolderName(itemGO.scene.name);
+                        string avatarRegistryPath = avatarSceneFolder != null
+                            ? AvatarsConfigAssetUtil.GetRegistryPath(avatarSceneFolder)
+                            : null;
+                        var avatarRegistry = avatarRegistryPath != null
+                            ? AssetDatabase.LoadAssetAtPath<AvatarRegistry>(avatarRegistryPath)
+                            : null;
                         if (avatarRegistry != null && avatarRegistry.entries.Count > 0)
                         {
                             string[] avatarIDs = avatarRegistry.GetAvatarIDs();
