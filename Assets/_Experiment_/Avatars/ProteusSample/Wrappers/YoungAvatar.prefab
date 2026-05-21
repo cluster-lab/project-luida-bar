@@ -1,0 +1,291 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1696110292742376672
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5060458564856482476}
+  - component: {fileID: 1139428811110003041}
+  - component: {fileID: 7620718237831877282}
+  - component: {fileID: 7247316635136984158}
+  - component: {fileID: 1473336628456578485}
+  - component: {fileID: 8967645504583708086}
+  m_Layer: 0
+  m_Name: YoungAvatar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5060458564856482476
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1696110292742376672}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7103378423501101839}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &1139428811110003041
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1696110292742376672}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &7620718237831877282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1696110292742376672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id:
+    value: 0
+  itemName: 
+  size: {x: 0, y: 0, z: 0}
+--- !u!114 &7247316635136984158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1696110292742376672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 557c1287071b147459bb6f001560c6e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 7620718237831877282}
+  rb: {fileID: 1139428811110003041}
+--- !u!114 &1473336628456578485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1696110292742376672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61061896c654489a41575fc291bf4a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourceCodeAsset: {fileID: 0}
+  sourceCode: "// Auto-generated bone map for avatar: YoungAvatar\r\n// Do not edit
+    manually \u2014 regenerate via LUIDA Avatars window.\r\n\r\nconst AVATAR_SYNC_HIPS_Y
+    = true;\r\nconst AVATAR_HIPS_Y_OFFSET = 0;\r\n\r\nconst BONE_MAP = [\r\n  { bone:
+    HumanoidBone.Hips, name: \"J_Bip_C_Hips\" },\r\n  { bone: HumanoidBone.Spine,
+    name: \"J_Bip_C_Spine\" },\r\n  { bone: HumanoidBone.Chest, name: \"J_Bip_C_Chest\"
+    },\r\n  { bone: HumanoidBone.Neck, name: \"J_Bip_C_Neck\" },\r\n  { bone: HumanoidBone.Head,
+    name: \"J_Bip_C_Head\" },\r\n  { bone: HumanoidBone.LeftShoulder, name: \"J_Bip_L_Shoulder\"
+    },\r\n  { bone: HumanoidBone.LeftUpperArm, name: \"J_Bip_L_UpperArm\" },\r\n 
+    { bone: HumanoidBone.LeftLowerArm, name: \"J_Bip_L_LowerArm\" },\r\n  { bone:
+    HumanoidBone.LeftHand, name: \"J_Bip_L_Hand\" },\r\n  { bone: HumanoidBone.RightShoulder,
+    name: \"J_Bip_R_Shoulder\" },\r\n  { bone: HumanoidBone.RightUpperArm, name:
+    \"J_Bip_R_UpperArm\" },\r\n  { bone: HumanoidBone.RightLowerArm, name: \"J_Bip_R_LowerArm\"
+    },\r\n  { bone: HumanoidBone.RightHand, name: \"J_Bip_R_Hand\" },\r\n  { bone:
+    HumanoidBone.LeftUpperLeg, name: \"J_Bip_L_UpperLeg\" },\r\n  { bone: HumanoidBone.LeftLowerLeg,
+    name: \"J_Bip_L_LowerLeg\" },\r\n  { bone: HumanoidBone.RightUpperLeg, name:
+    \"J_Bip_R_UpperLeg\" },\r\n  { bone: HumanoidBone.RightLowerLeg, name: \"J_Bip_R_LowerLeg\"
+    },\r\n];\r\n\r\nconst BONE_PARENT = {\r\n  [HumanoidBone.Hips]: null,\r\n  [HumanoidBone.Spine]:
+    HumanoidBone.Hips,\r\n  [HumanoidBone.Chest]: HumanoidBone.Spine,\r\n  [HumanoidBone.Neck]:
+    HumanoidBone.Chest,\r\n  [HumanoidBone.Head]: HumanoidBone.Neck,\r\n  [HumanoidBone.LeftShoulder]:
+    HumanoidBone.Chest,\r\n  [HumanoidBone.LeftUpperArm]: HumanoidBone.LeftShoulder,\r\n 
+    [HumanoidBone.LeftLowerArm]: HumanoidBone.LeftUpperArm,\r\n  [HumanoidBone.LeftHand]:
+    HumanoidBone.LeftLowerArm,\r\n  [HumanoidBone.RightShoulder]: HumanoidBone.Chest,\r\n 
+    [HumanoidBone.RightUpperArm]: HumanoidBone.RightShoulder,\r\n  [HumanoidBone.RightLowerArm]:
+    HumanoidBone.RightUpperArm,\r\n  [HumanoidBone.RightHand]: HumanoidBone.RightLowerArm,\r\n 
+    [HumanoidBone.LeftUpperLeg]: HumanoidBone.Hips,\r\n  [HumanoidBone.LeftLowerLeg]:
+    HumanoidBone.LeftUpperLeg,\r\n  [HumanoidBone.RightUpperLeg]: HumanoidBone.Hips,\r\n 
+    [HumanoidBone.RightLowerLeg]: HumanoidBone.RightUpperLeg,\r\n};\r\n\r\n// =====
+    LUIDA Avatar Sync Clone =====\n// Attached to each spawned avatar wrapper item.\n//
+    Reads BONE_MAP and BONE_PARENT from the prepended per-avatar BoneMap header.\n//
+    Syncs the assigned player's humanoid pose to this item's sub-nodes every frame.\n\nlet
+    boneNodes = [];\nlet hipsNode = null;\nlet headNode = null;\n\n$.onStart(() =>
+    {\n  $.state.player = null;\n  $.state.needsScale = false;\n  $.state.scaled
+    = false;\n  $.state.poseWaitTime = 0;\n  $.state.warnedNoPose = false;\n\n  //
+    Cache bone sub-node references using the baked-in BONE_MAP\n  boneNodes = [];\n 
+    for (let i = 0; i < BONE_MAP.length; i++) {\n    const entry = BONE_MAP[i];\n   
+    const node = $.subNode(entry.name);\n    if (!node) continue;\n    const parentBone
+    = BONE_PARENT[entry.bone] !== undefined ? BONE_PARENT[entry.bone] : null;\n   
+    boneNodes.push({ bone: entry.bone, node: node, parentBone: parentBone });\n   
+    if (entry.bone === HumanoidBone.Hips) hipsNode = node;\n    if (entry.bone ===
+    HumanoidBone.Head) headNode = node;\n  }\n});\n\n// --- Receive messages from
+    AvatarManager ---\n$.onReceive((messageType, arg, sender) => {\n  if (messageType
+    === \"assignPlayer\") {\n    $.state.player = arg.player;\n    $.requestOwner(arg.player);\n 
+    }\n\n  if (messageType === \"unassign\") {\n    $.state.player = null;\n    $.destroy();\n 
+    }\n\n  if (messageType === \"unassignIfPlayer\") {\n    if ($.state.player &&
+    $.state.player.id === arg) {\n      $.state.player = null;\n      $.destroy();\n   
+    }\n  }\n});\n\n// --- Quaternion math helpers ---\nfunction rotateVector(q, x,
+    y, z) {\n  const qx = q.x, qy = q.y, qz = q.z, qw = q.w;\n  const tx = 2 * (qy
+    * z - qz * y);\n  const ty = 2 * (qz * x - qx * z);\n  const tz = 2 * (qx * y
+    - qy * x);\n  return new Vector3(\n    x + qw * tx + (qy * tz - qz * ty),\n   
+    y + qw * ty + (qz * tx - qx * tz),\n    z + qw * tz + (qx * ty - qy * tx)\n 
+    );\n}\n\nfunction multiplyQuaternions(q1, q2) {\n  return new Quaternion(\n   
+    q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y,\n    q1.w * q2.y - q1.x
+    * q2.z + q1.y * q2.w + q1.z * q2.x,\n    q1.w * q2.z + q1.x * q2.y - q1.y * q2.x
+    + q1.z * q2.w,\n    q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z\n 
+    );\n}\n\n// --- Per-frame sync ---\n$.onUpdate((deltaTime) => {\n  const player
+    = $.state.player;\n  if (!player || !player.exists()) return;\n\n  // Diagnostic:
+    if pose data is still null 3s after the wrapper got its player,\n  // log once.
+    Helps surface the rare \"AvatarManager timed out and spawned the\n  // wrapper
+    anyway, but pose data never arrived\" case to the experimenter.\n  // Behavior
+    unchanged \u2014 the existing `if (!boneRot) continue;` skip handles\n  // the
+    actual sync.\n  const hipsRotProbe = player.getHumanoidBoneRotation(HumanoidBone.Hips);\n 
+    if (!hipsRotProbe) {\n    $.state.poseWaitTime += deltaTime;\n    if (!$.state.warnedNoPose
+    && $.state.poseWaitTime > 3) {\n      $.log(\"[AvatarSyncClone] Player pose still
+    null after 3s \u2014 avatar may stay in T-pose\");\n      $.state.warnedNoPose
+    = true;\n    }\n  } else if ($.state.warnedNoPose) {\n    $.log(\"[AvatarSyncClone]
+    Pose data now available; sync resuming\");\n    $.state.warnedNoPose = false;\n 
+    }\n\n  // Sync root position and rotation from player\n  const pos = player.getPosition();\n 
+    const rot = player.getRotation();\n  if (pos) $.setPosition(pos);\n  if (rot)
+    $.setRotation(rot);\n\n  // Sync Hips position (local space relative to root)
+    \u2014 before scaling so offset affects head height\n  if (hipsNode && pos &&
+    rot) {\n    const hipsWorldPos = player.getHumanoidBonePosition(HumanoidBone.Hips);\n   
+    if (hipsWorldPos) {\n      const dx = hipsWorldPos.x - pos.x;\n      const dy
+    = hipsWorldPos.y - pos.y;\n      const dz = hipsWorldPos.z - pos.z;\n      const
+    invRot = new Quaternion(-rot.x, -rot.y, -rot.z, rot.w);\n      const hipsLocalPos
+    = rotateVector(invRot, dx, dy, dz);\n\n      const finalX = hipsLocalPos.x;\n     
+    const finalZ = hipsLocalPos.z;\n\n      // Sync hips Y when enabled, otherwise
+    use the baked offset\n      const finalY = AVATAR_SYNC_HIPS_Y ? hipsLocalPos.y
+    : AVATAR_HIPS_Y_OFFSET;\n\n      hipsNode.setPosition(new Vector3(finalX, finalY,
+    finalZ));\n    }\n  }\n\n  // --- Scaling: compare head heights after hips offset
+    is applied ---\n  // Frame 1: sync pose + hips, flag needsScale. Frame 2: compare
+    head heights, apply scale.\n  if (!$.state.scaled) {\n    if ($.state.needsScale
+    && headNode) {\n      const playerHeadPos = player.getHumanoidBonePosition(HumanoidBone.Head);\n     
+    const avatarHeadPos = headNode.getGlobalPosition();\n      if (playerHeadPos
+    && avatarHeadPos && pos) {\n        const playerHeadH = playerHeadPos.y - pos.y;\n       
+    const avatarHeadH = avatarHeadPos.y - pos.y;\n        if (avatarHeadH > 0.01
+    && playerHeadH > 0.01) {\n          const s = playerHeadH / avatarHeadH;\n         
+    const transform = $.getUnityComponent(\"Transform\");\n          transform.unityProp.localScale
+    = new Vector3(s, s, s);\n          $.state.scaled = true;\n        }\n      }\n   
+    } else {\n      $.state.needsScale = true;\n    }\n  }\n\n  // Sync all bone
+    rotations (world -> local via inverse parent)\n  const worldRots = {};\n  for
+    (let i = 0; i < boneNodes.length; i++) {\n    const entry = boneNodes[i];\n   
+    const boneRot = player.getHumanoidBoneRotation(entry.bone);\n    if (!boneRot)
+    continue;\n    worldRots[entry.bone] = boneRot;\n\n    if (!entry.node) continue;\n\n   
+    // Determine parent world rotation\n    let parentWorldRot;\n    if (entry.parentBone
+    === null) {\n      parentWorldRot = rot;\n    } else {\n      parentWorldRot
+    = worldRots[entry.parentBone];\n      if (!parentWorldRot) parentWorldRot = rot;\n   
+    }\n\n    // Convert world rotation to local: localRot = inverse(parentWorldRot)
+    * boneRot\n    const invParent = new Quaternion(-parentWorldRot.x, -parentWorldRot.y,
+    -parentWorldRot.z, parentWorldRot.w);\n    const localBoneRot = multiplyQuaternions(invParent,
+    boneRot);\n\n    entry.node.setRotation(localBoneRot);\n  }\n});\n"
+--- !u!114 &8967645504583708086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1696110292742376672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466c56cb3cb32ec48b21ffb81ad21213, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clusterScripts:
+  - {fileID: 5022602860645237092, guid: 925808cb63daeb447bdaa0981466c014, type: 3}
+  - {fileID: 5022602860645237092, guid: bb6d8ae54a18d2444818810e553a5422, type: 3}
+  playerScripts: []
+  clusterScriptMD5s: []
+  playerScriptMD5s: []
+--- !u!1001 &3033386215815550485
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 5060458564856482476}
+    m_Modifications:
+    - target: {fileID: 2628620245356233417, guid: a34714e981d72b746b9293bdea7fec4c,
+        type: 3}
+      propertyPath: m_Name
+      value: YoungAvatar
+      objectReference: {fileID: 0}
+    - target: {fileID: 5227700307314969882, guid: a34714e981d72b746b9293bdea7fec4c,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5227700307314969882, guid: a34714e981d72b746b9293bdea7fec4c,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5227700307314969882, guid: a34714e981d72b746b9293bdea7fec4c,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5227700307314969882, guid: a34714e981d72b746b9293bdea7fec4c,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5227700307314969882, guid: a34714e981d72b746b9293bdea7fec4c,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5227700307314969882, guid: a34714e981d72b746b9293bdea7fec4c,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5227700307314969882, guid: a34714e981d72b746b9293bdea7fec4c,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5227700307314969882, guid: a34714e981d72b746b9293bdea7fec4c,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5227700307314969882, guid: a34714e981d72b746b9293bdea7fec4c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5227700307314969882, guid: a34714e981d72b746b9293bdea7fec4c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5227700307314969882, guid: a34714e981d72b746b9293bdea7fec4c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a34714e981d72b746b9293bdea7fec4c, type: 3}
+--- !u!4 &7103378423501101839 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5227700307314969882, guid: a34714e981d72b746b9293bdea7fec4c,
+    type: 3}
+  m_PrefabInstance: {fileID: 3033386215815550485}
+  m_PrefabAsset: {fileID: 0}
