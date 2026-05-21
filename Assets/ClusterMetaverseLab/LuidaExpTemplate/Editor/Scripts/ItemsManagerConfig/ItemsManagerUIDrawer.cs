@@ -50,42 +50,61 @@ public static class ItemsManagerUIDrawer
 
     private static readonly StateListeningAction[] AvailableStateListeningActions =
     {
-        new StateListeningAction("Show item", "$.setStateCompat('this', 'exp_showItem', true);"),
-        new StateListeningAction("Hide item", "$.setStateCompat('this', 'exp_showItem', false);"),
-        new StateListeningAction("Set position", "$.setPosition(new Vector3({_x_}, {_y_}, {_z_}))", new[] { "x", "y", "z" }),
+        // Item — visibility & text
+        new StateListeningAction("Show item", "$.setStateCompat('this', 'exp_showItem', true);", _category: "Item"),
+        new StateListeningAction("Hide item", "$.setStateCompat('this', 'exp_showItem', false);", _category: "Item"),
+        new StateListeningAction("Set text", "$.subNode('Text').setText(`{_text_}`);", new[] { "text" }, _category: "Item"),
+
+        // Item — transform (requires MovableItem on the item)
+        new StateListeningAction("Set position", "$.setPosition(new Vector3({_x_}, {_y_}, {_z_}))", new[] { "x", "y", "z" }, _category: "Item transform"),
         new StateListeningAction("Add position", "$.setPosition($.getPosition().add(new Vector3({_x_}, {_y_}, {_z_})))",
-            new[] { "x", "y", "z" }),
+            new[] { "x", "y", "z" }, _category: "Item transform"),
         new StateListeningAction("Set rotation",
-            "$.setRotation(new Quaternion().setFromEulerAngles(new Vector3({_x_}, {_y_}, {_z_})))", new[] { "x", "y", "z" }),
+            "$.setRotation(new Quaternion().setFromEulerAngles(new Vector3({_x_}, {_y_}, {_z_})))", new[] { "x", "y", "z" }, _category: "Item transform"),
         new StateListeningAction("Add rotation",
             "$.setRotation($.getRotation().multiply(new Quaternion().setFromEulerAngles(new Vector3({_x_}, {_y_}, {_z_}))))",
-            new[] { "x", "y", "z" }),
-        new StateListeningAction("Show child", "$.subNode('{_childName_}').setEnabled(true)", new[] { "childName" }),
-        new StateListeningAction("Hide child", "$.subNode('{_childName_}').setEnabled(false)", new[] { "childName" }),
-        new StateListeningAction("Set child position", "$.subNode('{_childName_}').setPosition(new Vector3({_x_}, {_y_}, {_z_}))", new[] { "childName", "x", "y", "z" }),
+            new[] { "x", "y", "z" }, _category: "Item transform"),
+
+        // Item child — visibility & transform
+        new StateListeningAction("Show child", "$.subNode('{_childName_}').setEnabled(true)", new[] { "childName" }, _category: "Item child"),
+        new StateListeningAction("Hide child", "$.subNode('{_childName_}').setEnabled(false)", new[] { "childName" }, _category: "Item child"),
+        new StateListeningAction("Set child position", "$.subNode('{_childName_}').setPosition(new Vector3({_x_}, {_y_}, {_z_}))", new[] { "childName", "x", "y", "z" }, _category: "Item child"),
         new StateListeningAction("Add child position", "$.subNode('{_childName_}').setPosition($.subNode('{_childName_}').getPosition().add(new Vector3({_x_}, {_y_}, {_z_})))",
-            new[] { "childName", "x", "y", "z" }),
+            new[] { "childName", "x", "y", "z" }, _category: "Item child"),
         new StateListeningAction("Set child rotation",
-            "$.subNode('{_childName_}').setRotation(new Quaternion().setFromEulerAngles(new Vector3({_x_}, {_y_}, {_z_})))", new[] { "childName", "x", "y", "z" }),
+            "$.subNode('{_childName_}').setRotation(new Quaternion().setFromEulerAngles(new Vector3({_x_}, {_y_}, {_z_})))", new[] { "childName", "x", "y", "z" }, _category: "Item child"),
         new StateListeningAction("Add child rotation",
             "$.subNode('{_childName_}').setRotation($.subNode('{_childName_}').getRotation().multiply(new Quaternion().setFromEulerAngles(new Vector3({_x_}, {_y_}, {_z_}))))",
-            new[] { "childName", "x", "y", "z" }),
-        new StateListeningAction("To next state", "$.sendSignalCompat('this', 'state_triggerTransition');"),
-        new StateListeningAction("Send data to collector", "if (!$.groupState.collectedData) $.groupState.collectedData = {};\n    let collectedData = $.groupState.collectedData;\n    collectedData['{_label_}'] = {_value_};\n    $.groupState.collectedData = collectedData;", new[] { "label", "value" }, _displayLabel: "Add value to collector"),
-        new StateListeningAction("Process and save collected data", "$.sendSignalCompat('this', 'exp_recordCustomData');", _displayLabel: "Save row to buffer"),
-        new StateListeningAction("Upload collected data", "$.sendSignalCompat('this', 'exp_uploadCustomData');", _displayLabel: "Submit collected data"),
-        new StateListeningAction("Set text", "$.subNode('Text').setText(`{_text_}`);", new[] { "text" }),
+            new[] { "childName", "x", "y", "z" }, _category: "Item child"),
+
+        // State machine
+        new StateListeningAction("To next state", "$.sendSignalCompat('this', 'state_triggerTransition');", _category: "State machine"),
+        new StateListeningAction("Sleep", "{_seconds_}", new[] { "seconds" }, _category: "State machine"),
+
+        // Data collection
+        new StateListeningAction("Send data to collector", "if (!$.groupState.collectedData) $.groupState.collectedData = {};\n    let collectedData = $.groupState.collectedData;\n    collectedData['{_label_}'] = {_value_};\n    $.groupState.collectedData = collectedData;", new[] { "label", "value" }, _displayLabel: "Push data to collector", _category: "Data collection"),
+        new StateListeningAction("Process and save collected data", "$.sendSignalCompat('this', 'exp_recordCustomData');", _displayLabel: "Save pushed data to buffer", _category: "Data collection"),
+        new StateListeningAction("Upload collected data", "$.sendSignalCompat('this', 'exp_uploadCustomData');", _category: "Data collection"),
+
+        // Participant — transform
+        new StateListeningAction("Set participant position",
+            "PARTICIPANTS[{_participantIndex_}].setPosition(new Vector3({_x_}, {_y_}, {_z_}));",
+            new[] { "participantIndex", "x", "y", "z" }, _category: "Participant transform"),
+        new StateListeningAction("Add participant position",
+            "(() => { var p = PARTICIPANTS[{_participantIndex_}] && PARTICIPANTS[{_participantIndex_}].getPosition(); if (p) PARTICIPANTS[{_participantIndex_}].setPosition(p.add(new Vector3({_x_}, {_y_}, {_z_}))); })();",
+            new[] { "participantIndex", "x", "y", "z" }, _category: "Participant transform"),
+        new StateListeningAction("Set participant rotation",
+            "PARTICIPANTS[{_participantIndex_}].setRotation(new Quaternion().setFromEulerAngles(new Vector3({_x_}, {_y_}, {_z_})));",
+            new[] { "participantIndex", "x", "y", "z" }, _category: "Participant transform"),
+        new StateListeningAction("Add participant rotation",
+            "(() => { var r = PARTICIPANTS[{_participantIndex_}] && PARTICIPANTS[{_participantIndex_}].getRotation(); if (r) PARTICIPANTS[{_participantIndex_}].setRotation(r.multiply(new Quaternion().setFromEulerAngles(new Vector3({_x_}, {_y_}, {_z_})))); })();",
+            new[] { "participantIndex", "x", "y", "z" }, _category: "Participant transform"),
+
+        // Participant — feedback & bone tracking
         new StateListeningAction("Send Haptics",
             "PARTICIPANTS[{_participantId_}].send('haptics', {target: {_target_}, frequency: {_frequency_}, amplitude: {_amplitude_}, duration: {_duration_}});",
-            new[] { "participantId", "target", "frequency", "amplitude", "duration" }),
-        new StateListeningAction("Send via OSC", "PARTICIPANTS[{_participantId_}].send('sendOsc', {address: '{_address_}', values: [{_values_}] });", new[] { "participantId", "address", "values" }),
-        new StateListeningAction("Sleep", "{_seconds_}", new[] { "seconds" }),
-        new StateListeningAction("Assign avatar to participant",
-            "$.worldItemReference('LUIDA-AvatarSpawner').send('luida_assign_avatar', { avatarID: '{_avatarID_}', participantIndex: {_participantIndex_} });",
-            new[] { "avatarID", "participantIndex" }),
-        new StateListeningAction("Unassign avatar from participant",
-            "$.worldItemReference('LUIDA-AvatarSpawner').send('luida_unassign_avatar', { participantIndex: {_participantIndex_} });",
-            new[] { "participantIndex" }),
+            new[] { "participantId", "target", "frequency", "amplitude", "duration" }, _category: "Participant"),
+        new StateListeningAction("Send via OSC", "PARTICIPANTS[{_participantId_}].send('sendOsc', {address: '{_address_}', values: [{_values_}] });", new[] { "participantId", "address", "values" }, _category: "Participant"),
         new StateListeningAction("Sync with participant bone",
             "(() => {\n" +
             "    try {\n" +
@@ -102,8 +121,147 @@ public static class ItemsManagerUIDrawer
             "        $.log('[SyncWithParticipantBone] ' + e + '. Ensure MovableItem is on this item and bone name is valid.');\n" +
             "    }\n" +
             "})();",
-            new[] { "participantIndex", "bone", "posX", "posY", "posZ", "rotX", "rotY", "rotZ" }),
+            new[] { "participantIndex", "bone", "posX", "posY", "posZ", "rotX", "rotY", "rotZ" }, _category: "Participant"),
+
+        // Avatar
+        new StateListeningAction("Assign avatar to participant",
+            "$.worldItemReference('LUIDA-AvatarSpawner').send('luida_assign_avatar', { avatarID: '{_avatarID_}', participantIndex: {_participantIndex_} });",
+            new[] { "avatarID", "participantIndex" }, _category: "Avatar"),
+        new StateListeningAction("Unassign avatar from participant",
+            "$.worldItemReference('LUIDA-AvatarSpawner').send('luida_unassign_avatar', { participantIndex: {_participantIndex_} });",
+            new[] { "participantIndex" }, _category: "Avatar"),
     };
+
+    /// <summary>Definition of a ClusterScript event that can be attached as an always-on handler.
+    /// jsWrapperFormat must contain literal "{body}" where the indented action code will be substituted.</summary>
+    [Serializable]
+    public struct EventDefinition
+    {
+        /// <summary>Serialization key + Add-menu label ("Start", "Update", "$.onCollide", ...).</summary>
+        public string eventType;
+        /// <summary>Compact label for the in-cell event-handler button (falls back to eventType).</summary>
+        public string buttonLabel;
+        /// <summary>JS template containing literal "{body}" placeholder.</summary>
+        public string jsWrapperFormat;
+        /// <summary>Parameter signature shown in the popup header, e.g. "(collision)". Empty for parameterless events.</summary>
+        public string parameterSignature;
+        /// <summary>Optional Add-menu category. Use "/" for sub-categories.</summary>
+        public string category;
+        /// <summary>Tooltip / popup HelpBox text.</summary>
+        public string description;
+
+        public EventDefinition(string _eventType, string _jsWrapperFormat,
+            string _buttonLabel = null, string _parameterSignature = "",
+            string _category = null, string _description = null)
+        {
+            eventType = _eventType;
+            jsWrapperFormat = _jsWrapperFormat;
+            buttonLabel = _buttonLabel;
+            parameterSignature = _parameterSignature ?? "";
+            category = _category;
+            description = _description;
+        }
+
+        public string GetMenuLabel() => eventType;
+        public string GetButtonLabel() => string.IsNullOrEmpty(buttonLabel) ? eventType : buttonLabel;
+        public string GetMenuPath() => string.IsNullOrEmpty(category) ? GetMenuLabel() : $"{category}/{GetMenuLabel()}";
+    }
+
+    public static readonly EventDefinition[] AvailableEventDefinitions =
+    {
+        // Lifecycle — map to base script's empty Start/Update stubs (StateListeningItemBase.js:239-240).
+        // Per-item script is loaded into CSCombiner slot 1 (base in slot 0); user override wins via JS function hoisting.
+        new EventDefinition("Start",
+            "function Start() {\n{body}\n}",
+            _buttonLabel: "Start",
+            _category: "Lifecycle",
+            _description: "Runs once when the script first loads. Do NOT use $.onStart — reserved by LUIDA."),
+        new EventDefinition("Update",
+            "function Update(deltaTime) {\n{body}\n}",
+            _buttonLabel: "Update",
+            _parameterSignature: "(deltaTime)",
+            _category: "Lifecycle",
+            _description: "Runs every frame. Do NOT use $.onUpdate — reserved by LUIDA."),
+
+        // Interaction
+        new EventDefinition("$.onInteract",
+            "$.onInteract((player) => {\n{body}\n});",
+            _buttonLabel: "On interact",
+            _parameterSignature: "(player)",
+            _category: "Interaction",
+            _description: "Player interacts with this item. Requires a Collider on the item."),
+        new EventDefinition("$.onUse",
+            "$.onUse((isDown, player) => {\n{body}\n});",
+            _buttonLabel: "On use",
+            _parameterSignature: "(isDown, player)",
+            _category: "Interaction",
+            _description: "Player presses/releases the use button while grabbing this item. Requires GrabbableItem."),
+        new EventDefinition("$.onGrab",
+            "$.onGrab((isGrab, isLeftHand, player) => {\n{body}\n});",
+            _buttonLabel: "On grab",
+            _parameterSignature: "(isGrab, isLeftHand, player)",
+            _category: "Interaction",
+            _description: "Player grabs/releases this item. Requires GrabbableItem."),
+
+        // Physics
+        new EventDefinition("$.onCollide",
+            "$.onCollide((collision) => {\n{body}\n});",
+            _buttonLabel: "On collide",
+            _parameterSignature: "(collision)",
+            _category: "Physics",
+            _description: "This item collides with another. Requires a physics body."),
+        new EventDefinition("$.onPhysicsUpdate",
+            "$.onPhysicsUpdate((deltaTime) => {\n{body}\n});",
+            _buttonLabel: "On physics update",
+            _parameterSignature: "(deltaTime)",
+            _category: "Physics",
+            _description: "Fixed-rate physics tick. Requires a physics body."),
+
+        // Vehicle
+        new EventDefinition("$.onRide",
+            "$.onRide((isGetOn, player) => {\n{body}\n});",
+            _buttonLabel: "On ride",
+            _parameterSignature: "(isGetOn, player)",
+            _category: "Vehicle",
+            _description: "Player gets on/off this item. Requires RidableItem."),
+        new EventDefinition("$.onSteer",
+            "$.onSteer((input, player) => {\n{body}\n});",
+            _buttonLabel: "On steer",
+            _parameterSignature: "(input, player)",
+            _category: "Vehicle",
+            _description: "Player steers this item (Vector2 input). Requires RidableItem."),
+        new EventDefinition("$.onSteerAdditionalAxis",
+            "$.onSteerAdditionalAxis((input, player) => {\n{body}\n});",
+            _buttonLabel: "On steer (axis 2)",
+            _parameterSignature: "(input, player)",
+            _category: "Vehicle",
+            _description: "Secondary steering axis. Requires RidableItem."),
+
+        // Input
+        new EventDefinition("$.onTextInput",
+            "$.onTextInput((text, meta, status) => {\n{body}\n});",
+            _buttonLabel: "On text input",
+            _parameterSignature: "(text, meta, status)",
+            _category: "Input",
+            _description: "Response from PARTICIPANTS[n].requestTextInput()."),
+    };
+
+    internal static bool TryGetEventDefinition(string eventType, out EventDefinition def)
+    {
+        if (!string.IsNullOrEmpty(eventType))
+        {
+            for (int i = 0; i < AvailableEventDefinitions.Length; i++)
+            {
+                if (AvailableEventDefinitions[i].eventType == eventType)
+                {
+                    def = AvailableEventDefinitions[i];
+                    return true;
+                }
+            }
+        }
+        def = default;
+        return false;
+    }
 
     private static GUIStyle _codeTextAreaStyle;
 
@@ -247,7 +405,7 @@ public static class ItemsManagerUIDrawer
 
         editor.scrollPositionY = EditorGUILayout.BeginScrollView(editor.scrollPositionY, false, true, GUIStyle.none, GUI.skin.verticalScrollbar, GUIStyle.none, GUILayout.ExpandHeight(true));
 
-        DrawOtherImplementationRow(editor);
+        DrawAlwaysOnRow(editor);
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
         DrawStateRows(editor, removeButtonStyle);
@@ -299,52 +457,203 @@ public static class ItemsManagerUIDrawer
         GUI.backgroundColor = Color.white;
     }
 
-    private static void DrawOtherImplementationRow(ItemsManagerConfigTab editor)
+    private static void DrawAlwaysOnRow(ItemsManagerConfigTab editor)
     {
-        EditorGUILayout.LabelField(new GUIContent("Always-on code (runs regardless of state)", "Functions, events, and variables that run regardless of which state is active."), EditorStyles.largeLabel);
+        EditorGUILayout.LabelField(
+            new GUIContent("Always-on event handlers (run regardless of state)",
+                "ClusterScript event handlers attached to each item. Click an event to edit its actions."),
+            EditorStyles.largeLabel);
         EditorGUILayout.BeginHorizontal();
 
         EditorGUILayout.BeginVertical(GUILayout.Width(215));
-
-        EditorGUILayout.HelpBox("DON'T use $.onStart and $.onUpdate here! Implement function Start and Update instead.", MessageType.Warning);
+        EditorGUILayout.HelpBox(
+            "Click an event to edit its actions. Use \"+ Add event\" to register a new handler. " +
+            "$.onStart / $.onUpdate / $.onReceive are reserved by LUIDA.",
+            MessageType.Info);
         EditorGUILayout.EndVertical();
         GUILayout.Space(5);
 
-        int otherRowColumnIndex = 0;
+        int columnIndex = 0;
         foreach (var item in editor._cachedItems)
         {
-            if (item == null) { otherRowColumnIndex++; continue; }
-            Color accent = GetItemColumnAccent(otherRowColumnIndex);
-            Color cellBgColor = new Color(accent.r, accent.g, accent.b, 0.18f);
-            Rect cellRect = EditorGUILayout.BeginVertical("box", GUILayout.Width(238.5f), GUILayout.MinHeight(80));
-            EditorGUI.DrawRect(cellRect, cellBgColor);
-
-            string itemDataAssetPath = ItemsManagerAssetUtil.GetItemDataAssetPath(item);
-            var itemDataAsset = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(itemDataAssetPath);
-
-            if (itemDataAsset != null)
-            {
-                string currentOtherImpl = itemDataAsset.otherImplementation ?? string.Empty;
-
-                Rect taRect = EditorGUILayout.GetControlRect(false, 75, GUILayout.Width(233.5f), GUILayout.MaxHeight(75));
-                DrawHoverableTextArea(taRect, currentOtherImpl, (newValue) =>
-                {
-                    Undo.RecordObject(itemDataAsset, "Edit Other Implementation for " + item.name);
-                    itemDataAsset.otherImplementation = newValue;
-                    EditorUtility.SetDirty(itemDataAsset);
-                }, editor, isColored: true);
-            }
-            else
-            {
-                EditorGUILayout.HelpBox($"Asset not found for {item.name}.", MessageType.Error);
-            }
-
-            EditorGUILayout.EndVertical();
-            GUILayout.Space(10);
-            otherRowColumnIndex++;
+            if (item == null) { columnIndex++; continue; }
+            DrawAlwaysOnCell(editor, item, columnIndex);
+            columnIndex++;
         }
         EditorGUILayout.EndHorizontal();
         GUI.backgroundColor = Color.white;
+    }
+
+    private static void DrawAlwaysOnCell(ItemsManagerConfigTab editor, GameObject item, int columnIndex)
+    {
+        Color accent = GetItemColumnAccent(columnIndex);
+        Color cellBgColor = new Color(accent.r, accent.g, accent.b, 0.18f);
+        Rect cellRect = EditorGUILayout.BeginVertical("box", GUILayout.Width(238.5f), GUILayout.MinHeight(80));
+        EditorGUI.DrawRect(cellRect, cellBgColor);
+
+        string itemDataAssetPath = ItemsManagerAssetUtil.GetItemDataAssetPath(item);
+        var data = AssetDatabase.LoadAssetAtPath<StateListeningItemData>(itemDataAssetPath);
+        if (data == null)
+        {
+            EditorGUILayout.HelpBox($"Asset not found for {item.name}.", MessageType.Error);
+            EditorGUILayout.EndVertical();
+            GUILayout.Space(10);
+            return;
+        }
+        // Pre-GUI assets serialize eventHandlers as null until first re-save.
+        if (data.eventHandlers == null) data.eventHandlers = new List<EventHandlerData>();
+
+        for (int i = 0; i < data.eventHandlers.Count; i++)
+        {
+            DrawEventHandlerButton(editor, item, data, i);
+        }
+
+        GUILayout.Space(2);
+        Rect addRect = GUILayoutUtility.GetRect(
+            new GUIContent("+ Add event ▾"), GUI.skin.button,
+            GUILayout.Height(20), GUILayout.Width(232));
+        if (GUI.Button(addRect, new GUIContent("+ Add event ▾",
+                                              "Register a new ClusterScript event handler.")))
+        {
+            ShowAddEventDropdown(editor, item, data, addRect);
+        }
+
+        DrawLegacyImplementationFoldout(editor, item, data);
+
+        EditorGUILayout.EndVertical();
+        GUILayout.Space(10);
+    }
+
+    private static void DrawEventHandlerButton(
+        ItemsManagerConfigTab editor, GameObject item,
+        StateListeningItemData data, int handlerIndex)
+    {
+        var handler = data.eventHandlers[handlerIndex];
+        EditorGUILayout.BeginHorizontal();
+
+        int actionCount = handler.actions?.Count ?? 0;
+        TryGetEventDefinition(handler.eventType, out var def);
+        string displayLabel = string.IsNullOrEmpty(handler.eventType)
+            ? "(unset event)"
+            : (string.IsNullOrEmpty(def.eventType) ? handler.eventType : def.GetButtonLabel());
+        string badge = actionCount == 0 ? " (no actions)" : $" ({actionCount} action{(actionCount > 1 ? "s" : "")})";
+        var content = new GUIContent(displayLabel + badge,
+            string.IsNullOrEmpty(def.description)
+                ? $"Click to edit actions for the {handler.eventType} handler."
+                : def.description);
+
+        if (GUILayout.Button(content, GUILayout.Height(22), GUILayout.ExpandWidth(true)))
+        {
+            EventHandlerActionsWindow.Show(data, handlerIndex, item, editor);
+        }
+
+        var removeStyle = new GUIStyle(GUI.skin.button)
+        {
+            normal = { textColor = Color.red },
+            hover = { textColor = Color.red },
+            fontStyle = FontStyle.Bold
+        };
+        if (GUILayout.Button(new GUIContent("×", "Remove this event handler."),
+                             removeStyle, GUILayout.Width(22), GUILayout.Height(22)))
+        {
+            if (EditorUtility.DisplayDialog(
+                "Remove event handler",
+                $"Remove the '{displayLabel}' event handler from '{item.name}'?\nIts actions will be lost.",
+                "Remove", "Cancel"))
+            {
+                Undo.RecordObject(data, "Remove event handler");
+                data.eventHandlers.RemoveAt(handlerIndex);
+                EditorUtility.SetDirty(data);
+                EditorGUILayout.EndHorizontal();
+                GUIUtility.ExitGUI();
+                return;
+            }
+        }
+
+        EditorGUILayout.EndHorizontal();
+    }
+
+    private static void ShowAddEventDropdown(
+        ItemsManagerConfigTab editor, GameObject item,
+        StateListeningItemData data, Rect anchor)
+    {
+        if (data.eventHandlers == null) data.eventHandlers = new List<EventHandlerData>();
+        var usedTypes = new HashSet<string>(
+            data.eventHandlers.Where(h => h != null && !string.IsNullOrEmpty(h.eventType))
+                              .Select(h => h.eventType));
+
+        var menu = new GenericMenu();
+        foreach (var def in AvailableEventDefinitions)
+        {
+            var label = new GUIContent(def.GetMenuPath());
+            if (usedTypes.Contains(def.eventType))
+            {
+                menu.AddDisabledItem(label, true);
+            }
+            else
+            {
+                var captured = def;
+                var capturedData = data;
+                var capturedEditor = editor;
+                menu.AddItem(label, false, () =>
+                {
+                    Undo.RecordObject(capturedData, "Add event handler");
+                    capturedData.eventHandlers.Add(new EventHandlerData(captured.eventType));
+                    EditorUtility.SetDirty(capturedData);
+                    if (capturedEditor != null) capturedEditor.Repaint();
+                });
+            }
+        }
+        menu.DropDown(anchor);
+    }
+
+    private static void DrawLegacyImplementationFoldout(
+        ItemsManagerConfigTab editor, GameObject item, StateListeningItemData data)
+    {
+        string raw = data.otherImplementation ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(raw)) return;
+        if (ItemsManagerAssetUtil.IsLegacyBoilerplate(raw)) return;
+
+        string sessionKey = $"luida_legacy_{item.GetInstanceID()}";
+        bool wasOpen = SessionState.GetBool(sessionKey, false);
+
+        GUILayout.Space(4);
+        EditorGUILayout.BeginVertical("box");
+        EditorGUILayout.LabelField(
+            new GUIContent("⚠ Legacy free-form code",
+                "Pre-existing code from before the structured GUI. Appended verbatim to the generated .js. " +
+                "Migrate to structured event handlers above when possible, then click 'Clear legacy code'."),
+            EditorStyles.miniBoldLabel);
+
+        bool nowOpen = EditorGUILayout.Foldout(wasOpen, $"({raw.Length} chars)", true);
+        if (nowOpen != wasOpen) SessionState.SetBool(sessionKey, nowOpen);
+
+        if (nowOpen)
+        {
+            Rect ta = EditorGUILayout.GetControlRect(false, 75, GUILayout.Width(225f), GUILayout.MaxHeight(75));
+            DrawHoverableTextArea(ta, raw, newValue =>
+            {
+                Undo.RecordObject(data, "Edit legacy free-form code for " + item.name);
+                data.otherImplementation = newValue;
+                EditorUtility.SetDirty(data);
+            }, editor, isColored: true);
+
+            if (GUILayout.Button(new GUIContent("Clear legacy code",
+                "Remove the legacy free-form code once you've migrated it into structured event handlers.")))
+            {
+                if (EditorUtility.DisplayDialog(
+                    "Clear legacy code",
+                    $"Permanently remove the legacy free-form code from '{item.name}'?",
+                    "Clear", "Cancel"))
+                {
+                    Undo.RecordObject(data, "Clear legacy free-form code");
+                    data.otherImplementation = string.Empty;
+                    EditorUtility.SetDirty(data);
+                }
+            }
+        }
+
+        EditorGUILayout.EndVertical();
     }
 
     private static void DrawStateRows(ItemsManagerConfigTab editor, GUIStyle removeButtonStyle)
@@ -468,10 +777,95 @@ public static class ItemsManagerUIDrawer
         }
     }
 
-    private static void CreateReorderableList(ItemsManagerConfigTab editor, GameObject itemGO, StateListeningItemData itemDataAsset, StateListener listener, List<StateListenerAction> actions, string header, string keySuffix)
+    /// <summary>
+    /// Apply the user's action-type selection to a single StateListenerAction. Called from the
+    /// GenericMenu callback that backs the action-type dropdown — extracted from the inline path
+    /// so it can run asynchronously after the menu closes.
+    /// </summary>
+    /// <param name="newIndex">0 = "Select action" (clear); customizedActionIndex = "Customized Action"; otherwise 1-based index into AvailableStateListeningActions.</param>
+    private static void ApplyActionSelection(StateListeningItemData itemDataAsset, StateListenerAction action, int newIndex, int customizedActionIndex, GameObject itemGO, ItemsManagerConfigTab editor)
     {
-        var key = $"{itemGO.GetInstanceID()}_{listener.stateID}_{keySuffix}";
-        bool isCurrentStateTrialRelated = ItemsManagerAssetUtil.IsTrialRelatedState(listener.stateID, editor.stateList);
+        Undo.RecordObject(itemDataAsset, "Change Action Type");
+        if (newIndex == 0)
+        {
+            action.predefinedActionTemplate = default;
+            action.customAction = "";
+            action.variableValues.Clear();
+        }
+        else if (newIndex == customizedActionIndex)
+        {
+            action.predefinedActionTemplate = new StateListeningAction("Customized Action", "", null);
+            action.customAction = "// Your custom ClusterScript code here\n";
+            action.variableValues.Clear();
+        }
+        else
+        {
+            action.predefinedActionTemplate = AvailableStateListeningActions[newIndex - 1];
+            action.customAction = "";
+            action.variableValues.Clear();
+            if (action.predefinedActionTemplate.variables != null)
+            {
+                foreach (var varName in action.predefinedActionTemplate.variables)
+                {
+                    if (action.predefinedActionTemplate.actionType == "Send Haptics" && varName == "target")
+                    {
+                        action.variableValues[varName] = "''";
+                    }
+                    else
+                    {
+                        action.variableValues[varName] = new StateListenerAction(action.predefinedActionTemplate).variableValues[varName];
+                    }
+                }
+            }
+
+            if (action.predefinedActionTemplate.actionType == "Set text")
+            {
+                var textChild = itemGO.transform.Find("Text");
+                if (textChild == null)
+                {
+                    var newTextGO = new GameObject("Text");
+                    newTextGO.transform.SetParent(itemGO.transform, false);
+                    newTextGO.AddComponent<TextView>();
+                    Undo.RegisterCreatedObjectUndo(newTextGO, "Create Text child with TextView");
+                }
+                else if (textChild.GetComponent<TextView>() == null)
+                {
+                    Undo.AddComponent<TextView>(textChild.gameObject);
+                }
+            }
+        }
+        EditorUtility.SetDirty(itemDataAsset);
+        if (editor != null) editor._needsRebuild = true;
+    }
+
+    /// <summary>Returns the always-on event-handler ReorderableList for use inside EventHandlerActionsWindow.
+    /// Filters Sleep out of the action menu (Sleep emits a bare numeric value that only the per-state action loop
+    /// in StateListeningItemBase.js interprets), and allows the "If" conditional toggle regardless of state context.</summary>
+    internal static ReorderableList CreateEventHandlerReorderableList(
+        ItemsManagerConfigTab editor, GameObject itemGO,
+        StateListeningItemData itemDataAsset, EventHandlerData handler)
+    {
+        if (handler.actions == null) handler.actions = new List<StateListenerAction>();
+        return CreateReorderableList(
+            editor, itemGO, itemDataAsset, listener: null, actions: handler.actions,
+            header: "Actions", keySuffix: null,
+            allowConditionalUnconditionally: true,
+            excludeActionTypes: new HashSet<string> { "Sleep" });
+    }
+
+    /// <summary>Builds the StateListenerAction ReorderableList. Two call paths:
+    /// (1) per-state cells pass a listener + keySuffix and register the list in editor._reorderableLists for redraw caching;
+    /// (2) the always-on event-handler popup passes listener=null/keySuffix=null and gets the list back without cache pollution.</summary>
+    private static ReorderableList CreateReorderableList(
+        ItemsManagerConfigTab editor, GameObject itemGO,
+        StateListeningItemData itemDataAsset, StateListener listener,
+        List<StateListenerAction> actions, string header, string keySuffix,
+        bool allowConditionalUnconditionally = false,
+        HashSet<string> excludeActionTypes = null)
+    {
+        string key = (listener != null && keySuffix != null) ? $"{itemGO.GetInstanceID()}_{listener.stateID}_{keySuffix}" : null;
+        bool isCurrentStateTrialRelated = listener != null && ItemsManagerAssetUtil.IsTrialRelatedState(listener.stateID, editor.stateList);
+        bool isConditionalAllowed = isCurrentStateTrialRelated || allowConditionalUnconditionally;
 
         var rl = new ReorderableList(actions, typeof(StateListenerAction), true, true, true, true)
         {
@@ -487,26 +881,65 @@ public static class ItemsManagerUIDrawer
                 float currentX = rect.x;
                 float availableWidth = rect.width;
 
-                float ifButtonAndSpacingWidth = isCurrentStateTrialRelated ? 35 + spacing : 0;
+                float ifButtonAndSpacingWidth = isConditionalAllowed ? 35 + spacing : 0;
                 float dupButtonAndSpacingWidth = 22 + spacing;
                 float dropdownWidth = availableWidth - ifButtonAndSpacingWidth - dupButtonAndSpacingWidth;
                 Rect dropdownRect = new Rect(currentX, currentY, dropdownWidth, lineHeight);
 
-                // Display labels: fall back to actionType when no displayLabel is set.
-                // Selection logic below still keys off actionType (the serialization key).
-                var options = AvailableStateListeningActions.Select(a => a.GetDisplayLabel()).ToList();
-                options.Insert(0, "Select action");
-                options.Add("Customized Action");
-
+                // Selection key is actionType; display label may differ. Categories nest under slash-separated paths.
+                int customizedActionIndex = AvailableStateListeningActions.Length + 1;
                 int selectedIndex = 0;
-                if (!string.IsNullOrEmpty(action.predefinedActionTemplate.actionType)) {
-                    selectedIndex = (action.predefinedActionTemplate.actionType == "Customized Action")
-                        ? options.Count - 1
-                        : AvailableStateListeningActions.ToList().FindIndex(a => a.actionType == action.predefinedActionTemplate.actionType) + 1;
-                    if (selectedIndex < 0) selectedIndex = 0;
+                if (!string.IsNullOrEmpty(action.predefinedActionTemplate.actionType))
+                {
+                    if (action.predefinedActionTemplate.actionType == "Customized Action")
+                    {
+                        selectedIndex = customizedActionIndex;
+                    }
+                    else
+                    {
+                        int matchIdx = Array.FindIndex(AvailableStateListeningActions, a => a.actionType == action.predefinedActionTemplate.actionType);
+                        selectedIndex = matchIdx >= 0 ? matchIdx + 1 : 0;
+                    }
                 }
 
-                int newIndex = EditorGUI.Popup(dropdownRect, selectedIndex, options.ToArray());
+                string buttonLabel = selectedIndex == 0
+                    ? "Select action"
+                    : selectedIndex == customizedActionIndex
+                        ? "Customized Action"
+                        : AvailableStateListeningActions[selectedIndex - 1].GetDisplayLabel();
+
+                if (GUI.Button(dropdownRect, new GUIContent(buttonLabel), EditorStyles.popup))
+                {
+                    var capturedAction = action;
+                    var capturedItemDataAsset = itemDataAsset;
+                    var capturedItemGO = itemGO;
+                    var capturedEditor = editor;
+                    int capturedSelectedIndex = selectedIndex;
+                    int capturedCustomizedIndex = customizedActionIndex;
+
+                    var menu = new GenericMenu();
+                    menu.AddItem(new GUIContent("Select action"), capturedSelectedIndex == 0, () =>
+                    {
+                        ApplyActionSelection(capturedItemDataAsset, capturedAction, 0, capturedCustomizedIndex, capturedItemGO, capturedEditor);
+                    });
+                    menu.AddSeparator("");
+                    for (int i = 0; i < AvailableStateListeningActions.Length; i++)
+                    {
+                        int captured = i + 1;
+                        var a = AvailableStateListeningActions[i];
+                        if (excludeActionTypes != null && excludeActionTypes.Contains(a.actionType)) continue;
+                        menu.AddItem(new GUIContent(a.GetMenuPath()), capturedSelectedIndex == captured, () =>
+                        {
+                            ApplyActionSelection(capturedItemDataAsset, capturedAction, captured, capturedCustomizedIndex, capturedItemGO, capturedEditor);
+                        });
+                    }
+                    menu.AddSeparator("");
+                    menu.AddItem(new GUIContent("Customized Action"), capturedSelectedIndex == capturedCustomizedIndex, () =>
+                    {
+                        ApplyActionSelection(capturedItemDataAsset, capturedAction, capturedCustomizedIndex, capturedCustomizedIndex, capturedItemGO, capturedEditor);
+                    });
+                    menu.DropDown(dropdownRect);
+                }
                 currentX += dropdownWidth + spacing;
 
                 Rect dupRect = new Rect(currentX, currentY, 22, lineHeight);
@@ -518,7 +951,7 @@ public static class ItemsManagerUIDrawer
                 }
                 currentX += 22 + spacing;
 
-                if (isCurrentStateTrialRelated)
+                if (isConditionalAllowed)
                 {
                     Rect ifToggleRect = new Rect(currentX, currentY, 35, lineHeight);
                     bool newIsConditional = GUI.Toggle(ifToggleRect, action.isConditional, "If", GUI.skin.button);
@@ -536,7 +969,7 @@ public static class ItemsManagerUIDrawer
                 }
                 currentY += lineHeight + spacing;
 
-                if (isCurrentStateTrialRelated && action.isConditional)
+                if (isConditionalAllowed && action.isConditional)
                 {
                     Rect varLabelRect = new Rect(rect.x + 15, currentY, EditorGUIUtility.labelWidth * 0.7f, lineHeight);
                     Rect varDropdownRect = new Rect(varLabelRect.xMax, currentY, rect.width - varLabelRect.width - 15, lineHeight);
@@ -594,61 +1027,6 @@ public static class ItemsManagerUIDrawer
                             currentY += lineHeight + spacing;
                         }
                     }
-                }
-
-                if (newIndex != selectedIndex)
-                {
-                    Undo.RecordObject(itemDataAsset, "Change Action Type");
-                    if (newIndex == 0)
-                    {
-                        action.predefinedActionTemplate = default;
-                        action.customAction = "";
-                        action.variableValues.Clear();
-                    }
-                    else if (newIndex == options.Count - 1)
-                    {
-                        action.predefinedActionTemplate = new StateListeningAction("Customized Action", "", null);
-                        action.customAction = "// Your custom ClusterScript code here\n";
-                        action.variableValues.Clear();
-                    }
-                    else
-                    {
-                        action.predefinedActionTemplate = AvailableStateListeningActions[newIndex - 1];
-                        action.customAction = "";
-                        action.variableValues.Clear();
-                        if (action.predefinedActionTemplate.variables != null)
-                        {
-                            foreach (var varName in action.predefinedActionTemplate.variables)
-                            {
-                                // MODIFIED: For Haptics target, initialize with quotes
-                                if (action.predefinedActionTemplate.actionType == "Send Haptics" && varName == "target")
-                                {
-                                    action.variableValues[varName] = "''";
-                                }
-                                else
-                                {
-                                    action.variableValues[varName] = new StateListenerAction(action.predefinedActionTemplate).variableValues[varName];
-                                }
-                            }
-                        }
-
-                        if (action.predefinedActionTemplate.actionType == "Set text")
-                        {
-                            var textChild = itemGO.transform.Find("Text");
-                            if (textChild == null)
-                            {
-                                var newTextGO = new GameObject("Text");
-                                newTextGO.transform.SetParent(itemGO.transform, false);
-                                newTextGO.AddComponent<TextView>();
-                                Undo.RegisterCreatedObjectUndo(newTextGO, "Create Text child with TextView");
-                            }
-                            else if (textChild.GetComponent<TextView>() == null)
-                            {
-                                Undo.AddComponent<TextView>(textChild.gameObject);
-                            }
-                        }
-                    }
-                    EditorUtility.SetDirty(itemDataAsset);
                 }
 
                 bool requiresMovableItem = new[] { "Set position", "Add position", "Set rotation", "Add rotation", "Sync with participant bone" }.Contains(action.predefinedActionTemplate.actionType);
@@ -876,6 +1254,55 @@ public static class ItemsManagerUIDrawer
                         }
                         currentY += lineHeight + spacing;
                     }
+                    else if (action.predefinedActionTemplate.actionType == "Set participant position"
+                          || action.predefinedActionTemplate.actionType == "Add participant position"
+                          || action.predefinedActionTemplate.actionType == "Set participant rotation"
+                          || action.predefinedActionTemplate.actionType == "Add participant rotation")
+                    {
+                        float labelWidth = 85f;
+
+                        // Row 1: Participant #
+                        Rect pIdxLabelRect = new Rect(rect.x + 15, currentY, labelWidth, lineHeight);
+                        Rect pIdxFieldRect = new Rect(pIdxLabelRect.xMax, currentY, rect.width - 15 - labelWidth, lineHeight);
+                        EditorGUI.LabelField(pIdxLabelRect, "Participant #");
+                        action.variableValues.TryGetValue("participantIndex", out string currentPIdx);
+                        string newPIdx = EditorGUI.TextField(pIdxFieldRect, currentPIdx ?? "1");
+                        newPIdx = ValidateParticipantId(newPIdx);
+                        if (newPIdx != currentPIdx)
+                        {
+                            Undo.RecordObject(itemDataAsset, "Change Participant Index");
+                            action.variableValues["participantIndex"] = newPIdx;
+                            EditorUtility.SetDirty(itemDataAsset);
+                        }
+                        currentY += lineHeight + spacing;
+
+                        // Row 2: x / y / z inline (rotation values are Euler degrees)
+                        bool isRotation = action.predefinedActionTemplate.actionType.EndsWith("rotation");
+                        string axisRowLabel = isRotation ? "Euler (deg)" : "Position";
+                        EditorGUI.LabelField(new Rect(rect.x + 15, currentY, rect.width - 15, lineHeight), axisRowLabel);
+                        currentY += lineHeight + spacing;
+
+                        float axisLabelWidth = 14f;
+                        float axisFieldWidth = 50f;
+                        float axisSpacing = 8f;
+                        string[] axes = { "x", "y", "z" };
+                        float ax = rect.x + 15;
+                        for (int i = 0; i < 3; i++)
+                        {
+                            string variableName = axes[i];
+                            EditorGUI.LabelField(new Rect(ax, currentY, axisLabelWidth, lineHeight), variableName);
+                            action.variableValues.TryGetValue(variableName, out string currentValue);
+                            string newValue = EditorGUI.TextField(new Rect(ax + axisLabelWidth, currentY, axisFieldWidth, lineHeight), currentValue ?? "0");
+                            if (newValue != currentValue)
+                            {
+                                Undo.RecordObject(itemDataAsset, "Edit Variable " + variableName);
+                                action.variableValues[variableName] = newValue;
+                                EditorUtility.SetDirty(itemDataAsset);
+                            }
+                            ax += axisLabelWidth + axisFieldWidth + axisSpacing;
+                        }
+                        currentY += lineHeight + spacing;
+                    }
                     else if (action.predefinedActionTemplate.actionType == "Sync with participant bone")
                     {
                         float labelWidth = 85f;
@@ -1042,7 +1469,7 @@ public static class ItemsManagerUIDrawer
             float spacing = EditorGUIUtility.standardVerticalSpacing;
             float height = lineHeight + spacing;
 
-            if (isCurrentStateTrialRelated && action.isConditional)
+            if (isConditionalAllowed && action.isConditional)
             {
                 height += lineHeight + spacing;
                 if (!string.IsNullOrEmpty(action.conditionVariable))
@@ -1099,6 +1526,14 @@ public static class ItemsManagerUIDrawer
                     // participant row, bone row, pos offset label, pos xyz, rot offset label, rot xyz
                     height += (lineHeight + spacing) * 6;
                 }
+                else if (action.predefinedActionTemplate.actionType == "Set participant position"
+                      || action.predefinedActionTemplate.actionType == "Add participant position"
+                      || action.predefinedActionTemplate.actionType == "Set participant rotation"
+                      || action.predefinedActionTemplate.actionType == "Add participant rotation")
+                {
+                    // participant row, axis-row label, xyz inline
+                    height += (lineHeight + spacing) * 3;
+                }
                 else
                 {
                     var variables = action.predefinedActionTemplate.variables;
@@ -1146,7 +1581,8 @@ public static class ItemsManagerUIDrawer
             EditorUtility.SetDirty(itemDataAsset);
         }
     };
-        editor._reorderableLists[key] = rl;
+        if (key != null) editor._reorderableLists[key] = rl;
+        return rl;
     }
 
     private static void DrawReorderableList(ItemsManagerConfigTab editor, GameObject item, int stateID, string keySuffix)
