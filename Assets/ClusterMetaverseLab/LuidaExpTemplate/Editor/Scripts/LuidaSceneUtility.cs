@@ -80,7 +80,9 @@ public static class LuidaSceneUtility
         string stateListPath = $"Assets/_Experiment_/Settings/StateList/{currentSceneName}.asset";
         if (File.Exists(stateListPath))
         {
-            File.Copy(stateListPath, $"Assets/_Experiment_/Settings/StateList/{newSceneName}.asset", true);
+            string newStateListPath = $"Assets/_Experiment_/Settings/StateList/{newSceneName}.asset";
+            File.Copy(stateListPath, newStateListPath, true);
+            RenameAssetObjectToMatchFile(newStateListPath, newSceneName);
         }
 
         // Duplicate ExperimentVariables asset
@@ -132,7 +134,9 @@ public static class LuidaSceneUtility
         if (File.Exists(dcConfigPath))
         {
             Directory.CreateDirectory(DataCollectorConfigFolderPath);
-            File.Copy(dcConfigPath, $"{DataCollectorConfigFolderPath}{newSceneName}.asset", true);
+            string newDcConfigPath = $"{DataCollectorConfigFolderPath}{newSceneName}.asset";
+            File.Copy(dcConfigPath, newDcConfigPath, true);
+            RenameAssetObjectToMatchFile(newDcConfigPath, newSceneName);
         }
 
         // Duplicate the scene-scoped avatar folder by rebuilding wrappers from
@@ -144,6 +148,22 @@ public static class LuidaSceneUtility
     }
 
     private const string DataCollectorConfigFolderPath = "Assets/_Experiment_/Settings/DataCollectorConfig/";
+
+    /// <summary>
+    /// File.Copy preserves the source asset's serialized m_Name, which then
+    /// disagrees with the new file name and trips Unity's "Object name does not
+    /// match file name" inspector warning. Re-import the file so it's tracked,
+    /// then update the live Object's name to match.
+    /// </summary>
+    private static void RenameAssetObjectToMatchFile(string assetPath, string newName)
+    {
+        AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
+        var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
+        if (obj == null || obj.name == newName) return;
+        obj.name = newName;
+        EditorUtility.SetDirty(obj);
+        AssetDatabase.SaveAssetIfDirty(obj);
+    }
 
     /// <summary>
     /// Rebuilds the source scene's avatar set in the new scene's folder. Source
