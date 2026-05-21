@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22975fc05975d2a4f9b750cd520d63a0, type: 3}
-  m_Name: Proteus_incomplete
+  m_Name: tutorial_2_practice
   m_EditorClassIdentifier: 
   schemaVersion: 2
   collectedLabels: []

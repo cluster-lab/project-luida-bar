@@ -4,4 +4,4 @@ const within_subjects_variables = [
 ];
 const between_subjects_variables = [
 ];
-const state_names = ["Intro", "Trial - Start", "Trial - Rest", "End"];
+const state_names = ["Start", "Intro", "Trial - Start", "Trial - Rest", "Outro", "End"];
