@@ -25,6 +25,18 @@ public static class LuidaDataCollectorJsGenerator
     public const string AutoGenStartMarker = "// === LUIDA AUTO-GENERATED (do not edit between markers) ===";
     public const string AutoGenEndMarker   = "// === LUIDA AUTO-GENERATED END ===";
 
+    /// <summary>
+    /// Name of the synthetic field that gets auto-injected into the generated
+    /// `fields` dict (Builder mode) whenever the LUIDA automation feature is
+    /// active for the current scene. Surfaces the state-transition record
+    /// populated by Runtime/ExpSettings/StateLogger.js at
+    /// $.groupState.collectedData["stateLog"].
+    ///
+    /// Kept public so the config tab can use the same name when warning the
+    /// user about a manual field that would collide with this injection.
+    /// </summary>
+    public const string AutoStateLogFieldName = "stateLog";
+
     public static string Generate(LuidaDataCollectorConfig config)
     {
         var sb = new StringBuilder();
@@ -36,15 +48,18 @@ public static class LuidaDataCollectorJsGenerator
             return sb.ToString();
         }
 
+        bool automationActive = LuidaAutomationStatus.IsActiveForActiveScene();
+
         if (config.useCustomCodeMode)
         {
+            if (automationActive) AppendStateLogCodeModeHint(sb);
             string body = config.rawJs ?? string.Empty;
             sb.Append(body);
             if (!body.EndsWith("\n")) sb.Append('\n');
         }
         else
         {
-            AppendFieldDictionary(sb, config);
+            AppendFieldDictionary(sb, config, automationActive);
             sb.Append("return fields;\n");
         }
 
@@ -60,9 +75,27 @@ public static class LuidaDataCollectorJsGenerator
     {
         if (config == null) return "return {};\n";
         var sb = new StringBuilder();
-        AppendFieldDictionary(sb, config);
+        AppendFieldDictionary(sb, config, LuidaAutomationStatus.IsActiveForActiveScene());
         sb.Append("return fields;\n");
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// True when the user has manually added a field whose name collides with
+    /// the auto-injected state-log entry. When this is true the generator
+    /// skips auto-injection (the user's expression wins) and the config tab
+    /// surfaces a warning.
+    /// </summary>
+    public static bool HasUserStateLogField(LuidaDataCollectorConfig config)
+    {
+        if (config == null || config.fields == null) return false;
+        foreach (var f in config.fields)
+        {
+            if (f == null) continue;
+            if (string.Equals(f.fieldName, AutoStateLogFieldName, System.StringComparison.Ordinal))
+                return true;
+        }
+        return false;
     }
 
     // ─────────────────────────── Header ───────────────────────────
@@ -129,9 +162,23 @@ public static class LuidaDataCollectorJsGenerator
 
     // ─────────────────────────── Field dictionary ───────────────────────────
 
-    static void AppendFieldDictionary(StringBuilder sb, LuidaDataCollectorConfig config)
+    static void AppendFieldDictionary(StringBuilder sb, LuidaDataCollectorConfig config, bool automationActive)
     {
         sb.Append("const fields = {\n");
+
+        // Auto-inject the state-machine transition log when automation is
+        // active and the user has not manually added a colliding field. The
+        // user's field always wins to keep the on-disk JS valid (no duplicate
+        // keys); the config tab warns when this collision happens.
+        if (automationActive && !HasUserStateLogField(config))
+        {
+            sb.Append("    // --- LUIDA AUTO: state machine log (auto-included while automation is active) ---\n");
+            sb.Append("    ").Append(AutoStateLogFieldName).Append(": ")
+              .Append("(typeof COLLECTED_DATA !== \"undefined\" && COLLECTED_DATA) ? COLLECTED_DATA[\"stateLog\"] : undefined")
+              .Append(",\n");
+            sb.Append("    // --- END LUIDA AUTO ---\n");
+        }
+
         foreach (var f in config.fields)
         {
             if (f == null) continue;
@@ -143,6 +190,14 @@ public static class LuidaDataCollectorJsGenerator
             sb.Append("    ").Append(f.fieldName).Append(": ").Append(expr).Append(",\n");
         }
         sb.Append("};\n");
+    }
+
+    static void AppendStateLogCodeModeHint(StringBuilder sb)
+    {
+        sb.Append("// LUIDA tip: automation is active in this scene, so COLLECTED_DATA[\"stateLog\"]\n");
+        sb.Append("//            contains the latest state transition ({ id, name, startAt }).\n");
+        sb.Append("//            Add `stateLog: COLLECTED_DATA[\"stateLog\"]` to your returned\n");
+        sb.Append("//            object below to include it in the uploaded data.\n");
     }
 
     // ─────────────────────────── Per-source emitters ───────────────────────────

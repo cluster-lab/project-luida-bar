@@ -66,15 +66,7 @@ public class LuidaConfigWindow : EditorWindow
 
     private void CheckAutomationFeatureStatus()
     {
-        string sceneName = EditorSceneManager.GetActiveScene().name;
-        if (string.IsNullOrEmpty(sceneName)) {
-            isAutomationFeatureActive = false;
-            return;
-        }
-
-        string stateListPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
-        string variablesAssetPath = $"Assets/_Experiment_/Settings/ExperimentVariables/{sceneName}.js";
-        isAutomationFeatureActive = File.Exists(stateListPath) && File.Exists(variablesAssetPath);
+        isAutomationFeatureActive = LuidaAutomationStatus.IsActiveForActiveScene();
     }
     
     private void OnGUI()

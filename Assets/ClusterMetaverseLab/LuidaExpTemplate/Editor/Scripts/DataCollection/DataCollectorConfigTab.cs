@@ -396,6 +396,17 @@ public class DataCollectorConfigTab : EditorWindow
                 "Invalid field names (must be letters/digits/underscores; cannot start with a digit): " +
                 string.Join(", ", invalid) + ". These fields are skipped during JS generation.",
                 MessageType.Warning);
+
+        if (LuidaAutomationStatus.IsActiveForActiveScene() &&
+            LuidaDataCollectorJsGenerator.HasUserStateLogField(_config))
+        {
+            EditorGUILayout.HelpBox(
+                $"Field name \"{LuidaDataCollectorJsGenerator.AutoStateLogFieldName}\" collides with the auto-injected " +
+                "state-machine log (LUIDA automation is active in this scene). Auto-injection is skipped while this entry " +
+                "exists — your field's expression is used instead. Rename or remove this entry to get the auto-injected " +
+                "state log back.",
+                MessageType.Warning);
+        }
     }
 
     // ─── Code mode ──────────────────────────────────────────────────────
