@@ -8,8 +8,9 @@ If you're ready to get started, please check the Main Features below first, then
 
 <!-- - [Getting Started](#getting-started) -->
 - [Main Features](#main-features)
-- [Tutorial (JA)](https://github.com/cluster-lab/project-luida-bar/blob/exp-template/Tutorial_JA.md)
-- (Under construction) [Tutorial (EN)](https://github.com/cluster-lab/project-luida-bar/blob/exp-template/Tutorial_EN.md)
+- [Documentation & Tutorials](https://luida-docs.vercel.app/)
+<!-- - [Tutorial (JA)](https://github.com/cluster-lab/project-luida-bar/blob/exp-template/Tutorial_JA.md) -->
+<!-- - (Under construction) [Tutorial (EN)](https://github.com/cluster-lab/project-luida-bar/blob/exp-template/Tutorial_EN.md) -->
 <!-- - [Documentation (under construction...)](#documentation-under-construction) -->
 
 -----
@@ -25,14 +26,24 @@ Register within/between-subject variables in the Experiment Variables tab — th
 
 実験変数タブで参加者内/参加者間変数を登録すると、要因の組み合わせから試行数と各試行の条件が自動的に決定されます。参加者間条件はサーバー側で参加者間の偏りが出ないようにバランス化されます。デフォルトのロジックを上書きしたい場合は、提供されたテンプレートスクリプトで条件決定処理をカスタマイズできます。
 
-![variable-settings](https://github.com/user-attachments/assets/1cf257e1-71f7-49de-95a9-d38e3661b655)
+<table>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/385a0f1d-c737-4075-8058-25ed22274d15" alt="variable-settings-illustration" width="400"/></td>
+    <td><img src="https://github.com/user-attachments/assets/14a79734-5585-4309-95f1-24339906b249" alt="variable-settings-screenshot" width="800"/></td>
+  </tr>
+</table>
 
 ### State management
 The State Machine tab manages a state-pattern flow that already ships with sensible defaults, so you can run an experiment without editing anything. When you do need to customize, you can add, remove, skip, or repeat states, enable auto-transition after N seconds, and bind a questionnaire to a state by qID — all from the GUI.
 
 ステートマシンタブでは、ステートデザインパターンに基づく既定の流れが用意されており、編集なしでもそのまま実験を実施できます。必要に応じて、ステートの追加・削除・スキップ・繰り返し、XX秒後の自動遷移、qIDによる質問紙の割り当てなどをGUIから自由にカスタマイズできます。
 
-![state-transition](https://github.com/user-attachments/assets/050dee88-c603-407c-b60f-1b1b59d52840)
+<table>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/f7ccd578-cae2-46c2-b70b-1e485c2c889f" alt="state-transition-graph-example" width="350"/></td>
+    <td><img src="https://github.com/user-attachments/assets/150e0356-334c-438b-97f6-3d102d0b6a22" alt="state-machine-screenshot" width="850"/></td>
+  </tr>
+</table>
 
 ### State-listening items with GUI-driven actions and event handlers
 In the State-listening Items tab, you can hook scene GameObjects to the state machine without writing scripts. For each item you can configure:
@@ -71,13 +82,15 @@ For custom data, the `LUIDA > Configure data collector` window provides a no-cod
 
 カスタムデータについては、`LUIDA > Configure data collector` ウィンドウのノーコードビルダーから設定できます。収集したいラベル（Bool / Float / Integer / Vector2 / Vector3 / String）を宣言し、各出力フィールドを「収集済み値の参照」「グローバルステート読み取り」「四則演算」「条件分岐」などのソースから組み立てます。GUIで表現しきれない場合は生のJSを書くコードモードも利用可能です。値のpush・1行ぶんのバッファ保存・バックエンドへのアップロードはステート連動アクションとして提供されているため、多くの記録フローはGUIだけで完結します。収集データはウェブコンソールから確認・ダウンロードできます。
 
-![image](https://github.com/user-attachments/assets/089340d0-dec0-487b-9be1-51b4cfceca2f)
-![image](https://github.com/user-attachments/assets/0d997e6c-9c1b-456d-babc-cb8400a1ef86)
+<img width="866" height="673" alt="data-collector-config-screenshot" src="https://github.com/user-attachments/assets/3939c91e-277a-42c8-a610-30053ec3e6b3" />
+<img width="1475" height="483" alt="data-collection-result-on-web-screenshot" src="https://github.com/user-attachments/assets/05477847-f80a-4a7a-9b31-8826b179a419" />
 
 ### Avatar management
 The `LUIDA > Configure avatars` window maintains a per-experiment avatar registry. Registered avatars can be assigned to participants directly from the GUI via the "Assign avatar to participant" state-listening action, so swapping avatars at specific points in an experiment doesn't require any scripting.
 
 `LUIDA > Configure avatars` ウィンドウで、実験ごとのアバター一覧を管理できます。登録したアバターは、ステート連動アイテムの「Assign avatar to participant」アクションからGUI経由で参加者に割り当てられるため、実験中の特定タイミングでのアバター切替もスクリプトを書かずに実現できます。
+
+<img width="890" height="788" alt="avatar-config-window-screenshot" src="https://github.com/user-attachments/assets/2003d19c-70a2-4e20-90c0-b8d0ef8ae892" />
 
 <!--
 -----
