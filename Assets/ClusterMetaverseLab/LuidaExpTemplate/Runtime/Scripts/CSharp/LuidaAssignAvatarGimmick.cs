@@ -26,9 +26,23 @@ public class LuidaAssignAvatarGimmick : LuidaFakeGimmick
         }
         else
         {
-            // Assign mode: look up avatar index from registry
+            // Assign mode: look up avatar index from this gimmick's scene
+            // registry. Avatars are scene-scoped (Assets/_Experiment_/Avatars/<scene>/),
+            // and a gimmick can only address avatars from its own scene.
+            //
+            // The path is inlined rather than fetched from AvatarsConfigAssetUtil
+            // because this class compiles into Assembly-CSharp (runtime), which
+            // can't reference editor-folder types like that util. Keep this
+            // convention in sync with AvatarsConfigAssetUtil.GetRegistryPath.
             int avatarIndex = 0;
-            var registry = AssetDatabase.LoadAssetAtPath<AvatarRegistry>("Assets/_Experiment_/Avatars/AvatarRegistry.asset");
+            string sceneName = gameObject.scene.name;
+            AvatarRegistry registry = null;
+            if (!string.IsNullOrEmpty(sceneName))
+            {
+                string sceneFolder = System.Text.RegularExpressions.Regex.Replace(sceneName, @"[^A-Za-z0-9_\-]", "_");
+                registry = AssetDatabase.LoadAssetAtPath<AvatarRegistry>(
+                    $"Assets/_Experiment_/Avatars/{sceneFolder}/AvatarRegistry.asset");
+            }
             if (registry != null)
             {
                 for (int i = 0; i < registry.entries.Count; i++)

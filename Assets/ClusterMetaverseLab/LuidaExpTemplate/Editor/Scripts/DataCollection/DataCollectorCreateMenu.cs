@@ -13,6 +13,7 @@ public class DataCollectorCreateMenu
     private const string IdentifiersAssetPath = "Assets/_Experiment_/Settings/ExpIdentifiers.js";
     private const string CalculatorTemplateAssetPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/CustomDataCollection/CustomDataCalculatorTemplate.js";
     private const string DataCollectorScriptFolderPath = "Assets/_Experiment_/Scripts/DataCollectors/";
+    public const string DataCollectorConfigFolderPath = "Assets/_Experiment_/Settings/DataCollectorConfig/";
 
     /// <summary>
     /// Creates a LUIDA Data Collector instance in the scene from the GameObject menu.
@@ -63,6 +64,7 @@ public class DataCollectorCreateMenu
         }
 
         EnsureAccessToExpConditions(collectorInstance);
+        FindOrCreateBuilderConfig();
 
         if (registerUndo)
         {
@@ -153,5 +155,41 @@ public class DataCollectorCreateMenu
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// Idempotently ensures the per-scene LuidaDataCollectorConfig asset exists.
+    /// Returns the asset (existing or freshly created). Safe to call from any
+    /// editor flow that touches the DataCollector — also surfaced as the public
+    /// API for the Inspector and the Config tab.
+    /// </summary>
+    public static LuidaDataCollectorConfig FindOrCreateBuilderConfig()
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+        if (string.IsNullOrEmpty(sceneName)) return null;
+
+        string configPath = $"{DataCollectorConfigFolderPath}{sceneName}.asset";
+        var existing = AssetDatabase.LoadAssetAtPath<LuidaDataCollectorConfig>(configPath);
+        if (existing != null) return existing;
+
+        if (!Directory.Exists(DataCollectorConfigFolderPath))
+        {
+            Directory.CreateDirectory(DataCollectorConfigFolderPath);
+        }
+
+        var fresh = ScriptableObject.CreateInstance<LuidaDataCollectorConfig>();
+
+        // Seed rawJs from the calculator template as a fallback for users who
+        // later opt into Code Mode. Builder mode is the default (schema default
+        // useCustomCodeMode = false) — do NOT override here.
+        var templateText = AssetDatabase.LoadAssetAtPath<TextAsset>(CalculatorTemplateAssetPath);
+        if (templateText != null) fresh.rawJs = templateText.text;
+
+        // Fresh asset is already on the latest schema; mark it migrated.
+        fresh.schemaVersion = LuidaDataCollectorConfigMigrator.CurrentSchemaVersion;
+
+        AssetDatabase.CreateAsset(fresh, configPath);
+        AssetDatabase.SaveAssets();
+        return fresh;
     }
 }

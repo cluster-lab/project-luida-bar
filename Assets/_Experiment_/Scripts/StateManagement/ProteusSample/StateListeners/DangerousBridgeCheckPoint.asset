@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acb8c4c8a0a4dc6418e2f4d59454f5e3, type: 3}
+  m_Name: DangerousBridgeCheckPoint
+  m_EditorClassIdentifier: 
+  stateListeners:
+  - stateID: 1
+    onStateStartedActions:
+    - predefinedActionTemplate:
+        actionType: Show item
+        displayLabel: 
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', true);
+        variables: []
+        category: Item
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys: []
+      _variableValuesList: []
+    duringStateActions: []
+    onStateExitedActions:
+    - predefinedActionTemplate:
+        actionType: Hide item
+        displayLabel: 
+        codeSnippet: $.setStateCompat('this', 'exp_showItem', false);
+        variables: []
+        category: Item
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys: []
+      _variableValuesList: []
+  eventHandlers:
+  - eventType: $.onCollide
+    actions:
+    - predefinedActionTemplate:
+        actionType: Send data to collector
+        displayLabel: Push data to collector
+        codeSnippet: "if (!$.groupState.collectedData) $.groupState.collectedData
+          = {};\n    let collectedData = $.groupState.collectedData;\n    collectedData['{_label_}']
+          = {_value_};\n    $.groupState.collectedData = collectedData;"
+        variables:
+        - label
+        - value
+        category: Data collection
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys:
+      - label
+      - value
+      - value_str
+      _variableValuesList:
+      - bridge
+      - '''danger'''
+      - danger
+    - predefinedActionTemplate:
+        actionType: Process and save collected data
+        displayLabel: Save pushed data in collector
+        codeSnippet: $.sendSignalCompat('this', 'exp_recordCustomData');
+        variables: []
+        category: Data collection
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys: []
+      _variableValuesList: []
+    - predefinedActionTemplate:
+        actionType: To next state
+        displayLabel: 
+        codeSnippet: $.sendSignalCompat('this', 'state_triggerTransition');
+        variables: []
+        category: State machine
+      customAction: 
+      isConditional: 0
+      conditionVariable: 
+      conditionValue: 
+      _variableKeys: []
+      _variableValuesList: []
+  otherImplementation: 

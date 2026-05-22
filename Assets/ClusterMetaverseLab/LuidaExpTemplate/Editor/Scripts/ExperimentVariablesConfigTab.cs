@@ -370,7 +370,7 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
         {
              scriptAssets.Add(variablesAsset);
         }
-        
+
         UpdateScriptableClusterScriptCombiner(scriptAssets.ToArray());
 
         Debug.Log($"Experiment variables saved to {variablesAssetPath}");

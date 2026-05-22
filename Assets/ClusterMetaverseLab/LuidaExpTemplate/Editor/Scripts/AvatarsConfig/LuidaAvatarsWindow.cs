@@ -18,8 +18,7 @@ public class LuidaAvatarsWindow : EditorWindow
 
     private void OnEnable()
     {
-        AvatarsConfigAssetUtil.EnsureFolderLayout();
-        Registry = AvatarsConfigAssetUtil.EnsureRegistryAsset();
+        ReloadForActiveScene();
         AvatarsConfigUIDrawer.ReloadSpawnerConfig();
         EditorSceneManager.activeSceneChangedInEditMode += OnActiveSceneChanged;
     }
@@ -31,15 +30,34 @@ public class LuidaAvatarsWindow : EditorWindow
 
     private void OnGUI()
     {
+        // Registry is scene-scoped — a lazy reload here keeps the UI honest when
+        // the user just renamed the scene (the active-scene event won't fire for
+        // that, but the registry path it resolves to has changed).
         if (Registry == null)
-            Registry = AvatarsConfigAssetUtil.EnsureRegistryAsset();
+            ReloadForActiveScene();
 
         AvatarsConfigUIDrawer.DrawGUI(this);
     }
 
     private void OnActiveSceneChanged(UnityEngine.SceneManagement.Scene oldScene, UnityEngine.SceneManagement.Scene newScene)
     {
+        ReloadForActiveScene();
         AvatarsConfigUIDrawer.ReloadSpawnerConfig();
         Repaint();
+    }
+
+    /// <summary>
+    /// Loads (without creating) the registry for the active scene. We don't
+    /// auto-create on view so opening the window in a scene that has no avatars
+    /// doesn't leave behind an empty folder — folder + asset are created on the
+    /// first drop, or when the user explicitly clicks the migration button.
+    /// </summary>
+    public void ReloadForActiveScene()
+    {
+        string sceneFolder = AvatarsConfigAssetUtil.GetActiveSceneFolderName();
+        if (sceneFolder == null) { Registry = null; return; }
+
+        string path = AvatarsConfigAssetUtil.GetRegistryPath(sceneFolder);
+        Registry = AssetDatabase.LoadAssetAtPath<AvatarRegistry>(path);
     }
 }

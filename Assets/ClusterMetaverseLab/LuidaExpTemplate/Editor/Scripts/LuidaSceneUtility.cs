@@ -50,7 +50,7 @@ public static class LuidaSceneUtility
     {
         string currentScenePath = EditorSceneManager.GetActiveScene().path;
         string newScenePath = Path.Combine(scenePath, newSceneName + ".unity");
-        
+
         if (File.Exists(newScenePath))
         {
             EditorUtility.DisplayDialog("Error", "A scene with that name already exists!", "OK");
@@ -60,11 +60,12 @@ public static class LuidaSceneUtility
         DuplicateSceneAndAssets(currentScenePath, newSceneName);
         AssetDatabase.Refresh();
         EditorSceneManager.OpenScene(newScenePath);
-        
+
         // After opening the new scene, update the script references within it.
         string newStateListenerScriptsFolder = $"Assets/_Experiment_/Scripts/StateManagement/{newSceneName}";
         UpdateScriptableClusterScriptCombiners(newSceneName, newStateListenerScriptsFolder);
         UpdateDataCollectorScriptCombiner(newSceneName);
+        RewireAvatarSpawnerForDuplicatedScene(newSceneName);
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
     }
     
@@ -79,7 +80,9 @@ public static class LuidaSceneUtility
         string stateListPath = $"Assets/_Experiment_/Settings/StateList/{currentSceneName}.asset";
         if (File.Exists(stateListPath))
         {
-            File.Copy(stateListPath, $"Assets/_Experiment_/Settings/StateList/{newSceneName}.asset", true);
+            string newStateListPath = $"Assets/_Experiment_/Settings/StateList/{newSceneName}.asset";
+            File.Copy(stateListPath, newStateListPath, true);
+            RenameAssetObjectToMatchFile(newStateListPath, newSceneName);
         }
 
         // Duplicate ExperimentVariables asset
@@ -123,6 +126,119 @@ public static class LuidaSceneUtility
         {
             File.Copy(dataCollectorScriptPath, $"Assets/_Experiment_/Scripts/DataCollectors/{newSceneName}.js", true);
         }
+
+        // Duplicate DataCollector config asset. Gimmicks resolve this by active
+        // scene name (DataCollectorGimmickShared.FindBuilderConfig), so we just
+        // need a file present at the new scene's path — no reference rewiring.
+        string dcConfigPath = $"{DataCollectorConfigFolderPath}{currentSceneName}.asset";
+        if (File.Exists(dcConfigPath))
+        {
+            Directory.CreateDirectory(DataCollectorConfigFolderPath);
+            string newDcConfigPath = $"{DataCollectorConfigFolderPath}{newSceneName}.asset";
+            File.Copy(dcConfigPath, newDcConfigPath, true);
+            RenameAssetObjectToMatchFile(newDcConfigPath, newSceneName);
+        }
+
+        // Duplicate the scene-scoped avatar folder by rebuilding wrappers from
+        // each entry's source prefab. A plain folder copy can't be used because
+        // the spawner's WorldItemTemplateList references wrappers by GUID and a
+        // byte-level copy would leave new wrappers pointing at the source scene's
+        // BoneMap.js files. Rebuilding produces an internally consistent new set.
+        DuplicateAvatarRegistryByRebuild(currentSceneName, newSceneName);
+    }
+
+    private const string DataCollectorConfigFolderPath = "Assets/_Experiment_/Settings/DataCollectorConfig/";
+
+    /// <summary>
+    /// File.Copy preserves the source asset's serialized m_Name, which then
+    /// disagrees with the new file name and trips Unity's "Object name does not
+    /// match file name" inspector warning. Re-import the file so it's tracked,
+    /// then update the live Object's name to match.
+    /// </summary>
+    private static void RenameAssetObjectToMatchFile(string assetPath, string newName)
+    {
+        AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
+        var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
+        if (obj == null || obj.name == newName) return;
+        obj.name = newName;
+        EditorUtility.SetDirty(obj);
+        AssetDatabase.SaveAssetIfDirty(obj);
+    }
+
+    /// <summary>
+    /// Rebuilds the source scene's avatar set in the new scene's folder. Source
+    /// VRM/humanoid prefabs (registry.entries[i].sourceVrmPrefab) are reused —
+    /// they're immutable inputs and sharing them keeps the disk layout clean.
+    /// </summary>
+    private static void DuplicateAvatarRegistryByRebuild(string currentSceneName, string newSceneName)
+    {
+        string oldSceneFolder = AvatarsConfigAssetUtil.SanitizeSceneFolderName(currentSceneName);
+        string newSceneFolder = AvatarsConfigAssetUtil.SanitizeSceneFolderName(newSceneName);
+        if (oldSceneFolder == null || newSceneFolder == null) return;
+
+        var oldRegistry = AssetDatabase.LoadAssetAtPath<AvatarRegistry>(
+            AvatarsConfigAssetUtil.GetRegistryPath(oldSceneFolder));
+        if (oldRegistry == null || oldRegistry.entries.Count == 0) return;
+
+        AvatarsConfigAssetUtil.EnsureFolderLayout(newSceneFolder);
+
+        string newRegistryPath = AvatarsConfigAssetUtil.GetRegistryPath(newSceneFolder);
+        var newRegistry = ScriptableObject.CreateInstance<AvatarRegistry>();
+        AssetDatabase.CreateAsset(newRegistry, newRegistryPath);
+
+        foreach (var oldEntry in oldRegistry.entries)
+        {
+            if (oldEntry == null || oldEntry.sourceVrmPrefab == null) continue;
+
+            var newEntry = new AvatarEntry
+            {
+                avatarID      = oldEntry.avatarID,
+                displayName   = oldEntry.displayName,
+                sourceVrmPrefab = oldEntry.sourceVrmPrefab,
+                syncFingers   = oldEntry.syncFingers,
+                syncFeetToes  = oldEntry.syncFeetToes,
+                syncJaw       = oldEntry.syncJaw,
+                scaleMode     = oldEntry.scaleMode,
+                syncHipsY     = oldEntry.syncHipsY,
+                hipsYOffset   = oldEntry.hipsYOffset,
+                needsRebuild  = false,
+            };
+
+            string wrapperPath = VrmWrapperBuilder.Build(oldEntry.sourceVrmPrefab, newEntry, newRegistry);
+            if (wrapperPath == null) continue;
+            newEntry.wrapperItemPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(wrapperPath);
+            newRegistry.entries.Add(newEntry);
+        }
+
+        EditorUtility.SetDirty(newRegistry);
+        AssetDatabase.SaveAssets();
+    }
+
+    /// <summary>
+    /// Run after the duplicated scene is opened. Repoints the in-scene spawner's
+    /// WorldItemTemplateList at the freshly rebuilt wrappers, and regenerates
+    /// AvatarCommandConfig.js into the new scene's Generated folder so the
+    /// spawner's CSCombiner references the new scene's config.
+    /// </summary>
+    private static void RewireAvatarSpawnerForDuplicatedScene(string newSceneName)
+    {
+        string sceneFolder = AvatarsConfigAssetUtil.SanitizeSceneFolderName(newSceneName);
+        if (sceneFolder == null) return;
+
+        var newRegistry = AssetDatabase.LoadAssetAtPath<AvatarRegistry>(
+            AvatarsConfigAssetUtil.GetRegistryPath(sceneFolder));
+        if (newRegistry == null) return; // source scene had no avatars
+
+        // Rebuilds the template list from registry entries (now pointing at the
+        // new scene's wrappers) and also repairs state-listener spawner refs via
+        // AddAvatarSpawnerReferenceToAllItems — the dangling-rebind fix added
+        // earlier covers the file-copy case where item slots survived but point
+        // at the source scene's spawner Item.
+        AvatarsConfigAssetUtil.UpdateSpawnerTemplateList(newRegistry);
+
+        // Regenerates AvatarCommandConfig.js into <newScene>/Generated/ and
+        // rewires it into the spawner's CSCombiner.
+        AvatarsConfigAssetUtil.GenerateAvatarGimmickTriggerConfig();
     }
     
     private static void UpdateScriptableClusterScriptCombiners(string newSceneName, string newStateListenerScriptsFolder)

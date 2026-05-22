@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8557a4cee837234d99d32efcb930ad8, type: 3}
+  m_Name: AvatarRegistry
+  m_EditorClassIdentifier: 
+  entries:
+  - avatarID: ElderAvatar
+    displayName: ElderAvatar
+    sourceVrmPrefab: {fileID: 500428016620221990, guid: 7554b8182c0a4824b9aa881281616040,
+      type: 3}
+    wrapperItemPrefab: {fileID: 4092459857217675462, guid: 47e643d19788e51449a8923568e508ec,
+      type: 3}
+    syncFingers: 0
+    syncFeetToes: 0
+    syncJaw: 0
+    scaleMode: 0
+    syncHipsY: 1
+    hipsYOffset: 0
+    needsRebuild: 0
+  - avatarID: YoungAvatar
+    displayName: YoungAvatar
+    sourceVrmPrefab: {fileID: 2628620245356233417, guid: a34714e981d72b746b9293bdea7fec4c,
+      type: 3}
+    wrapperItemPrefab: {fileID: 1696110292742376672, guid: c4afe4969ef5edd4fb8c3d6de2ac448b,
+      type: 3}
+    syncFingers: 0
+    syncFeetToes: 0
+    syncJaw: 0
+    scaleMode: 0
+    syncHipsY: 1
+    hipsYOffset: 0
+    needsRebuild: 0

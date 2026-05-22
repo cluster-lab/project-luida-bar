@@ -17,36 +17,109 @@ using ClusterVR.CreatorKit.World.Implements.WorldRuntimeSetting;
 /// <summary>
 /// Editor utilities for the LUIDA Avatars system:
 /// registry lifecycle, drag-drop handling, spawner installation.
+///
+/// Avatar data is partitioned per-scene: each scene gets its own folder at
+/// Assets/_Experiment_/Avatars/&lt;scene_name&gt;/ containing its own AvatarRegistry,
+/// Source, Wrappers, and Generated subfolders. The spawner, gimmick inspectors,
+/// and state-listener action drawers all resolve the registry from the scene
+/// the relevant GameObject lives in.
 /// </summary>
 public static class AvatarsConfigAssetUtil
 {
-    public const string RegistryPath = "Assets/_Experiment_/Avatars/AvatarRegistry.asset";
-    private const string SourceFolder = "Assets/_Experiment_/Avatars/Source";
-    private const string WrapperFolder = "Assets/_Experiment_/Avatars/Wrappers";
-    private const string GeneratedFolder = "Assets/_Experiment_/Avatars/Generated";
+    public const string AvatarsRootFolder = "Assets/_Experiment_/Avatars";
     private const string SpawnerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/LUIDA-AvatarSpawner.prefab";
     private const string AvatarManagerJsPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/AvatarManagement/AvatarManager.js";
     private const string SpawnerObjectName = "LUIDA-AvatarSpawner";
+
+    // Active-scene-scoped paths. Most callers (editor window, build-time
+    // config generation) operate on whichever scene is active; these
+    // properties resolve dynamically each access. They return null when no
+    // scene is open, so callers must handle that.
+    public static string RegistryPath => GetRegistryPath(GetActiveSceneFolderName());
+    public static string SourceFolder => GetSourceFolder(GetActiveSceneFolderName());
+    public static string WrapperFolder => GetWrapperFolder(GetActiveSceneFolderName());
+    public static string GeneratedFolder => GetGeneratedFolder(GetActiveSceneFolderName());
+
+    // Scene-explicit paths. Used by custom inspectors that operate on a
+    // GameObject from a specific (possibly non-active) scene.
+    public static string GetSceneAvatarsFolder(string sceneName) =>
+        sceneName == null ? null : $"{AvatarsRootFolder}/{sceneName}";
+    public static string GetRegistryPath(string sceneName) =>
+        sceneName == null ? null : $"{GetSceneAvatarsFolder(sceneName)}/AvatarRegistry.asset";
+    public static string GetSourceFolder(string sceneName) =>
+        sceneName == null ? null : $"{GetSceneAvatarsFolder(sceneName)}/Source";
+    public static string GetWrapperFolder(string sceneName) =>
+        sceneName == null ? null : $"{GetSceneAvatarsFolder(sceneName)}/Wrappers";
+    public static string GetGeneratedFolder(string sceneName) =>
+        sceneName == null ? null : $"{GetSceneAvatarsFolder(sceneName)}/Generated";
+
+    /// <summary>
+    /// Sanitized active-scene folder name, or null if no saved scene is active.
+    /// </summary>
+    public static string GetActiveSceneFolderName()
+    {
+        var scene = SceneManager.GetActiveScene();
+        return SanitizeSceneFolderName(scene.name);
+    }
+
+    /// <summary>
+    /// Folder name (alphanumeric + _ - only) derived from a scene name.
+    /// Returns null for empty/null input so callers can short-circuit.
+    /// </summary>
+    public static string SanitizeSceneFolderName(string raw)
+    {
+        if (string.IsNullOrEmpty(raw)) return null;
+        return Regex.Replace(raw, @"[^A-Za-z0-9_\-]", "_");
+    }
+
+    /// <summary>
+    /// Derives the scene folder name from a registry's asset path.
+    /// Use this when a registry is passed in to avoid the active-scene
+    /// assumption (e.g. for drop handlers operating on an explicit registry).
+    /// </summary>
+    public static string GetSceneFolderFromRegistry(AvatarRegistry registry)
+    {
+        if (registry == null) return null;
+        string path = AssetDatabase.GetAssetPath(registry);
+        if (string.IsNullOrEmpty(path)) return null;
+        // Expected: Assets/_Experiment_/Avatars/<scene>/AvatarRegistry.asset
+        string folder = Path.GetDirectoryName(path)?.Replace('\\', '/');
+        if (string.IsNullOrEmpty(folder)) return null;
+        return Path.GetFileName(folder);
+    }
 
     #region Folder & Registry Lifecycle
 
     public static void EnsureFolderLayout()
     {
-        Directory.CreateDirectory(SourceFolder);
-        Directory.CreateDirectory(WrapperFolder);
-        Directory.CreateDirectory(GeneratedFolder);
+        var sceneFolder = GetActiveSceneFolderName();
+        if (sceneFolder == null) return;
+        EnsureFolderLayout(sceneFolder);
+    }
+
+    public static void EnsureFolderLayout(string sceneFolder)
+    {
+        if (sceneFolder == null) return;
+        Directory.CreateDirectory(GetSceneAvatarsFolder(sceneFolder));
+        Directory.CreateDirectory(GetSourceFolder(sceneFolder));
+        Directory.CreateDirectory(GetWrapperFolder(sceneFolder));
+        Directory.CreateDirectory(GetGeneratedFolder(sceneFolder));
     }
 
     public static AvatarRegistry EnsureRegistryAsset()
     {
-        var registry = AssetDatabase.LoadAssetAtPath<AvatarRegistry>(RegistryPath);
+        var sceneFolder = GetActiveSceneFolderName();
+        if (sceneFolder == null) return null;
+
+        string path = GetRegistryPath(sceneFolder);
+        var registry = AssetDatabase.LoadAssetAtPath<AvatarRegistry>(path);
         if (registry != null) return registry;
 
-        EnsureFolderLayout();
+        EnsureFolderLayout(sceneFolder);
         registry = ScriptableObject.CreateInstance<AvatarRegistry>();
-        AssetDatabase.CreateAsset(registry, RegistryPath);
+        AssetDatabase.CreateAsset(registry, path);
         AssetDatabase.SaveAssets();
-        Debug.Log($"[LuidaAvatars] Created AvatarRegistry at {RegistryPath}");
+        Debug.Log($"[LuidaAvatars] Created AvatarRegistry at {path}");
         return registry;
     }
 
@@ -106,10 +179,20 @@ public static class AvatarsConfigAssetUtil
 
     private static void HandleVrmDrop(string vrmPath, AvatarRegistry registry)
     {
-        EnsureFolderLayout();
+        // Resolve scene folder from the registry asset path (NOT active scene)
+        // so a multi-scene workflow that passes a specific registry still
+        // routes generated wrappers into the right place.
+        string sceneFolder = GetSceneFolderFromRegistry(registry);
+        if (sceneFolder == null)
+        {
+            Debug.LogError("[LuidaAvatars] Could not determine scene folder from registry; ensure the registry lives under Assets/_Experiment_/Avatars/<scene>/");
+            return;
+        }
+        EnsureFolderLayout(sceneFolder);
 
+        string sourceFolder = GetSourceFolder(sceneFolder);
         string fileName = Path.GetFileName(vrmPath);
-        string destPath = Path.Combine(SourceFolder, fileName);
+        string destPath = Path.Combine(sourceFolder, fileName);
 
         // Copy VRM into Source folder if not already there
         if (!vrmPath.StartsWith("Assets/"))
@@ -126,7 +209,7 @@ public static class AvatarsConfigAssetUtil
         // UniVRM's vrmAssetPostprocessor will auto-import .vrm → .prefab
         // Wait for it via delayCall polling
         string baseName = Path.GetFileNameWithoutExtension(fileName);
-        string expectedPrefabPath = Path.Combine(SourceFolder, baseName + ".prefab");
+        string expectedPrefabPath = Path.Combine(sourceFolder, baseName + ".prefab");
 
         // Poll for the prefab to appear (postprocessor runs asynchronously)
         int attempts = 0;
@@ -146,7 +229,7 @@ public static class AvatarsConfigAssetUtil
             {
                 EditorApplication.delayCall -= pollCallback;
                 // Try alternate path patterns UniVRM might use
-                var guids = AssetDatabase.FindAssets($"t:Prefab {baseName}", new[] { SourceFolder });
+                var guids = AssetDatabase.FindAssets($"t:Prefab {baseName}", new[] { sourceFolder });
                 if (guids.Length > 0)
                 {
                     var foundPath = AssetDatabase.GUIDToAssetPath(guids[0]);
@@ -203,8 +286,9 @@ public static class AvatarsConfigAssetUtil
             syncJaw = false,
         };
 
-        // Build wrapper
-        string wrapperPath = VrmWrapperBuilder.Build(prefab, entry);
+        // Build wrapper (routed to the registry's scene folder, not active scene's,
+        // so multi-scene workflows that pass a non-active-scene registry stay correct)
+        string wrapperPath = VrmWrapperBuilder.Build(prefab, entry, registry);
         if (wrapperPath == null)
         {
             Debug.LogError("[LuidaAvatars] Wrapper build failed.");
@@ -233,10 +317,15 @@ public static class AvatarsConfigAssetUtil
         var entry = registry.FindByID(avatarID);
         if (entry == null) return;
 
-        // Delete generated files
-        string boneMapPath = Path.Combine(GeneratedFolder, $"{avatarID}_BoneMap.js");
-        if (File.Exists(boneMapPath))
-            AssetDatabase.DeleteAsset(boneMapPath);
+        // Delete generated bone map. Resolve the path from the registry's
+        // scene folder, not the active scene's, in case those differ.
+        string sceneFolder = GetSceneFolderFromRegistry(registry);
+        if (sceneFolder != null)
+        {
+            string boneMapPath = Path.Combine(GetGeneratedFolder(sceneFolder), $"{avatarID}_BoneMap.js");
+            if (File.Exists(boneMapPath))
+                AssetDatabase.DeleteAsset(boneMapPath);
+        }
 
         if (entry.wrapperItemPrefab != null)
         {
@@ -255,7 +344,7 @@ public static class AvatarsConfigAssetUtil
 
     public static void RebuildEntry(AvatarEntry entry, AvatarRegistry registry)
     {
-        string newPath = VrmWrapperBuilder.Rebuild(entry);
+        string newPath = VrmWrapperBuilder.Rebuild(entry, registry);
         if (newPath != null)
         {
             entry.wrapperItemPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(newPath);
@@ -387,6 +476,11 @@ public static class AvatarsConfigAssetUtil
         if (templateList == null)
             templateList = spawner.AddComponent<WorldItemTemplateList>();
         PopulateTemplateList(templateList, registry);
+
+        // Repair any state-listener worldItemReferences whose item slot went null
+        // after a previous spawner GameObject was deleted/recreated.
+        ItemsManagerAssetUtil.AddAvatarSpawnerReferenceToAllItems();
+
         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
     }
 
@@ -456,14 +550,27 @@ public static class AvatarsConfigAssetUtil
     /// <summary>
     /// Generates AVATAR_INDEX_MAP (avatar ID array ordered by registry index) and
     /// installs fixed reset GlobalLogic components on the spawner for the integer command system.
+    ///
+    /// Runs against the active scene's registry/generated folder. Build/upload
+    /// uploads the active scene, so this scoping is correct for the world being shipped.
     /// </summary>
     public static void GenerateAvatarGimmickTriggerConfig()
     {
-        Directory.CreateDirectory(GeneratedFolder);
-        string configPath = Path.Combine(GeneratedFolder, CommandConfigFileName);
+        string sceneFolder = GetActiveSceneFolderName();
+        if (sceneFolder == null)
+        {
+            // Unsaved scene — nothing to generate against. Spawner installation
+            // is gated on having a registry, so this is only reached at build
+            // time when no scene is open, which shouldn't happen in practice.
+            return;
+        }
 
-        // Generate AVATAR_INDEX_MAP from registry
-        var registry = AssetDatabase.LoadAssetAtPath<AvatarRegistry>(RegistryPath);
+        string generatedFolder = GetGeneratedFolder(sceneFolder);
+        Directory.CreateDirectory(generatedFolder);
+        string configPath = Path.Combine(generatedFolder, CommandConfigFileName);
+
+        // Generate AVATAR_INDEX_MAP from this scene's registry
+        var registry = AssetDatabase.LoadAssetAtPath<AvatarRegistry>(GetRegistryPath(sceneFolder));
         var sb = new System.Text.StringBuilder();
         sb.AppendLine("// Auto-generated avatar command config");
         sb.Append("const AVATAR_INDEX_MAP = [");
@@ -481,7 +588,7 @@ public static class AvatarsConfigAssetUtil
         AssetDatabase.ImportAsset(configPath, ImportAssetOptions.ForceUpdate);
 
         // Also delete old AvatarGimmickTriggers.js if present
-        string oldConfigPath = Path.Combine(GeneratedFolder, "AvatarGimmickTriggers.js");
+        string oldConfigPath = Path.Combine(generatedFolder, "AvatarGimmickTriggers.js");
         if (File.Exists(oldConfigPath))
             AssetDatabase.DeleteAsset(oldConfigPath);
 

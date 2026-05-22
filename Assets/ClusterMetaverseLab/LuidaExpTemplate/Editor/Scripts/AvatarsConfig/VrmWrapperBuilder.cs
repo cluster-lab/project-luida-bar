@@ -13,8 +13,8 @@ using ClusterVR.CreatorKit.Item.Implements;
 /// </summary>
 public static class VrmWrapperBuilder
 {
-    private const string WrapperFolder = "Assets/_Experiment_/Avatars/Wrappers";
-    private const string GeneratedFolder = "Assets/_Experiment_/Avatars/Generated";
+    // Output folders are derived per-call from the registry's scene folder.
+    // See AvatarsConfigAssetUtil.GetSceneFolderFromRegistry.
     private const string SyncCloneScriptPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/AvatarManagement/AvatarSyncClone.js";
 
     // Core 17 bones (always synced)
@@ -126,10 +126,13 @@ public static class VrmWrapperBuilder
     };
 
     /// <summary>
-    /// Build a CCK wrapper prefab from a humanoid source prefab.
+    /// Build a CCK wrapper prefab from a humanoid source prefab. Wrappers and
+    /// bone-map JS land under the registry's scene folder
+    /// (Assets/_Experiment_/Avatars/&lt;scene&gt;/{Wrappers,Generated}/) so each
+    /// scene's avatar set stays isolated.
     /// Returns the path to the saved wrapper prefab, or null on failure.
     /// </summary>
-    public static string Build(GameObject sourceVrmPrefab, AvatarEntry entry)
+    public static string Build(GameObject sourceVrmPrefab, AvatarEntry entry, AvatarRegistry registry)
     {
         if (sourceVrmPrefab == null || entry == null || string.IsNullOrEmpty(entry.avatarID))
         {
@@ -137,9 +140,19 @@ public static class VrmWrapperBuilder
             return null;
         }
 
+        string sceneFolder = AvatarsConfigAssetUtil.GetSceneFolderFromRegistry(registry);
+        if (sceneFolder == null)
+        {
+            Debug.LogError("[VrmWrapperBuilder] Could not derive scene folder from registry. Is the registry under Assets/_Experiment_/Avatars/<scene>/ ?");
+            return null;
+        }
+
+        string wrapperFolder = AvatarsConfigAssetUtil.GetWrapperFolder(sceneFolder);
+        string generatedFolder = AvatarsConfigAssetUtil.GetGeneratedFolder(sceneFolder);
+
         // Ensure output folders
-        Directory.CreateDirectory(WrapperFolder);
-        Directory.CreateDirectory(GeneratedFolder);
+        Directory.CreateDirectory(wrapperFolder);
+        Directory.CreateDirectory(generatedFolder);
 
         // --- Step 1: Discover bone names from the Animator ---
         var boneNameMap = DiscoverBoneNames(sourceVrmPrefab, entry);
@@ -150,11 +163,11 @@ public static class VrmWrapperBuilder
         }
 
         // --- Step 2: Generate BoneMap.js ---
-        string boneMapJsPath = GenerateBoneMapJs(entry, boneNameMap);
+        string boneMapJsPath = GenerateBoneMapJs(entry, boneNameMap, generatedFolder);
         if (boneMapJsPath == null) return null;
 
         // --- Step 3: Build the wrapper prefab ---
-        string wrapperPath = BuildWrapperPrefab(sourceVrmPrefab, entry, boneMapJsPath);
+        string wrapperPath = BuildWrapperPrefab(sourceVrmPrefab, entry, boneMapJsPath, wrapperFolder);
         return wrapperPath;
     }
 
@@ -200,7 +213,7 @@ public static class VrmWrapperBuilder
     /// <summary>
     /// Generate a JS file containing const BONE_MAP and BONE_PARENT literals.
     /// </summary>
-    private static string GenerateBoneMapJs(AvatarEntry entry, Dictionary<HumanBodyBones, string> boneNameMap)
+    private static string GenerateBoneMapJs(AvatarEntry entry, Dictionary<HumanBodyBones, string> boneNameMap, string generatedFolder)
     {
         var sb = new StringBuilder();
         sb.AppendLine($"// Auto-generated bone map for avatar: {entry.avatarID}");
@@ -249,7 +262,7 @@ public static class VrmWrapperBuilder
         }
         sb.AppendLine("};");
 
-        string jsPath = Path.Combine(GeneratedFolder, $"{entry.avatarID}_BoneMap.js");
+        string jsPath = Path.Combine(generatedFolder, $"{entry.avatarID}_BoneMap.js");
         File.WriteAllText(jsPath, sb.ToString());
         AssetDatabase.ImportAsset(jsPath, ImportAssetOptions.ForceUpdate);
         return jsPath;
@@ -258,7 +271,7 @@ public static class VrmWrapperBuilder
     /// <summary>
     /// Create the wrapper prefab with CCK components and CSCombiner pointing to BoneMap + SyncClone JS.
     /// </summary>
-    private static string BuildWrapperPrefab(GameObject sourceVrmPrefab, AvatarEntry entry, string boneMapJsPath)
+    private static string BuildWrapperPrefab(GameObject sourceVrmPrefab, AvatarEntry entry, string boneMapJsPath, string wrapperFolder)
     {
         // Create root GameObject
         GameObject root = new GameObject($"LUIDA-Avatar-{entry.avatarID}");
@@ -296,7 +309,7 @@ public static class VrmWrapperBuilder
         combiner.CombineScripts();
 
         // Save as prefab
-        string prefabPath = Path.Combine(WrapperFolder, $"{entry.avatarID}.prefab");
+        string prefabPath = Path.Combine(wrapperFolder, $"{entry.avatarID}.prefab");
         GameObject savedPrefab = PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
         Object.DestroyImmediate(root);
 
@@ -308,13 +321,16 @@ public static class VrmWrapperBuilder
     /// <summary>
     /// Rebuild an existing wrapper prefab (e.g. after changing bone sync checkboxes).
     /// </summary>
-    public static string Rebuild(AvatarEntry entry)
+    public static string Rebuild(AvatarEntry entry, AvatarRegistry registry)
     {
         if (entry == null || entry.sourceVrmPrefab == null)
         {
             Debug.LogError("[VrmWrapperBuilder] Cannot rebuild: missing source prefab.");
             return null;
         }
+
+        string sceneFolder = AvatarsConfigAssetUtil.GetSceneFolderFromRegistry(registry);
+        string generatedFolder = sceneFolder != null ? AvatarsConfigAssetUtil.GetGeneratedFolder(sceneFolder) : null;
 
         // Delete old wrapper if it exists
         if (entry.wrapperItemPrefab != null)
@@ -324,11 +340,14 @@ public static class VrmWrapperBuilder
                 AssetDatabase.DeleteAsset(oldPath);
         }
 
-        // Delete old BoneMap.js
-        string oldBoneMapPath = Path.Combine(GeneratedFolder, $"{entry.avatarID}_BoneMap.js");
-        if (File.Exists(oldBoneMapPath))
-            AssetDatabase.DeleteAsset(oldBoneMapPath);
+        // Delete old BoneMap.js (in the registry's scene folder)
+        if (generatedFolder != null)
+        {
+            string oldBoneMapPath = Path.Combine(generatedFolder, $"{entry.avatarID}_BoneMap.js");
+            if (File.Exists(oldBoneMapPath))
+                AssetDatabase.DeleteAsset(oldBoneMapPath);
+        }
 
-        return Build(entry.sourceVrmPrefab, entry);
+        return Build(entry.sourceVrmPrefab, entry, registry);
     }
 }

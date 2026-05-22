@@ -71,7 +71,16 @@ public class LuidaAssignAvatarGimmickEditor : Editor
 
     private void DrawAvatarIDField(LuidaAssignAvatarGimmick gimmick)
     {
-        var avatarRegistry = AssetDatabase.LoadAssetAtPath<AvatarRegistry>(AvatarsConfigAssetUtil.RegistryPath);
+        // Registry is scoped to the gimmick's own scene — a gimmick in scene X
+        // can only assign avatars from X's registry. The active scene may differ
+        // when scenes are loaded additively, so we read from gimmick.gameObject.scene
+        // rather than SceneManager.GetActiveScene().
+        string sceneFolder = AvatarsConfigAssetUtil.SanitizeSceneFolderName(gimmick.gameObject.scene.name);
+        string registryPath = sceneFolder != null ? AvatarsConfigAssetUtil.GetRegistryPath(sceneFolder) : null;
+        var avatarRegistry = registryPath != null
+            ? AssetDatabase.LoadAssetAtPath<AvatarRegistry>(registryPath)
+            : null;
+
         if (avatarRegistry != null && avatarRegistry.entries.Count > 0)
         {
             string[] avatarIDs = avatarRegistry.GetAvatarIDs();
@@ -90,7 +99,10 @@ public class LuidaAssignAvatarGimmickEditor : Editor
         else
         {
             EditorGUILayout.PropertyField(serializedObject.FindProperty("avatarID"), new GUIContent("Avatar ID"));
-            EditorGUILayout.HelpBox("No avatars registered yet. Open LUIDA > Configure avatars to add avatars.", MessageType.Warning);
+            string sceneLabel = string.IsNullOrEmpty(gimmick.gameObject.scene.name) ? "(unsaved)" : gimmick.gameObject.scene.name;
+            EditorGUILayout.HelpBox(
+                $"No avatars registered for scene '{sceneLabel}'. Open LUIDA > Configure avatars with this scene active to add avatars.",
+                MessageType.Warning);
         }
     }
 }

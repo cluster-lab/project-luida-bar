@@ -21,27 +21,53 @@ public static class AvatarsConfigUIDrawer
 
     public static void DrawGUI(LuidaAvatarsWindow window)
     {
-        var registry = window.Registry;
-        if (registry == null)
+        _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
+
+        DrawSceneHeader();
+
+        string sceneFolder = AvatarsConfigAssetUtil.GetActiveSceneFolderName();
+        if (sceneFolder == null)
         {
-            EditorGUILayout.HelpBox("AvatarRegistry asset not found. It will be created on next enable.", MessageType.Warning);
+            EditorGUILayout.HelpBox(
+                "No saved scene is active. Save the current scene first — avatars are stored per-scene under Assets/_Experiment_/Avatars/<scene_name>/.",
+                MessageType.Info);
+            EditorGUILayout.EndScrollView();
             return;
         }
 
-        _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
+        var registry = window.Registry;
+        if (registry == null)
+        {
+            EditorGUILayout.HelpBox(
+                $"No AvatarRegistry yet for scene '{sceneFolder}'. Drop a .vrm or humanoid .prefab below to create one.",
+                MessageType.Info);
+        }
 
-        DrawDropZone(registry);
+        // Drop zone always rendered — drops create the registry+folder lazily.
+        DrawDropZone(registry, sceneFolder, window);
         EditorGUILayout.Space(10);
-        DrawAvatarList(registry, window);
-        EditorGUILayout.Space(15);
-        DrawSpawnerSection(registry);
+
+        if (registry != null)
+        {
+            DrawAvatarList(registry, window);
+            EditorGUILayout.Space(15);
+            DrawSpawnerSection(registry);
+        }
 
         EditorGUILayout.EndScrollView();
     }
 
+    private static void DrawSceneHeader()
+    {
+        var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+        string label = string.IsNullOrEmpty(scene.name) ? "(unsaved scene)" : scene.name;
+        EditorGUILayout.LabelField($"Active Scene: {label}", EditorStyles.miniBoldLabel);
+        EditorGUILayout.Space(4);
+    }
+
     #region Drop Zone
 
-    private static void DrawDropZone(AvatarRegistry registry)
+    private static void DrawDropZone(AvatarRegistry registry, string sceneFolder, LuidaAvatarsWindow window)
     {
         EditorGUILayout.LabelField("Register Avatars", EditorStyles.boldLabel);
 
@@ -63,6 +89,14 @@ public static class AvatarsConfigUIDrawer
         else if (evt.type == EventType.DragPerform && dropRect.Contains(evt.mousePosition))
         {
             DragAndDrop.AcceptDrag();
+            // Lazy-create the scene's registry on first drop. Avoids leaving an
+            // empty AvatarRegistry behind in scenes the user never wired up.
+            if (registry == null)
+            {
+                registry = AvatarsConfigAssetUtil.EnsureRegistryAsset();
+                if (registry == null) { evt.Use(); return; }
+                window.ReloadForActiveScene();
+            }
             AvatarsConfigAssetUtil.HandleDrop(DragAndDrop.objectReferences, DragAndDrop.paths, registry);
             evt.Use();
         }

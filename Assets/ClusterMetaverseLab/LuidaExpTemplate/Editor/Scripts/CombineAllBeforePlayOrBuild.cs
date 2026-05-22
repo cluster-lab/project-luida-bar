@@ -10,7 +10,16 @@ using System.Text.RegularExpressions;
 public class CombineAllBeforePlayOrBuild
 {
     private static bool _isWorldUpload = false;
-    private const string ExpIdentifiersPath = "Assets/_Experiment_/Settings/ExpIdentifiers.js";
+
+    // Sources that declare `isTestMode`. The pre-upload flip rewrites each
+    // file's `isTestMode = (true|false);` line so the uploaded combined scripts
+    // ship with isTestMode=false. ExpIdentifiers.js feeds ParticipantManager /
+    // DataCollector; ConditionManager.js declares its own copy (it isn't
+    // CSCombined with ExpIdentifiers.js).
+    private static readonly string[] TestModeSourcePaths = {
+        "Assets/_Experiment_/Settings/ExpIdentifiers.js",
+        "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/ConditionManagement/ConditionManager.js",
+    };
 
     static CombineAllBeforePlayOrBuild()
     {
@@ -103,7 +112,7 @@ public class CombineAllBeforePlayOrBuild
     private static void CombineAll() {
         if (_isWorldUpload)
         {
-            SetTestModeInExpIdentifiers(false);
+            SetTestMode(false);
         }
 
         // Remove orphaned/broken GlobalLogic components before validation runs.
@@ -133,19 +142,31 @@ public class CombineAllBeforePlayOrBuild
     {
         if (!_isWorldUpload) return;
         Debug.Log($"[LUIDA] OnWorldUploadEnded fired (success={data.Success}). Restoring test-mode source.");
-        SetTestModeInExpIdentifiers(true);
+        SetTestMode(true);
         RunCSCombiner();
         AssetDatabase.SaveAssets();
         _isWorldUpload = false;
     }
 
-    private static void SetTestModeInExpIdentifiers(bool isTestMode)
+    private static void SetTestMode(bool isTestMode)
     {
-        if (!File.Exists(ExpIdentifiersPath)) return;
+        foreach (var path in TestModeSourcePaths)
+        {
+            SetTestModeInFile(path, isTestMode);
+        }
+    }
 
-        string content = File.ReadAllText(ExpIdentifiersPath);
+    private static void SetTestModeInFile(string path, bool isTestMode)
+    {
+        if (!File.Exists(path)) return;
+
+        string content = File.ReadAllText(path);
         string replacement = $"isTestMode = {isTestMode.ToString().ToLower()};";
 
+        // Match either `isTestMode = true;` (the ExpIdentifiers form, implicit
+        // global) or `let isTestMode = true;` (the ConditionManager form,
+        // block-scoped). The regex captures only the assignment + value, so the
+        // `let ` prefix (if any) survives the replace.
         if (Regex.IsMatch(content, @"isTestMode\s*=\s*(true|false);"))
         {
             content = Regex.Replace(content, @"isTestMode\s*=\s*(true|false);", replacement);
@@ -155,8 +176,8 @@ public class CombineAllBeforePlayOrBuild
             content += $"\n{replacement}\n";
         }
 
-        File.WriteAllText(ExpIdentifiersPath, content);
-        AssetDatabase.ImportAsset(ExpIdentifiersPath, ImportAssetOptions.ForceSynchronousImport);
+        File.WriteAllText(path, content);
+        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
     }
 
 }

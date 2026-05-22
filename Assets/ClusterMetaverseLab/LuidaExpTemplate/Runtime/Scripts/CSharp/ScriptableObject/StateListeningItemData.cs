@@ -7,15 +7,29 @@ using System.Linq;
 [Serializable]
 public struct StateListeningAction
 {
+    /// <summary>Serialization key. Used for selection lookup + special-case dispatch in the drawer. Do not rename.</summary>
     public string actionType;
+    /// <summary>Optional UI label shown in the action dropdown. Falls back to actionType when null/empty.</summary>
+    public string displayLabel;
     public string codeSnippet;
     public string[] variables;
-    public StateListeningAction(string _actionType, string _codeSnippet, string[] _variables = null)
+    /// <summary>Optional submenu name used to nest the action under a category in the dropdown. Null/empty → top-level entry.</summary>
+    public string category;
+    public StateListeningAction(string _actionType, string _codeSnippet, string[] _variables = null, string _displayLabel = null, string _category = null)
     {
         actionType = _actionType;
         codeSnippet = _codeSnippet;
         variables = _variables ?? Array.Empty<string>();
+        displayLabel = _displayLabel;
+        category = _category;
     }
+
+    public string GetDisplayLabel()
+        => string.IsNullOrEmpty(displayLabel) ? actionType : displayLabel;
+
+    /// <summary>Slash-separated path for GenericMenu. "Category/Display label" if category is set, else just the display label.</summary>
+    public string GetMenuPath()
+        => string.IsNullOrEmpty(category) ? GetDisplayLabel() : $"{category}/{GetDisplayLabel()}";
 }
 
 [Serializable]
@@ -197,8 +211,29 @@ public class StateListener
 }
 
 [Serializable]
+public class EventHandlerData
+{
+    /// <summary>Serialization key. Matches AvailableEventDefinitions[i].eventType ("Start", "Update", "$.onCollide", ...).</summary>
+    public string eventType;
+    public List<StateListenerAction> actions = new List<StateListenerAction>();
+
+    public EventHandlerData() { }
+    public EventHandlerData(string _eventType) { eventType = _eventType; }
+
+    public EventHandlerData DeepClone()
+    {
+        var copy = new EventHandlerData(eventType);
+        if (actions != null) foreach (var a in actions) copy.actions.Add(a.Clone());
+        return copy;
+    }
+}
+
+[Serializable]
 public class StateListeningItemData : ScriptableObject
 {
     public StateListener[] stateListeners;
+    public List<EventHandlerData> eventHandlers = new List<EventHandlerData>();
+    /// <summary>Legacy free-form ClusterScript code from pre-GUI assets. Editable via the collapsible
+    /// "Legacy code" foldout in the State-listening Items tab; appended verbatim to the generated .js.</summary>
     public string otherImplementation;
 }
