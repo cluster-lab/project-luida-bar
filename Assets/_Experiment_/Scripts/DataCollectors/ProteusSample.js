@@ -4,6 +4,9 @@
 // === LUIDA AUTO-GENERATED END ===
 
 const fields = {
+    // --- LUIDA AUTO: state machine log (auto-included while automation is active) ---
+    stateLog: (typeof COLLECTED_DATA !== "undefined" && COLLECTED_DATA) ? COLLECTED_DATA["stateLog"] : undefined,
+    // --- END LUIDA AUTO ---
     avatar: CONDITION["avatar"],
     bridge: COLLECTED_DATA["bridge"],
 };
