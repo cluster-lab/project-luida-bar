@@ -16,33 +16,36 @@ If you're ready to get started, please check the Main Features below first, then
 
 # Main Features
 
+Most configuration lives in a single tabbed editor window opened from `LUIDA > Configure experiment automation` (Experiment Variables / State Machine / State-listening Items). Data collector and avatar registry have their own dedicated windows under the same `LUIDA` menu. All settings are scene-scoped, so each experiment scene keeps its own configuration.
+
+ほとんどの設定は `LUIDA > Configure experiment automation` から開けるタブ式エディタウィンドウ（実験変数 / ステートマシン / ステート連動アイテム）に集約されています。データ収集とアバター登録は同じ `LUIDA` メニュー内の専用ウィンドウから設定します。すべての設定はシーン単位で保存されるため、実験シーンごとに独立した構成を持てます。
+
 ### Experimental variables & trials management
-This implement template automatically determine number of trials & condition of each trial by registered within/between-subject variables. You can complete the setup within the provided editor window.
+Register within/between-subject variables in the Experiment Variables tab — the template auto-derives the number of trials and the condition assigned to each trial from the factor combinations. Between-subject assignment is balanced across participants on the server side, and you can override the default logic with a provided template script.
 
-We also provided a template script to implement decision of the experimental conditions from between-subject variables.
-
-本実装テンプレートは、登録された参加者内/参加者間変数に基づいて、自動的に試行の数と各試行における実験条件を決定します。
-その設定は提供された設定画面から行うことができます。
-
-また、参加者間変数から実験条件を決定するためのスクリプトのテンプレートも提供しています。
+実験変数タブで参加者内/参加者間変数を登録すると、要因の組み合わせから試行数と各試行の条件が自動的に決定されます。参加者間条件はサーバー側で参加者間の偏りが出ないようにバランス化されます。デフォルトのロジックを上書きしたい場合は、提供されたテンプレートスクリプトで条件決定処理をカスタマイズできます。
 
 ![variable-settings](https://github.com/user-attachments/assets/1cf257e1-71f7-49de-95a9-d38e3661b655)
 
 ### State management
-This implement template follows a State design pattern. We have prepared default states and their transitions for you to use without additional edition.
-You can still make your customization, including adding/removing/skipping/repeating a state or enable auto transition in xx seconds.
+The State Machine tab manages a state-pattern flow that already ships with sensible defaults, so you can run an experiment without editing anything. When you do need to customize, you can add, remove, skip, or repeat states, enable auto-transition after N seconds, and bind a questionnaire to a state by qID — all from the GUI.
 
-本実装テンプレートは、ステートデザインパターンに従っています。デフォルトのステートとその遷移が用意されており、追加編集なしで使用可能です。
-ご自身でステートの追加・削除・スキップ・繰り返し・XX秒後に自動遷移などの設定もカスタマイズ可能です。
+ステートマシンタブでは、ステートデザインパターンに基づく既定の流れが用意されており、編集なしでもそのまま実験を実施できます。必要に応じて、ステートの追加・削除・スキップ・繰り返し、XX秒後の自動遷移、qIDによる質問紙の割り当てなどをGUIから自由にカスタマイズできます。
 
 ![state-transition](https://github.com/user-attachments/assets/050dee88-c603-407c-b60f-1b1b59d52840)
 
-### Manage game objects that listen to state transitions and access experiment conditions
-This implementation template allows you to create game objects that can perform actions based on state transitions or access experimental conditions.
-Using the provided settings screen, you can edit their behaviors through the GUI, and spaces for writing scripts are also available.
+### State-listening items with GUI-driven actions and event handlers
+In the State-listening Items tab, you can hook scene GameObjects to the state machine without writing scripts. For each item you can configure:
+- **Per-state actions** that fire on state start / during the state / on state exit, optionally gated by an experimental condition (e.g. only run if `CONDITION['color'] === 'red'`).
+- **Always-on event handlers** for lifecycle/interaction events such as `Start`, `Update`, `onCollide`, `onInteract`, etc.
 
-本実装テンプレートでは、ステートの遷移に応じた動作や、実験条件へのアクセスが可能なゲームオブジェクトを作成できます。
-提供された設定画面を使用して、GUI上で動作を簡単に編集することができ、またスクリプトを記述するための枠も用意されています。
+Actions are picked from a catalog of templates (item transform, child toggling, participant control, avatar assignment, data collection, OSC, haptics, …), with a free-form "Customized Action" slot and a legacy raw-script foldout for anything not covered by the GUI.
+
+ステート連動アイテムタブでは、シーン内のGameObjectをスクリプトなしでステートマシンに連動させられます。各アイテムについて以下を設定できます：
+- **ステート単位のアクション**：ステート開始時／実行中／終了時に動作。実験条件によるゲーティング（例：`CONDITION['color'] === 'red'` の時のみ実行）も可能。
+- **常時動作のイベントハンドラ**：`Start`、`Update`、`onCollide`、`onInteract` などのライフサイクル／インタラクションイベントに対応。
+
+アクションはテンプレートカタログ（アイテムのTransform操作、子オブジェクト切替、参加者制御、アバター割り当て、データ収集、OSC、ハプティクスなど）から選択でき、カタログに無い動作向けに自由記述の「Customized Action」枠と、レガシーな生スクリプト用の折りたたみ欄も用意されています。
 
 <table>
   <tr>
@@ -52,26 +55,29 @@ Using the provided settings screen, you can edit their behaviors through the GUI
 </table>
 
 ### Questionnaire generation
-You don't need to create game objects for each question or answer. Just register your questionnaire on LUIDA's web console, and paste its ID the designated field on the provided editor window in this implement template. Gameobjects for each question and answer will be automatically generated on cluster during the exact experiment session.
+You don't need to create game objects for each question or answer. Just register your questionnaire on LUIDA's web console, and paste its ID into the questionnaire field of the state where it should appear. GameObjects for each question and answer are generated automatically on Cluster during the actual experiment session.
 
 質問紙の質問や回答ごとにゲームオブジェクトを作成する必要はありません。
-LUIDA専用のウェブコンソールに質問紙内容を登録し、そのIDを本実装テンプレートに提供された設定画面の指定フィールドに貼り付けるだけで、cluster上の実験実施中に自動的にゲームオブジェクトが生成されます。
+LUIDA専用のウェブコンソールに質問紙内容を登録し、そのIDを表示させたいステートの質問紙フィールドに貼り付けるだけで、cluster上の実験実施中に質問・回答用ゲームオブジェクトが自動生成されます。
 
 ![questionnaire-registration](https://github.com/user-attachments/assets/c3522829-31c6-44c1-a248-38c472acbd2d)
 
 ### Data recording
-During the exact experiment session, Cluster continuously records players' positions, poses, actions, to name a few. These data will be formatted and display on the web console.
+Cluster continuously records players' positions, poses, and actions during a session; those are formatted and displayed on the web console with no extra setup.
 
-Meanwhile, you can also setup recorders for customized data inside this template in advance.
-The collected data will be listed on LUIDA's web console for you to confirm and download.
+For custom data, the `LUIDA > Configure data collector` window provides a no-code builder: declare the labels you want to collect (Bool / Float / Integer / Vector2 / Vector3 / String), then assemble each output field from sources such as collected values, global state reads, arithmetic, or conditional expressions. A raw-JS code mode is available as a fallback. Pushing values, saving a row to the buffer, and uploading to the backend are all exposed as state-listening actions, so most recording flows can be wired up entirely from the GUI. Collected data is listed on the web console for review and download.
 
-実験実施中、clusterはプレイヤーの位置、姿勢、動作などを継続的に記録します。これらのデータはLUIDA専用のウェブコンソール上で整形・表示されます。
+実験実施中、clusterはプレイヤーの位置、姿勢、動作などを継続的に記録し、追加設定なしでLUIDA専用のウェブコンソール上に整形・表示されます。
 
-同時に、カスタマイズなデータ記録を事前に本実装テンプレート内で設定することも可能です。
-収集されたデータはLUIDA専用のウェブコンソールから確認・ダウンロードできます。
+カスタムデータについては、`LUIDA > Configure data collector` ウィンドウのノーコードビルダーから設定できます。収集したいラベル（Bool / Float / Integer / Vector2 / Vector3 / String）を宣言し、各出力フィールドを「収集済み値の参照」「グローバルステート読み取り」「四則演算」「条件分岐」などのソースから組み立てます。GUIで表現しきれない場合は生のJSを書くコードモードも利用可能です。値のpush・1行ぶんのバッファ保存・バックエンドへのアップロードはステート連動アクションとして提供されているため、多くの記録フローはGUIだけで完結します。収集データはウェブコンソールから確認・ダウンロードできます。
 
 ![image](https://github.com/user-attachments/assets/089340d0-dec0-487b-9be1-51b4cfceca2f)
 ![image](https://github.com/user-attachments/assets/0d997e6c-9c1b-456d-babc-cb8400a1ef86)
+
+### Avatar management
+The `LUIDA > Configure avatars` window maintains a per-experiment avatar registry. Registered avatars can be assigned to participants directly from the GUI via the "Assign avatar to participant" state-listening action, so swapping avatars at specific points in an experiment doesn't require any scripting.
+
+`LUIDA > Configure avatars` ウィンドウで、実験ごとのアバター一覧を管理できます。登録したアバターは、ステート連動アイテムの「Assign avatar to participant」アクションからGUI経由で参加者に割り当てられるため、実験中の特定タイミングでのアバター切替もスクリプトを書かずに実現できます。
 
 <!--
 -----
