@@ -245,7 +245,10 @@ MonoBehaviour:
     => {\r\n            if (v.debugValue) {\r\n              assignedConditions[v.name]
     = v.debugValue;\r\n            }\r\n          });\r\n        } catch (e) { /*
     between_subjects_variables not defined */ }\r\n      }\r\n      $.state.betweenSubjectsConditions
-    = assignedConditions;\r\n      $.state.isServerAssigned = true;\r\n      $.log(\"Conditions
+    = assignedConditions;\r\n      $.state.isServerAssigned = true;\r\n      // Surface
+    keys now; updateCondition() otherwise waits for a trial transition.\r\n     
+    $.groupState.currentCondition = {\r\n        ...($.groupState.currentCondition
+    || {}),\r\n        ...assignedConditions,\r\n      };\r\n      $.log(\"Conditions
     balanced locally\" + (isTestMode ? \" (debug overrides applied)\" : \"\") + \":
     \" + JSON.stringify(assignedConditions));\r\n      break;\r\n    case \"luida_participants_info\":\r\n     
     $.groupState.participants = arg.participants;\r\n      $.groupState.sessionID
@@ -272,26 +275,28 @@ MonoBehaviour:
     );\r\n  } catch (error) {\r\n    $.log(error);\r\n    $.log(\"Within-subjects
     variables are not defined.\");\r\n    initializeWithinSubjectsConditions([],
     1);\r\n  }\r\n  updateCondition();\r\n}\r\n\r\nfunction initializeBetweenSubjectsConditions()
-    {\r\n  // In editor test mode, seed conditions from debugValue so the experiment
-    can run\r\n  // standalone. On the uploaded world, leave the bag empty \u2014
-    the balanced assignment\r\n  // comes from calculateBalancedAssignment() once
-    the server returns existing conditions\r\n  // via luida_existing_conditions,
-    and no debug value should ever leak into that path.\r\n  let betweenSubjectsCondition
-    = {};\r\n  if (isTestMode) {\r\n    try {\r\n      between_subjects_variables.forEach((v)
+    {\r\n  // Test mode only: debugValue if set, else a random candidate.\r\n  //
+    An uploaded world (not in test mode) assigns the conditions using calculateBalancedAssignment().\r\n 
+    let betweenSubjectsCondition = {};\r\n  if (isTestMode) {\r\n    const existing
+    = $.state.betweenSubjectsConditions || {};\r\n    try {\r\n      between_subjects_variables.forEach((v)
     => {\r\n        if (v.debugValue) {\r\n          betweenSubjectsCondition[v.name]
-    = v.debugValue;\r\n        }\r\n      });\r\n    } catch (e) {\r\n      $.log(\"Between-subjects
-    variables are not defined.\");\r\n    }\r\n  }\r\n  $.state.betweenSubjectsConditions
-    = betweenSubjectsCondition;\r\n}\r\n\r\nfunction initializeWithinSubjectsConditions(variables,
-    repeatsPerCond = 1) {\r\n  variables = [...variables.sort((a, b) => a.isRandom
-    - b.isRandom)];\r\n  const varNames = variables.map((v) => v.name);\r\n\r\n 
-    let indicesPerVar = variables.map((v) =>\r\n    Array.from({ length: v.values.length
-    }, (_, i) => i)\r\n  );\r\n  let condIndicesList = indicesPerVar\r\n    .reduce(\r\n     
-    (acc, array) => {\r\n        return acc.flatMap((accItem) =>\r\n          array.map((arrayItem)
-    => [...accItem, arrayItem])\r\n        );\r\n      },\r\n      [[]]\r\n    )\r\n   
-    .flatMap((condIndices) =>\r\n      Array.from({ length: repeatsPerCond }, ()
-    => condIndices)\r\n    );\r\n\r\n  let shufflePartitionSize = 0;\r\n  for (let
-    i = 0; i < variables.length; i++) {\r\n    if (variables[i].isRandom) {\r\n     
-    shufflePartitionSize =\r\n        shufflePartitionSize === 0\r\n          ? variables[i].values.length\r\n         
+    = v.debugValue;\r\n        } else if (existing[v.name] !== undefined) {\r\n         
+    betweenSubjectsCondition[v.name] = existing[v.name];\r\n        } else if (v.values
+    && v.values.length > 0) {\r\n          betweenSubjectsCondition[v.name] =\r\n           
+    v.values[Math.floor(Math.random() * v.values.length)];\r\n        }\r\n     
+    });\r\n    } catch (e) {\r\n      $.log(\"Between-subjects variables are not
+    defined.\");\r\n    }\r\n  }\r\n  $.state.betweenSubjectsConditions = betweenSubjectsCondition;\r\n}\r\n\r\nfunction
+    initializeWithinSubjectsConditions(variables, repeatsPerCond = 1) {\r\n  variables
+    = [...variables.sort((a, b) => a.isRandom - b.isRandom)];\r\n  const varNames
+    = variables.map((v) => v.name);\r\n\r\n  let indicesPerVar = variables.map((v)
+    =>\r\n    Array.from({ length: v.values.length }, (_, i) => i)\r\n  );\r\n  let
+    condIndicesList = indicesPerVar\r\n    .reduce(\r\n      (acc, array) => {\r\n       
+    return acc.flatMap((accItem) =>\r\n          array.map((arrayItem) => [...accItem,
+    arrayItem])\r\n        );\r\n      },\r\n      [[]]\r\n    )\r\n    .flatMap((condIndices)
+    =>\r\n      Array.from({ length: repeatsPerCond }, () => condIndices)\r\n   
+    );\r\n\r\n  let shufflePartitionSize = 0;\r\n  for (let i = 0; i < variables.length;
+    i++) {\r\n    if (variables[i].isRandom) {\r\n      shufflePartitionSize =\r\n       
+    shufflePartitionSize === 0\r\n          ? variables[i].values.length\r\n         
     : shufflePartitionSize * variables[i].values.length;\r\n    }\r\n  }\r\n  shufflePartitionSize
     *= repeatsPerCond;\r\n\r\n  if (shufflePartitionSize > 0) {\r\n    const result
     = [...condIndicesList]; // Copy the array to avoid mutating the original\r\n   
