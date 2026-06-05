@@ -44,6 +44,10 @@ $.onReceive((messageType, arg, sender) => {
       }
       $.state.betweenSubjectsConditions = assignedConditions;
       $.state.isServerAssigned = true;
+      $.groupState.currentCondition = {
+        ...($.groupState.currentCondition || {}),
+        ...assignedConditions,
+      };
       $.log("Conditions balanced locally" + (isTestMode ? " (debug overrides applied)" : "") + ": " + JSON.stringify(assignedConditions));
       break;
     case "luida_participants_info":
@@ -110,16 +114,20 @@ function reset() {
 }
 
 function initializeBetweenSubjectsConditions() {
-  // In editor test mode, seed conditions from debugValue so the experiment can run
-  // standalone. On the uploaded world, leave the bag empty — the balanced assignment
-  // comes from calculateBalancedAssignment() once the server returns existing conditions
-  // via luida_existing_conditions, and no debug value should ever leak into that path.
+  // Test mode only: debugValue if set, else a random candidate.
+  // An uploaded world (not in test mode) assigns the conditions using calculateBalancedAssignment().
   let betweenSubjectsCondition = {};
   if (isTestMode) {
+    const existing = $.state.betweenSubjectsConditions || {};
     try {
       between_subjects_variables.forEach((v) => {
         if (v.debugValue) {
           betweenSubjectsCondition[v.name] = v.debugValue;
+        } else if (existing[v.name] !== undefined) {
+          betweenSubjectsCondition[v.name] = existing[v.name];
+        } else if (v.values && v.values.length > 0) {
+          betweenSubjectsCondition[v.name] =
+            v.values[Math.floor(Math.random() * v.values.length)];
         }
       });
     } catch (e) {

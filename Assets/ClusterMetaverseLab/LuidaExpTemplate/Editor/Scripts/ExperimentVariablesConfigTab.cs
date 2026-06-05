@@ -162,8 +162,17 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
             labelWidth = 70f;
             var debugLabelRect = new Rect(debugValueRect.x, debugValueRect.y, labelWidth, debugValueRect.height);
             var debugFieldRect = new Rect(debugLabelRect.xMax, debugValueRect.y, debugValueRect.width - labelWidth, debugValueRect.height);
-            EditorGUI.LabelField(debugLabelRect, new GUIContent("Debug Val:", "Force this value for testing. Leave empty for random assignment."));
-            element.debugValue = EditorGUI.TextField(debugFieldRect, element.debugValue);
+            EditorGUI.LabelField(debugLabelRect, new GUIContent("Debug Val:", "Force this value when testing in the editor. (random) picks a random candidate each session."));
+
+            // First option is a null sentinel shown as "(random)"; the rest are the candidate values.
+            var debugOptionValues = new List<string> { null };
+            if (element.values != null) debugOptionValues.AddRange(element.values);
+            string currentDebug = string.IsNullOrEmpty(element.debugValue) ? null : element.debugValue;
+            if (currentDebug != null && !debugOptionValues.Contains(currentDebug)) debugOptionValues.Add(currentDebug);
+            string[] debugLabels = debugOptionValues.Select(v => v == null ? "(random)" : v).ToArray();
+            int debugSelected = Mathf.Max(0, debugOptionValues.IndexOf(currentDebug));
+            int debugNewSel = EditorGUI.Popup(debugFieldRect, debugSelected, debugLabels);
+            if (debugNewSel != debugSelected) element.debugValue = debugOptionValues[debugNewSel];
             
             element.isRandom = true; 
             EditorGUI.LabelField(randomLabelRect, "Is Random: true");

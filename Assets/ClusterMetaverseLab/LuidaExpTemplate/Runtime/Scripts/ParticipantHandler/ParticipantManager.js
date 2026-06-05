@@ -195,6 +195,9 @@ function HandleParticipantsEnough() {
     // If server returned existing conditions, send them for local balancing
     if ($.state.isSessionApproved && $.state.existingConditions) {
       conditionManager.send("luida_existing_conditions", $.state.existingConditions);
+    } else if (typeof expID === "undefined" || !expID) {
+      // No expID → no server balancing possible. [] makes ConditionManager pick a random combination.
+      conditionManager.send("luida_existing_conditions", []);
     }
     conditionManager.send("luida_participants_info", {
       participants: $.groupState.participants,

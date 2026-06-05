@@ -661,8 +661,11 @@ PrefabInstance:
         (conditionManager) {\n    // If server returned existing conditions, send
         them for local balancing\n    if ($.state.isSessionApproved && $.state.existingConditions)
         {\n      conditionManager.send(\"luida_existing_conditions\", $.state.existingConditions);\n   
-        }\n    conditionManager.send(\"luida_participants_info\", {\n      participants:
-        $.groupState.participants,\n      sessionID: $.groupState.sessionID\n   
+        } else if (typeof expID === \"undefined\" || !expID) {\n      // No expID
+        \u2192 no server balancing possible. [] makes ConditionManager pick a random
+        combination.\n      conditionManager.send(\"luida_existing_conditions\",
+        []);\n    }\n    conditionManager.send(\"luida_participants_info\", {\n     
+        participants: $.groupState.participants,\n      sessionID: $.groupState.sessionID\n   
         });\n  }\n}\n\n$.onExternalCallEnd((res, meta, err) => {\n  if (meta.startsWith(\"joinEligibilityChecked_\"))
         {\n    const idfc = meta.replace(\"joinEligibilityChecked_\", \"\");\n\n   
         // Clear pending check regardless of outcome\n    let pendingChecks = { ...$.state.pendingEligibilityChecks
