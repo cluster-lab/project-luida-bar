@@ -232,7 +232,12 @@ function handleFormAnswer(arg) {
 
 function saveAnswer() {
     if (!$.state.questions[$.state.qID]) return;
-    if ($.state.questions[$.state.qID].r && (!$.state.tmpAnswer && $.state.tmpAnswer !== false)) return;
+    if ($.state.questions[$.state.qID].r) {
+        const a = $.state.tmpAnswer;
+        // Empty array (checkbox with no items selected) must also count as missing.
+        const isMissing = (!a && a !== false) || (Array.isArray(a) && a.length === 0);
+        if (isMissing) return;
+    }
     let answers = [ ...$.state.answers ];
     answers[$.state.qID] = $.state.tmpAnswer;
     $.state.answers = answers;
