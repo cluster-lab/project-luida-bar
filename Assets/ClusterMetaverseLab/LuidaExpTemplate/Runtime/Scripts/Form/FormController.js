@@ -18,7 +18,7 @@ $.onUpdate((deltaTime) => {
     }
 
     // Ensure that the question is only initialized after all currently displayed answer options are destroyed
-    if (!$.state.isInitiated && $.getStateCompat("this", "form_set_content_active", "boolean")) {
+    if (!$.state.isInitiated && !$.state.isSubmitted && $.getStateCompat("this", "form_set_content_active", "boolean")) {
         $.state.isInitiated = true;
         $.state.qID = 0;
         $.state.questions = [];
@@ -54,11 +54,12 @@ $.onUpdate((deltaTime) => {
 });
 
 $.onInteract(() => {
-    if (!$.state.isInitiated) $.setStateCompat("this", "form_set_content_active", true);
+    // don't reopen the form once it's open or sent (stops the reload on the waiting screen)
+    if (!$.state.isInitiated && !$.state.isSubmitted) $.setStateCompat("this", "form_set_content_active", true);
 });
 
 $.onReceive((messageType, arg) => {
-    if (!$.state.isInitiated) return;
+    if (!$.state.isInitiated || $.state.isSubmitted) return; // also stop input after the form is sent
     switch (messageType) {
         case "form_answer":
             handleFormAnswer(arg);
@@ -297,6 +298,7 @@ function reset(enableReactivation = true) {
     $.state.answers = [];
     $.state.qID = 0;
     $.state.isInitiated = !enableReactivation;
+    $.state.isSubmitted = !enableReactivation; // true after the form is sent, so it stays closed
     $.state.tryInitQuestion = false;
     $.state.answerOptionUIs = [];
     $.state.answerOptionLocalPositions = [];
@@ -347,7 +349,7 @@ $.onExternalCallEnd((res, meta, err) => {
                     e: false
                 });
             });
-            reset();
+            reset(false); // keep the form closed after everyone is done (don't reopen)
         }
     }
 });

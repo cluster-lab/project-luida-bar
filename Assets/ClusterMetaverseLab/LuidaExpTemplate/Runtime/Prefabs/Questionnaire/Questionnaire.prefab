@@ -644,12 +644,12 @@ MonoBehaviour:
     player);\n        $.worldItemReference(\"NextButton\").send(\"setParticipant\",
     player);\n\n        $.state.isParticipantAssigned = true;\n    }\n\n    // Ensure
     that the question is only initialized after all currently displayed answer options
-    are destroyed\n    if (!$.state.isInitiated && $.getStateCompat(\"this\", \"form_set_content_active\",
-    \"boolean\")) {\n        $.state.isInitiated = true;\n        $.state.qID = 0;\n       
-    $.state.questions = [];\n        $.setStateCompat(\"this\", \"form_show_start_hint\",
-    false);\n        $.setStateCompat(\"this\", \"form_show_loading_bar\", true);\n       
-    $.state.participant.send(\"setQuestionnaireUI\", {\n            n: \"LoadingText\",\n           
-    e: true,\n            p: $.subNode(\"LoadingBar\").getGlobalPosition(),\n           
+    are destroyed\n    if (!$.state.isInitiated && !$.state.isSubmitted && $.getStateCompat(\"this\",
+    \"form_set_content_active\", \"boolean\")) {\n        $.state.isInitiated = true;\n       
+    $.state.qID = 0;\n        $.state.questions = [];\n        $.setStateCompat(\"this\",
+    \"form_show_start_hint\", false);\n        $.setStateCompat(\"this\", \"form_show_loading_bar\",
+    true);\n        $.state.participant.send(\"setQuestionnaireUI\", {\n           
+    n: \"LoadingText\",\n            e: true,\n            p: $.subNode(\"LoadingBar\").getGlobalPosition(),\n           
     r: $.subNode(\"LoadingBar\").getGlobalRotation(),\n        });\n\n        //
     Reintroduced callExternal to get questions\n        const questionnaireID = $.getStateCompat(\"this\",
     \"qID\", \"integer\");\n        if (questionnaireID > 0) {\n            let request
@@ -662,10 +662,12 @@ MonoBehaviour:
     of answer options\n    $.state.timer = ($.state.timer || 0) + deltaTime;\n   
     if ($.state.timer > 0.2 && $.state.pendingAnswerOptions && $.state.pendingAnswerOptions.length
     > 0) {\n        spawnNextAnswerOption();\n        $.state.timer = 0; // Reset
-    the timer after generating a batch\n    }\n});\n\n$.onInteract(() => {\n    if
-    (!$.state.isInitiated) $.setStateCompat(\"this\", \"form_set_content_active\",
-    true);\n});\n\n$.onReceive((messageType, arg) => {\n    if (!$.state.isInitiated)
-    return;\n    switch (messageType) {\n        case \"form_answer\":\n           
+    the timer after generating a batch\n    }\n});\n\n$.onInteract(() => {\n    //
+    don't reopen the form once it's open or sent (stops the reload on the waiting
+    screen)\n    if (!$.state.isInitiated && !$.state.isSubmitted) $.setStateCompat(\"this\",
+    \"form_set_content_active\", true);\n});\n\n$.onReceive((messageType, arg) =>
+    {\n    if (!$.state.isInitiated || $.state.isSubmitted) return; // also stop
+    input after the form is sent\n    switch (messageType) {\n        case \"form_answer\":\n           
     handleFormAnswer(arg);\n            break;\n        case \"form_to_next\":\n           
     saveAnswer();\n            break;\n        case \"form_to_prev\":\n           
     toPrev();\n            break;\n    }\n});\n\nfunction tryInitQuestion() {\n   
@@ -772,33 +774,34 @@ MonoBehaviour:
     reset(enableReactivation = true) {\n    destroyAnswerOptionUIs(); // destroy
     any existing answer option UIs first\n    $.subNode(\"RadioButtonIndicator\").setEnabled(false);\n   
     $.state.answers = [];\n    $.state.qID = 0;\n    $.state.isInitiated = !enableReactivation;\n   
-    $.state.tryInitQuestion = false;\n    $.state.answerOptionUIs = [];\n    $.state.answerOptionLocalPositions
-    = [];\n    $.state.answerOptionIndex = 0;\n    $.state.pendingAnswerOptions =
-    [];\n    $.setStateCompat(\"this\", \"form_set_content_active\", false);\n   
-    $.state.participant?.send(\"setQuestionnaireUIs\", [\n        { n: \"Title\",
-    e: false }, { n: \"Description\", e: false }\n    ]);\n}\n\n$.onExternalCallEnd((res,
-    meta, err) => {\n    if (res == null) {\n        $.log(\"callExternal ERROR:
-    \" + err);\n        return;\n    }\n\n    if (meta === \"getQuestions\") {\n       
-    const parsedRes = JSON.parse(res);\n        let isFirstGet = $.state.questions.length
-    === 0;\n        $.state.questions = [ ...$.state.questions, ...parsedRes.questions
-    ];\n        $.setStateCompat(\"this\", \"form_show_loading_bar\", false);\n       
-    $.state.participant?.send(\"setQuestionnaireUI\", {\n            n: \"LoadingText\",\n           
-    e: false\n        });\n        if (isFirstGet) tryInitQuestion();\n\n       
-    if (\"isDone\" in parsedRes && !parsedRes.isDone) {\n            const questionnaireID
-    = $.getStateCompat(\"this\", \"qID\", \"integer\");\n            if (questionnaireID
-    !== -1) {\n                let request = { type: \"questions\", token: token
-    || \"\", eID: expID || \"\", qID: questionnaireID, startIndex: $.state.questions.length
-    };\n                $.callExternal(new ExternalEndpointId(callExternalEndpointID),
-    JSON.stringify(request), \"getQuestions\");\n            }\n        }\n    }\n\n   
-    if (meta === \"postQuestionAnswers\") {\n        $.log(\"Answers recorded!\");\n       
-    $.groupState.qCompletedCount += 1;\n        if ($.groupState.qCompletedCount
-    >= $.groupState.participants.length) {\n            $.log(\"All participants
-    have completed the questionnaire!\");\n            $.groupState.qCompletedCount
-    = 0;\n            $.sendSignalCompat(\"this\", \"form_allPlayersCompleted\");
+    $.state.isSubmitted = !enableReactivation; // true after the form is sent, so
+    it stays closed\n    $.state.tryInitQuestion = false;\n    $.state.answerOptionUIs
+    = [];\n    $.state.answerOptionLocalPositions = [];\n    $.state.answerOptionIndex
+    = 0;\n    $.state.pendingAnswerOptions = [];\n    $.setStateCompat(\"this\",
+    \"form_set_content_active\", false);\n    $.state.participant?.send(\"setQuestionnaireUIs\",
+    [\n        { n: \"Title\", e: false }, { n: \"Description\", e: false }\n   
+    ]);\n}\n\n$.onExternalCallEnd((res, meta, err) => {\n    if (res == null) {\n       
+    $.log(\"callExternal ERROR: \" + err);\n        return;\n    }\n\n    if (meta
+    === \"getQuestions\") {\n        const parsedRes = JSON.parse(res);\n       
+    let isFirstGet = $.state.questions.length === 0;\n        $.state.questions =
+    [ ...$.state.questions, ...parsedRes.questions ];\n        $.setStateCompat(\"this\",
+    \"form_show_loading_bar\", false);\n        $.state.participant?.send(\"setQuestionnaireUI\",
+    {\n            n: \"LoadingText\",\n            e: false\n        });\n       
+    if (isFirstGet) tryInitQuestion();\n\n        if (\"isDone\" in parsedRes &&
+    !parsedRes.isDone) {\n            const questionnaireID = $.getStateCompat(\"this\",
+    \"qID\", \"integer\");\n            if (questionnaireID !== -1) {\n               
+    let request = { type: \"questions\", token: token || \"\", eID: expID || \"\",
+    qID: questionnaireID, startIndex: $.state.questions.length };\n               
+    $.callExternal(new ExternalEndpointId(callExternalEndpointID), JSON.stringify(request),
+    \"getQuestions\");\n            }\n        }\n    }\n\n    if (meta === \"postQuestionAnswers\")
+    {\n        $.log(\"Answers recorded!\");\n        $.groupState.qCompletedCount
+    += 1;\n        if ($.groupState.qCompletedCount >= $.groupState.participants.length)
+    {\n            $.log(\"All participants have completed the questionnaire!\");\n           
+    $.groupState.qCompletedCount = 0;\n            $.sendSignalCompat(\"this\", \"form_allPlayersCompleted\");
     // state_triggerTransition\n            $.groupState.participants.forEach(p =>
     {\n                p.send(\"setQuestionnaireUI\", {\n                    n: \"WaitingText\",\n                   
-    e: false\n                });\n            });\n            reset();\n       
-    }\n    }\n});\n"
+    e: false\n                });\n            });\n            reset(false); //
+    keep the form closed after everyone is done (don't reopen)\n        }\n    }\n});\n"
 --- !u!114 &5697374075709122382
 MonoBehaviour:
   m_ObjectHideFlags: 0
