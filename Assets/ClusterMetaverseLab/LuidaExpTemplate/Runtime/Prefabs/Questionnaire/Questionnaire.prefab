@@ -637,8 +637,9 @@ MonoBehaviour:
   sourceCode: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
     = \"callExternalEndpointID_example\";\npNum = 1;\nisTestMode = true;\n\r\n$.onStart(()
     => {\n    reset();\n    $.state.isParticipantAssigned = false;\n    $.groupState.qCompletedCount
-    = 0;\n});\n\n$.onUpdate((deltaTime) => {\n    if (!$.state.isParticipantAssigned
-    && $.groupState.isParticipantsEnough) {\n        let player = $.groupState.participants[($.getStateCompat(\"this\",
+    = 0;\n    $.state.spawnBatchSize = 3;\n    $.state.spawnInterval = 0.2;\n});\n\n$.onUpdate((deltaTime)
+    => {\n    if (!$.state.isParticipantAssigned && $.groupState.isParticipantsEnough)
+    {\n        let player = $.groupState.participants[($.getStateCompat(\"this\",
     \"pID\", \"integer\") - 1) || 0];\n        $.state.participant = player;\n       
     $.requestOwner(player);\n        $.setVisiblePlayers([player]);\n\n        $.worldItemReference(\"PrevButton\").send(\"setParticipant\",
     player);\n        $.worldItemReference(\"NextButton\").send(\"setParticipant\",
@@ -660,11 +661,11 @@ MonoBehaviour:
     if ($.state.tryInitQuestion && !$.state.answerOptionUIs.some(ans => ans.exists()))
     {\n        initQuestion();\n    }\n\n    // Timer to trigger batch generation
     of answer options\n    $.state.timer = ($.state.timer || 0) + deltaTime;\n   
-    if ($.state.timer > 0.2 && $.state.pendingAnswerOptions && $.state.pendingAnswerOptions.length
-    > 0) {\n        spawnNextAnswerOption();\n        $.state.timer = 0; // Reset
-    the timer after generating a batch\n    }\n});\n\n$.onInteract(() => {\n    //
-    don't reopen the form once it's open or sent (stops the reload on the waiting
-    screen)\n    if (!$.state.isInitiated && !$.state.isSubmitted) $.setStateCompat(\"this\",
+    if ($.state.timer > ($.state.spawnInterval || 0.2) && $.state.pendingAnswerOptions
+    && $.state.pendingAnswerOptions.length > 0) {\n        $.state.timer = 0;\n       
+    spawnNextAnswerOption();\n    }\n});\n\n$.onInteract(() => {\n    // don't reopen
+    the form once it's open or sent (stops the reload on the waiting screen)\n   
+    if (!$.state.isInitiated && !$.state.isSubmitted) $.setStateCompat(\"this\",
     \"form_set_content_active\", true);\n});\n\n$.onReceive((messageType, arg) =>
     {\n    if (!$.state.isInitiated || $.state.isSubmitted) return; // also stop
     input after the form is sent\n    switch (messageType) {\n        case \"form_answer\":\n           
@@ -686,16 +687,21 @@ MonoBehaviour:
     = [1,2,3,4,5,6,7];\n    }\n    if ($.state.answerOptions.length === 0) $.state.answerOptions
     = [\"\"];\n    spawnAnswerOptionUI();\n}\n\nfunction spawnAnswerOptionUI() {\n   
     $.state.pendingAnswerOptions = $.state.answerOptions.slice();\n    $.state.answerOptionIndex
-    = 0;\n}\n\nfunction addAnswerOption (id, localPos, rot, ansId) {\n    const itemHandle
-    = $.createItem(id, $.getPosition().clone().add(localPos.clone().applyQuaternion(rot)),
-    rot);\n    $.state.answerOptionUIs = [...$.state.answerOptionUIs, itemHandle];\n   
-    $.state.answerOptionLocalPositions = [...$.state.answerOptionLocalPositions,
-    localPos];\n    itemHandle.send(\"form_init_answer_option\", { value: ansId +
-    1, label: $.state.answerOptions[ansId], participant: $.state.participant });\n}\n\nfunction
-    spawnNextAnswerOption() {\n    const n = $.state.pendingAnswerOptions.length
-    || 0;\n    if ($.state.answerOptionIndex >= n) {\n        $.state.pendingAnswerOptions
-    = [];\n        if ($.state.questionTypeID !== 3) {\n            let rot = $.getRotation().clone();\n           
-    let posOffset = $.getPosition().clone().add(new Vector3(\n                $.state.questionTypeID
+    = 0;\n    // Throttle createItem to stay under Cluster's 10 calls/sec limit.\n   
+    const manyOptions = $.state.answerOptions.length > 10;\n    $.state.spawnBatchSize
+    = manyOptions ? 2 : 3;\n    $.state.spawnInterval = manyOptions ? 0.3 : 0.2;\n}\n\nfunction
+    addAnswerOption (id, localPos, rot, ansId) {\n    let itemHandle;\n    try {\n       
+    itemHandle = $.createItem(id, $.getPosition().clone().add(localPos.clone().applyQuaternion(rot)),
+    rot);\n    } catch (e) {\n        $.log(\"[FormController] createItem failed
+    (rate limit?): \" + e);\n        return false;\n    }\n    $.state.answerOptionUIs
+    = [...$.state.answerOptionUIs, itemHandle];\n    $.state.answerOptionLocalPositions
+    = [...$.state.answerOptionLocalPositions, localPos];\n    itemHandle.send(\"form_init_answer_option\",
+    { value: ansId + 1, label: $.state.answerOptions[ansId], participant: $.state.participant
+    });\n    return true;\n}\n\nfunction spawnNextAnswerOption() {\n    const n =
+    $.state.pendingAnswerOptions.length || 0;\n    if ($.state.answerOptionIndex
+    >= n) {\n        $.state.pendingAnswerOptions = [];\n        if ($.state.questionTypeID
+    !== 3) {\n            let rot = $.getRotation().clone();\n            let posOffset
+    = $.getPosition().clone().add(new Vector3(\n                $.state.questionTypeID
     === 1 ? 0.06 : $.state.questionTypeID === 4 ? 0 : 0.2,\n                $.state.questionTypeID
     === 1 ? 0.2: 0, 0));\n            const req = $.state.answerOptions.map((label,
     i) => ({\n                n: $.state.questionTypeID === 4 ? \"AnsText\" : (\"AnsOptLabel_\"
@@ -704,37 +710,38 @@ MonoBehaviour:
     }));\n            $.state.participant?.send(\"setQuestionnaireUIs\", req);\n       
     }\n        return;\n    }\n\n    let rotOffset = $.getRotation().clone();\n   
     let answerUiId = \"\";\n\n    // Maximum number of rows (per column)\n    const
-    maxRows = 5;\n    const batchSize = 3; // Number of options to generate in each
-    batch\n    const numColumns = Math.ceil(n / maxRows); // Calculate number of
-    columns based on total options and max rows per column\n\n    // Adjust x-position
-    based on number of columns to center them\n    const totalWidth = numColumns
-    * 0.5; // Adjust total width depending on your frame size\n    let i = 0;\n\n   
-    for (i = 0; i < batchSize && $.state.answerOptionIndex < n; i++) {\n        let
-    columnIndex = Math.floor($.state.answerOptionIndex / maxRows);\n        let rowIndex
-    = $.state.answerOptionIndex % maxRows;\n\n        // Calculate dynamic x and
-    y positions\n        let x = (columnIndex - (numColumns - 1) / 2) - 0.2; // Adjust
-    0.5 for spacing between columns\n        let y = ((maxRows - 1) / 2 - rowIndex)
-    * 0.2 - 0.1; // 0.2 is the vertical spacing between rows\n\n        switch ($.state.questionTypeID)
-    {\n            case 0: // Radio Buttons (single answer)\n            case 2:
-    // Checkbox (multiple answers)\n                answerUiId = new WorldItemTemplateId($.state.questionTypeID
+    maxRows = 5;\n    const batchSize = $.state.spawnBatchSize || 3; // 3 for <=10
+    options, 2 for >10 (see spawnAnswerOptionUI)\n    const numColumns = Math.ceil(n
+    / maxRows); // Calculate number of columns based on total options and max rows
+    per column\n\n    // Adjust x-position based on number of columns to center them\n   
+    const totalWidth = numColumns * 0.5; // Adjust total width depending on your
+    frame size\n    let i = 0;\n\n    for (i = 0; i < batchSize && $.state.answerOptionIndex
+    < n; i++) {\n        let columnIndex = Math.floor($.state.answerOptionIndex /
+    maxRows);\n        let rowIndex = $.state.answerOptionIndex % maxRows;\n\n       
+    // Calculate dynamic x and y positions\n        let x = (columnIndex - (numColumns
+    - 1) / 2) - 0.2; // Adjust 0.5 for spacing between columns\n        let y = ((maxRows
+    - 1) / 2 - rowIndex) * 0.2 - 0.1; // 0.2 is the vertical spacing between rows\n\n       
+    let added = true;\n        switch ($.state.questionTypeID) {\n            case
+    0: // Radio Buttons (single answer)\n            case 2: // Checkbox (multiple
+    answers)\n                answerUiId = new WorldItemTemplateId($.state.questionTypeID
     === 0\n                    ? \"answer-option-radio-button\"\n                   
     : \"answer-option-checkbox\");\n\n                // Add the option at calculated
-    x and y positions\n                addAnswerOption(answerUiId, new Vector3(x,
+    x and y positions\n                added = addAnswerOption(answerUiId, new Vector3(x,
     y, 0), rotOffset, $.state.answerOptionIndex);\n                break;\n\n           
     case 1: // Linear Scale\n                answerUiId = new WorldItemTemplateId(\"answer-option-scale-button\");\n\n               
     let scaleX = ((n > 11 ? 3 : 2) / (n - 1)) * ($.state.answerOptionIndex - (n -
-    1) / 2);\n                addAnswerOption(answerUiId, new Vector3(scaleX, 0,
-    0), rotOffset, $.state.answerOptionIndex);\n                break;\n\n           
+    1) / 2);\n                added = addAnswerOption(answerUiId, new Vector3(scaleX,
+    0, 0), rotOffset, $.state.answerOptionIndex);\n                break;\n\n           
     case 3: // Toggle\n                answerUiId = new WorldItemTemplateId(\"answer-option-toggle\");\n               
-    addAnswerOption(answerUiId, new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);\n               
+    added = addAnswerOption(answerUiId, new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);\n               
     break;\n\n            case 4: // Text Input\n                answerUiId = new
-    WorldItemTemplateId(\"answer-option-text-input\");\n                addAnswerOption(answerUiId,
+    WorldItemTemplateId(\"answer-option-text-input\");\n                added = addAnswerOption(answerUiId,
     new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);\n               
     break;\n\n            default:\n                break;\n        }\n\n       
-    $.state.answerOptionIndex += 1;\n    }\n}\n\nfunction destroyAnswerOptionUIs()
-    {\n    if ($.state.answerOptionUIs) {\n        for (const optionUi of $.state.answerOptionUIs)
-    {\n            optionUi.send(\"form_destroy_answer_option\", true);\n       
-    }\n    }\n    $.state.answerOptionUIs = [];\n    $.state.participant?.send(\"clearQuestionnaireAnswerUIs\",
+    if (!added) break; // retry this same index next interval\n        $.state.answerOptionIndex
+    += 1;\n    }\n}\n\nfunction destroyAnswerOptionUIs() {\n    if ($.state.answerOptionUIs)
+    {\n        for (const optionUi of $.state.answerOptionUIs) {\n            optionUi.send(\"form_destroy_answer_option\",
+    true);\n        }\n    }\n    $.state.answerOptionUIs = [];\n    $.state.participant?.send(\"clearQuestionnaireAnswerUIs\",
     true);\n}\n\nfunction handleFormAnswer(arg) {\n    let posOffset = $.getPosition().clone();\n   
     switch ($.state.questionTypeID) {\n        case 0: // Radio Buttons\n       
     case 1: // Linear Scale\n            $.subNode(\"RadioButtonIndicator\").setEnabled(true);\n           
