@@ -2,6 +2,8 @@ $.onStart(() => {
     reset();
     $.state.isParticipantAssigned = false;
     $.groupState.qCompletedCount = 0;
+    $.state.spawnBatchSize = 3;
+    $.state.spawnInterval = 0.2;
 });
 
 $.onUpdate((deltaTime) => {
@@ -47,9 +49,9 @@ $.onUpdate((deltaTime) => {
 
     // Timer to trigger batch generation of answer options
     $.state.timer = ($.state.timer || 0) + deltaTime;
-    if ($.state.timer > 0.2 && $.state.pendingAnswerOptions && $.state.pendingAnswerOptions.length > 0) {
+    if ($.state.timer > ($.state.spawnInterval || 0.2) && $.state.pendingAnswerOptions && $.state.pendingAnswerOptions.length > 0) {
+        $.state.timer = 0;
         spawnNextAnswerOption();
-        $.state.timer = 0; // Reset the timer after generating a batch
     }
 });
 
@@ -113,13 +115,24 @@ function initQuestion() {
 function spawnAnswerOptionUI() {
     $.state.pendingAnswerOptions = $.state.answerOptions.slice();
     $.state.answerOptionIndex = 0;
+    // Throttle createItem to stay under Cluster's 10 calls/sec limit.
+    const manyOptions = $.state.answerOptions.length > 10;
+    $.state.spawnBatchSize = manyOptions ? 2 : 3;
+    $.state.spawnInterval = manyOptions ? 0.3 : 0.2;
 }
 
 function addAnswerOption (id, localPos, rot, ansId) {
-    const itemHandle = $.createItem(id, $.getPosition().clone().add(localPos.clone().applyQuaternion(rot)), rot);
+    let itemHandle;
+    try {
+        itemHandle = $.createItem(id, $.getPosition().clone().add(localPos.clone().applyQuaternion(rot)), rot);
+    } catch (e) {
+        $.log("[FormController] createItem failed (rate limit?): " + e);
+        return false;
+    }
     $.state.answerOptionUIs = [...$.state.answerOptionUIs, itemHandle];
     $.state.answerOptionLocalPositions = [...$.state.answerOptionLocalPositions, localPos];
     itemHandle.send("form_init_answer_option", { value: ansId + 1, label: $.state.answerOptions[ansId], participant: $.state.participant });
+    return true;
 }
 
 function spawnNextAnswerOption() {
@@ -148,7 +161,7 @@ function spawnNextAnswerOption() {
 
     // Maximum number of rows (per column)
     const maxRows = 5;
-    const batchSize = 3; // Number of options to generate in each batch
+    const batchSize = $.state.spawnBatchSize || 3; // 3 for <=10 options, 2 for >10 (see spawnAnswerOptionUI)
     const numColumns = Math.ceil(n / maxRows); // Calculate number of columns based on total options and max rows per column
 
     // Adjust x-position based on number of columns to center them
@@ -163,6 +176,7 @@ function spawnNextAnswerOption() {
         let x = (columnIndex - (numColumns - 1) / 2) - 0.2; // Adjust 0.5 for spacing between columns
         let y = ((maxRows - 1) / 2 - rowIndex) * 0.2 - 0.1; // 0.2 is the vertical spacing between rows
 
+        let added = true;
         switch ($.state.questionTypeID) {
             case 0: // Radio Buttons (single answer)
             case 2: // Checkbox (multiple answers)
@@ -171,30 +185,31 @@ function spawnNextAnswerOption() {
                     : "answer-option-checkbox");
 
                 // Add the option at calculated x and y positions
-                addAnswerOption(answerUiId, new Vector3(x, y, 0), rotOffset, $.state.answerOptionIndex);
+                added = addAnswerOption(answerUiId, new Vector3(x, y, 0), rotOffset, $.state.answerOptionIndex);
                 break;
 
             case 1: // Linear Scale
                 answerUiId = new WorldItemTemplateId("answer-option-scale-button");
 
                 let scaleX = ((n > 11 ? 3 : 2) / (n - 1)) * ($.state.answerOptionIndex - (n - 1) / 2);
-                addAnswerOption(answerUiId, new Vector3(scaleX, 0, 0), rotOffset, $.state.answerOptionIndex);
+                added = addAnswerOption(answerUiId, new Vector3(scaleX, 0, 0), rotOffset, $.state.answerOptionIndex);
                 break;
 
             case 3: // Toggle
                 answerUiId = new WorldItemTemplateId("answer-option-toggle");
-                addAnswerOption(answerUiId, new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);
+                added = addAnswerOption(answerUiId, new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);
                 break;
 
             case 4: // Text Input
                 answerUiId = new WorldItemTemplateId("answer-option-text-input");
-                addAnswerOption(answerUiId, new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);
+                added = addAnswerOption(answerUiId, new Vector3(0, 0, 0), rotOffset, $.state.answerOptionIndex);
                 break;
 
             default:
                 break;
         }
 
+        if (!added) break; // retry this same index next interval
         $.state.answerOptionIndex += 1;
     }
 }
