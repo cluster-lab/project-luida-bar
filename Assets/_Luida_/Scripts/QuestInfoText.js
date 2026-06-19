@@ -52,10 +52,10 @@ function sendQuestInfoRequest(eID, token, endpointId, isTest) {
 function receiveText(quest, currentQuestID) {
     const title = insertLineBreaks(quest.title, 50);
     $.subNode("Title").setText(title);
-    const description = insertLineBreaks(quest.description, 70);
+    const description = insertLineBreaks(quest.description, 100);
     $.subNode("Description").setText(description);
-    const prerequisite = insertLineBreaks(quest.prerequisite, 70);
-    $.subNode("Prerequisite").setText("参加条件：" + prerequisite);
+    const prerequisite = insertLineBreaks(quest.prerequisite, 100);
+    $.subNode("Prerequisite").setText("参加条件：" + quest.prerequisite);
 
     $.subNode("Reward").setText("報酬：" + quest.reward);
     // $.setStateCompat("owner", "currentQuestID", ($.state.currentQuestBoardPage - 1) * numberPerPage + $.getStateCompat("owner", "triggerQuest", "integer")) + 1;

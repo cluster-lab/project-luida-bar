@@ -131,13 +131,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "const TOKEN = \"\";\r\nconst ENDPOINT_ID = \"\";\r\nconst IS_TEST
-    = false;\r\n\r\nconst numberPerPage = 30;\r\n\r\n$.onStart(() => {\r\n    $.state.questBoard
-    = $.worldItemReference(\"QuestBoard\");\r\n    $.state.currentQuestBoardPage
-    = 1;\r\n    $.state.isLoading = false;\r\n    $.setStateCompat(\"owner\", \"AllowJoinExp\",
-    true);\r\n})\r\n\r\n$.onUpdate(() => {\r\n    if ($.state.isLoading) return;\r\n\r\n   
-    if ($.state.questBoard && $.getStateCompat(\"owner\", \"triggerQuest\", \"integer\")
-    >= 0) {\r\n        $.log(\"load new quest info: \" + $.getStateCompat(\"owner\",
+  sourceCode: "const TOKEN = \"\";\nconst ENDPOINT_ID = \"\";\nconst IS_TEST = false;\n\r\nconst
+    numberPerPage = 30;\r\n\r\n$.onStart(() => {\r\n    $.state.questBoard = $.worldItemReference(\"QuestBoard\");\r\n   
+    $.state.currentQuestBoardPage = 1;\r\n    $.state.isLoading = false;\r\n    $.setStateCompat(\"owner\",
+    \"AllowJoinExp\", true);\r\n})\r\n\r\n$.onUpdate(() => {\r\n    if ($.state.isLoading)
+    return;\r\n\r\n    if ($.state.questBoard && $.getStateCompat(\"owner\", \"triggerQuest\",
+    \"integer\") >= 0) {\r\n        $.log(\"load new quest info: \" + $.getStateCompat(\"owner\",
     \"triggerQuest\", \"integer\"));\r\n        $.state.isLoading = true;\r\n       
     $.state.questBoard.send(\"quest_board_get_current_page\", true);\r\n        $.subNode(\"Title\").setText(\"Loading...\");\r\n       
     $.subNode(\"Description\").setText(\"\");\r\n        $.subNode(\"Prerequisite\").setText(\"\");\r\n       
