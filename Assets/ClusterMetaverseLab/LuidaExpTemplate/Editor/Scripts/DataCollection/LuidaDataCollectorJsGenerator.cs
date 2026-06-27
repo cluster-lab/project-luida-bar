@@ -128,7 +128,8 @@ public static class LuidaDataCollectorJsGenerator
             sb.Append("    // The gimmick fires a per-label pulse Signal (luida_collect_<label>_w) on each push.\n");
             sb.Append("    // When its timestamp advances the gimmick just pushed THIS label -> write its value\n");
             sb.Append("    // (catches a re-push of the same constant). First sight writes only a non-default value,\n");
-            sb.Append("    // so an unset key never overwrites a send value. Between pushes the send value stays.\n");
+            sb.Append("    // so an unset key never overwrites a send value. `sg` is updated ONLY when we write, so a\n");
+            sb.Append("    // send-only save doesn't consume a label's first-sight before its gimmick first pushes.\n");
 
             foreach (var l in config.collectedLabels)
             {
@@ -147,8 +148,7 @@ public static class LuidaDataCollectorJsGenerator
                 sb.Append("        const v = $.getStateCompat(\"global\", \"").Append(stateKey).Append("\", \"").Append(compatType).Append("\");\n");
                 sb.Append("        const sig = $.getStateCompat(\"global\", \"").Append(stateKey).Append("_w\", \"signal\");\n");
                 sb.Append("        const t = sig ? sig.getTime() : 0;\n");
-                sb.Append("        if (sg[\"").Append(label).Append("\"] === undefined ? (").Append(nonDefault).Append(") : (t !== sg[\"").Append(label).Append("\"])) cd[\"").Append(label).Append("\"] = v;\n");
-                sb.Append("        sg[\"").Append(label).Append("\"] = t;\n");
+                sb.Append("        if (sg[\"").Append(label).Append("\"] === undefined ? (").Append(nonDefault).Append(") : (t !== sg[\"").Append(label).Append("\"])) { cd[\"").Append(label).Append("\"] = v; sg[\"").Append(label).Append("\"] = t; }\n");
                 sb.Append("    }\n");
             }
 
