@@ -122,8 +122,13 @@ public static class LuidaDataCollectorJsGenerator
         {
             sb.Append("(function syncFromCck() {\n");
             sb.Append("    if (!$.groupState.collectedData) $.groupState.collectedData = {};\n");
+            sb.Append("    if (!$.groupState._luidaSig) $.groupState._luidaSig = {};\n");
             sb.Append("    const cd = $.groupState.collectedData;\n");
-            sb.Append("    let changed = false;\n");
+            sb.Append("    const sg = $.groupState._luidaSig;\n");
+            sb.Append("    // The gimmick fires a per-label pulse Signal (luida_collect_<label>_w) on each push.\n");
+            sb.Append("    // When its timestamp advances the gimmick just pushed THIS label -> write its value\n");
+            sb.Append("    // (catches a re-push of the same constant). First sight writes only a non-default value,\n");
+            sb.Append("    // so an unset key never overwrites a send value. Between pushes the send value stays.\n");
 
             foreach (var l in config.collectedLabels)
             {
@@ -134,19 +139,21 @@ public static class LuidaDataCollectorJsGenerator
                 string label = l.label;
                 string stateKey = LuidaSendDataToCollectorGimmick.ComposeStateKey(label);
                 string compatType = CompatTypeFromCollected(l.type);
-                string equalCheck = EqualityCheckFromCollected(l.type);
+                string nonDefault = string.Format(EqualityCheckFromCollected(l.type), "v", DefaultJsLiteralFromCollected(l.type));
 
                 sb.Append("    // Label: ").Append(label)
                   .Append(" (").Append(l.type.ToString()).Append(")\n");
                 sb.Append("    {\n");
                 sb.Append("        const v = $.getStateCompat(\"global\", \"").Append(stateKey).Append("\", \"").Append(compatType).Append("\");\n");
-                sb.Append("        if (v !== undefined && ").Append(string.Format(equalCheck, "cd[\"" + label + "\"]", "v")).Append(") {\n");
-                sb.Append("            cd[\"").Append(label).Append("\"] = v; changed = true;\n");
-                sb.Append("        }\n");
+                sb.Append("        const sig = $.getStateCompat(\"global\", \"").Append(stateKey).Append("_w\", \"signal\");\n");
+                sb.Append("        const t = sig ? sig.getTime() : 0;\n");
+                sb.Append("        if (sg[\"").Append(label).Append("\"] === undefined ? (").Append(nonDefault).Append(") : (t !== sg[\"").Append(label).Append("\"])) cd[\"").Append(label).Append("\"] = v;\n");
+                sb.Append("        sg[\"").Append(label).Append("\"] = t;\n");
                 sb.Append("    }\n");
             }
 
-            sb.Append("    if (changed) $.groupState.collectedData = cd;\n");
+            sb.Append("    $.groupState.collectedData = cd;\n");
+            sb.Append("    $.groupState._luidaSig = sg;\n");
             sb.Append("})();\n");
             sb.Append("// Rebind COLLECTED_DATA so this saveData() call sees just-synced values.\n");
             sb.Append("const COLLECTED_DATA = $.groupState.collectedData;\n");
@@ -166,6 +173,9 @@ public static class LuidaDataCollectorJsGenerator
     {
         sb.Append("const fields = {\n");
 
+        // Tracks names already written so we never emit a duplicate JS key.
+        var emitted = new System.Collections.Generic.HashSet<string>();
+
         // Auto-inject the state-machine transition log when automation is
         // active and the user has not manually added a colliding field. The
         // user's field always wins to keep the on-disk JS valid (no duplicate
@@ -177,17 +187,44 @@ public static class LuidaDataCollectorJsGenerator
               .Append("(typeof COLLECTED_DATA !== \"undefined\" && COLLECTED_DATA) ? COLLECTED_DATA[\"stateLog\"] : undefined")
               .Append(",\n");
             sb.Append("    // --- END LUIDA AUTO ---\n");
+            emitted.Add(AutoStateLogFieldName);
         }
 
+        // Section A "Collected data items" are saved by default (unless ignored), each
+        // read straight from COLLECTED_DATA. An Extra field (Section B) with the same
+        // name overrides the collected item, so reserve those names first.
+        var extraNames = new System.Collections.Generic.HashSet<string>();
+        foreach (var f in config.fields)
+            if (f != null && IsValidFieldName(f.fieldName)) extraNames.Add(f.fieldName);
+
+        bool wroteCollectedHeader = false;
+        foreach (var l in config.collectedLabels)
+        {
+            if (l == null || string.IsNullOrEmpty(l.label) || l.ignoreOnSave) continue;
+            if (!IsValidFieldName(l.label)) continue;
+            if (emitted.Contains(l.label) || extraNames.Contains(l.label)) continue;
+
+            if (!wroteCollectedHeader)
+            {
+                sb.Append("    // --- LUIDA: collected data items (saved by default; toggle \"Ignore on save\" to exclude) ---\n");
+                wroteCollectedHeader = true;
+            }
+            sb.Append("    ").Append(l.label).Append(": ").Append(EmitCollectedAccess(l.label)).Append(",\n");
+            emitted.Add(l.label);
+        }
+
+        // Section B "Extra items to be saved" — additional computed entries.
         foreach (var f in config.fields)
         {
             if (f == null) continue;
             if (!IsValidFieldName(f.fieldName)) continue;
+            if (emitted.Contains(f.fieldName)) continue;
 
             string expr = EmitField(f);
             if (expr == null) continue;
 
             sb.Append("    ").Append(f.fieldName).Append(": ").Append(expr).Append(",\n");
+            emitted.Add(f.fieldName);
         }
         sb.Append("};\n");
     }
@@ -353,6 +390,21 @@ public static class LuidaDataCollectorJsGenerator
                 return "({0} === undefined || {0}.x !== {1}.x || {0}.y !== {1}.y || {0}.z !== {1}.z)";
             default:
                 return "{0} !== {1}";
+        }
+    }
+
+    /// <summary>
+    /// JS literal for a collected type's "unset" default, used to seed the syncFromCck
+    /// `seen` baseline so getStateCompat's default for a never-pushed key isn't a change.
+    /// </summary>
+    static string DefaultJsLiteralFromCollected(CollectedValueType t)
+    {
+        switch (t)
+        {
+            case CollectedValueType.Bool:    return "false";
+            case CollectedValueType.Vector2: return "new Vector2(0, 0)";
+            case CollectedValueType.Vector3: return "new Vector3(0, 0, 0)";
+            default:                         return "0"; // Float / Integer
         }
     }
 

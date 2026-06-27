@@ -205,7 +205,7 @@ public class DataCollectorConfigTab : EditorWindow
         if (_config == null) return;
         _labelList = new ReorderableList(_config.collectedLabels, typeof(CollectedLabel), true, true, true, true)
         {
-            drawHeaderCallback = rect => EditorGUI.LabelField(rect, "Label                          Type"),
+            drawHeaderCallback = rect => EditorGUI.LabelField(rect, "Label                    Type        Ignore on save"),
             elementHeight = CalculatorFieldDrawers.LineH + 6f,
             drawElementCallback = (rect, index, isActive, isFocused) =>
             {
@@ -213,12 +213,13 @@ public class DataCollectorConfigTab : EditorWindow
                 var entry = _config.collectedLabels[index];
                 if (entry == null) return;
 
-                float typeWidth = 110f, badgeWidth = 46f, gap = 6f;
-                float labelWidth = rect.width - typeWidth - badgeWidth - 2 * gap;
+                float typeWidth = 90f, badgeWidth = 46f, ignoreWidth = 110f, gap = 6f;
+                float labelWidth = Mathf.Max(60f, rect.width - typeWidth - badgeWidth - ignoreWidth - 3 * gap);
 
-                Rect labelRect = new Rect(rect.x, rect.y + 2, labelWidth, CalculatorFieldDrawers.LineH);
-                Rect typeRect  = new Rect(labelRect.xMax + gap, rect.y + 2, typeWidth, CalculatorFieldDrawers.LineH);
-                Rect badgeRect = new Rect(typeRect.xMax + gap, rect.y + 2, badgeWidth, CalculatorFieldDrawers.LineH);
+                Rect labelRect  = new Rect(rect.x, rect.y + 2, labelWidth, CalculatorFieldDrawers.LineH);
+                Rect typeRect   = new Rect(labelRect.xMax + gap, rect.y + 2, typeWidth, CalculatorFieldDrawers.LineH);
+                Rect badgeRect  = new Rect(typeRect.xMax + gap, rect.y + 2, badgeWidth, CalculatorFieldDrawers.LineH);
+                Rect ignoreRect = new Rect(badgeRect.xMax + gap, rect.y + 2, ignoreWidth, CalculatorFieldDrawers.LineH);
 
                 EditorGUI.BeginChangeCheck();
                 string newLabel = EditorGUI.TextField(labelRect, entry.label ?? string.Empty);
@@ -240,6 +241,17 @@ public class DataCollectorConfigTab : EditorWindow
 
                 var (badgeText, color) = CalculatorTypeBadge.ForCollectedValueType(entry.type);
                 CalculatorTypeBadge.Draw(badgeRect, badgeText, color);
+
+                EditorGUI.BeginChangeCheck();
+                bool newIgnore = EditorGUI.ToggleLeft(ignoreRect,
+                    new GUIContent("Ignore on save", "Leave this item out of the saved data. It is still collected and can be used by an Extra item."),
+                    entry.ignoreOnSave);
+                if (EditorGUI.EndChangeCheck() && newIgnore != entry.ignoreOnSave)
+                {
+                    Undo.RecordObject(_config, "Toggle ignore on save");
+                    entry.ignoreOnSave = newIgnore;
+                    EditorUtility.SetDirty(_config);
+                }
             },
             onAddCallback = list =>
             {
@@ -266,11 +278,11 @@ public class DataCollectorConfigTab : EditorWindow
     {
         GUILayout.Label("Collected data items", EditorStyles.largeLabel);
         EditorGUILayout.HelpBox(
-            "Labels & types that LuidaSendDataToCollectorGimmick and the state-listening " +
-            "\"Push data to collector\" action can write into $.groupState.collectedData. " +
-            "These appear as dropdown options in the field sources below and in the gimmick inspector.\n\n" +
-            "⚠ String-typed items can only be set via the state-listening action — the data-collection " +
-            "fake gimmick cannot transport strings through CCK (ConstantValue has no string slot).",
+            "The named values your experiment collects, with their type.\n" +
+            "Every item is saved by default, and you can tick \"Ignore on save\" to leave one out.\n" +
+            "Values are set by the data-collection gimmick, the \"Push data to collector\" action, " +
+            "or send(\"luida_collect\", {...}).\n\n" +
+            "⚠ \"String\" items can be set by the action or send() only, not by the gimmick.",
             MessageType.Info);
 
         if (_labelList == null) BuildLabelList();
@@ -302,8 +314,8 @@ public class DataCollectorConfigTab : EditorWindow
                 MessageType.Warning);
         if (stringLabels.Count > 0)
             EditorGUILayout.HelpBox(
-                $"String-typed labels are write-only via the state-listening \"Push data to collector\" action — " +
-                $"the data-collection fake gimmick can't transport strings through CCK ConstantValue. " +
+                $"String-typed labels are write-only via the state-listening \"Push data to collector\" action. " +
+                $"The LUIDA data collection gimmick can't transport strings through CCK ConstantValue. " +
                 $"Affected: {string.Join(", ", stringLabels)}.",
                 MessageType.Warning);
     }
@@ -312,12 +324,12 @@ public class DataCollectorConfigTab : EditorWindow
 
     private void DrawBuilderModeUI()
     {
-        GUILayout.Label("Fields to be saved", EditorStyles.largeLabel);
+        GUILayout.Label("Extra items to be saved", EditorStyles.largeLabel);
         EditorGUILayout.HelpBox(
-            "Each row becomes one entry of the JSON object uploaded per recording tick. " +
-            "Pick a Source per field — Builder maps to ClusterScript types: " +
-            "Bool (green), Int/Num (blue), Vec2/Vec3 (purple), Str (orange). " +
-            "Use Arithmetic for + − × ÷ on multiple operands, Conditional for if/else.",
+            "Optional extra values to save, on top of the collected items above (those save automatically).\n" +
+            "You can define it from a collected value, a condition, " +
+            "a fixed number/text, math (+ − × ÷), or an if/else.\n" +
+            "If a row has the same name as a collected item, it replaces that item.",
             MessageType.Info);
 
         DrawFieldList();
