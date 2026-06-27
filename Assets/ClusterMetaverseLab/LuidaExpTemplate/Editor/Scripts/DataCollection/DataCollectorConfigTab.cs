@@ -115,11 +115,17 @@ public class DataCollectorConfigTab : EditorWindow
             return;
         }
 
+        // No DataCollector in the scene → show ONLY the create prompt; the rest of the window
+        // needs a collector. The button creates one and reloads this window.
+        if (Object.FindObjectOfType<LuidaDataCollector>() == null)
+        {
+            DrawDataCollectorPresenceCheck();
+            return;
+        }
+
         _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
 
         DrawModeToggle();
-        EditorGUILayout.Space();
-        DrawDataCollectorPresenceCheck();
         EditorGUILayout.Space();
 
         DrawLabelSection();    // Section A — always visible in both modes
@@ -459,6 +465,7 @@ public class DataCollectorConfigTab : EditorWindow
             {
                 DataCollectorCreateMenu.CreateDataCollectorInScene(registerUndo: true, selectObject: false);
                 ReloadForActiveScene();
+                Repaint();
                 GUIUtility.ExitGUI();
             }
         }
