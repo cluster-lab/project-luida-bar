@@ -130,6 +130,12 @@ public class CollectedLabel
 {
     public string label;
     public CollectedValueType type = CollectedValueType.Integer;
+
+    // Collected items are saved into the uploaded data by default. Check "Ignore on
+    // save" in the Data Collector window to exclude this one from the saved fields
+    // (it is still ingested into $.groupState.collectedData and can be referenced by
+    // an Extra item).
+    public bool ignoreOnSave = false;
 }
 
 [Serializable]

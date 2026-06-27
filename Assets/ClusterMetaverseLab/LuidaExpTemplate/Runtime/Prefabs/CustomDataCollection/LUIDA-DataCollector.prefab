@@ -86,7 +86,28 @@ MonoBehaviour:
     (res == null) {\r\n        $.log(\"callExternal ERROR: \" + err);\r\n       
     return;\r\n    }\r\n\r\n    if (meta === \"customDataUploaded\") {\r\n       
     $.log(\"Response after customDataUploaded called: \" + JSON.stringify(res));\r\n   
-    }\r\n});\r\n\r\nfunction recordData () {\r\n    $.state.customData = calculateData();\r\n}\r\n\r\nfunction
+    }\r\n});\r\n\r\n// Accept data pushed by other items via send() (e.g. a custom
+    CCK item).\r\n// Item-group-independent: the payload carries the data, which
+    we merge into\r\n// THIS collector's own $.groupState.collectedData scratchpad,
+    then optionally\r\n// snapshot a row / flush - mirroring the exp_recordCustomData
+    / exp_uploadCustomData\r\n// handling in $.onUpdate above.\r\n// Message: send(\"luida_collect\",
+    { label: value, ..., __record?: bool, __upload?: bool })\r\n//   - Every data
+    key is merged into the collector's scratchpad.\r\n//   - __record: true snapshots
+    a row HERE (after the data lands) \u2014 do this instead of\r\n//     triggering
+    the save from another item/gimmick, which can race send()'s delivery\r\n//    
+    latency and snapshot the previous (or default) value instead.\r\n//   - __upload:
+    true flushes the buffer to the backend.\r\n//   \"__record\" / \"__upload\" are
+    control flags, not data (never written to the scratchpad).\r\n$.onReceive((messageType,
+    arg, sender) => {\r\n    if (messageType !== \"luida_collect\") return;\r\n\r\n   
+    if (!$.groupState.collectedData) $.groupState.collectedData = {};\r\n    const
+    cd = $.groupState.collectedData;\r\n    if (arg && typeof arg === \"object\")
+    {\r\n        for (const k in arg) {\r\n            if (k === \"__record\" ||
+    k === \"__upload\") continue;\r\n            cd[k] = arg[k];\r\n        }\r\n   
+    }\r\n    $.groupState.collectedData = cd;\r\n\r\n    // Snapshot / flush HERE,
+    after the just-sent data is in the scratchpad, so the row\r\n    // captures
+    this send's value even on the very first send.\r\n    if (arg && arg.__record)
+    recordData();\r\n    if (arg && arg.__upload && $.state.uploadIndex === 0) uploadDataInit();\r\n});\r\n\r\nfunction
+    recordData () {\r\n    $.state.customData = calculateData();\r\n}\r\n\r\nfunction
     uploadDataInit() {\r\n    $.state.uploadIndex = 0;\r\n    $.state.elapsedTime
     = 0;\r\n    $.state.isUploading = true;\r\n\r\n    let dataByteLength = utf8ByteLength(JSON.stringify($.state.customData));\r\n   
     $.log(\"Data byte length: \" + dataByteLength);\r\n    $.state.steps = Math.ceil(dataByteLength

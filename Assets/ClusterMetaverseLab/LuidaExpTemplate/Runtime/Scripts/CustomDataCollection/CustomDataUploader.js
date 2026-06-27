@@ -43,6 +43,37 @@ $.onExternalCallEnd((res, meta, err) =>
     }
 });
 
+// Accept data pushed by other items via send() (e.g. a custom CCK item).
+// Item-group-independent: the payload carries the data, which we merge into
+// THIS collector's own $.groupState.collectedData scratchpad, then optionally
+// snapshot a row / flush - mirroring the exp_recordCustomData / exp_uploadCustomData
+// handling in $.onUpdate above.
+// Message: send("luida_collect", { label: value, ..., __record?: bool, __upload?: bool })
+//   - Every data key is merged into the collector's scratchpad.
+//   - __record: true snapshots a row HERE (after the data lands) — do this instead of
+//     triggering the save from another item/gimmick, which can race send()'s delivery
+//     latency and snapshot the previous (or default) value instead.
+//   - __upload: true flushes the buffer to the backend.
+//   "__record" / "__upload" are control flags, not data (never written to the scratchpad).
+$.onReceive((messageType, arg, sender) => {
+    if (messageType !== "luida_collect") return;
+
+    if (!$.groupState.collectedData) $.groupState.collectedData = {};
+    const cd = $.groupState.collectedData;
+    if (arg && typeof arg === "object") {
+        for (const k in arg) {
+            if (k === "__record" || k === "__upload") continue;
+            cd[k] = arg[k];
+        }
+    }
+    $.groupState.collectedData = cd;
+
+    // Snapshot / flush HERE, after the just-sent data is in the scratchpad, so the row
+    // captures this send's value even on the very first send.
+    if (arg && arg.__record) recordData();
+    if (arg && arg.__upload && $.state.uploadIndex === 0) uploadDataInit();
+});
+
 function recordData () {
     $.state.customData = calculateData();
 }
