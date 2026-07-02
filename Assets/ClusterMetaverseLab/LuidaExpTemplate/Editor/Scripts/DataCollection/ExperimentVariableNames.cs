@@ -19,7 +19,7 @@ public static class ExperimentVariableNames
     {
         string sceneName = SceneManager.GetActiveScene().name;
         if (string.IsNullOrEmpty(sceneName)) return new string[0];
-        string path = $"Assets/_Experiment_/Settings/ExperimentVariables/{sceneName}.js";
+        string path = LuidaPaths.ExperimentVariablesJs(sceneName);
         if (!File.Exists(path)) return new string[0];
 
         string content;

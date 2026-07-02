@@ -10,12 +10,6 @@ using ClusterVR.CreatorKit.Item.Implements;
 
 public static class ItemsManagerAssetUtil
 {
-    private const string PrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/StateListeningItem.prefab";
-    private const string ScriptFolderFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
-    private const string ScriptTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/StateManagement/StateListeningItemTemplate.js";
-    private const string ExpManagersWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/LUIDA-ExpManagers.prefab";
-    private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
-    private const string DataCollectorPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/CustomDataCollection/LUIDA-DataCollector.prefab";
     private const string defaultOtherImplementation = @"// function Start() { }
 // function Update(deltaTime) { }
 // $.onCollide((collision) => { });
@@ -33,7 +27,7 @@ public static class ItemsManagerAssetUtil
     public static void RefreshStateList(ItemsManagerConfigTab editor)
     {
         string sceneName = SceneManager.GetActiveScene().name;
-        string listPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
+        string listPath = LuidaPaths.StateListAsset(sceneName);
         editor.stateList = AssetDatabase.LoadAssetAtPath<StateList>(listPath);
     }
     
@@ -41,7 +35,7 @@ public static class ItemsManagerAssetUtil
     {
         editor._cachedExperimentVariables.Clear();
         string sceneName = SceneManager.GetActiveScene().name;
-        editor._experimentVariablesAssetPath = $"Assets/_Experiment_/Settings/ExperimentVariables/{sceneName}.js";
+        editor._experimentVariablesAssetPath = LuidaPaths.ExperimentVariablesJs(sceneName);
 
         if (!File.Exists(editor._experimentVariablesAssetPath)) return;
 
@@ -85,7 +79,7 @@ public static class ItemsManagerAssetUtil
 
         foreach (var obj in potentialItems.Distinct())
         {
-            if (obj != null && PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == PrefabPath)
+            if (obj != null && PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == LuidaPaths.StateListeningItemPrefab)
             {
                 if (!currentItemsInScene.Contains(obj))
                     currentItemsInScene.Add(obj);
@@ -95,7 +89,7 @@ public static class ItemsManagerAssetUtil
         editor.stateListenersByItem.Clear();
 
         string sceneName = SceneManager.GetActiveScene().name;
-        string listenerDataFolder = Path.Combine(string.Format(ScriptFolderFormat, sceneName), "StateListeners");
+        string listenerDataFolder = Path.Combine(LuidaPaths.SceneStateManagementFolder(sceneName), "StateListeners");
         Directory.CreateDirectory(listenerDataFolder);
 
         foreach (var item in editor.stateListeningItems)
@@ -133,9 +127,9 @@ public static class ItemsManagerAssetUtil
             return;
         }
 
-        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
-        if (prefab == null) { Debug.LogError($"Prefab not found at path: {PrefabPath}"); return; }
-        
+        var prefab = LuidaPaths.Load<GameObject>(LuidaPaths.StateListeningItemPrefab);
+        if (prefab == null) { return; }
+
         GameObject go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
         go.name = editor.newItemName;
         Undo.RegisterCreatedObjectUndo(go, "Create StateListeningItem " + editor.newItemName);
@@ -145,27 +139,27 @@ public static class ItemsManagerAssetUtil
         AddAvatarSpawnerToWorldItemReferenceList(go);
 
         string scene = SceneManager.GetActiveScene().name;
-        string scriptFolder = string.Format(ScriptFolderFormat, scene);
+        string scriptFolder = LuidaPaths.SceneStateManagementFolder(scene);
         Directory.CreateDirectory(scriptFolder);
         string jsPath = Path.Combine(scriptFolder, editor.newItemName + ".js");
 
-        if (!File.Exists(ScriptTemplatePath))
+        if (!File.Exists(LuidaPaths.StateListeningItemTemplateJs))
         {
-            Debug.LogError($"Script template not found at: {ScriptTemplatePath}");
+            Debug.LogError($"Script template not found at: {LuidaPaths.StateListeningItemTemplateJs}");
             Undo.DestroyObjectImmediate(go);
             return;
         }
-        AssetDatabase.CopyAsset(ScriptTemplatePath, jsPath);
+        AssetDatabase.CopyAsset(LuidaPaths.StateListeningItemTemplateJs, jsPath);
         AssetDatabase.Refresh();
 
-        var combiner = go.GetComponent<ScriptableClusterScriptCombiner>();
-        if (combiner != null)
+        var combiner = LuidaCombiner.Get(go);
+        if (combiner.IsAvailable)
         {
             var newScriptAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(jsPath);
             if (newScriptAsset != null)
             {
                 combiner.ReplaceScript(newScriptAsset, 1, null, 0, true);
-                EditorUtility.SetDirty(combiner);
+                LuidaCombiner.MarkDirty(combiner);
             }
         }
 
@@ -186,7 +180,7 @@ public static class ItemsManagerAssetUtil
     {
         if (item == null) return;
         string scene = SceneManager.GetActiveScene().name;
-        string folder = string.Format(ScriptFolderFormat, scene);
+        string folder = LuidaPaths.SceneStateManagementFolder(scene);
         string jsPath = Path.Combine(folder, item.name + ".js");
         string assetPath = GetItemDataAssetPath(item);
 
@@ -257,8 +251,8 @@ public static class ItemsManagerAssetUtil
             return null;
         }
 
-        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
-        if (prefab == null) { Debug.LogError($"Prefab not found at path: {PrefabPath}"); return null; }
+        var prefab = LuidaPaths.Load<GameObject>(LuidaPaths.StateListeningItemPrefab);
+        if (prefab == null) { return null; }
 
         GameObject go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
         go.name = newName;
@@ -268,27 +262,27 @@ public static class ItemsManagerAssetUtil
         AddDataCollectorToWorldItemReferenceList(go);
 
         string scene = SceneManager.GetActiveScene().name;
-        string scriptFolder = string.Format(ScriptFolderFormat, scene);
+        string scriptFolder = LuidaPaths.SceneStateManagementFolder(scene);
         Directory.CreateDirectory(scriptFolder);
         string jsPath = Path.Combine(scriptFolder, newName + ".js");
 
-        if (!File.Exists(ScriptTemplatePath))
+        if (!File.Exists(LuidaPaths.StateListeningItemTemplateJs))
         {
-            Debug.LogError($"Script template not found at: {ScriptTemplatePath}");
+            Debug.LogError($"Script template not found at: {LuidaPaths.StateListeningItemTemplateJs}");
             Undo.DestroyObjectImmediate(go);
             return null;
         }
-        AssetDatabase.CopyAsset(ScriptTemplatePath, jsPath);
+        AssetDatabase.CopyAsset(LuidaPaths.StateListeningItemTemplateJs, jsPath);
         AssetDatabase.Refresh();
 
-        var combiner = go.GetComponent<ScriptableClusterScriptCombiner>();
-        if (combiner != null)
+        var combiner = LuidaCombiner.Get(go);
+        if (combiner.IsAvailable)
         {
             var newScriptAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(jsPath);
             if (newScriptAsset != null)
             {
                 combiner.ReplaceScript(newScriptAsset, 1, null, 0, true);
-                EditorUtility.SetDirty(combiner);
+                LuidaCombiner.MarkDirty(combiner);
             }
         }
 
@@ -463,7 +457,7 @@ public static class ItemsManagerAssetUtil
             lines.Add(legacyOther);
         }
 
-        string jsPath = Path.Combine(string.Format(ScriptFolderFormat, SceneManager.GetActiveScene().name), item.name + ".js");
+        string jsPath = Path.Combine(LuidaPaths.SceneStateManagementFolder(SceneManager.GetActiveScene().name), item.name + ".js");
         File.WriteAllText(jsPath, string.Join("\n\n", lines).Trim());
         AssetDatabase.ImportAsset(jsPath, ImportAssetOptions.ForceUpdate);
 
@@ -672,7 +666,7 @@ public static class ItemsManagerAssetUtil
     public static string GetItemDataAssetPath(GameObject item)
     {
         string sceneName = SceneManager.GetActiveScene().name;
-        string folder = Path.Combine(string.Format(ScriptFolderFormat, sceneName), "StateListeners");
+        string folder = Path.Combine(LuidaPaths.SceneStateManagementFolder(sceneName), "StateListeners");
         return Path.Combine(folder, item.name + ".asset");
     }
 
@@ -694,11 +688,11 @@ public static class ItemsManagerAssetUtil
 
         foreach (GameObject obj in SceneManager.GetActiveScene().GetRootGameObjects())
         {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) != ExpManagersWrapperPrefabPath) continue;
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) != LuidaPaths.ExpManagersPrefab) continue;
             for (int i = 0; i < obj.transform.childCount; i++)
             {
                 Transform child = obj.transform.GetChild(i);
-                if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == ConditionManagerPrefabPath)
+                if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == LuidaPaths.ConditionManagerPrefab)
                 {
                     ItemGroupHost host = child.GetComponent<ItemGroupHost>();
                     if (host != null)
@@ -719,7 +713,7 @@ public static class ItemsManagerAssetUtil
         foreach (GameObject obj in rootObjects)
         {
             string prefabPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(obj));
-            if (prefabPath == DataCollectorPrefabPath) dataCollector = obj;
+            if (prefabPath == LuidaPaths.DataCollectorPrefab) dataCollector = obj;
         }
         
         if (dataCollector)
@@ -794,7 +788,7 @@ public static class ItemsManagerAssetUtil
         {
             foreach (var transform in rootGO.GetComponentsInChildren<Transform>(true))
             {
-                if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(transform.gameObject) == PrefabPath)
+                if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(transform.gameObject) == LuidaPaths.StateListeningItemPrefab)
                 {
                     AddAvatarSpawnerToWorldItemReferenceList(transform.gameObject);
                 }

@@ -15,7 +15,6 @@ public static class VrmWrapperBuilder
 {
     // Output folders are derived per-call from the registry's scene folder.
     // See AvatarsConfigAssetUtil.GetSceneFolderFromRegistry.
-    private const string SyncCloneScriptPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/AvatarManagement/AvatarSyncClone.js";
 
     // Core 17 bones (always synced)
     private static readonly HumanBodyBones[] CoreBones = {
@@ -291,10 +290,10 @@ public static class VrmWrapperBuilder
         root.AddComponent<ScriptableItem>();
 
         // Add CSCombiner and wire up JS files
-        var combiner = root.AddComponent<ScriptableClusterScriptCombiner>();
+        var combiner = LuidaCombiner.EnsureOn(root);
 
         var boneMapAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(boneMapJsPath);
-        var syncCloneAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(SyncCloneScriptPath);
+        var syncCloneAsset = LuidaPaths.Load<JavaScriptAsset>(LuidaPaths.AvatarSyncCloneJs);
 
         if (boneMapAsset != null)
             combiner.AppendScript(boneMapAsset, null);
@@ -304,9 +303,9 @@ public static class VrmWrapperBuilder
         if (syncCloneAsset != null)
             combiner.AppendScript(syncCloneAsset, null);
         else
-            Debug.LogWarning($"[VrmWrapperBuilder] Could not load AvatarSyncClone.js at {SyncCloneScriptPath}");
+            Debug.LogWarning($"[VrmWrapperBuilder] Could not load AvatarSyncClone.js at {LuidaPaths.AvatarSyncCloneJs}");
 
-        combiner.CombineScripts();
+        combiner.Combine();
 
         // Save as prefab
         string prefabPath = Path.Combine(wrapperFolder, $"{entry.avatarID}.prefab");

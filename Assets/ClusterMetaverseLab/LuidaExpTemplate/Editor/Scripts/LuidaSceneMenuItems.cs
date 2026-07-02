@@ -8,8 +8,6 @@ using System.IO;
 /// </summary>
 public class LuidaSceneMenuItems
 {
-    private const string scenePath = "Assets/_Experiment_/Scenes/";
-
     [MenuItem("LUIDA/Scene/Create new scene")]
     private static void CreateNewSceneMenuItem()
     {
@@ -23,7 +21,7 @@ public class LuidaSceneMenuItems
     private static void DuplicateCurrentSceneMenuItem()
     {
         string currentScenePath = EditorSceneManager.GetActiveScene().path;
-        if (!currentScenePath.StartsWith(scenePath))
+        if (!currentScenePath.StartsWith($"{LuidaPaths.ExperimentScenesFolder}/"))
         {
             EditorUtility.DisplayDialog("Error", "The current scene is not a valid experiment scene.\nPlease open a scene inside 'Assets/_Experiment_/Scenes/'.", "OK");
             return;

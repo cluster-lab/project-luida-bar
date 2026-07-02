@@ -23,8 +23,8 @@ public static class LuidaAutomationStatus
     public static bool IsActiveForScene(string sceneName)
     {
         if (string.IsNullOrEmpty(sceneName)) return false;
-        string stateListPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
-        string variablesAssetPath = $"Assets/_Experiment_/Settings/ExperimentVariables/{sceneName}.js";
+        string stateListPath = LuidaPaths.StateListAsset(sceneName);
+        string variablesAssetPath = LuidaPaths.ExperimentVariablesJs(sceneName);
         return File.Exists(stateListPath) && File.Exists(variablesAssetPath);
     }
 }

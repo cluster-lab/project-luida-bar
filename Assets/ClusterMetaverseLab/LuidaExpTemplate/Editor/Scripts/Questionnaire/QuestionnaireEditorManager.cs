@@ -10,11 +10,6 @@ using ClusterVR.CreatorKit.Gimmick.Implements;
 
 public static class QuestionnaireEditorManager
 {
-    private const string formPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/Questionnaire/Questionnaire.prefab";
-    private const string identifiersAssetPath = "Assets/_Experiment_/Settings/ExpIdentifiers.js";
-    private const string ExpManagersWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/LUIDA-ExpManagers.prefab";
-    private const string ParticipantManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ParticipantManager.prefab";
-    private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
     private const string WorldItemRefListObjectName = "WorldItemRefList";
     private const string StateQuestionnaireRootName = "LUIDA-QuestionnaireByState";
 
@@ -32,7 +27,7 @@ public static class QuestionnaireEditorManager
         LuidaQuestionnaire idSync = stateContainer.AddComponent<LuidaQuestionnaire>();
         idSync.qId = qIDToSet;
         
-        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(formPrefabPath);
+        GameObject prefab = LuidaPaths.Load<GameObject>(LuidaPaths.QuestionnairePrefab);
         if (prefab == null) return;
         
         if (pNum <= 0) pNum = GetPNum();
@@ -50,14 +45,14 @@ public static class QuestionnaireEditorManager
             if (formController != null)
             {
                 EnableAccessToParticipantManager(formController);
-                var identifiersAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(identifiersAssetPath);
+                var identifiersAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(LuidaPaths.ExpIdentifiersJs);
                 if (identifiersAsset != null)
                 {
-                    ScriptableClusterScriptCombiner combiner = formController.GetComponent<ScriptableClusterScriptCombiner>();
-                    if (combiner != null)
+                    var combiner = LuidaCombiner.Get(formController);
+                    if (combiner.IsAvailable)
                     {
                         combiner.ReplaceScript(identifiersAsset, 0, null, 0, true);
-                        EditorUtility.SetDirty(combiner);
+                        LuidaCombiner.MarkDirty(combiner);
                     }
                 }
                 RemoveStateTransitionTriggers(formController);
@@ -78,7 +73,7 @@ public static class QuestionnaireEditorManager
         GameObject expManagersWrapper = null;
         foreach (var root in SceneManager.GetActiveScene().GetRootGameObjects())
         {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(root) == ExpManagersWrapperPrefabPath)
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(root) == LuidaPaths.ExpManagersPrefab)
             {
                 expManagersWrapper = root;
                 break;
@@ -118,7 +113,7 @@ public static class QuestionnaireEditorManager
         for (int i = stateContainer.transform.childCount - 1; i >= 0; i--)
         {
             var child = stateContainer.transform.GetChild(i).gameObject;
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child) == formPrefabPath)
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child) == LuidaPaths.QuestionnairePrefab)
             {
                 Undo.DestroyObjectImmediate(child);
             }
@@ -128,7 +123,7 @@ public static class QuestionnaireEditorManager
         stateList.States[stateId].qID = qIDToSet;
         EditorUtility.SetDirty(stateList);
 
-        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(formPrefabPath);
+        GameObject prefab = LuidaPaths.Load<GameObject>(LuidaPaths.QuestionnairePrefab);
         if (prefab == null) return;
         
         if (pNum <= 0) pNum = GetPNum();
@@ -145,14 +140,14 @@ public static class QuestionnaireEditorManager
             if (formController != null)
             {
                 EnableAccessToParticipantManager(formController);
-                var identifiersAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(identifiersAssetPath);
+                var identifiersAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(LuidaPaths.ExpIdentifiersJs);
                 if (identifiersAsset != null)
                 {
-                    var combiner = formController.GetComponent<ScriptableClusterScriptCombiner>();
-                    if (combiner != null)
+                    var combiner = LuidaCombiner.Get(formController);
+                    if (combiner.IsAvailable)
                     {
                         combiner.ReplaceScript(identifiersAsset, 0, null, 0, true);
-                        EditorUtility.SetDirty(combiner);
+                        LuidaCombiner.MarkDirty(combiner);
                     }
                 }
                 UpdateID(formController, "qID", qIDToSet);
@@ -255,7 +250,7 @@ public static class QuestionnaireEditorManager
         {
             if (!child.gameObject.activeSelf) continue;
             var path = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject);
-            if (path == formPrefabPath) return true;
+            if (path == LuidaPaths.QuestionnairePrefab) return true;
         }
         return false;
     }
@@ -367,11 +362,11 @@ public static class QuestionnaireEditorManager
     {
         foreach (var root in SceneManager.GetActiveScene().GetRootGameObjects())
         {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(root) != ExpManagersWrapperPrefabPath)
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(root) != LuidaPaths.ExpManagersPrefab)
                 continue;
             foreach (Transform child in root.transform)
             {
-                if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == ConditionManagerPrefabPath)
+                if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == LuidaPaths.ConditionManagerPrefab)
                 {
                     return child.gameObject;
                 }
@@ -382,8 +377,8 @@ public static class QuestionnaireEditorManager
 
     private static int GetPNum()
     {
-        if (!File.Exists(identifiersAssetPath)) return 1;
-        var text = File.ReadAllText(identifiersAssetPath);
+        if (!File.Exists(LuidaPaths.ExpIdentifiersJs)) return 1;
+        var text = File.ReadAllText(LuidaPaths.ExpIdentifiersJs);
         var m = System.Text.RegularExpressions.Regex.Match(text, @"pNum\s*=\s*(\d+)\s*;");
         return m.Success ? int.Parse(m.Groups[1].Value) : 1;
     }
@@ -393,11 +388,11 @@ public static class QuestionnaireEditorManager
         var itemGroupMember = item.GetComponent<ItemGroupMember>() ?? (item.AddComponent(typeof(ItemGroupMember)) as ItemGroupMember);
         foreach (GameObject obj in SceneManager.GetActiveScene().GetRootGameObjects())
         {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) != ExpManagersWrapperPrefabPath) continue;
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) != LuidaPaths.ExpManagersPrefab) continue;
             for (int i = 0; i < obj.transform.childCount; i++)
             {
                 Transform child = obj.transform.GetChild(i);
-                if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == ParticipantManagerPrefabPath)
+                if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == LuidaPaths.ParticipantManagerPrefab)
                 {
                     ItemGroupHost host = child.GetComponent<ItemGroupHost>();
                     if (host != null)

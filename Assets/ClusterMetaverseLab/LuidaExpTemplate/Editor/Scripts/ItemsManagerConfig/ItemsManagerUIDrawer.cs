@@ -25,8 +25,8 @@ public static class ItemsManagerUIDrawer
         public List<OscArgument> Arguments = new List<OscArgument>();
     }
 
-    private static string docFilePath = "Assets/Doc/LUIDA-StateListeningItemScriptDoc.md";
-    private static readonly string codeFontPath = "Assets/Fonts/FiraCode-Regular.ttf";
+    private static string docFilePath => LuidaPaths.StateListeningItemDocMd;
+    private static string codeFontPath => LuidaPaths.CodeFontTtf;
 
     private static readonly string[] HumanoidBoneNames =
     {

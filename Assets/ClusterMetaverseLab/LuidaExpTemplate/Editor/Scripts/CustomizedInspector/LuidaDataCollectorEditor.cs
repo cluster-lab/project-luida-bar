@@ -7,13 +7,12 @@ using ClusterVR.CreatorKit.Operation.Implements;
 [CustomEditor(typeof(LuidaDataCollector))]
 public class LuidaDataCollectorEditor : Editor
 {
-    private string markdownFilePath = "Assets/Doc/LUIDA-DataCollectorScriptDoc.md";
+    private string markdownFilePath = LuidaPaths.DataCollectorDocMd;
     private static readonly System.Type[] TypesToHide =
     {
         typeof(ItemLogic),
         typeof(ScriptableItem),
-        typeof(ItemGroupMember),
-        typeof(ScriptableClusterScriptCombiner)
+        typeof(ItemGroupMember)
     };
     private readonly List<Component> hiddenComponents = new List<Component>();
 
@@ -45,6 +44,14 @@ public class LuidaDataCollectorEditor : Editor
                     hiddenComponents.Add(component);
                 }
             }
+        }
+
+        // The script combiner's type is KaomoLab-gated, so hide its instance via LuidaCombiner.
+        var combiner = LuidaCombiner.FindOn(dataCollector.gameObject);
+        if (combiner != null)
+        {
+            combiner.hideFlags |= HideFlags.HideInInspector;
+            hiddenComponents.Add(combiner);
         }
     }
 
@@ -83,9 +90,8 @@ public class LuidaDataCollectorEditor : Editor
 
     private JavaScriptAsset FindExistingCalculatorScript()
     {
-        const string DataCollectorScriptFolderPath = "Assets/_Experiment_/Scripts/DataCollectors/";
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        string calculatorPath = $"{DataCollectorScriptFolderPath}{sceneName}.js";
+        string calculatorPath = LuidaPaths.DataCollectorJs(sceneName);
         return AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(calculatorPath);
     }
 }

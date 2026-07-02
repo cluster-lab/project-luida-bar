@@ -10,17 +10,12 @@ using ClusterVR.CreatorKit.Gimmick.Implements;
 
 public static class LuidaSceneUtility
 {
-    private const string scenePath = "Assets/_Experiment_/Scenes/";
-    private const string templateScenePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scenes/Template.unity";
-    private const string CalculatorTemplateAssetPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/CustomDataCollection/CustomDataCalculatorTemplate.js";
-    private const string DataCollectorScriptFolderPath = "Assets/_Experiment_/Scripts/DataCollectors/";
-
     /// <summary>
     /// Creates a new, "inactive" experiment scene from the template.
     /// </summary>
     public static void CreateNewSceneFromTemplate(string newSceneName)
     {
-        string newScenePath = Path.Combine(scenePath, newSceneName + ".unity");
+        string newScenePath = $"{LuidaPaths.ExperimentScenesFolder}/{newSceneName}.unity";
 
         if (File.Exists(newScenePath))
         {
@@ -28,8 +23,8 @@ public static class LuidaSceneUtility
             return;
         }
 
-        Directory.CreateDirectory(scenePath);
-        File.Copy(templateScenePath, newScenePath);
+        Directory.CreateDirectory(LuidaPaths.ExperimentScenesFolder);
+        File.Copy(LuidaPaths.SceneTemplateUnity, newScenePath);
         AssetDatabase.Refresh();
         EditorSceneManager.OpenScene(newScenePath);
 
@@ -49,7 +44,7 @@ public static class LuidaSceneUtility
     public static void DuplicateCurrentScene(string newSceneName)
     {
         string currentScenePath = EditorSceneManager.GetActiveScene().path;
-        string newScenePath = Path.Combine(scenePath, newSceneName + ".unity");
+        string newScenePath = $"{LuidaPaths.ExperimentScenesFolder}/{newSceneName}.unity";
 
         if (File.Exists(newScenePath))
         {
@@ -62,7 +57,7 @@ public static class LuidaSceneUtility
         EditorSceneManager.OpenScene(newScenePath);
 
         // After opening the new scene, update the script references within it.
-        string newStateListenerScriptsFolder = $"Assets/_Experiment_/Scripts/StateManagement/{newSceneName}";
+        string newStateListenerScriptsFolder = LuidaPaths.SceneStateManagementFolder(newSceneName);
         UpdateScriptableClusterScriptCombiners(newSceneName, newStateListenerScriptsFolder);
         UpdateDataCollectorScriptCombiner(newSceneName);
         RewireAvatarSpawnerForDuplicatedScene(newSceneName);
@@ -71,30 +66,30 @@ public static class LuidaSceneUtility
     
     private static void DuplicateSceneAndAssets(string currentScenePath, string newSceneName)
     {
-        string newScenePath = Path.Combine(scenePath, newSceneName + ".unity");
+        string newScenePath = $"{LuidaPaths.ExperimentScenesFolder}/{newSceneName}.unity";
         File.Copy(currentScenePath, newScenePath, true);
 
         string currentSceneName = Path.GetFileNameWithoutExtension(currentScenePath);
 
         // Duplicate StateList asset
-        string stateListPath = $"Assets/_Experiment_/Settings/StateList/{currentSceneName}.asset";
+        string stateListPath = LuidaPaths.StateListAsset(currentSceneName);
         if (File.Exists(stateListPath))
         {
-            string newStateListPath = $"Assets/_Experiment_/Settings/StateList/{newSceneName}.asset";
+            string newStateListPath = LuidaPaths.StateListAsset(newSceneName);
             File.Copy(stateListPath, newStateListPath, true);
             RenameAssetObjectToMatchFile(newStateListPath, newSceneName);
         }
 
         // Duplicate ExperimentVariables asset
-        string experimentVariablesPath = $"Assets/_Experiment_/Settings/ExperimentVariables/{currentSceneName}.js";
+        string experimentVariablesPath = LuidaPaths.ExperimentVariablesJs(currentSceneName);
         if (File.Exists(experimentVariablesPath))
         {
-            File.Copy(experimentVariablesPath, $"Assets/_Experiment_/Settings/ExperimentVariables/{newSceneName}.js", true);
+            File.Copy(experimentVariablesPath, LuidaPaths.ExperimentVariablesJs(newSceneName), true);
         }
 
         // Duplicate StateListenersItemData assets
-        string stateListenersFolder = $"Assets/_Experiment_/Scripts/StateManagement/{currentSceneName}/StateListeners";
-        string newStateListenersFolder = $"Assets/_Experiment_/Scripts/StateManagement/{newSceneName}/StateListeners";
+        string stateListenersFolder = $"{LuidaPaths.SceneStateManagementFolder(currentSceneName)}/StateListeners";
+        string newStateListenersFolder = $"{LuidaPaths.SceneStateManagementFolder(newSceneName)}/StateListeners";
         if (Directory.Exists(stateListenersFolder))
         {
             Directory.CreateDirectory(newStateListenersFolder);
@@ -107,8 +102,8 @@ public static class LuidaSceneUtility
         }
 
         // Duplicate StateListenersItemData scripts
-        string stateListenerScriptsFolder = $"Assets/_Experiment_/Scripts/StateManagement/{currentSceneName}";
-        string newStateListenerScriptsFolder = $"Assets/_Experiment_/Scripts/StateManagement/{newSceneName}";
+        string stateListenerScriptsFolder = LuidaPaths.SceneStateManagementFolder(currentSceneName);
+        string newStateListenerScriptsFolder = LuidaPaths.SceneStateManagementFolder(newSceneName);
         if (Directory.Exists(stateListenerScriptsFolder))
         {
             Directory.CreateDirectory(newStateListenerScriptsFolder);
@@ -121,20 +116,20 @@ public static class LuidaSceneUtility
         }
 
         // Duplicate DataCollector script
-        string dataCollectorScriptPath = $"Assets/_Experiment_/Scripts/DataCollectors/{currentSceneName}.js";
+        string dataCollectorScriptPath = LuidaPaths.DataCollectorJs(currentSceneName);
         if (File.Exists(dataCollectorScriptPath))
         {
-            File.Copy(dataCollectorScriptPath, $"Assets/_Experiment_/Scripts/DataCollectors/{newSceneName}.js", true);
+            File.Copy(dataCollectorScriptPath, LuidaPaths.DataCollectorJs(newSceneName), true);
         }
 
         // Duplicate DataCollector config asset. Gimmicks resolve this by active
         // scene name (DataCollectorGimmickShared.FindBuilderConfig), so we just
         // need a file present at the new scene's path — no reference rewiring.
-        string dcConfigPath = $"{DataCollectorConfigFolderPath}{currentSceneName}.asset";
+        string dcConfigPath = LuidaPaths.DataCollectorConfigAsset(currentSceneName);
         if (File.Exists(dcConfigPath))
         {
-            Directory.CreateDirectory(DataCollectorConfigFolderPath);
-            string newDcConfigPath = $"{DataCollectorConfigFolderPath}{newSceneName}.asset";
+            Directory.CreateDirectory(LuidaPaths.DataCollectorConfigFolder);
+            string newDcConfigPath = LuidaPaths.DataCollectorConfigAsset(newSceneName);
             File.Copy(dcConfigPath, newDcConfigPath, true);
             RenameAssetObjectToMatchFile(newDcConfigPath, newSceneName);
         }
@@ -146,8 +141,6 @@ public static class LuidaSceneUtility
         // BoneMap.js files. Rebuilding produces an internally consistent new set.
         DuplicateAvatarRegistryByRebuild(currentSceneName, newSceneName);
     }
-
-    private const string DataCollectorConfigFolderPath = "Assets/_Experiment_/Settings/DataCollectorConfig/";
 
     /// <summary>
     /// File.Copy preserves the source asset's serialized m_Name, which then
@@ -247,8 +240,8 @@ public static class LuidaSceneUtility
 
         foreach (var item in stateListeningItems)
         {
-            var scriptCombiner = item.GetComponent<ScriptableClusterScriptCombiner>();
-            if (scriptCombiner == null) continue;
+            var scriptCombiner = LuidaCombiner.Get(item.gameObject);
+            if (!scriptCombiner.IsAvailable) continue;
 
             string itemName = item.name;
             string newScriptPath = Path.Combine(newStateListenerScriptsFolder, $"{itemName}.js").Replace("\\", "/");
@@ -257,8 +250,8 @@ public static class LuidaSceneUtility
             if (newScriptAsset == null) continue;
 
             scriptCombiner.ReplaceScript(newScriptAsset, 1, null, 0, false);
-            scriptCombiner.CombineScripts();
-            EditorUtility.SetDirty(scriptCombiner);
+            scriptCombiner.Combine();
+            LuidaCombiner.MarkDirty(scriptCombiner);
         }
         AssetDatabase.SaveAssets();
     }
@@ -268,26 +261,22 @@ public static class LuidaSceneUtility
         var dataCollector = GameObject.FindObjectOfType<LuidaDataCollector>();
         if (dataCollector == null) return;
 
-        var scriptCombiner = dataCollector.GetComponent<ScriptableClusterScriptCombiner>();
-        if (scriptCombiner == null) return;
+        var scriptCombiner = LuidaCombiner.Get(dataCollector.gameObject);
+        if (!scriptCombiner.IsAvailable) return;
 
-        var newScriptPath = $"{DataCollectorScriptFolderPath}{newSceneName}.js";
+        var newScriptPath = LuidaPaths.DataCollectorJs(newSceneName);
         var newScriptAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(newScriptPath);
         if (newScriptAsset == null)
         {
-            var calculatorTemplateAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(CalculatorTemplateAssetPath);
+            var calculatorTemplateAsset = LuidaPaths.Load<JavaScriptAsset>(LuidaPaths.CalculatorTemplateJs);
             if (calculatorTemplateAsset == null)
             {
-                Debug.LogError("Failed to load Identifiers or Calculator Template assets.");
                 return;
             }
 
-            if (!Directory.Exists(DataCollectorScriptFolderPath))
-            {
-                Directory.CreateDirectory(DataCollectorScriptFolderPath);
-            }
+            LuidaPaths.EnsureFolder(LuidaPaths.DataCollectorsFolder);
 
-            AssetDatabase.CopyAsset(CalculatorTemplateAssetPath, newScriptPath);
+            AssetDatabase.CopyAsset(LuidaPaths.CalculatorTemplateJs, newScriptPath);
             AssetDatabase.Refresh();
             newScriptAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(newScriptPath);
         }
@@ -295,8 +284,8 @@ public static class LuidaSceneUtility
         dataCollector.calculationScript = newScriptAsset;
         EditorUtility.SetDirty(dataCollector);
         scriptCombiner.ReplaceScript(newScriptAsset, 2, null, 0, false);
-        scriptCombiner.CombineScripts();
-        EditorUtility.SetDirty(scriptCombiner);
+        scriptCombiner.Combine();
+        LuidaCombiner.MarkDirty(scriptCombiner);
         AssetDatabase.SaveAssets();
     }
 }

@@ -22,8 +22,6 @@ using UnityEngine;
 /// </summary>
 public class DataCollectorConfigTab : EditorWindow
 {
-    private const string ExperimentScenesPath = "Assets/_Experiment_/Scenes/";
-
     private LuidaDataCollectorConfig _config;
     private ReorderableList _labelList;
     private ReorderableList _fieldList;
@@ -83,7 +81,7 @@ public class DataCollectorConfigTab : EditorWindow
     private bool IsExperimentSceneActive()
     {
         string scenePath = EditorSceneManager.GetActiveScene().path;
-        return !string.IsNullOrEmpty(scenePath) && scenePath.StartsWith(ExperimentScenesPath);
+        return !string.IsNullOrEmpty(scenePath) && scenePath.StartsWith(LuidaPaths.ExperimentScenesFolder + "/");
     }
 
     // ─── OnGUI ──────────────────────────────────────────────────────────
@@ -99,7 +97,7 @@ public class DataCollectorConfigTab : EditorWindow
         if (!IsExperimentSceneActive())
         {
             EditorGUILayout.HelpBox(
-                "Open a LUIDA experiment scene (under Assets/_Experiment_/Scenes/) to configure the data collector.\n" +
+                $"Open a LUIDA experiment scene (under {LuidaPaths.ExperimentScenesFolder}/) to configure the data collector.\n" +
                 "Use LUIDA → Configure experiment automation to create one.",
                 MessageType.Info);
             return;

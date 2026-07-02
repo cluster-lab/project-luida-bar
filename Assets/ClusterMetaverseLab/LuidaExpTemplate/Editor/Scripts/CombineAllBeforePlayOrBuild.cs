@@ -2,6 +2,7 @@ using ClusterVR.CreatorKit.Editor.EditorEvents;
 using UnityEngine;
 using UnityEditor;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -15,11 +16,15 @@ public class CombineAllBeforePlayOrBuild
     // file's `isTestMode = (true|false);` line so the uploaded combined scripts
     // ship with isTestMode=false. ExpIdentifiers.js feeds ParticipantManager /
     // DataCollector; ConditionManager.js declares its own copy (it isn't
-    // CSCombined with ExpIdentifiers.js).
-    private static readonly string[] TestModeSourcePaths = {
-        "Assets/_Experiment_/Settings/ExpIdentifiers.js",
-        "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/ConditionManagement/ConditionManager.js",
-    };
+    // CSCombined with ExpIdentifiers.js). Resolved via LuidaPaths so they keep
+    // working when LUIDA lives under Packages/. The ConditionManager source is
+    // package-internal and may be read-only once published — SetTestModeInFile
+    // degrades gracefully in that case.
+    private static IEnumerable<string> GetTestModeSourcePaths()
+    {
+        yield return LuidaPaths.ExpIdentifiersJs;          // user space (writable)
+        yield return LuidaPaths.ConditionManagerSourceJs;  // package space
+    }
 
     static CombineAllBeforePlayOrBuild()
     {
@@ -32,13 +37,7 @@ public class CombineAllBeforePlayOrBuild
     private static void RunCSCombiner()
     {
         AvatarsConfigAssetUtil.GenerateAvatarGimmickTriggerConfig();
-
-        Type csCombinerType = Type.GetType("Assets.KaomoLab.CSCombiner.CSCombiner, Assembly-CSharp-Editor");
-        if (csCombinerType != null)
-        {
-            var method = csCombinerType.GetMethod("CombineAll", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-            method?.Invoke(null, null);
-        }
+        LuidaCombiner.CombineAll();
     }
 
     static bool OnWorldUploadStarted(WorldUploadStartEventData data)
@@ -121,12 +120,7 @@ public class CombineAllBeforePlayOrBuild
         // Regenerate avatar gimmick trigger config before combining
         AvatarsConfigAssetUtil.GenerateAvatarGimmickTriggerConfig();
 
-        Type csCombinerType = Type.GetType("Assets.KaomoLab.CSCombiner.CSCombiner, Assembly-CSharp-Editor");
-        if (csCombinerType != null)
-        {
-            var method = csCombinerType.GetMethod("CombineAll", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-            method?.Invoke(null, null);
-        }
+        LuidaCombiner.CombineAll();
 
         // The restore-to-test-mode step that used to live here ran inside
         // the same call as the upload-state bake, but CCK's TryExportAssets
@@ -150,7 +144,7 @@ public class CombineAllBeforePlayOrBuild
 
     private static void SetTestMode(bool isTestMode)
     {
-        foreach (var path in TestModeSourcePaths)
+        foreach (var path in GetTestModeSourcePaths())
         {
             SetTestModeInFile(path, isTestMode);
         }
@@ -158,7 +152,7 @@ public class CombineAllBeforePlayOrBuild
 
     private static void SetTestModeInFile(string path, bool isTestMode)
     {
-        if (!File.Exists(path)) return;
+        if (string.IsNullOrEmpty(path) || !File.Exists(path)) return;
 
         string content = File.ReadAllText(path);
         string replacement = $"isTestMode = {isTestMode.ToString().ToLower()};";
@@ -176,8 +170,18 @@ public class CombineAllBeforePlayOrBuild
             content += $"\n{replacement}\n";
         }
 
-        File.WriteAllText(path, content);
-        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+        try
+        {
+            File.WriteAllText(path, content);
+            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+        }
+        catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
+        {
+            // The path may live in a read-only package (published LUIDA). Don't
+            // block play/upload; warn so the test-mode state is understood.
+            Debug.LogWarning($"[LUIDA] Could not write the test-mode flag to '{path}' " +
+                             $"(it may be inside a read-only package): {ex.Message}");
+        }
     }
 
 }

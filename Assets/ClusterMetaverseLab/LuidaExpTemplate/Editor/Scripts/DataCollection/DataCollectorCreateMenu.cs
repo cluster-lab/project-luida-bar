@@ -6,15 +6,6 @@ using ClusterVR.CreatorKit.Item.Implements;
 
 public class DataCollectorCreateMenu
 {
-    // Define the necessary asset paths
-    private const string DataCollectorPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/CustomDataCollection/LUIDA-DataCollector.prefab";
-    private const string ExpManagersWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/LUIDA-ExpManagers.prefab";
-    private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
-    private const string IdentifiersAssetPath = "Assets/_Experiment_/Settings/ExpIdentifiers.js";
-    private const string CalculatorTemplateAssetPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/CustomDataCollection/CustomDataCalculatorTemplate.js";
-    private const string DataCollectorScriptFolderPath = "Assets/_Experiment_/Scripts/DataCollectors/";
-    public const string DataCollectorConfigFolderPath = "Assets/_Experiment_/Settings/DataCollectorConfig/";
-
     /// <summary>
     /// Creates a LUIDA Data Collector instance in the scene from the GameObject menu.
     /// </summary>
@@ -44,10 +35,9 @@ public class DataCollectorCreateMenu
             return null;
         }
 
-        GameObject dataCollectorPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(DataCollectorPrefabPath);
+        GameObject dataCollectorPrefab = LuidaPaths.Load<GameObject>(LuidaPaths.DataCollectorPrefab);
         if (dataCollectorPrefab == null)
         {
-            Debug.LogError("LUIDA Data Collector prefab not found at: " + DataCollectorPrefabPath);
             return null;
         }
 
@@ -82,19 +72,16 @@ public class DataCollectorCreateMenu
     private static JavaScriptAsset FindOrCreateCalculatorScript()
     {
         string sceneName = SceneManager.GetActiveScene().name;
-        string newCalculatorPath = $"{DataCollectorScriptFolderPath}{sceneName}.js";
+        string newCalculatorPath = LuidaPaths.DataCollectorJs(sceneName);
 
-        if (!Directory.Exists(DataCollectorScriptFolderPath))
-        {
-            Directory.CreateDirectory(DataCollectorScriptFolderPath);
-        }
+        LuidaPaths.EnsureFolder(LuidaPaths.DataCollectorsFolder);
 
         if (File.Exists(newCalculatorPath))
         {
             return AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(newCalculatorPath);
         }
 
-        if (!AssetDatabase.CopyAsset(CalculatorTemplateAssetPath, newCalculatorPath))
+        if (!AssetDatabase.CopyAsset(LuidaPaths.CalculatorTemplateJs, newCalculatorPath))
         {
             Debug.LogError("Failed to copy the Calculator template asset.");
             return null;
@@ -111,23 +98,19 @@ public class DataCollectorCreateMenu
 
     private static void AssignScriptToCombiner(GameObject collectorInstance, JavaScriptAsset scriptAsset)
     {
-        var scriptCombiner = collectorInstance.GetComponent<ScriptableClusterScriptCombiner>();
-        if (scriptCombiner != null)
+        var scriptCombiner = LuidaCombiner.Get(collectorInstance);
+        if (scriptCombiner.IsAvailable)
         {
-            var identifiersAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(IdentifiersAssetPath);
+            var identifiersAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(LuidaPaths.ExpIdentifiersJs);
             if (identifiersAsset == null)
             {
-                Debug.LogError("Failed to load Identifiers asset at: " + IdentifiersAssetPath);
+                Debug.LogError("Failed to load Identifiers asset at: " + LuidaPaths.ExpIdentifiersJs);
                 return;
             }
             scriptCombiner.ReplaceScript(identifiersAsset, 0, null, 0, false);
             scriptCombiner.ReplaceScript(scriptAsset, 2, null, 0, true);
-            EditorUtility.SetDirty(scriptCombiner);
+            LuidaCombiner.MarkDirty(scriptCombiner);
             AssetDatabase.SaveAssets();
-        }
-        else
-        {
-            Debug.LogError("ScriptableClusterScriptCombiner component not found on the DataCollector instance.");
         }
     }
 
@@ -138,11 +121,11 @@ public class DataCollectorCreateMenu
 
         foreach (GameObject obj in SceneManager.GetActiveScene().GetRootGameObjects())
         {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) != ExpManagersWrapperPrefabPath) continue;
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) != LuidaPaths.ExpManagersPrefab) continue;
             for (int i = 0; i < obj.transform.childCount; i++)
             {
                 Transform child = obj.transform.GetChild(i);
-                if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == ConditionManagerPrefabPath)
+                if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == LuidaPaths.ConditionManagerPrefab)
                 {
                     ItemGroupHost host = child.GetComponent<ItemGroupHost>();
                     if (host != null)
@@ -168,21 +151,18 @@ public class DataCollectorCreateMenu
         string sceneName = SceneManager.GetActiveScene().name;
         if (string.IsNullOrEmpty(sceneName)) return null;
 
-        string configPath = $"{DataCollectorConfigFolderPath}{sceneName}.asset";
+        string configPath = LuidaPaths.DataCollectorConfigAsset(sceneName);
         var existing = AssetDatabase.LoadAssetAtPath<LuidaDataCollectorConfig>(configPath);
         if (existing != null) return existing;
 
-        if (!Directory.Exists(DataCollectorConfigFolderPath))
-        {
-            Directory.CreateDirectory(DataCollectorConfigFolderPath);
-        }
+        LuidaPaths.EnsureFolder(LuidaPaths.DataCollectorConfigFolder);
 
         var fresh = ScriptableObject.CreateInstance<LuidaDataCollectorConfig>();
 
         // Seed rawJs from the calculator template as a fallback for users who
         // later opt into Code Mode. Builder mode is the default (schema default
         // useCustomCodeMode = false) — do NOT override here.
-        var templateText = AssetDatabase.LoadAssetAtPath<TextAsset>(CalculatorTemplateAssetPath);
+        var templateText = LuidaPaths.Load<TextAsset>(LuidaPaths.CalculatorTemplateJs);
         if (templateText != null) fresh.rawJs = templateText.text;
 
         // Fresh asset is already on the latest schema; mark it migrated.

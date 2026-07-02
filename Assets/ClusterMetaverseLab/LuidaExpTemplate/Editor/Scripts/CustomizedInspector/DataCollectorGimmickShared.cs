@@ -37,7 +37,7 @@ public static class DataCollectorGimmickShared
     {
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         if (string.IsNullOrEmpty(sceneName)) return null;
-        string configPath = $"{DataCollectorCreateMenu.DataCollectorConfigFolderPath}{sceneName}.asset";
+        string configPath = LuidaPaths.DataCollectorConfigAsset(sceneName);
         var cfg = AssetDatabase.LoadAssetAtPath<LuidaDataCollectorConfig>(configPath);
         if (cfg != null) LuidaDataCollectorConfigMigrator.Migrate(cfg);
         return cfg;

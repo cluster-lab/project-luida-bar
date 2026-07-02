@@ -12,8 +12,6 @@ using ClusterVR.CreatorKit.Item.Implements;
 /// </summary>
 public static class DataCollectorJsSaver
 {
-    private const string DataCollectorScriptFolderPath = "Assets/_Experiment_/Scripts/DataCollectors/";
-
     /// <summary>
     /// Regenerate calculator JS from the config and combine. Idempotent;
     /// no-op (with a logged warning) if there is no DataCollector in scene.
@@ -29,9 +27,8 @@ public static class DataCollectorJsSaver
             return;
         }
 
-        string scriptPath = $"{DataCollectorScriptFolderPath}{sceneName}.js";
-        if (!Directory.Exists(DataCollectorScriptFolderPath))
-            Directory.CreateDirectory(DataCollectorScriptFolderPath);
+        string scriptPath = LuidaPaths.DataCollectorJs(sceneName);
+        LuidaPaths.EnsureFolder(LuidaPaths.DataCollectorsFolder);
 
         string js = LuidaDataCollectorJsGenerator.Generate(config);
 
@@ -48,10 +45,9 @@ public static class DataCollectorJsSaver
             return;
         }
 
-        var combiner = dataCollector.GetComponent<ScriptableClusterScriptCombiner>();
-        if (combiner == null)
+        var combiner = LuidaCombiner.Get(dataCollector.gameObject);
+        if (!combiner.IsAvailable)
         {
-            Debug.LogError("[LUIDA] LUIDA-DataCollector is missing ScriptableClusterScriptCombiner — cannot combine.");
             return;
         }
 
@@ -62,7 +58,7 @@ public static class DataCollectorJsSaver
             EditorUtility.SetDirty(dataCollector);
         }
 
-        combiner.CombineScripts();
+        combiner.Combine();
     }
 }
 #endif

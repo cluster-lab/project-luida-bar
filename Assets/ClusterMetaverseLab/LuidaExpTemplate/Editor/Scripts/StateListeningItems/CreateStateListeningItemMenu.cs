@@ -6,12 +6,6 @@ using ClusterVR.CreatorKit.Item.Implements;
 
 public class CreateStateListeningItemMenu
 {
-    private const string prefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/StateListeningItem.prefab";
-    private const string scriptFolderPathFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
-    private const string stateListeningItemScriptTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/StateManagement/StateListeningItemTemplate.js";
-    private const string ExpManagersWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/LUIDA-ExpManagers.prefab";
-    private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
-
     // [MenuItem("GameObject/LUIDA State-Listening Item", false, 10)]
     static void CreateNewStateListeningItem()
     {
@@ -20,13 +14,13 @@ public class CreateStateListeningItemMenu
 
     static void CreateItemWithName(string newItemName)
     {
-        GameObject newObject = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath));
+        GameObject newObject = (GameObject)PrefabUtility.InstantiatePrefab(LuidaPaths.Load<GameObject>(LuidaPaths.StateListeningItemPrefab));
         newObject.name = newItemName;
         EnableAccessToConditions(newObject);
         Undo.RegisterCreatedObjectUndo(newObject, "Create LUIDA State-Listening Item");
 
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        string scriptFolderPath = string.Format(scriptFolderPathFormat, sceneName);
+        string scriptFolderPath = LuidaPaths.SceneStateManagementFolder(sceneName);
 
         if (!AssetDatabase.IsValidFolder(scriptFolderPath))
         {
@@ -35,14 +29,13 @@ public class CreateStateListeningItemMenu
         }
 
         string newScriptPath = $"{scriptFolderPath}/{newItemName}.js";
-        AssetDatabase.CopyAsset(stateListeningItemScriptTemplatePath, newScriptPath);
+        AssetDatabase.CopyAsset(LuidaPaths.StateListeningItemTemplateJs, newScriptPath);
         AssetDatabase.Refresh();
 
-        GameObject scriptCombinerObject = newObject.GetComponent<ScriptableClusterScriptCombiner>().gameObject;
-        ScriptableClusterScriptCombiner combiner = scriptCombinerObject.GetComponent<ScriptableClusterScriptCombiner>();
+        var combiner = LuidaCombiner.Get(newObject);
         var newScriptAsset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(newScriptPath);
         combiner.ReplaceScript(newScriptAsset, 1, null, 0, true);
-        EditorUtility.SetDirty(combiner);
+        LuidaCombiner.MarkDirty(combiner);
         EditorUtility.SetDirty(newScriptAsset);
         AssetDatabase.SaveAssets();
 
@@ -55,12 +48,12 @@ public class CreateStateListeningItemMenu
 
         foreach (GameObject obj in rootObjects)
         {
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == ExpManagersWrapperPrefabPath)
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj) == LuidaPaths.ExpManagersPrefab)
             {
                 for (int i = 0; i < obj.transform.childCount; i++)
                 {
                     Transform child = obj.transform.GetChild(i);
-                    if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == ConditionManagerPrefabPath)
+                    if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == LuidaPaths.ConditionManagerPrefab)
                     {
                         return child.gameObject;
                     }
