@@ -18,7 +18,6 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
     private JavaScriptAsset variablesAsset;
     private JavaScriptAsset betweenSubjectsConditionSetterAsset;
     private JavaScriptAsset conditionManagerScript;
-    private string conditionManagerScriptPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/ConditionManagement/ConditionManager.js";
 
     private List<ExperimentVariable> withinSubjectsVariables = new List<ExperimentVariable>();
     private List<ExperimentVariable> betweenSubjectsVariables = new List<ExperimentVariable>();
@@ -258,7 +257,7 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
     private string GetStateNamesJavaScript()
     {
         string sceneName = SceneManager.GetActiveScene().name;
-        string stateListAssetPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
+        string stateListAssetPath = LuidaPaths.StateListAsset(sceneName);
         StateList stateList = AssetDatabase.LoadAssetAtPath<StateList>(stateListAssetPath);
 
         if (stateList != null && stateList.States != null)
@@ -276,7 +275,7 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
     private void RetrieveJavaScriptAsset()
     {
         string sceneName = SceneManager.GetActiveScene().name;
-        variablesAssetPath = $"Assets/_Experiment_/Settings/ExperimentVariables/{sceneName}.js";
+        variablesAssetPath = LuidaPaths.ExperimentVariablesJs(sceneName);
 
         variablesAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(variablesAssetPath);
         if (variablesAsset != null && !string.IsNullOrEmpty(variablesAsset.text))
@@ -284,24 +283,20 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
             ParseJavaScriptAsset(variablesAsset.text);
         }
 
-        conditionManagerScript = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(conditionManagerScriptPath);
+        conditionManagerScript = LuidaPaths.Load<JavaScriptAsset>(LuidaPaths.ConditionManagerSourceJs);
     }
 
     private void RetrieveOrCreateVariablesAsset()
     {
         string sceneName = SceneManager.GetActiveScene().name;
-        variablesAssetPath = $"Assets/_Experiment_/Settings/ExperimentVariables/{sceneName}.js";
+        variablesAssetPath = LuidaPaths.ExperimentVariablesJs(sceneName);
         variablesAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(variablesAssetPath);
 
         if (variablesAsset == null)
         {
-            string directoryPath = Path.GetDirectoryName(variablesAssetPath);
-            if (!Directory.Exists(directoryPath))
-            {
-                Directory.CreateDirectory(directoryPath);
-            }
-            
-            string templatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/VariablesTemplate.js";
+            LuidaPaths.EnsureFolder(LuidaPaths.ExperimentVariablesFolder);
+
+            string templatePath = LuidaPaths.VariablesTemplateJs;
             if (File.Exists(templatePath))
             {
                 AssetDatabase.CopyAsset(templatePath, variablesAssetPath);
@@ -391,8 +386,8 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
         GameObject conditionManager = GameObject.Find("ConditionManager");
         if (conditionManager != null)
         {
-            var scriptCombiner = conditionManager.GetComponent<ScriptableClusterScriptCombiner>();
-            if (scriptCombiner != null)
+            var scriptCombiner = LuidaCombiner.Get(conditionManager);
+            if (scriptCombiner.IsAvailable)
             {
                 scriptCombiner.ClearScripts();
                 foreach(var asset in scriptAssets)
@@ -405,12 +400,8 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
                     scriptCombiner.AppendScript(conditionManagerScript, null, true);
                 }
 
-                EditorUtility.SetDirty(scriptCombiner);
+                LuidaCombiner.MarkDirty(scriptCombiner);
                 EditorSceneManager.MarkSceneDirty(conditionManager.scene);
-            }
-            else
-            {
-                Debug.LogWarning("ScriptableClusterScriptCombiner component not found on ConditionManager.");
             }
         }
         else
@@ -421,7 +412,7 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
     
     public static void ResetAllDebugValues()
     {
-        string searchPath = "Assets/_Experiment_/Settings/ExperimentVariables";
+        string searchPath = LuidaPaths.ExperimentVariablesFolder;
         if (!Directory.Exists(searchPath))
         {
             Debug.LogWarning($"Directory not found, nothing to reset: {searchPath}");

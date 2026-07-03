@@ -9,7 +9,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
+#if LUIDA_HAS_CSEMULATOR
 using Assets.KaomoLab.CSEmulator.Editor.Preview;
+#endif
 
 /// <summary>
 /// A helper class to return the result of the LUIDA token search.
@@ -247,6 +249,7 @@ public class ClusterExternalEndpointAndVerifyTokenAccessor
     /// </summary>
     private void SyncEmulatorOptions(ExternalCallEndpoint endpointToSync)
     {
+#if LUIDA_HAS_CSEMULATOR
         try
         {
             var op = Bootstrap.options;
@@ -290,5 +293,9 @@ public class ClusterExternalEndpointAndVerifyTokenAccessor
             // This is a non-critical operation, so just log the error and don't block the main task.
             Debug.LogWarning($"[ClusterExternalEndpointAndVerifyTokenAccessor] Failed to sync endpoint to CSEmulator options: {ex.Message}");
         }
+#else
+        // CSEmulator is an optional dependency and is not present in this project;
+        // syncing the callExternal endpoint into the emulator is skipped.
+#endif
     }
 }

@@ -25,10 +25,7 @@ public class LuidaConfigWindow : EditorWindow
     private ExperimentVariablesConfigTab experimentVariablesConfigTab;
 
     private string newSceneName = "";
-    private const string scenePath = "Assets/_Experiment_/Scenes/";
-    private const string expIdentifiersPath = "Assets/_Experiment_/Settings/ExpIdentifiers.js";
-    private const string templateExpIdentifiersPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/ExpIdentifiers.js";
-    
+
     private bool isAutomationFeatureActive = false;
 
     public StateMachineConfigTab StateTab => stateMachineConfigTab;
@@ -73,7 +70,7 @@ public class LuidaConfigWindow : EditorWindow
     {
         string currentScenePath = EditorSceneManager.GetActiveScene().path;
 
-        if (!currentScenePath.StartsWith(scenePath))
+        if (!currentScenePath.StartsWith($"{LuidaPaths.ExperimentScenesFolder}/"))
         {
             DrawInvalidSceneUI();
         }
@@ -163,10 +160,10 @@ public class LuidaConfigWindow : EditorWindow
 
     private void CheckAndCreateExpIdentifiers()
     {
-        if (!File.Exists(expIdentifiersPath))
+        if (!File.Exists(LuidaPaths.ExpIdentifiersJs))
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(expIdentifiersPath));
-            File.Copy(templateExpIdentifiersPath, expIdentifiersPath);
+            Directory.CreateDirectory(Path.GetDirectoryName(LuidaPaths.ExpIdentifiersJs));
+            File.Copy(LuidaPaths.ExpIdentifiersTemplateJs, LuidaPaths.ExpIdentifiersJs);
             AssetDatabase.Refresh();
         }
     }
@@ -181,13 +178,12 @@ public class LuidaConfigWindow : EditorWindow
     private void CreateStateListAssetForCurrentScene()
     {
         string sceneName = EditorSceneManager.GetActiveScene().name;
-        string stateListPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
-        const string templatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/StateList/Template.asset";
-        
+        string stateListPath = LuidaPaths.StateListAsset(sceneName);
+
         if (!File.Exists(stateListPath))
         {
             Directory.CreateDirectory(Path.GetDirectoryName(stateListPath));
-            AssetDatabase.CopyAsset(templatePath, stateListPath);
+            AssetDatabase.CopyAsset(LuidaPaths.StateListTemplateAsset, stateListPath);
             Debug.Log($"Created StateList asset at {stateListPath}");
         }
     }
@@ -195,14 +191,13 @@ public class LuidaConfigWindow : EditorWindow
     private void CreateExperimentVariablesAssetForCurrentScene()
     {
         string sceneName = EditorSceneManager.GetActiveScene().name;
-        string variablesAssetPath = $"Assets/_Experiment_/Settings/ExperimentVariables/{sceneName}.js";
-        const string templatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/VariablesTemplate.js";
-        
+        string variablesAssetPath = LuidaPaths.ExperimentVariablesJs(sceneName);
+
         if (!File.Exists(variablesAssetPath))
         {
             string directoryPath = Path.GetDirectoryName(variablesAssetPath);
             Directory.CreateDirectory(directoryPath);
-            File.Copy(templatePath, variablesAssetPath);
+            File.Copy(LuidaPaths.VariablesTemplateJs, variablesAssetPath);
             AssetDatabase.Refresh();
             AssetDatabase.ImportAsset(variablesAssetPath);
             Debug.Log($"Created ExperimentVariables asset at {variablesAssetPath}");

@@ -23,7 +23,6 @@ public class ExpIdentifierConfigTab : EditorWindow
     private int pNum = 1;
     
     private string filePath;
-    private const string formPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/Questionnaire/Questionnaire.prefab";
     private const string StateQuestionnaireRootName = "LUIDA-QuestionnaireByState";
 
     private ClusterExternalEndpointAndVerifyTokenAccessor endpointAndTokenAccessor;
@@ -49,7 +48,7 @@ public class ExpIdentifierConfigTab : EditorWindow
     
     public void OnEnable()
     {
-        filePath = "Assets/_Experiment_/Settings/ExpIdentifiers.js";
+        filePath = LuidaPaths.ExpIdentifiersJs;
         
         endpointAndTokenAccessor = new ClusterExternalEndpointAndVerifyTokenAccessor();
         cancellationTokenSource = new CancellationTokenSource();
@@ -406,7 +405,7 @@ public class ExpIdentifierConfigTab : EditorWindow
                 continue;
             }
 
-            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(go) == formPrefabPath)
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(go) == LuidaPaths.QuestionnairePrefab)
             {
                 var parent = go.transform.parent;
                 if (parent == null) continue;

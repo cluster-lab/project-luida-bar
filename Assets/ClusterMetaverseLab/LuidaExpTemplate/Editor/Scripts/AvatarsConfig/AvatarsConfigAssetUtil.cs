@@ -26,9 +26,6 @@ using ClusterVR.CreatorKit.World.Implements.WorldRuntimeSetting;
 /// </summary>
 public static class AvatarsConfigAssetUtil
 {
-    public const string AvatarsRootFolder = "Assets/_Experiment_/Avatars";
-    private const string SpawnerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/LUIDA-AvatarSpawner.prefab";
-    private const string AvatarManagerJsPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/AvatarManagement/AvatarManager.js";
     private const string SpawnerObjectName = "LUIDA-AvatarSpawner";
 
     // Active-scene-scoped paths. Most callers (editor window, build-time
@@ -43,7 +40,7 @@ public static class AvatarsConfigAssetUtil
     // Scene-explicit paths. Used by custom inspectors that operate on a
     // GameObject from a specific (possibly non-active) scene.
     public static string GetSceneAvatarsFolder(string sceneName) =>
-        sceneName == null ? null : $"{AvatarsRootFolder}/{sceneName}";
+        sceneName == null ? null : $"{LuidaPaths.AvatarsRoot}/{sceneName}";
     public static string GetRegistryPath(string sceneName) =>
         sceneName == null ? null : $"{GetSceneAvatarsFolder(sceneName)}/AvatarRegistry.asset";
     public static string GetSourceFolder(string sceneName) =>
@@ -407,7 +404,7 @@ public static class AvatarsConfigAssetUtil
 
         // Try to load from template prefab first; create fresh if not found
         GameObject spawner;
-        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(SpawnerPrefabPath);
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(LuidaPaths.AvatarSpawnerPrefab);
         if (prefab != null)
         {
             spawner = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
@@ -418,7 +415,7 @@ public static class AvatarsConfigAssetUtil
             spawner = new GameObject(SpawnerObjectName);
             spawner.AddComponent<Item>();
             spawner.AddComponent<ScriptableItem>();
-            spawner.AddComponent<ScriptableClusterScriptCombiner>();
+            LuidaCombiner.EnsureOn(spawner);
         }
         spawner.name = SpawnerObjectName;
         Undo.RegisterCreatedObjectUndo(spawner, "Add Avatar Spawner");
@@ -435,14 +432,14 @@ public static class AvatarsConfigAssetUtil
         }
 
         // Wire up CSCombiner with AvatarManager.js (config will be added by GenerateAvatarGimmickTriggerConfig)
-        var combiner = spawner.GetComponent<ScriptableClusterScriptCombiner>();
-        if (combiner != null)
+        var combiner = LuidaCombiner.Get(spawner);
+        if (combiner.IsAvailable)
         {
             combiner.ClearScripts();
-            var managerAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(AvatarManagerJsPath);
+            var managerAsset = LuidaPaths.Load<JavaScriptAsset>(LuidaPaths.AvatarManagerJs);
             if (managerAsset != null) combiner.AppendScript(managerAsset, null);
-            combiner.CombineScripts();
-            EditorUtility.SetDirty(combiner);
+            combiner.Combine();
+            LuidaCombiner.MarkDirty(combiner);
         }
 
         // Add WorldItemTemplateList with all registered avatars
@@ -520,11 +517,11 @@ public static class AvatarsConfigAssetUtil
         foreach (GameObject obj in SceneManager.GetActiveScene().GetRootGameObjects())
         {
             string prefabPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(obj));
-            if (prefabPath != ExpManagersWrapperPrefabPath) continue;
+            if (prefabPath != LuidaPaths.ExpManagersPrefab) continue;
             for (int i = 0; i < obj.transform.childCount; i++)
             {
                 Transform child = obj.transform.GetChild(i);
-                if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == ConditionManagerPrefabPath)
+                if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(child.gameObject) == LuidaPaths.ConditionManagerPrefab)
                 {
                     ItemGroupHost host = child.GetComponent<ItemGroupHost>();
                     if (host != null)
@@ -537,9 +534,6 @@ public static class AvatarsConfigAssetUtil
             }
         }
     }
-
-    private const string ExpManagersWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/LUIDA-ExpManagers.prefab";
-    private const string ConditionManagerPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/ConditionManagement/ConditionManager.prefab";
 
     #endregion
 
@@ -612,8 +606,8 @@ public static class AvatarsConfigAssetUtil
         var spawner = FindSpawnerInScene();
         if (spawner == null) return;
 
-        var combiner = spawner.GetComponent<ScriptableClusterScriptCombiner>();
-        if (combiner == null) return;
+        var combiner = LuidaCombiner.Get(spawner);
+        if (!combiner.IsAvailable) return;
 
         var configAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(configPath);
         if (configAsset == null) return;
@@ -626,19 +620,19 @@ public static class AvatarsConfigAssetUtil
         if (existingIdx >= 0)
         {
             combiner.ReplaceScript(configAsset, existingIdx, null, 0);
-            combiner.CombineScripts();
-            EditorUtility.SetDirty(combiner);
+            combiner.Combine();
+            LuidaCombiner.MarkDirty(combiner);
             return;
         }
 
         // Rebuild the full script list: [commandConfig, manager]
-        var managerAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(AvatarManagerJsPath);
+        var managerAsset = LuidaPaths.Load<JavaScriptAsset>(LuidaPaths.AvatarManagerJs);
 
         combiner.ClearScripts();
         combiner.AppendScript(configAsset, null);
         if (managerAsset != null) combiner.AppendScript(managerAsset, null);
-        combiner.CombineScripts();
-        EditorUtility.SetDirty(combiner);
+        combiner.Combine();
+        LuidaCombiner.MarkDirty(combiner);
     }
 
     private const string ResetTemplatePath = "ClusterMetaverseLab/LuidaExpTemplate/FakeGimmickSources/ResetGlobalBool";

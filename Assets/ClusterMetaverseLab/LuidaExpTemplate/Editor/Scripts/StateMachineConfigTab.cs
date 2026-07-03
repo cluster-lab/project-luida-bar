@@ -18,11 +18,6 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
     private StateList.State[] previousStates;
     private SerializedObject serializedStateList;
     private SerializedProperty statesProperty;
-    private string statePrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/State.prefab";
-    private string trialRestStatePrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/StateManagement/Trial - Rest State.prefab";
-    private const string ExpManagersWrapperPrefabPath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Prefabs/LUIDA-ExpManagers.prefab";
-    private const string stateListTemplatePath = "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/ExpSettings/StateList/Template.asset";
-    private const string stateManagementScriptFolderPathFormat = "Assets/_Experiment_/Scripts/StateManagement/{0}";
 
     // Fixed states that must not be moved.
     private readonly string[] FixedStateNames = new string[] { "Trial - Start", "Trial - Rest", "End" };
@@ -49,14 +44,14 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
     private void LoadStateList()
     {
         sceneName = SceneManager.GetActiveScene().name;
-        string stateListPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
+        string stateListPath = LuidaPaths.StateListAsset(sceneName);
 
         stateList = AssetDatabase.LoadAssetAtPath<StateList>(stateListPath);
         if (stateList == null)
         {
-            string newAssetPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
-            Directory.CreateDirectory(Path.GetDirectoryName(newAssetPath));
-            AssetDatabase.CopyAsset(stateListTemplatePath, newAssetPath);
+            string newAssetPath = LuidaPaths.StateListAsset(sceneName);
+            LuidaPaths.EnsureFolder(Path.GetDirectoryName(newAssetPath));
+            AssetDatabase.CopyAsset(LuidaPaths.StateListTemplateAsset, newAssetPath);
             AssetDatabase.Refresh();
             stateList = AssetDatabase.LoadAssetAtPath<StateList>(newAssetPath);
         }
@@ -90,12 +85,12 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
 
         if (stateList == null)
         {
-            StateList template = AssetDatabase.LoadAssetAtPath<StateList>(stateListTemplatePath);
+            StateList template = LuidaPaths.Load<StateList>(LuidaPaths.StateListTemplateAsset);
             if (template != null)
             {
-                string newAssetPath = $"Assets/_Experiment_/Settings/StateList/{sceneName}.asset";
-                Directory.CreateDirectory(Path.GetDirectoryName(newAssetPath));
-                AssetDatabase.CopyAsset(stateListTemplatePath, newAssetPath);
+                string newAssetPath = LuidaPaths.StateListAsset(sceneName);
+                LuidaPaths.EnsureFolder(Path.GetDirectoryName(newAssetPath));
+                AssetDatabase.CopyAsset(LuidaPaths.StateListTemplateAsset, newAssetPath);
                 AssetDatabase.Refresh();
                 stateList = AssetDatabase.LoadAssetAtPath<StateList>(newAssetPath);
                 if (stateList != null)
@@ -112,7 +107,7 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
             }
             else
             {
-                EditorGUILayout.HelpBox($"StateList template not found at {stateListTemplatePath}. Please ensure it exists.", MessageType.Error);
+                EditorGUILayout.HelpBox($"StateList template not found at {LuidaPaths.StateListTemplateAsset}. Please ensure it exists.", MessageType.Error);
             }
             EditorGUILayout.EndScrollView();
             return;
@@ -453,7 +448,7 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
     {
         // Get the path to the JS file
         string sceneName = SceneManager.GetActiveScene().name;
-        string jsPath = $"Assets/_Experiment_/Settings/ExperimentVariables/{sceneName}.js";
+        string jsPath = LuidaPaths.ExperimentVariablesJs(sceneName);
 
         if (!File.Exists(jsPath))
         {
@@ -541,12 +536,11 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
             string expectedName = string.IsNullOrEmpty(currentStateData.StateName) ? $"State{i}" : currentStateData.StateName;
 
             string prefabPath = (currentStateData.StateName == "Trial - Rest")
-                ? trialRestStatePrefabPath
-                : statePrefabPath;
-            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+                ? LuidaPaths.TrialRestStatePrefab
+                : LuidaPaths.StatePrefab;
+            GameObject prefab = LuidaPaths.Load<GameObject>(prefabPath);
             if (prefab == null)
             {
-                Debug.LogError($"Prefab not found for state: {expectedName}");
                 continue;
             }
 
@@ -791,7 +785,7 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
         }
 
         sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        string listenersFolder = string.Format(stateManagementScriptFolderPathFormat, sceneName) + "/StateListeners";
+        string listenersFolder = LuidaPaths.SceneStateManagementFolder(sceneName) + "/StateListeners";
 
         if (!Directory.Exists(listenersFolder)) return;
 
@@ -866,7 +860,7 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
         {
             if (PrefabUtility.GetPrefabAssetType(obj) == PrefabAssetType.Regular) {
                 string prefabPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(obj));
-                if (prefabPath == ExpManagersWrapperPrefabPath)
+                if (prefabPath == LuidaPaths.ExpManagersPrefab)
                     return obj;
             }
         }
@@ -886,12 +880,11 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
         }
 
         string stateName = stateList.States[index].StateName;
-        string prefabToUsePath = (stateName == "Trial - Rest") ? trialRestStatePrefabPath : statePrefabPath;
+        string prefabToUsePath = (stateName == "Trial - Rest") ? LuidaPaths.TrialRestStatePrefab : LuidaPaths.StatePrefab;
 
-        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabToUsePath);
+        GameObject prefab = LuidaPaths.Load<GameObject>(prefabToUsePath);
         if (prefab == null)
         {
-            Debug.LogError($"Prefab not found at {prefabToUsePath} for state {stateName}");
             return;
         }
 
@@ -928,7 +921,7 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
         GameObject expManagersWrapper = FindExpManagersWrapperInstance();
         if (expManagersWrapper == null)
         {
-            GameObject wrapperPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(ExpManagersWrapperPrefabPath);
+            GameObject wrapperPrefab = LuidaPaths.Load<GameObject>(LuidaPaths.ExpManagersPrefab);
             if (wrapperPrefab != null)
             {
                 expManagersWrapper = (GameObject)PrefabUtility.InstantiatePrefab(wrapperPrefab);
@@ -938,7 +931,6 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
             }
             else
             {
-                Debug.LogError($"ExpManagersWrapper prefab not found at {ExpManagersWrapperPrefabPath}. Cannot create 'States' container.");
                 return null;
             }
         }
@@ -968,12 +960,11 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
         }
 
         string stateName = stateList.States[index].StateName;
-        string prefabToUsePath = statePrefabPath;
+        string prefabToUsePath = LuidaPaths.StatePrefab;
 
-        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabToUsePath);
+        GameObject prefab = LuidaPaths.Load<GameObject>(prefabToUsePath);
         if (prefab == null)
         {
-            Debug.LogError($"Trial State prefab not found at {prefabToUsePath} for state {stateName}");
             return;
         }
 
@@ -1008,7 +999,7 @@ public class StateMachineConfigTab : LuidaAutomationConfigTab
     private int CalculateTrialCountForCurrentScene()
     {
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        string jsPath = $"Assets/_Experiment_/Settings/ExperimentVariables/{sceneName}.js";
+        string jsPath = LuidaPaths.ExperimentVariablesJs(sceneName);
         var jsAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(jsPath);
         int trialsCountForEachUniqueCondition = 1;
         int product = 1;

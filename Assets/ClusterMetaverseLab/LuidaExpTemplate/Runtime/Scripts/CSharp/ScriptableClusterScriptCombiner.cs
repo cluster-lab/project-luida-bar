@@ -1,4 +1,6 @@
-#if UNITY_EDITOR
+// Guarded by LUIDA_HAS_CSCOMBINER (set automatically by LuidaDependencies when
+// KaomoLab CSCombiner is present) so LUIDA still compiles when KaomoLab is absent.
+#if UNITY_EDITOR && LUIDA_HAS_CSCOMBINER
 using Assets.KaomoLab.CSCombiner;
 using ClusterVR.CreatorKit.Item.Implements;
 using System.Collections;
