@@ -8,7 +8,7 @@ If you're ready to get started, please check the Main Features below first, then
 
 <!-- - [Getting Started](#getting-started) -->
 - [Main Features](#main-features)
-- [Documentation & Tutorials](https://luida-docs.vercel.app/)
+- [Documentation & Tutorials](https://luida.cluster.mu/docs/)
 <!-- - [Tutorial (JA)](https://github.com/cluster-lab/project-luida-bar/blob/exp-template/Tutorial_JA.md) -->
 <!-- - (Under construction) [Tutorial (EN)](https://github.com/cluster-lab/project-luida-bar/blob/exp-template/Tutorial_EN.md) -->
 <!-- - [Documentation (under construction...)](#documentation-under-construction) -->
