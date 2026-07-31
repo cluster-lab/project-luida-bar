@@ -3,7 +3,7 @@ Scripts for LUIDA state-listening items are primarily to be written using Cluste
 
 Additionally, we provide the following variables and functions that work specifically with LUIDA-only features or accelerate your implementation.
 
-Tip: When asking an LLM service for coding assistance, first share the `Asset/Doc/CCK-Types.d.ts` file and this file with it.
+Tip: When asking an LLM service for coding assistance, first share the `Assets/ClusterMetaverseLab/LuidaExpTemplate/Doc/CCK-Types.d.ts` file and this file with it.
 
 ## Two kinds of helpers
 
@@ -243,7 +243,7 @@ Prerequisite: avatars are registered in the LUIDA Web Console; their IDs are syn
 
 ## Participant Transform
 
-These actions manipulate the participant's player position and rotation via `PlayerHandle.setPosition` / `setRotation` (documented in `Asset/Doc/CCK-Types.d.ts:2438, 2457`). Rate-limited to 10 calls/sec per item. The Set variants overwrite; the Add variants compose with the participant's current position/rotation (and silently no-op if the participant handle isn't available yet).
+These actions manipulate the participant's player position and rotation via `PlayerHandle.setPosition` / `setRotation` (documented in `Assets/ClusterMetaverseLab/LuidaExpTemplate/Doc/CCK-Types.d.ts:2438, 2457`). Rate-limited to 10 calls/sec per item. The Set variants overwrite; the Add variants compose with the participant's current position/rotation (and silently no-op if the participant handle isn't available yet).
 
 ### `Set participant position` (editor action)
 
@@ -304,7 +304,7 @@ These actions manipulate the participant's player position and rotation via `Pla
 - **Description**: Reads the world (global) position and rotation of the specified bone on the specified participant's avatar via `PlayerHandle.getHumanoidBonePosition` and `PlayerHandle.getHumanoidBoneRotation`, then applies them to this item with the configured world-space offsets. Position offset is added to the bone's world position; rotation offset (Euler degrees) is pre-multiplied with the bone's world rotation. Typically placed under **During State** so the item follows the bone every frame, but also usable as a one-shot snapshot under **On State Start** / **On State Exit**. Silently no-ops if the participant is not present or the bone is unavailable on the avatar. **Requires the `MovableItem` component on this item.**
 - **Fields**:
   - `participantIndex`: `integer` (starts from 1)
-  - `bone`: `string` — one of the `HumanoidBone` enum names (e.g. `Head`, `RightHand`, `Hips`). See `Asset/Doc/CCK-Types.d.ts` for the full list.
+  - `bone`: `string` — one of the `HumanoidBone` enum names (e.g. `Head`, `RightHand`, `Hips`). See `Assets/ClusterMetaverseLab/LuidaExpTemplate/Doc/CCK-Types.d.ts` for the full list.
   - `posOffset`: `(x, y, z)` world-space offset in meters added to the bone position.
   - `rotOffset`: `(x, y, z)` world-space Euler offset in degrees, pre-multiplied with the bone rotation.
 - **Equivalent JS** (the IIFE template the editor action emits — copy and edit constants):

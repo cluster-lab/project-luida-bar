@@ -5,7 +5,7 @@ The script for LUIDA Data Collector is primarily to be written using ClusterScri
 
 We also provide the following variables that work with LUIDA-only features.
 
-Tip: When asking an LLM service for coding assistance, first share the `Asset/Doc/CCK-Types.d.ts` file and this comment section with it.
+Tip: When asking an LLM service for coding assistance, first share the `Assets/ClusterMetaverseLab/LuidaExpTemplate/Doc/CCK-Types.d.ts` file and this comment section with it.
 
 ### CONDITION
     - Only available if **LUIDA experiment progress automation feature is enabled and during the trial states** (e.g., `Trial - Start`, `Trial - Rest`).

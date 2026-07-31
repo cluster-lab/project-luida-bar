@@ -6,7 +6,7 @@ We also provide the following variables that work with LUIDA-only features.
 This documentation content is also already included as comments within the LUIDA Data Collector's script file.
 Please confirm it from the LUIDA-DataCollector gameObject's inspector in your scene.
 
-Tip: When asking an LLM service for coding assistance, first share the `Asset/Doc/CCK-Types.d.ts` file and this file with it.
+Tip: When asking an LLM service for coding assistance, first share the `Assets/ClusterMetaverseLab/LuidaExpTemplate/Doc/CCK-Types.d.ts` file and this file with it.
 
 ## Available Variables in LUIDA Data Collector Script
 
