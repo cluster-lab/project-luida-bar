@@ -6,9 +6,8 @@ using System.Collections.Generic;
 using System;
 using System.Threading;
 
-using ClusterVR.CreatorKit.Editor.Builder;
+using ClusterVR.CreatorKit.Editor.Infrastructure;
 using ClusterVR.CreatorKit.Editor.Repository;
-using ClusterVR.CreatorKit.Editor.Api.RPC;
 using ClusterVR.CreatorKit.Editor.Api.ExternalEndpoint;
 
 public class ExpIdentifierConfigTab : EditorWindow
@@ -80,7 +79,7 @@ public class ExpIdentifierConfigTab : EditorWindow
 
     private void CheckLoginState()
     {
-        var savedToken = EditorPrefsUtils.SavedAccessToken;
+        var savedToken = TokenAuthRepository.Instance.SavedAccessToken.Val;
         isLoggedIn = !string.IsNullOrEmpty(savedToken?.RawValue);
     }
 
@@ -116,9 +115,8 @@ public class ExpIdentifierConfigTab : EditorWindow
         GUI.enabled = !string.IsNullOrEmpty(loginTokenInput);
         if (GUILayout.Button("Login"))
         {
-            var authInfo = new AuthenticationInfo(loginTokenInput);
-            EditorPrefsUtils.SavedAccessToken = authInfo;
-            
+            ReactiveEditorPrefs.Instance.SetSavedAccessToken(loginTokenInput);
+
             AutoFillFieldsAsync(isLoginAttempt: true);
         }
         GUI.enabled = true;
@@ -232,9 +230,9 @@ public class ExpIdentifierConfigTab : EditorWindow
 
     private void Logout()
     {
-        EditorPrefsUtils.SavedAccessToken = null;
         isLoggedIn = false;
         loginTokenInput = "";
+        // Logout() が内部で保存済みアクセストークンをクリアするため、ここでの明示的なクリアは不要
         TokenAuthRepository.Instance.Logout();
         Repaint();
     }
@@ -290,7 +288,7 @@ public class ExpIdentifierConfigTab : EditorWindow
             Debug.LogError($"Failed to fetch Cluster API data: {ex.Message}");
             if (isLoginAttempt)
             {
-                EditorPrefsUtils.SavedAccessToken = null;
+                ReactiveEditorPrefs.Instance.SetSavedAccessToken("");
                 isLoggedIn = false;
                 EditorUtility.DisplayDialog("Login Failed", $"Login failed. The token may be invalid or expired.\n\nError: {ex.Message}", "OK");
             }

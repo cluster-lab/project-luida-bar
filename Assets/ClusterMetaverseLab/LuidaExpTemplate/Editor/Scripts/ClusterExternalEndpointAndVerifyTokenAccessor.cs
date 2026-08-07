@@ -1,7 +1,6 @@
 using ClusterVR.CreatorKit.Editor.Api.ExternalEndpoint;
 using ClusterVR.CreatorKit.Editor.Api.Exceptions;
 using ClusterVR.CreatorKit.Editor.Api.User;
-using ClusterVR.CreatorKit.Editor.Builder;
 using ClusterVR.CreatorKit.Editor.Repository;
 using System;
 using System.Linq;
@@ -69,7 +68,7 @@ public class ClusterExternalEndpointAndVerifyTokenAccessor
             return cachedUserInfo;
         }
 
-        var authInfo = EditorPrefsUtils.SavedAccessToken;
+        var authInfo = authRepo.SavedAccessToken.Val;
         if (string.IsNullOrEmpty(authInfo?.RawValue))
         {
             Debug.LogError("Cluster Access Token not found in EditorPrefs. Please log in via the Cluster Creator Kit window first.");
