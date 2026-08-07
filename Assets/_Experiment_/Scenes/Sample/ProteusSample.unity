@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17412737, g: 0.21774727, b: 0.29994345, a: 1}
+  m_IndirectSpecularColor: {r: 0.17412753, g: 0.21774767, b: 0.29994398, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -384,7 +384,7 @@ PrefabInstance:
       objectReference: {fileID: 2041586806}
     - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
-      propertyPath: clusterScripts.Array.data[1]
+      propertyPath: itemScripts.Array.data[1]
       value: 
       objectReference: {fileID: 5022602860645237092, guid: 8c17e932f7d9eea43bd49aba6afe533e,
         type: 3}
@@ -817,7 +817,7 @@ PrefabInstance:
       objectReference: {fileID: 2041586806}
     - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
-      propertyPath: clusterScripts.Array.data[1]
+      propertyPath: itemScripts.Array.data[1]
       value: 
       objectReference: {fileID: 5022602860645237092, guid: b0437bc861e0e6043bf637c1f1fa1b80,
         type: 3}
@@ -1029,7 +1029,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 679173099575055621, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
-      propertyPath: clusterScripts.Array.data[0]
+      propertyPath: itemScripts.Array.data[0]
       value: 
       objectReference: {fileID: 5022602860645237092, guid: c22e594b3eff3364c8217424a55e9588,
         type: 3}
@@ -1443,7 +1443,7 @@ PrefabInstance:
       objectReference: {fileID: 2041586806}
     - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
-      propertyPath: clusterScripts.Array.data[1]
+      propertyPath: itemScripts.Array.data[1]
       value: 
       objectReference: {fileID: 5022602860645237092, guid: a8707b05fcfd3b04fbf260c6d9a287db,
         type: 3}
@@ -2166,7 +2166,7 @@ PrefabInstance:
       objectReference: {fileID: 2041586806}
     - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
-      propertyPath: clusterScripts.Array.data[1]
+      propertyPath: itemScripts.Array.data[1]
       value: 
       objectReference: {fileID: 5022602860645237092, guid: 5ab4d3e60afbdbb4b8290b012466c18c,
         type: 3}
@@ -2577,12 +2577,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2948447358681182120, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
-      propertyPath: clusterScripts.Array.size
+      propertyPath: itemScripts.Array.size
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2948447358681182120, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
-      propertyPath: clusterScripts.Array.data[0]
+      propertyPath: itemScripts.Array.data[0]
       value: 
       objectReference: {fileID: 5022602860645237092, guid: ddc74e42a2554114fae60d54d404ede7,
         type: 3}
@@ -3398,7 +3398,7 @@ PrefabInstance:
       objectReference: {fileID: 2041586806}
     - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
-      propertyPath: clusterScripts.Array.data[1]
+      propertyPath: itemScripts.Array.data[1]
       value: 
       objectReference: {fileID: 5022602860645237092, guid: efd373abb4160934daee4900556805b7,
         type: 3}
@@ -4116,7 +4116,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2627616726396763139, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
-      propertyPath: clusterScripts.Array.data[2]
+      propertyPath: itemScripts.Array.data[2]
       value: 
       objectReference: {fileID: 5022602860645237092, guid: 2df1099f34f2a6742b56dcc8bbe9da12,
         type: 3}
@@ -4487,7 +4487,7 @@ PrefabInstance:
       objectReference: {fileID: 2041586806}
     - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
-      propertyPath: clusterScripts.Array.data[1]
+      propertyPath: itemScripts.Array.data[1]
       value: 
       objectReference: {fileID: 5022602860645237092, guid: 2c2a14add46851445afc290f191674f2,
         type: 3}
@@ -4882,15 +4882,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 2041586798}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 466c56cb3cb32ec48b21ffb81ad21213, type: 3}
+  m_Script: {fileID: 11500000, guid: efba9862ff2c44c8a85ac4257727b653, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clusterScripts:
+  itemScripts:
   - {fileID: 5022602860645237092, guid: 6fbba7ee9e06fc54d97d1d0a0e6fab79, type: 3}
   - {fileID: 5022602860645237092, guid: 44e5a1d1d327ba545a99233a35dc19d7, type: 3}
   playerScripts: []
-  clusterScriptMD5s: []
-  playerScriptMD5s: []
 --- !u!114 &2041586805
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5257,7 +5255,7 @@ PrefabInstance:
       objectReference: {fileID: 2041586806}
     - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
-      propertyPath: clusterScripts.Array.data[1]
+      propertyPath: itemScripts.Array.data[1]
       value: 
       objectReference: {fileID: 5022602860645237092, guid: 75bc537bbb485bc45a7f34498fa7ebb0,
         type: 3}

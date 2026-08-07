@@ -814,7 +814,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2627616726396763139, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
-      propertyPath: clusterScripts.Array.data[2]
+      propertyPath: itemScripts.Array.data[2]
       value: 
       objectReference: {fileID: 5022602860645237092, guid: 88023038ae8767e4b9894123a36a1e6f,
         type: 3}

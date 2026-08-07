@@ -4,12 +4,13 @@ using UnityEditor.SceneManagement;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using ClusterMetaverseLab.Luida.Scripting;
 using ClusterVR.CreatorKit.Item.Implements;
 
 /// <summary>
 /// Generates a CCK wrapper prefab from a humanoid VRM/avatar source prefab.
 /// Walks the Animator bone hierarchy to build a per-avatar BoneMap.js header,
-/// then creates a prefab with Item + MovableItem + ScriptableItem + CSCombiner.
+/// then creates a prefab with Item + MovableItem + ScriptableItem + LuidaScriptCombiner.
 /// </summary>
 public static class VrmWrapperBuilder
 {
@@ -269,7 +270,7 @@ public static class VrmWrapperBuilder
     }
 
     /// <summary>
-    /// Create the wrapper prefab with CCK components and CSCombiner pointing to BoneMap + SyncClone JS.
+    /// Create the wrapper prefab with CCK components and LuidaScriptCombiner pointing to BoneMap + SyncClone JS.
     /// </summary>
     private static string BuildWrapperPrefab(GameObject sourceVrmPrefab, AvatarEntry entry, string boneMapJsPath, string wrapperFolder)
     {
@@ -290,8 +291,8 @@ public static class VrmWrapperBuilder
         root.AddComponent<MovableItem>();
         root.AddComponent<ScriptableItem>();
 
-        // Add CSCombiner and wire up JS files
-        var combiner = root.AddComponent<ScriptableClusterScriptCombiner>();
+        // Add LuidaScriptCombiner and wire up JS files
+        var combiner = root.AddComponent<LuidaScriptCombiner>();
 
         var boneMapAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(boneMapJsPath);
         var syncCloneAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(SyncCloneScriptPath);

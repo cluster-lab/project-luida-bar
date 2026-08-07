@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using ClusterMetaverseLab.Luida.Scripting;
 using ClusterVR.CreatorKit.Item.Implements;
 using ClusterVR.CreatorKit.Gimmick;
 using ClusterVR.CreatorKit.Gimmick.Implements;
@@ -418,7 +419,7 @@ public static class AvatarsConfigAssetUtil
             spawner = new GameObject(SpawnerObjectName);
             spawner.AddComponent<Item>();
             spawner.AddComponent<ScriptableItem>();
-            spawner.AddComponent<ScriptableClusterScriptCombiner>();
+            spawner.AddComponent<LuidaScriptCombiner>();
         }
         spawner.name = SpawnerObjectName;
         Undo.RegisterCreatedObjectUndo(spawner, "Add Avatar Spawner");
@@ -434,8 +435,8 @@ public static class AvatarsConfigAssetUtil
             so.ApplyModifiedPropertiesWithoutUndo();
         }
 
-        // Wire up CSCombiner with AvatarManager.js (config will be added by GenerateAvatarGimmickTriggerConfig)
-        var combiner = spawner.GetComponent<ScriptableClusterScriptCombiner>();
+        // Wire up LuidaScriptCombiner with AvatarManager.js (config will be added by GenerateAvatarGimmickTriggerConfig)
+        var combiner = spawner.GetComponent<LuidaScriptCombiner>();
         if (combiner != null)
         {
             combiner.ClearScripts();
@@ -592,7 +593,7 @@ public static class AvatarsConfigAssetUtil
         if (File.Exists(oldConfigPath))
             AssetDatabase.DeleteAsset(oldConfigPath);
 
-        // Ensure the config file is in the AvatarSpawner's CSCombiner
+        // Ensure the config file is in the AvatarSpawner's LuidaScriptCombiner
         WireGimmickConfigIntoSpawner(configPath);
 
         // Add fixed reset GlobalLogic components to the spawner
@@ -612,14 +613,13 @@ public static class AvatarsConfigAssetUtil
         var spawner = FindSpawnerInScene();
         if (spawner == null) return;
 
-        var combiner = spawner.GetComponent<ScriptableClusterScriptCombiner>();
+        var combiner = spawner.GetComponent<LuidaScriptCombiner>();
         if (combiner == null) return;
 
         var configAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(configPath);
         if (configAsset == null) return;
 
-        var scripts = combiner.GetClusterScripts();
-        if (scripts == null) scripts = new List<JavaScriptAsset>();
+        var scripts = combiner.ItemScripts ?? new List<JavaScriptAsset>();
 
         // Check if already present — if so, replace in-place to pick up changes
         int existingIdx = scripts.IndexOf(configAsset);

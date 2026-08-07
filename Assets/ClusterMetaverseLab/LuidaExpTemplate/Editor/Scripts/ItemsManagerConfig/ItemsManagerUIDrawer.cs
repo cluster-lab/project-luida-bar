@@ -170,7 +170,7 @@ public static class ItemsManagerUIDrawer
     public static readonly EventDefinition[] AvailableEventDefinitions =
     {
         // Lifecycle — map to base script's empty Start/Update stubs (StateListeningItemBase.js:239-240).
-        // Per-item script is loaded into CSCombiner slot 1 (base in slot 0); user override wins via JS function hoisting.
+        // Per-item script is loaded into LuidaScriptCombiner slot 1 (base in slot 0); user override wins via JS function hoisting.
         new EventDefinition("Start",
             "function Start() {\n{body}\n}",
             _buttonLabel: "Start",

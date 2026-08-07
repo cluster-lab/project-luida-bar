@@ -428,16 +428,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 7807161544533224870}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77cbf20d08afa0146b1af698e23ed3ee, type: 3}
+  m_Script: {fileID: 11500000, guid: efba9862ff2c44c8a85ac4257727b653, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clusterScripts:
+  itemScripts:
   - {fileID: 5022602860645237092, guid: c22e594b3eff3364c8217424a55e9588, type: 3}
   - {fileID: 5022602860645237092, guid: 78eaf1d3a3a632e4babd6feceacedc38, type: 3}
   playerScripts:
   - {fileID: 5022602860645237092, guid: 82685120614308444add0dc2b678572e, type: 3}
-  clusterScriptMD5s: []
-  playerScriptMD5s: []
 --- !u!114 &3300219981269909958
 MonoBehaviour:
   m_ObjectHideFlags: 0

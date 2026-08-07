@@ -551,15 +551,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 5660514857068071925}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 466c56cb3cb32ec48b21ffb81ad21213, type: 3}
+  m_Script: {fileID: 11500000, guid: efba9862ff2c44c8a85ac4257727b653, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clusterScripts:
+  itemScripts:
   - {fileID: 5022602860645237092, guid: 695ee6946997a415aac1845484e25dee, type: 3}
   - {fileID: 5022602860645237092, guid: 3eaa84eaf57a74144bf17ab3e3aac4a3, type: 3}
   playerScripts: []
-  clusterScriptMD5s: []
-  playerScriptMD5s: []
 --- !u!114 &3339612299653716798
 MonoBehaviour:
   m_ObjectHideFlags: 0

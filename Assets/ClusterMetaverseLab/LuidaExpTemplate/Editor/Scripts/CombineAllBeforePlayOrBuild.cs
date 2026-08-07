@@ -1,7 +1,7 @@
+using ClusterMetaverseLab.Luida.Scripting;
 using ClusterVR.CreatorKit.Editor.EditorEvents;
 using UnityEngine;
 using UnityEditor;
-using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -15,7 +15,7 @@ public class CombineAllBeforePlayOrBuild
     // file's `isTestMode = (true|false);` line so the uploaded combined scripts
     // ship with isTestMode=false. ExpIdentifiers.js feeds ParticipantManager /
     // DataCollector; ConditionManager.js declares its own copy (it isn't
-    // CSCombined with ExpIdentifiers.js).
+    // combined with ExpIdentifiers.js).
     private static readonly string[] TestModeSourcePaths = {
         "Assets/_Experiment_/Settings/ExpIdentifiers.js",
         "Assets/ClusterMetaverseLab/LuidaExpTemplate/Runtime/Scripts/ConditionManagement/ConditionManager.js",
@@ -29,16 +29,17 @@ public class CombineAllBeforePlayOrBuild
         EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
     }
 
-    private static void RunCSCombiner()
+    private static void RunScriptCombiner()
     {
         AvatarsConfigAssetUtil.GenerateAvatarGimmickTriggerConfig();
 
-        Type csCombinerType = Type.GetType("Assets.KaomoLab.CSCombiner.CSCombiner, Assembly-CSharp-Editor");
-        if (csCombinerType != null)
-        {
-            var method = csCombinerType.GetMethod("CombineAll", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-            method?.Invoke(null, null);
-        }
+        // This (and the call in CombineAll below) is what guarantees the scripts
+        // are combined before entering play mode and before a world upload. It
+        // used to be a reflective lookup of the third-party combiner that always
+        // resolved to null — combining only happened because that component
+        // registered itself on playModeStateChanged. LuidaScriptCombiner does not
+        // self-register, so these explicit calls are the only path.
+        LuidaScriptCombiner.CombineAll();
     }
 
     static bool OnWorldUploadStarted(WorldUploadStartEventData data)
@@ -121,16 +122,12 @@ public class CombineAllBeforePlayOrBuild
         // Regenerate avatar gimmick trigger config before combining
         AvatarsConfigAssetUtil.GenerateAvatarGimmickTriggerConfig();
 
-        Type csCombinerType = Type.GetType("Assets.KaomoLab.CSCombiner.CSCombiner, Assembly-CSharp-Editor");
-        if (csCombinerType != null)
-        {
-            var method = csCombinerType.GetMethod("CombineAll", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-            method?.Invoke(null, null);
-        }
+        // Explicit combine before entering play mode / uploading. See RunScriptCombiner.
+        LuidaScriptCombiner.CombineAll();
 
         // The restore-to-test-mode step that used to live here ran inside
         // the same call as the upload-state bake, but CCK's TryExportAssets
-        // can re-fire CSCombiner (via its own playModeStateChanged listeners
+        // can re-fire the combiner (via its own playModeStateChanged listeners
         // or domain reloads triggered by BuildAssetBundles) AFTER we'd
         // already restored the source — so the prefab got re-baked with
         // test-mode-state and the upload shipped that. The restore now
@@ -143,7 +140,7 @@ public class CombineAllBeforePlayOrBuild
         if (!_isWorldUpload) return;
         Debug.Log($"[LUIDA] OnWorldUploadEnded fired (success={data.Success}). Restoring test-mode source.");
         SetTestMode(true);
-        RunCSCombiner();
+        RunScriptCombiner();
         AssetDatabase.SaveAssets();
         _isWorldUpload = false;
     }

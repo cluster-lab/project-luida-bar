@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
-using Assets.KaomoLab.CSEmulator.Editor.Preview;
 
 /// <summary>
 /// A helper class to return the result of the LUIDA token search.
@@ -135,7 +134,6 @@ public class ClusterExternalEndpointAndVerifyTokenAccessor
             if (existingEndpoint != null)
             {
                 Debug.Log($"Found existing endpoint for URL: {targetUrl}");
-                SyncEmulatorOptions(existingEndpoint);
                 return existingEndpoint;
             }
 
@@ -150,7 +148,6 @@ public class ClusterExternalEndpointAndVerifyTokenAccessor
             }
             
             Debug.Log("Successfully created and retrieved new endpoint.");
-            SyncEmulatorOptions(newEndpoint);
             return newEndpoint;
         }
         catch (ExternalCallInvalidUrlException)
@@ -240,55 +237,5 @@ public class ClusterExternalEndpointAndVerifyTokenAccessor
         
         var newToken = await CreateNewTokenAndSaveToPrefsAsync(userInfo.Value, cancellationToken);
         return newToken.VerifyToken;
-    }
-    
-    /// <summary>
-    /// Syncs the found or created endpoint with the CSEmulator options.
-    /// </summary>
-    private void SyncEmulatorOptions(ExternalCallEndpoint endpointToSync)
-    {
-        try
-        {
-            var op = Bootstrap.options;
-            if (op == null)
-            {
-                Debug.LogWarning("[ClusterExternalEndpointAndVerifyTokenAccessor] CSEmulator Bootstrap.options not found. Cannot sync endpoint.");
-                return;
-            }
-
-            string idToSync = endpointToSync.EndpointId;
-            string urlToSync = endpointToSync.Url;
-
-            // Check if an entry with this URL already exists
-            var currentEndpoints = op.callExternalUrl;
-            var existingEntry = currentEndpoints.FirstOrDefault(e => e.url == urlToSync);
-
-            if (existingEntry != null)
-            {
-                // URL exists, check if the ID needs updating
-                if (existingEntry.id != idToSync)
-                {
-                    existingEntry.id = idToSync;
-                    op.callExternalUrl = currentEndpoints;  // Reassign to trigger setter and persist
-                    Debug.Log($"[CSEmulator] Updated callExternalUrl ID for URL: {urlToSync}");
-                }
-            }
-            else
-            {
-                // URL does not exist, add a new entry
-                var newEntry = new EmulatorOptions.ExternalEndpoint
-                {
-                    id = idToSync,
-                    url = urlToSync
-                };
-                op.callExternalUrl = op.callExternalUrl.Append(newEntry).ToArray();
-                Debug.Log($"[CSEmulator] Added new callExternalUrl entry for URL: {urlToSync}");
-            }
-        }
-        catch (Exception ex)
-        {
-            // This is a non-critical operation, so just log the error and don't block the main task.
-            Debug.LogWarning($"[ClusterExternalEndpointAndVerifyTokenAccessor] Failed to sync endpoint to CSEmulator options: {ex.Message}");
-        }
     }
 }

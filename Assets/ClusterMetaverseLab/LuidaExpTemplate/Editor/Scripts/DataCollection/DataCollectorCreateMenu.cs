@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.IO;
+using ClusterMetaverseLab.Luida.Scripting;
 using ClusterVR.CreatorKit.Item.Implements;
 
 public class DataCollectorCreateMenu
@@ -111,7 +112,7 @@ public class DataCollectorCreateMenu
 
     private static void AssignScriptToCombiner(GameObject collectorInstance, JavaScriptAsset scriptAsset)
     {
-        var scriptCombiner = collectorInstance.GetComponent<ScriptableClusterScriptCombiner>();
+        var scriptCombiner = collectorInstance.GetComponent<LuidaScriptCombiner>();
         if (scriptCombiner != null)
         {
             var identifiersAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(IdentifiersAssetPath);
@@ -127,7 +128,7 @@ public class DataCollectorCreateMenu
         }
         else
         {
-            Debug.LogError("ScriptableClusterScriptCombiner component not found on the DataCollector instance.");
+            Debug.LogError("LuidaScriptCombiner component not found on the DataCollector instance.");
         }
     }
 
