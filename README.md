@@ -99,9 +99,7 @@ The `LUIDA > Configure avatars` window maintains a per-experiment avatar registr
 
 ### English
 1. Download from the [newest release](https://github.com/cluster-lab/project-luida-bar/releases).
-2. Open the downloaded Unity project, **ignore the error at the first time, and import the following packages published by KaomoLab**.
-    - [**CSCombiner: Combine multiple ClusterScripts of one item inside Unity Editor**](https://vkao.booth.pm/items/5924956) (ver1.01)
-    - [**CSEmulator: Run ClusterScripts inside Unity Editor**](https://vkao.booth.pm/items/5111235) (newest version)
+2. Open the downloaded Unity project.
 3. Issue an access token and register it for this Unity project (Follow the steps as shown in the picture below).
 ![cluster-access-token-registration](https://github.com/user-attachments/assets/aeec56a4-ed78-41b2-bb21-d519c659c0d5)
 4. Register URL  `https://luida-web-next.vercel.app/api/cluster` for Cluster's `callExternal` feature, and register the generated verify token for this implement template (Follow the steps as shown in the picture below).
@@ -112,9 +110,7 @@ The `LUIDA > Configure avatars` window maintains a per-experiment avatar registr
 
 ### 日本語
 1. [最新リリース](https://github.com/cluster-lab/project-luida-bar/releases)からダウンロードします。
-2. ダウンロードしたUnityプロジェクトを立ち上げ、**最初はエラーを無視し、立ち上げたら以下のパッケージをインポートします**。
-    - [**CSCombiner: Cluster Scriptを Unity Editor 上で結合するツール**](https://vkao.booth.pm/items/5924956) (ver1.01)
-    - [**CSEmulator: Cluster Scriptを Unity Editor 上で再生できるようにするツール**](https://vkao.booth.pm/items/5111235) (最新バージョン)
+2. ダウンロードしたUnityプロジェクトを立ち上げます。
 3. アクセストークンを発行し、Unityプロジェクトに登録します（下の画像に示された通りに行ってください）。
 ![cluster-access-token-registration-jp](https://github.com/user-attachments/assets/c06f43c6-3412-4462-92a9-ac3576252e99)
 4. clusterの外部通信機能用のURLを登録し、生成されたトークンを本実装テンプレートに登録します（下の画像に示された通りに行ってください）。
@@ -223,7 +219,7 @@ Here is a recommended procedure to do so:
 #### Initialize
 
 1. Create a gameobject from prefab `Assets\_ExpWorld_\Prefabs\CustomDataRecorder\CustomDataRecorder.prefab`
-2. Duplicate JavaScript asset `Assets\_ExpWorld_\Scripts\CustomDataRecorder\CustomDataRecorderCalculatorTemplate.js` and assign it to the gameobject's `CS Combiner` component's last field for cluster scripts.
+2. Duplicate JavaScript asset `Assets\_ExpWorld_\Scripts\CustomDataRecorder\CustomDataRecorderCalculatorTemplate.js` and assign it to the last field of `Item Scripts` on the gameobject's `Luida Script Combiner` component.
 ![image (1)](https://github.com/user-attachments/assets/9aca381b-0cab-451a-b1c4-a39ec4117142)
 3. Complete the implementation of the duplicated JavaScript asset.
 
@@ -239,7 +235,7 @@ The image below serves as an example:
 
 ### Before Upload to cluster
 
-1. Find any gameobject with the CS combiner component attached, and click the "全更新" button.
+1. Find any gameobject with the `Luida Script Combiner` component attached, and click the "Combine Everything" button. (This also runs automatically before entering play mode and before a world upload, so it is usually unnecessary.)
 2. Open the Experiment Variables Editor window again, and then click the `Retrieve/Create Between Subject Condition Setter` and finally `Apply Updated Variables` buttons.
 
 ### Upload and test your experiment world

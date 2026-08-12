@@ -87,3 +87,13 @@ return {
 };
 ```
 - returnする前に、Cluster Scriptを使って何かの計算や前処理を行うことができます。
+
+## 補足: Unity Editor 上でのプレビューについて
+
+Cluster Creator Kit の仕様として、Unity Editor 上でのプレビューでは Cluster Script は実行されません。本実装テンプレートの機能はその多くが Cluster Script で実装されているため、実装した実験の動作確認は cluster にアップロードして行ってください。
+
+なお、Unity Editor 上での Cluster Script プレビューをサポートするツールが有志により開発されています。
+
+※外部ツールのため、導入は自己責任となります。
+
+- [KaomoLab CSEmulator V3](https://vkao.booth.pm/items/7484814)
