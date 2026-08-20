@@ -130,7 +130,8 @@ public static class AvatarsConfigAssetUtil
 
     /// <summary>
     /// Handle files/objects dropped onto the Avatars window drop zone.
-    /// Accepts .vrm files (copied + postprocessed) and humanoid .prefab files (wrapped directly).
+    /// Accepts .vrm files (copied + imported via UniVRM10's ScriptedImporter)
+    /// and humanoid .prefab / imported .vrm assets (wrapped in place).
     /// </summary>
     public static void HandleDrop(Object[] droppedObjects, string[] droppedPaths, AvatarRegistry registry)
     {
@@ -147,7 +148,8 @@ public static class AvatarsConfigAssetUtil
                 if (obj is GameObject go)
                 {
                     string path = AssetDatabase.GetAssetPath(go);
-                    if (path.EndsWith(".prefab"))
+                    if (path.EndsWith(".prefab") ||
+                        path.EndsWith(".vrm", System.StringComparison.OrdinalIgnoreCase))
                     {
                         processedPaths.Add(path);
                         HandlePrefabDrop(go, registry);
@@ -199,7 +201,7 @@ public static class AvatarsConfigAssetUtil
         if (!vrmPath.StartsWith("Assets/"))
         {
             // External file — copy it in
-            File.Copy(vrmPath, destPath.Replace("/", "\\"), overwrite: true);
+            File.Copy(vrmPath, Path.GetFullPath(destPath), overwrite: true);
             AssetDatabase.Refresh();
         }
         else if (vrmPath != destPath)
@@ -207,48 +209,50 @@ public static class AvatarsConfigAssetUtil
             AssetDatabase.CopyAsset(vrmPath, destPath);
         }
 
-        // UniVRM's vrmAssetPostprocessor will auto-import .vrm → .prefab
-        // Wait for it via delayCall polling
-        string baseName = Path.GetFileNameWithoutExtension(fileName);
-        string expectedPrefabPath = Path.Combine(sourceFolder, baseName + ".prefab");
+        // UniVRM10's VrmScriptedImporter imports the .vrm asset itself as the
+        // model (main asset = GameObject) — no separate .prefab is generated.
+        AssetDatabase.ImportAsset(destPath, ImportAssetOptions.ForceSynchronousImport);
+        var imported = AssetDatabase.LoadAssetAtPath<GameObject>(destPath);
 
-        // Poll for the prefab to appear (postprocessor runs asynchronously)
-        int attempts = 0;
-        EditorApplication.CallbackFunction pollCallback = null;
-        pollCallback = () =>
+        // A VRM 0.x file imports as nothing until MigrateToVrm1 is enabled on
+        // its importer — turn it on and reimport.
+        if (imported == null)
         {
-            attempts++;
-            AssetDatabase.Refresh();
-            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(expectedPrefabPath);
-            if (prefab != null)
-            {
-                EditorApplication.delayCall -= pollCallback;
-                HandlePrefabDrop(prefab, registry);
-                return;
-            }
-            if (attempts > 30) // ~30 frames, give up
-            {
-                EditorApplication.delayCall -= pollCallback;
-                // Try alternate path patterns UniVRM might use
-                var guids = AssetDatabase.FindAssets($"t:Prefab {baseName}", new[] { sourceFolder });
-                if (guids.Length > 0)
-                {
-                    var foundPath = AssetDatabase.GUIDToAssetPath(guids[0]);
-                    var foundPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(foundPath);
-                    if (foundPrefab != null)
-                    {
-                        HandlePrefabDrop(foundPrefab, registry);
-                        return;
-                    }
-                }
-                Debug.LogWarning($"[LuidaAvatars] VRM postprocessor did not produce a prefab for {fileName}. Try importing it manually first.");
-            }
-            else
-            {
-                EditorApplication.delayCall += pollCallback;
-            }
-        };
-        EditorApplication.delayCall += pollCallback;
+            imported = TryReimportWithVrm0Migration(destPath);
+        }
+
+        if (imported == null)
+        {
+            EditorUtility.DisplayDialog("VRM Import Failed",
+                $"'{fileName}' could not be imported as a VRM model.\n" +
+                "Make sure UniVRM 1.0 (Assets/VRM10) is installed and the file is a valid VRM 0.x or 1.0 file.",
+                "OK");
+            return;
+        }
+
+        HandlePrefabDrop(imported, registry);
+    }
+
+    /// <summary>
+    /// Enable MigrateToVrm1 on the .vrm asset's VrmScriptedImporter and reimport.
+    /// Uses SerializedObject so this assembly needs no reference to UniVRM10.
+    /// Returns the imported model GameObject, or null if migration also failed.
+    /// </summary>
+    private static GameObject TryReimportWithVrm0Migration(string vrmAssetPath)
+    {
+        var importer = AssetImporter.GetAtPath(vrmAssetPath);
+        if (importer == null || importer.GetType().FullName != "UniVRM10.VrmScriptedImporter")
+            return null;
+
+        var serializedImporter = new SerializedObject(importer);
+        var migrateProp = serializedImporter.FindProperty("MigrateToVrm1");
+        if (migrateProp == null || migrateProp.boolValue)
+            return null;
+
+        migrateProp.boolValue = true;
+        serializedImporter.ApplyModifiedPropertiesWithoutUndo();
+        importer.SaveAndReimport();
+        return AssetDatabase.LoadAssetAtPath<GameObject>(vrmAssetPath);
     }
 
     private static void HandlePrefabDrop(GameObject prefab, AvatarRegistry registry)
