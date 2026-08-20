@@ -7,6 +7,14 @@ let boneNodes = [];
 let hipsNode = null;
 let headNode = null;
 
+// Rest transform of the hips' parent node relative to the item root, baked by
+// VrmWrapperBuilder. Older bone-map headers don't define these — fall back to
+// identity/zero (VRM0-normalized behavior).
+const HIPS_PARENT_REST_ROT = typeof AVATAR_HIPS_PARENT_REST_ROT !== "undefined"
+  ? AVATAR_HIPS_PARENT_REST_ROT : new Quaternion(0, 0, 0, 1);
+const HIPS_PARENT_REST_POS = typeof AVATAR_HIPS_PARENT_REST_POS !== "undefined"
+  ? AVATAR_HIPS_PARENT_REST_POS : new Vector3(0, 0, 0);
+
 $.onStart(() => {
   $.state.player = null;
   $.state.needsScale = false;
@@ -14,14 +22,24 @@ $.onStart(() => {
   $.state.poseWaitTime = 0;
   $.state.warnedNoPose = false;
 
-  // Cache bone sub-node references using the baked-in BONE_MAP
+  // Cache bone sub-node references using the baked-in BONE_MAP.
+  // rest/restParent are the avatar's rest-pose rotations baked by
+  // VrmWrapperBuilder; older bone maps lack them, so default to identity
+  // (VRM0-normalized behavior).
+  const identityRot = new Quaternion(0, 0, 0, 1);
   boneNodes = [];
   for (let i = 0; i < BONE_MAP.length; i++) {
     const entry = BONE_MAP[i];
     const node = $.subNode(entry.name);
     if (!node) continue;
     const parentBone = BONE_PARENT[entry.bone] !== undefined ? BONE_PARENT[entry.bone] : null;
-    boneNodes.push({ bone: entry.bone, node: node, parentBone: parentBone });
+    boneNodes.push({
+      bone: entry.bone,
+      node: node,
+      parentBone: parentBone,
+      rest: entry.rest !== undefined ? entry.rest : identityRot,
+      restParent: entry.restParent !== undefined ? entry.restParent : identityRot,
+    });
     if (entry.bone === HumanoidBone.Hips) hipsNode = node;
     if (entry.bone === HumanoidBone.Head) headNode = node;
   }
@@ -113,7 +131,16 @@ $.onUpdate((deltaTime) => {
       // Sync hips Y when enabled, otherwise use the baked offset
       const finalY = AVATAR_SYNC_HIPS_Y ? hipsLocalPos.y : AVATAR_HIPS_Y_OFFSET;
 
-      hipsNode.setPosition(new Vector3(finalX, finalY, finalZ));
+      // Convert the item-root-local target into the hips parent's local frame
+      // (identity/zero for normalized skeletons, so this is then a no-op).
+      const invParentRest = new Quaternion(
+        -HIPS_PARENT_REST_ROT.x, -HIPS_PARENT_REST_ROT.y, -HIPS_PARENT_REST_ROT.z, HIPS_PARENT_REST_ROT.w);
+      const hipsPos = rotateVector(invParentRest,
+        finalX - HIPS_PARENT_REST_POS.x,
+        finalY - HIPS_PARENT_REST_POS.y,
+        finalZ - HIPS_PARENT_REST_POS.z);
+
+      hipsNode.setPosition(hipsPos);
     }
   }
 
@@ -148,7 +175,7 @@ $.onUpdate((deltaTime) => {
 
     if (!entry.node) continue;
 
-    // Determine parent world rotation
+    // Determine parent world rotation (player space)
     let parentWorldRot;
     if (entry.parentBone === null) {
       parentWorldRot = rot;
@@ -157,9 +184,16 @@ $.onUpdate((deltaTime) => {
       if (!parentWorldRot) parentWorldRot = rot;
     }
 
-    // Convert world rotation to local: localRot = inverse(parentWorldRot) * boneRot
-    const invParent = new Quaternion(-parentWorldRot.x, -parentWorldRot.y, -parentWorldRot.z, parentWorldRot.w);
-    const localBoneRot = multiplyQuaternions(invParent, boneRot);
+    // Retarget onto this avatar's rest pose:
+    //   desired world = playerBoneRot * rest
+    //   parent world  = playerParentRot * restParent
+    //   localRot      = inverse(parent world) * desired world
+    // For normalized skeletons rest/restParent are identity and this reduces
+    // to the plain world -> local conversion.
+    const desiredWorld = multiplyQuaternions(boneRot, entry.rest);
+    const parentWorld = multiplyQuaternions(parentWorldRot, entry.restParent);
+    const invParent = new Quaternion(-parentWorld.x, -parentWorld.y, -parentWorld.z, parentWorld.w);
+    const localBoneRot = multiplyQuaternions(invParent, desiredWorld);
 
     entry.node.setRotation(localBoneRot);
   }
