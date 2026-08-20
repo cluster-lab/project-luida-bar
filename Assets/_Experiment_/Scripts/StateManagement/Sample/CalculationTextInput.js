@@ -16,6 +16,8 @@ const stateExitActions = {
 };
 
 
+// ---- legacy free-form code (migrate to event handlers when possible) ----
+
 function getRandomInt(max) { // 乱数の整数を生成する関数を定義する
   return Math.floor(Math.random() * max);
 }

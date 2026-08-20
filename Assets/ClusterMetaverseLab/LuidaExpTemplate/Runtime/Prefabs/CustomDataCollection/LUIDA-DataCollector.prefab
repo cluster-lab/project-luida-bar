@@ -31,13 +31,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5964733846762761523}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5964733846762761527
 MonoBehaviour:
@@ -134,33 +134,33 @@ MonoBehaviour:
     calculateData () {\r\n    let returnData = $.state.customData;\r\n    if (!Array.isArray(returnData))
     returnData = [];\r\n    const CONDITION = $.groupState.currentCondition;\r\n   
     const PARTICIPANTS = [null].concat($.groupState.participants);\r\n    const COLLECTED_DATA
-    = $.groupState.collectedData;\r\n    function saveData() {\r\n\r\n/*\r\n# Available
-    Variables in LUIDA Data Collector Script\r\n\r\nThe script for LUIDA Data Collector
-    is primarily to be written using ClusterScript (https://docs.cluster.mu/script/index.html).\r\n\r\nWe
-    also provide the following variables that work with LUIDA-only features.\r\n\r\nTip:
+    = $.groupState.collectedData;\r\n    function saveData() {\r\n\r\n/*\n# Available
+    Variables in LUIDA Data Collector Script\n\nThe script for LUIDA Data Collector
+    is primarily to be written using ClusterScript (https://docs.cluster.mu/script/index.html).\n\nWe
+    also provide the following variables that work with LUIDA-only features.\n\nTip:
     When asking an LLM service for coding assistance, first share the `Asset/Doc/CCK-Types.d.ts`
-    file and this comment section with it.\r\n\r\n### CONDITION\r\n    - Only available
+    file and this comment section with it.\n\n### CONDITION\n    - Only available
     if **LUIDA experiment progress automation feature is enabled and during the trial
-    states** (e.g., `Trial - Start`, `Trial - Rest`).\r\n    - Contains values from
-    your configured experimental variables for the current trial.\r\n    - Use `CONDITION[\"your_variable_name\"]`
-    to retrieve a specific condition value within the current trial.\r\n\r\n### PARTICIPANTS\r\n   
-    - An array of PlayerHandle of the participants joining this experiment.\"\r\n   
+    states** (e.g., `Trial - Start`, `Trial - Rest`).\n    - Contains values from
+    your configured experimental variables for the current trial.\n    - Use `CONDITION[\"your_variable_name\"]`
+    to retrieve a specific condition value within the current trial.\n\n### PARTICIPANTS\n   
+    - An array of PlayerHandle of the participants joining this experiment.\"\n   
     - Use `PARTICIPANTS[1]` to retrieve the first participant, `PARTICIPANTS[2]`
-    to retrieve the second participant, etc.\r\n\r\n### COLLECTED_DATA\r\n    - Contains
+    to retrieve the second participant, etc.\n\n### COLLECTED_DATA\n    - Contains
     data that are sent from state-listening items' `Send Data To Collector` action
     or a customized action script's `SendDataToCollector(\"your_data_label\", your_data_value)`
-    function.\r\n    - Use `COLLECTED_DATA[\"your_data_label\"]` to retrieve specific
-    values.\r\n\r\n---\r\n\r\n**Important Note:** The script **must return a value**
-    at the end of its code block.\r\n\r\nExamples:\r\n    - return { score: 100 };`\r\n   
-    - const answer = $.getStateCompat('global', 'count', 'integer') > 5; return {
-    isLarger: answer };`\r\n*/\r\nreturn {\r\n    stateLog: COLLECTED_DATA ? COLLECTED_DATA[\"stateLog\"]
+    function.\n    - Use `COLLECTED_DATA[\"your_data_label\"]` to retrieve specific
+    values.\n\n---\n\n**Important Note:** The script **must return a value** at the
+    end of its code block.\n\nExamples:\n    - return { score: 100 };`\n    - const
+    answer = $.getStateCompat('global', 'count', 'integer') > 5; return { isLarger:
+    answer };`\n*/\nreturn {\n    stateLog: COLLECTED_DATA ? COLLECTED_DATA[\"stateLog\"]
     : \"\", // Include log of the current state by default (state name, id, and the
-    timestamp when the state starts)\r\n    cond: CONDITION || {}, // Include conditions
+    timestamp when the state starts)\n    cond: CONDITION || {}, // Include conditions
     in the collected data by default (if you have enabled the experiment automation
-    feature)\r\n    someCckState: $.getStateCompat(\"global\", \"someCckState\",
-    \"boolean\"), // Replace with your in-scene state triggered by CCK components\r\n   
-    foo: 'bar' // Replace with your custom collected data\r\n};\r\n\r\n    return
-    {};\r\n  }\r\n  returnData.push(saveData());\r\n  return returnData;\r\n}\r\n"
+    feature)\n    someCckState: $.getStateCompat(\"global\", \"someCckState\", \"boolean\"),
+    // Replace with your in-scene state triggered by CCK components\n    foo: 'bar'
+    // Replace with your custom collected data\n};\n\r\n    return {};\r\n  }\r\n 
+    returnData.push(saveData());\r\n  return returnData;\r\n}\r\n"
 --- !u!114 &4976748577095326931
 MonoBehaviour:
   m_ObjectHideFlags: 0

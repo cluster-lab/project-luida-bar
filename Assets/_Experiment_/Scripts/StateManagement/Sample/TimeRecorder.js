@@ -19,8 +19,7 @@ const stateExitActions = {
     3: [
         { type: "exec", action: (deltaTime) => {
             $.state.isInTrial = false;
-            SendDataToCollector(
-                "timer", $.state.timer);
+            SendDataToCollector("time", $.state.timer);
         } },
         { type: "exec", action: (deltaTime) => {
             $.sendSignalCompat('this', 'exp_recordCustomData');
@@ -28,6 +27,8 @@ const stateExitActions = {
     ]
 };
 
+
+// ---- legacy free-form code (migrate to event handlers when possible) ----
 
 function Start() { $.state.timer = 0; }
 function Update(deltaTime) {
