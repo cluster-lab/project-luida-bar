@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using System.IO;
+using ClusterMetaverseLab.Luida.Scripting;
 using ClusterVR.CreatorKit.Item.Implements;
 
 public class CreateStateListeningItemMenu
@@ -38,8 +39,8 @@ public class CreateStateListeningItemMenu
         AssetDatabase.CopyAsset(stateListeningItemScriptTemplatePath, newScriptPath);
         AssetDatabase.Refresh();
 
-        GameObject scriptCombinerObject = newObject.GetComponent<ScriptableClusterScriptCombiner>().gameObject;
-        ScriptableClusterScriptCombiner combiner = scriptCombinerObject.GetComponent<ScriptableClusterScriptCombiner>();
+        GameObject scriptCombinerObject = newObject.GetComponent<LuidaScriptCombiner>().gameObject;
+        LuidaScriptCombiner combiner = scriptCombinerObject.GetComponent<LuidaScriptCombiner>();
         var newScriptAsset = AssetDatabase.LoadAssetAtPath<ClusterVR.CreatorKit.Item.Implements.JavaScriptAsset>(newScriptPath);
         combiner.ReplaceScript(newScriptAsset, 1, null, 0, true);
         EditorUtility.SetDirty(combiner);

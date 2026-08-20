@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using ClusterMetaverseLab.Luida.Scripting;
 using ClusterVR.CreatorKit.Item.Implements;
 
 public static class ItemsManagerAssetUtil
@@ -158,7 +159,7 @@ public static class ItemsManagerAssetUtil
         AssetDatabase.CopyAsset(ScriptTemplatePath, jsPath);
         AssetDatabase.Refresh();
 
-        var combiner = go.GetComponent<ScriptableClusterScriptCombiner>();
+        var combiner = go.GetComponent<LuidaScriptCombiner>();
         if (combiner != null)
         {
             var newScriptAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(jsPath);
@@ -281,7 +282,7 @@ public static class ItemsManagerAssetUtil
         AssetDatabase.CopyAsset(ScriptTemplatePath, jsPath);
         AssetDatabase.Refresh();
 
-        var combiner = go.GetComponent<ScriptableClusterScriptCombiner>();
+        var combiner = go.GetComponent<LuidaScriptCombiner>();
         if (combiner != null)
         {
             var newScriptAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(jsPath);
@@ -416,15 +417,6 @@ public static class ItemsManagerAssetUtil
         IsApplyingAssetsToScripts = true;
         SaveAllItemsToAssets(editor);
         IsApplyingAssetsToScripts = false;
-
-        /*
-        Type csCombinerType = Type.GetType("Assets.KaomoLab.CSCombiner.CSCombiner, Assembly-CSharp-Editor");
-        if (csCombinerType != null)
-        {
-            var method = csCombinerType.GetMethod("CombineAll", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-            method?.Invoke(null, null);
-        }
-        */
     }
 
     private static void SaveAllItemsToAssets(ItemsManagerConfigTab editor)

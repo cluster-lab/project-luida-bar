@@ -8,7 +8,7 @@
 1.  LUIDA ウェブコンソールで実験を新規作成し、必要な情報を記入
 2.  本実装テンプレート（Unity）の初期設定
 3.  シーン内のオブジェクトにデータ収集機能を設定
-4.  ローカル（Unity のエディター上）でテスト & アップロード前の準備
+4.  アップロード前の準備
 5.  cluster へのワールドアップロードと動作確認
 6.  LUIDA ウェブコンソールでの最終設定（ワールド ID の記入やアバターの設定）
 7.  公開待ち
@@ -89,10 +89,8 @@
 ＊こちらの手順の一部は今後自動化する予定です。現状はお手数ですが一通りおこなってください。
 
 1.  [最新リリースの実装テンプレート](https://github.com/cluster-lab/project-luida-bar/releases)をダウンロードします。
-2.  ダウンロードした Unity プロジェクトを Unity Hub から開きます。プロジェクトを開いた際にコンソールにエラーが表示されることがありますが、まずは無視して進み、以下の必須パッケージを Unity にインポートしてください。
-    - [**CSCombiner: Cluster Script を Unity Editor 上で結合するツール**](https://vkao.booth.pm/items/5924956) (ver1.01 推奨)
-    - [**CSEmulator: Cluster Script を Unity Editor 上で再生できるようにするツール**](https://vkao.booth.pm/items/5111235) (現状は V3 ではなく**V2**でお願いします\*\*)
-3.  サンプルシーン `Assets/_Experiment_/Scenes/Sample/Priming_incomplete.unity` を開き、Unity エディタの再生ボタンを押して、まずはシーンの様子を確認してみましょう。
+2.  ダウンロードした Unity プロジェクトを Unity Hub から開きます。
+3.  サンプルシーン `Assets/_Experiment_/Scenes/Sample/Priming_incomplete.unity` を開き、まずはシーンの様子を確認してみましょう。
 4.  確認が済んだら、Unity のメニューバーから `LUIDA > Scene > Duplicate current scene` を選択し、表示されるダイアログでご自身の名前を入力して新しいシーンを作成します。以降はこの新しいシーン上で作業を進めます。
 
     <img width="1038" height="301" alt="スクリーンショット 2026-02-12 023657" src="https://github.com/user-attachments/assets/77a1c3af-2863-43eb-9768-75dc473f07ff" />
@@ -225,8 +223,9 @@ return {
 
 1.  Unity のメニューバーから `Cluster > 設定` を開き、「ベータ機能を利用する」にチェックを入れます。
     ![ベータ機能の有効化](https://github.com/user-attachments/assets/af786e5e-07fe-4126-b350-1ed7c0401ecd)
-2.  **ローカルテストプレイ**: Unity エディタの再生ボタンを押して、実験全体の流れ（動画の再生、橋の選択、質問紙の表示など）が意図した通りかを確認します。
-3.  シーンをセーブします。
+2.  シーンをセーブします。
+
+**動作確認について**: Cluster Creator Kit の仕様として、Unity Editor 上でのプレビューでは Cluster Script は実行されません。実験全体の流れを確認するには、次の手順で cluster にアップロードしてください（[補足](/Documentation_JA.md#補足-unity-editor-上でのプレビューについて)）。
 
 </details>
 

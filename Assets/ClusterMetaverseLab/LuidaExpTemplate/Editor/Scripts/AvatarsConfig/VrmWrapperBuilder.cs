@@ -4,12 +4,13 @@ using UnityEditor.SceneManagement;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using ClusterMetaverseLab.Luida.Scripting;
 using ClusterVR.CreatorKit.Item.Implements;
 
 /// <summary>
 /// Generates a CCK wrapper prefab from a humanoid VRM/avatar source prefab.
 /// Walks the Animator bone hierarchy to build a per-avatar BoneMap.js header,
-/// then creates a prefab with Item + MovableItem + ScriptableItem + CSCombiner.
+/// then creates a prefab with Item + MovableItem + ScriptableItem + LuidaScriptCombiner.
 /// </summary>
 public static class VrmWrapperBuilder
 {
@@ -126,6 +127,22 @@ public static class VrmWrapperBuilder
     };
 
     /// <summary>
+    /// Per-bone data sampled from the source prefab's rest pose.
+    /// rest / restParent are the rest-pose rotations (relative to the future
+    /// item root) of the bone transform and its actual transform parent.
+    /// VRM0-normalized skeletons have identity everywhere; VRM1 no longer
+    /// guarantees normalization, so AvatarSyncClone.js composes these into the
+    /// retargeted rotation.
+    /// </summary>
+    private struct BoneInfo
+    {
+        public string name;
+        public Quaternion rest;
+        public Quaternion restParent;
+        public Vector3 restParentPos;
+    }
+
+    /// <summary>
     /// Build a CCK wrapper prefab from a humanoid source prefab. Wrappers and
     /// bone-map JS land under the registry's scene folder
     /// (Assets/_Experiment_/Avatars/&lt;scene&gt;/{Wrappers,Generated}/) so each
@@ -172,9 +189,10 @@ public static class VrmWrapperBuilder
     }
 
     /// <summary>
-    /// Instantiate the source prefab temporarily to read bone Transform names via Animator.
+    /// Instantiate the source prefab temporarily to read bone Transform names
+    /// and rest-pose rotations via Animator.
     /// </summary>
-    private static Dictionary<HumanBodyBones, string> DiscoverBoneNames(GameObject sourceVrmPrefab, AvatarEntry entry)
+    private static Dictionary<HumanBodyBones, BoneInfo> DiscoverBoneNames(GameObject sourceVrmPrefab, AvatarEntry entry)
     {
         // Instantiate in a preview scene so the Animator binds properly
         var previewScene = EditorSceneManager.NewPreviewScene();
@@ -189,19 +207,48 @@ public static class VrmWrapperBuilder
             return null;
         }
 
+        // Rest rotations must be sampled in the same reference pose that the
+        // player's humanoid bone rotations are relative to (T-pose). .vrm
+        // sources keep their authored rest pose — the VRM spec mandates
+        // T-pose. Generic humanoid prefabs (e.g. FBX-based) may rest in
+        // A-pose, so reset them to Unity's reference pose (all muscles zero)
+        // before sampling.
+        string sourcePath = AssetDatabase.GetAssetPath(sourceVrmPrefab);
+        bool isVrmSource = !string.IsNullOrEmpty(sourcePath) &&
+            sourcePath.EndsWith(".vrm", System.StringComparison.OrdinalIgnoreCase);
+        if (!isVrmSource)
+        {
+            var poseHandler = new HumanPoseHandler(animator.avatar, animator.transform);
+            var pose = new HumanPose();
+            poseHandler.GetHumanPose(ref pose);
+            for (int i = 0; i < pose.muscles.Length; i++) pose.muscles[i] = 0f;
+            poseHandler.SetHumanPose(ref pose);
+            poseHandler.Dispose();
+        }
+
         // Collect the bones we want based on checkboxes
         var bonesToSync = new List<HumanBodyBones>(CoreBones);
         if (entry.syncFeetToes) bonesToSync.AddRange(FeetBones);
         if (entry.syncFingers) bonesToSync.AddRange(FingerBones);
         if (entry.syncJaw) bonesToSync.AddRange(JawBones);
 
-        var result = new Dictionary<HumanBodyBones, string>();
+        // The instance root's world rotation equals the local rotation the
+        // body keeps under the wrapper item root (SetParent with
+        // worldPositionStays: false), so sampling world rotations here yields
+        // rotations relative to the future item root directly.
+        var result = new Dictionary<HumanBodyBones, BoneInfo>();
         foreach (var bone in bonesToSync)
         {
             Transform boneTransform = animator.GetBoneTransform(bone);
             if (boneTransform != null)
             {
-                result[bone] = boneTransform.name;
+                result[bone] = new BoneInfo
+                {
+                    name = boneTransform.name,
+                    rest = boneTransform.rotation,
+                    restParent = boneTransform.parent != null ? boneTransform.parent.rotation : Quaternion.identity,
+                    restParentPos = boneTransform.parent != null ? boneTransform.parent.position : Vector3.zero,
+                };
             }
         }
 
@@ -213,7 +260,19 @@ public static class VrmWrapperBuilder
     /// <summary>
     /// Generate a JS file containing const BONE_MAP and BONE_PARENT literals.
     /// </summary>
-    private static string GenerateBoneMapJs(AvatarEntry entry, Dictionary<HumanBodyBones, string> boneNameMap, string generatedFolder)
+    private static string QuaternionToJs(Quaternion q)
+    {
+        return string.Format(System.Globalization.CultureInfo.InvariantCulture,
+            "new Quaternion({0:G7}, {1:G7}, {2:G7}, {3:G7})", q.x, q.y, q.z, q.w);
+    }
+
+    private static string Vector3ToJs(Vector3 v)
+    {
+        return string.Format(System.Globalization.CultureInfo.InvariantCulture,
+            "new Vector3({0:G7}, {1:G7}, {2:G7})", v.x, v.y, v.z);
+    }
+
+    private static string GenerateBoneMapJs(AvatarEntry entry, Dictionary<HumanBodyBones, BoneInfo> boneNameMap, string generatedFolder)
     {
         var sb = new StringBuilder();
         sb.AppendLine($"// Auto-generated bone map for avatar: {entry.avatarID}");
@@ -225,13 +284,29 @@ public static class VrmWrapperBuilder
         sb.AppendLine($"const AVATAR_HIPS_Y_OFFSET = {entry.hipsYOffset.ToString(System.Globalization.CultureInfo.InvariantCulture)};");
         sb.AppendLine();
 
-        // BONE_MAP array
+        // Rest transform of the hips' parent node, relative to the item root.
+        // AvatarSyncClone.js converts the root-local hips position target into
+        // this frame (identity/zero for normalized skeletons).
+        Quaternion hipsParentRestRot = Quaternion.identity;
+        Vector3 hipsParentRestPos = Vector3.zero;
+        if (boneNameMap.TryGetValue(HumanBodyBones.Hips, out var hipsInfo))
+        {
+            hipsParentRestRot = hipsInfo.restParent;
+            hipsParentRestPos = hipsInfo.restParentPos;
+        }
+        sb.AppendLine($"const AVATAR_HIPS_PARENT_REST_ROT = {QuaternionToJs(hipsParentRestRot)};");
+        sb.AppendLine($"const AVATAR_HIPS_PARENT_REST_POS = {Vector3ToJs(hipsParentRestPos)};");
+        sb.AppendLine();
+
+        // BONE_MAP array. rest/restParent retarget the player's normalized
+        // humanoid rotations onto this avatar's rest pose (identity for
+        // VRM0-style normalized skeletons).
         sb.AppendLine("const BONE_MAP = [");
         foreach (var kvp in boneNameMap)
         {
             string csEnumName = kvp.Key.ToString(); // e.g. "Hips", "LeftUpperArm"
-            string transformName = kvp.Value.Replace("\"", "\\\"");
-            sb.AppendLine($"  {{ bone: HumanoidBone.{csEnumName}, name: \"{transformName}\" }},");
+            string transformName = kvp.Value.name.Replace("\"", "\\\"");
+            sb.AppendLine($"  {{ bone: HumanoidBone.{csEnumName}, name: \"{transformName}\", rest: {QuaternionToJs(kvp.Value.rest)}, restParent: {QuaternionToJs(kvp.Value.restParent)} }},");
         }
         sb.AppendLine("];");
         sb.AppendLine();
@@ -269,7 +344,7 @@ public static class VrmWrapperBuilder
     }
 
     /// <summary>
-    /// Create the wrapper prefab with CCK components and CSCombiner pointing to BoneMap + SyncClone JS.
+    /// Create the wrapper prefab with CCK components and LuidaScriptCombiner pointing to BoneMap + SyncClone JS.
     /// </summary>
     private static string BuildWrapperPrefab(GameObject sourceVrmPrefab, AvatarEntry entry, string boneMapJsPath, string wrapperFolder)
     {
@@ -290,8 +365,8 @@ public static class VrmWrapperBuilder
         root.AddComponent<MovableItem>();
         root.AddComponent<ScriptableItem>();
 
-        // Add CSCombiner and wire up JS files
-        var combiner = root.AddComponent<ScriptableClusterScriptCombiner>();
+        // Add LuidaScriptCombiner and wire up JS files
+        var combiner = root.AddComponent<LuidaScriptCombiner>();
 
         var boneMapAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(boneMapJsPath);
         var syncCloneAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(SyncCloneScriptPath);

@@ -86,9 +86,13 @@ For custom data, the `LUIDA > Configure data collector` window provides a no-cod
 <img width="1475" height="483" alt="data-collection-result-on-web-screenshot" src="https://github.com/user-attachments/assets/05477847-f80a-4a7a-9b31-8826b179a419" />
 
 ### Avatar management
-The `LUIDA > Configure avatars` window maintains a per-experiment avatar registry. Registered avatars can be assigned to participants directly from the GUI via the "Assign avatar to participant" state-listening action, so swapping avatars at specific points in an experiment doesn't require any scripting.
+The `LUIDA > Configure avatars` window maintains a per-experiment avatar registry. Drop a `.vrm` file (VRM 0.x or 1.0 — 0.x files are migrated to VRM 1.0 automatically on import; UniVRM 1.0 is bundled at `Assets/VRM10` + `Assets/UniGLTF`) or any humanoid prefab into the window to register it. Registered avatars can be assigned to participants directly from the GUI via the "Assign avatar to participant" state-listening action, so swapping avatars at specific points in an experiment doesn't require any scripting.
 
-`LUIDA > Configure avatars` ウィンドウで、実験ごとのアバター一覧を管理できます。登録したアバターは、ステート連動アイテムの「Assign avatar to participant」アクションからGUI経由で参加者に割り当てられるため、実験中の特定タイミングでのアバター切替もスクリプトを書かずに実現できます。
+`LUIDA > Configure avatars` ウィンドウで、実験ごとのアバター一覧を管理できます。`.vrm` ファイル（VRM 0.x / 1.0 両対応。0.x はインポート時に自動で VRM 1.0 へマイグレーションされます。インポーターとして UniVRM 1.0 を `Assets/VRM10` + `Assets/UniGLTF` に同梱）または Humanoid のプレハブをウィンドウにドロップするだけで登録できます。登録したアバターは、ステート連動アイテムの「Assign avatar to participant」アクションからGUI経由で参加者に割り当てられるため、実験中の特定タイミングでのアバター切替もスクリプトを書かずに実現できます。
+
+Registration generates a wrapper item that syncs the player's pose at runtime. The wrapper bakes the avatar's rest pose, so non-normalized VRM 1.0 skeletons and A-posed FBX-based prefabs animate correctly too. After upgrading LUIDA, rebuild previously registered avatars (toggle any sync option to surface the Rebuild button, or re-drop the file). For in-editor preview, LUIDA automatically sets CSEmulator's test VRM (動作確認用のVRM) to the bundled transparent avatar — the emulator derives pose data from that model's bones, and a non-normalized test VRM (such as CSEmulator's bundled dummy) would distort assigned avatars in preview only.
+
+登録時には、プレイヤーの姿勢を実行時に同期するラッパーアイテムが自動生成されます。ラッパーにはアバターのレストポーズが焼き込まれるため、正規化されていない VRM 1.0 スケルトンや A ポーズの FBX 由来プレハブでも正しく動作します。LUIDA を更新した際は、登録済みアバターのラッパーを再ビルドしてください（同期オプションを一度切り替えると Rebuild ボタンが表示されます。ファイルの再ドロップでも可）。また、エディタ内プレビューでは CSEmulator の「動作確認用のVRM」に同梱の透明アバターが自動設定されます。エミュレーターはこのモデルのボーンから姿勢データを生成するため、正規化されていない VRM（CSEmulator 同梱のダミー等）を指定するとプレビューに限りアバターの姿勢が崩れます。
 
 <img width="890" height="788" alt="avatar-config-window-screenshot" src="https://github.com/user-attachments/assets/2003d19c-70a2-4e20-90c0-b8d0ef8ae892" />
 
@@ -99,9 +103,7 @@ The `LUIDA > Configure avatars` window maintains a per-experiment avatar registr
 
 ### English
 1. Download from the [newest release](https://github.com/cluster-lab/project-luida-bar/releases).
-2. Open the downloaded Unity project, **ignore the error at the first time, and import the following packages published by KaomoLab**.
-    - [**CSCombiner: Combine multiple ClusterScripts of one item inside Unity Editor**](https://vkao.booth.pm/items/5924956) (ver1.01)
-    - [**CSEmulator: Run ClusterScripts inside Unity Editor**](https://vkao.booth.pm/items/5111235) (newest version)
+2. Open the downloaded Unity project.
 3. Issue an access token and register it for this Unity project (Follow the steps as shown in the picture below).
 ![cluster-access-token-registration](https://github.com/user-attachments/assets/aeec56a4-ed78-41b2-bb21-d519c659c0d5)
 4. Register URL  `https://luida-web-next.vercel.app/api/cluster` for Cluster's `callExternal` feature, and register the generated verify token for this implement template (Follow the steps as shown in the picture below).
@@ -112,9 +114,7 @@ The `LUIDA > Configure avatars` window maintains a per-experiment avatar registr
 
 ### 日本語
 1. [最新リリース](https://github.com/cluster-lab/project-luida-bar/releases)からダウンロードします。
-2. ダウンロードしたUnityプロジェクトを立ち上げ、**最初はエラーを無視し、立ち上げたら以下のパッケージをインポートします**。
-    - [**CSCombiner: Cluster Scriptを Unity Editor 上で結合するツール**](https://vkao.booth.pm/items/5924956) (ver1.01)
-    - [**CSEmulator: Cluster Scriptを Unity Editor 上で再生できるようにするツール**](https://vkao.booth.pm/items/5111235) (最新バージョン)
+2. ダウンロードしたUnityプロジェクトを立ち上げます。
 3. アクセストークンを発行し、Unityプロジェクトに登録します（下の画像に示された通りに行ってください）。
 ![cluster-access-token-registration-jp](https://github.com/user-attachments/assets/c06f43c6-3412-4462-92a9-ac3576252e99)
 4. clusterの外部通信機能用のURLを登録し、生成されたトークンを本実装テンプレートに登録します（下の画像に示された通りに行ってください）。
@@ -223,7 +223,7 @@ Here is a recommended procedure to do so:
 #### Initialize
 
 1. Create a gameobject from prefab `Assets\_ExpWorld_\Prefabs\CustomDataRecorder\CustomDataRecorder.prefab`
-2. Duplicate JavaScript asset `Assets\_ExpWorld_\Scripts\CustomDataRecorder\CustomDataRecorderCalculatorTemplate.js` and assign it to the gameobject's `CS Combiner` component's last field for cluster scripts.
+2. Duplicate JavaScript asset `Assets\_ExpWorld_\Scripts\CustomDataRecorder\CustomDataRecorderCalculatorTemplate.js` and assign it to the last field of `Item Scripts` on the gameobject's `Luida Script Combiner` component.
 ![image (1)](https://github.com/user-attachments/assets/9aca381b-0cab-451a-b1c4-a39ec4117142)
 3. Complete the implementation of the duplicated JavaScript asset.
 
@@ -239,7 +239,7 @@ The image below serves as an example:
 
 ### Before Upload to cluster
 
-1. Find any gameobject with the CS combiner component attached, and click the "全更新" button.
+1. Find any gameobject with the `Luida Script Combiner` component attached, and click the "Combine Everything" button. (This also runs automatically before entering play mode and before a world upload, so it is usually unnecessary.)
 2. Open the Experiment Variables Editor window again, and then click the `Retrieve/Create Between Subject Condition Setter` and finally `Apply Updated Variables` buttons.
 
 ### Upload and test your experiment world

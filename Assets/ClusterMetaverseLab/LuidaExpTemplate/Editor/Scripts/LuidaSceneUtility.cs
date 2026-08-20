@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEditor.SceneManagement;
 using System.IO;
+using ClusterMetaverseLab.Luida.Scripting;
 using ClusterVR.CreatorKit.Item.Implements;
 
 // These using statements assume the custom types are available in the project.
@@ -63,7 +64,7 @@ public static class LuidaSceneUtility
 
         // After opening the new scene, update the script references within it.
         string newStateListenerScriptsFolder = $"Assets/_Experiment_/Scripts/StateManagement/{newSceneName}";
-        UpdateScriptableClusterScriptCombiners(newSceneName, newStateListenerScriptsFolder);
+        UpdateScriptCombiners(newSceneName, newStateListenerScriptsFolder);
         UpdateDataCollectorScriptCombiner(newSceneName);
         RewireAvatarSpawnerForDuplicatedScene(newSceneName);
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
@@ -218,7 +219,7 @@ public static class LuidaSceneUtility
     /// Run after the duplicated scene is opened. Repoints the in-scene spawner's
     /// WorldItemTemplateList at the freshly rebuilt wrappers, and regenerates
     /// AvatarCommandConfig.js into the new scene's Generated folder so the
-    /// spawner's CSCombiner references the new scene's config.
+    /// spawner's LuidaScriptCombiner references the new scene's config.
     /// </summary>
     private static void RewireAvatarSpawnerForDuplicatedScene(string newSceneName)
     {
@@ -237,17 +238,17 @@ public static class LuidaSceneUtility
         AvatarsConfigAssetUtil.UpdateSpawnerTemplateList(newRegistry);
 
         // Regenerates AvatarCommandConfig.js into <newScene>/Generated/ and
-        // rewires it into the spawner's CSCombiner.
+        // rewires it into the spawner's LuidaScriptCombiner.
         AvatarsConfigAssetUtil.GenerateAvatarGimmickTriggerConfig();
     }
     
-    private static void UpdateScriptableClusterScriptCombiners(string newSceneName, string newStateListenerScriptsFolder)
+    private static void UpdateScriptCombiners(string newSceneName, string newStateListenerScriptsFolder)
     {
         var stateListeningItems = GameObject.FindObjectsOfType<LuidaStateListeningItem>();
 
         foreach (var item in stateListeningItems)
         {
-            var scriptCombiner = item.GetComponent<ScriptableClusterScriptCombiner>();
+            var scriptCombiner = item.GetComponent<LuidaScriptCombiner>();
             if (scriptCombiner == null) continue;
 
             string itemName = item.name;
@@ -268,7 +269,7 @@ public static class LuidaSceneUtility
         var dataCollector = GameObject.FindObjectOfType<LuidaDataCollector>();
         if (dataCollector == null) return;
 
-        var scriptCombiner = dataCollector.GetComponent<ScriptableClusterScriptCombiner>();
+        var scriptCombiner = dataCollector.GetComponent<LuidaScriptCombiner>();
         if (scriptCombiner == null) return;
 
         var newScriptPath = $"{DataCollectorScriptFolderPath}{newSceneName}.js";

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ClusterVR.CreatorKit.Item;
+using ClusterMetaverseLab.Luida.Scripting;
 using ClusterVR.CreatorKit.Item.Implements;
 using System.Text.RegularExpressions;
 
@@ -403,8 +404,8 @@ public class LuidaStateListeningItemInspector : Editor
     private JavaScriptAsset GetClusterScriptFromItem(GameObject item, out int scriptIndex)
     {
         scriptIndex = -1;
-        ScriptableClusterScriptCombiner combiner = item.GetComponent<ScriptableClusterScriptCombiner>();
-        var clusterScripts = combiner.GetClusterScripts();
+        LuidaScriptCombiner combiner = item.GetComponent<LuidaScriptCombiner>();
+        var clusterScripts = combiner?.ItemScripts;
         if (combiner != null && clusterScripts != null && clusterScripts.Count > 1)
         {
             scriptIndex = 1;
@@ -484,7 +485,7 @@ public class LuidaStateListeningItemInspector : Editor
     {
         if (gameObject == null || stateListeningItemScript == null) return;
 
-        ScriptableClusterScriptCombiner combiner = gameObject.GetComponent<ScriptableClusterScriptCombiner>();
+        LuidaScriptCombiner combiner = gameObject.GetComponent<LuidaScriptCombiner>();
         if (combiner == null) return;
 
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
@@ -660,8 +661,8 @@ public class LuidaStateListeningItemInspector : Editor
         newObject.transform.rotation = referenceObject.transform.rotation;
         newObject.transform.localScale = referenceObject.transform.localScale;
 
-        // Copy all other components (excluding ScriptableItem and ScriptableClusterScriptCombiner)
-        var components = referenceObject.GetComponents<Component>().Where(c => !(c is ClusterVR.CreatorKit.Item.Implements.ScriptableItem) && !(c is ScriptableClusterScriptCombiner) && !(c is Transform));
+        // Copy all other components (excluding ScriptableItem and LuidaScriptCombiner)
+        var components = referenceObject.GetComponents<Component>().Where(c => !(c is ClusterVR.CreatorKit.Item.Implements.ScriptableItem) && !(c is LuidaScriptCombiner) && !(c is Transform));
         foreach (var component in components)
         {
             if (component is ClusterVR.CreatorKit.Item.Implements.Item) continue;

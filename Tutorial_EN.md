@@ -8,7 +8,7 @@ This tutorial guides you through implementing an experiment on LUIDA using this 
 1.  Create a new experiment on the LUIDA Web Console and fill in the required information
 2.  Initial setup of this implementation template (Unity)
 3.  Configure data collection on in-scene objects
-4.  Test locally (in Unity Editor) & preparation before uploading
+4.  Preparation before uploading
 5.  Upload to cluster as a world and verify operation
 6.  Final settings on LUIDA Web Console (World ID registration and avatar settings)
 7.  Wait for publication
@@ -89,10 +89,8 @@ In this experiment, we will examine the priming effect. Participants first watch
 *Some of these steps will be automated in the future. For now, please complete all steps.
 
 1.  Download the [latest release of the implementation template](https://github.com/cluster-lab/project-luida-bar/releases).
-2.  Open the downloaded Unity project from Unity Hub. Errors may appear in the console when opening the project, but ignore them first and import the following required packages into Unity:
-    - [**CSCombiner: Tool for combining Cluster Scripts in Unity Editor**](https://vkao.booth.pm/items/5924956) (ver1.01 recommended)
-    - [**CSEmulator: Tool to play Cluster Scripts in Unity Editor**](https://vkao.booth.pm/items/5111235) (for now, please use **V2** instead of V3)
-3.  Open the sample scene `Assets/_Experiment_/Scenes/Sample/Priming_incomplete.unity` and press the Play button in the Unity Editor to get a feel for the scene.
+2.  Open the downloaded Unity project from Unity Hub.
+3.  Open the sample scene `Assets/_Experiment_/Scenes/Sample/Priming_incomplete.unity` to get a feel for the scene.
 4.  After reviewing the scene, go to `LUIDA > Scene > Duplicate current scene` from Unity's menu bar. In the dialog that appears, enter your own name to create a new scene. You will work on this new scene from now on.
 
     <img width="1038" height="301" alt="スクリーンショット 2026-02-12 023657" src="https://github.com/user-attachments/assets/77a1c3af-2863-43eb-9768-75dc473f07ff" />
@@ -225,8 +223,9 @@ This configuration makes the questionnaire automatically hide itself after the p
 
 1.  Open `Cluster > Settings` from Unity's menu bar and check "Use beta features".
     ![Enable beta features](https://github.com/user-attachments/assets/af786e5e-07fe-4126-b350-1ed7c0401ecd)
-2.  **Local test play**: Press the play button in Unity Editor to verify that the entire experiment flow (video playback, bridge selection, questionnaire display, etc.) works as intended.
-3.  Save the scene.
+2.  Save the scene.
+
+**About verifying behavior**: As per Cluster Creator Kit's specification, Cluster Script does not run when previewing in the Unity Editor. To verify the entire experiment flow, upload to cluster in the next step ([additional notes](/Documentation_JA.md#補足-unity-editor-上でのプレビューについて)).
 
 </details>
 

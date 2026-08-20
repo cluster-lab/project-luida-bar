@@ -1,3 +1,4 @@
+using ClusterMetaverseLab.Luida.Scripting;
 using ClusterVR.CreatorKit.Item.Implements;
 using System.Linq;
 using UnityEditor;
@@ -380,18 +381,18 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
              scriptAssets.Add(variablesAsset);
         }
 
-        UpdateScriptableClusterScriptCombiner(scriptAssets.ToArray());
+        UpdateScriptCombiner(scriptAssets.ToArray());
 
         Debug.Log($"Experiment variables saved to {variablesAssetPath}");
         IsApplyingVariableUpdates = false;
     }
 
-    private void UpdateScriptableClusterScriptCombiner(JavaScriptAsset[] scriptAssets)
+    private void UpdateScriptCombiner(JavaScriptAsset[] scriptAssets)
     {
         GameObject conditionManager = GameObject.Find("ConditionManager");
         if (conditionManager != null)
         {
-            var scriptCombiner = conditionManager.GetComponent<ScriptableClusterScriptCombiner>();
+            var scriptCombiner = conditionManager.GetComponent<LuidaScriptCombiner>();
             if (scriptCombiner != null)
             {
                 scriptCombiner.ClearScripts();
@@ -410,7 +411,7 @@ public class ExperimentVariablesConfigTab : LuidaAutomationConfigTab
             }
             else
             {
-                Debug.LogWarning("ScriptableClusterScriptCombiner component not found on ConditionManager.");
+                Debug.LogWarning("LuidaScriptCombiner component not found on ConditionManager.");
             }
         }
         else

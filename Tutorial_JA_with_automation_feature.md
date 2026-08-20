@@ -14,7 +14,7 @@
     4.  ステートに連動するオブジェクトの挙動設定
     5.  カスタム形式で記録したいデータの定義
 4.  Unity & CCK を用いるその他の実装
-5.  ローカル（Unity のエディター上）でテスト
+5.  アップロード前の準備
 6.  cluster へのワールドアップロードと動作確認
 7.  LUIDA ウェブコンソールでの最終設定（ワールド ID の記入やアバターの設定）
 8.  公開待ち
@@ -111,9 +111,7 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 ＊こちらの手順の一部は今後自動化する予定です。現状はお手数ですが一通りおこなってください。
 
 1.  [最新リリースの実装テンプレート](https://github.com/cluster-lab/project-luida-bar/releases)をダウンロードします。
-2.  ダウンロードした Unity プロジェクトを Unity Hub から開きます。プロジェクトを開いた際にコンソールにエラーが表示されることがありますが、まずは無視して進み、以下の必須パッケージを Unity にインポートしてください。
-    - [**CSCombiner: Cluster Script を Unity Editor 上で結合するツール**](https://vkao.booth.pm/items/5924956) (ver1.01 推奨)
-    - [**CSEmulator: Cluster Script を Unity Editor 上で再生できるようにするツール**](https://vkao.booth.pm/items/5111235) (現状は V3 ではなく**V2**でお願いします\*\*)
+2.  ダウンロードした Unity プロジェクトを Unity Hub から開きます。
 3.  Unity のメニューバーから `LUIDA > Scene > Create New Scene` のウィンドウを開き、ご自身が実装する実験用のシーン名（例: `MyExperimentScene`）を入力した上で OK ボタンを押します。
 
     <img width="482" height="120" alt="image" src="https://github.com/user-attachments/assets/78e2852f-3fd0-4655-a9c5-7a5efa189eba" />
@@ -463,8 +461,9 @@ return {
 
 1.  Unity のメニューバーから `Cluster > 設定` を開き、「ベータ機能を利用する」にチェックを入れます。
     ![ベータ機能の有効化](https://github.com/user-attachments/assets/af786e5e-07fe-4126-b350-1ed7c0401ecd)
-2.  **ローカルテストプレイ**: Unity エディタの再生ボタンを押して、実験全体の流れや各ステートの動作、オブジェクトの挙動などが意図した通りかを確認します。
-3.  シーンをセーブします。
+2.  シーンをセーブします。
+
+**動作確認について**: Cluster Creator Kit の仕様として、Unity Editor 上でのプレビューでは Cluster Script は実行されません。実験全体の流れや各ステートの動作、オブジェクトの挙動などは、次の手順で cluster にアップロード後に確認してください（[補足](/Documentation_JA.md#補足-unity-editor-上でのプレビューについて)）。
 
 </details>
 

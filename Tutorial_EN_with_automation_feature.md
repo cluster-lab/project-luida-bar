@@ -14,7 +14,7 @@ This tutorial guides you through implementing an experiment on LUIDA using this 
     4.  Configure object behaviors linked to states
     5.  Define custom data to record
 4.  Other implementations using Unity & CCK
-5.  Test locally (in Unity Editor)
+5.  Preparation before uploading
 6.  Upload to cluster as a world and verify operation
 7.  Final settings on LUIDA Web Console (World ID registration and avatar settings)
 8.  Wait for publication
@@ -106,9 +106,7 @@ https://github.com/user-attachments/assets/852259cb-f871-4589-bdf1-cb37cefde213
 *Some of these steps will be automated in the future. For now, please complete all steps.
 
 1.  Download the [latest release of the implementation template](https://github.com/cluster-lab/project-luida-bar/releases).
-2.  Open the downloaded Unity project from Unity Hub. Errors may appear in the console when opening the project, but ignore them first and import the following required packages into Unity:
-    - [**CSCombiner: Tool for combining Cluster Scripts in Unity Editor**](https://vkao.booth.pm/items/5924956) (ver1.01 recommended)
-    - [**CSEmulator: Tool to play Cluster Scripts in Unity Editor**](https://vkao.booth.pm/items/5111235) (for now, please use **V2** instead of V3)
+2.  Open the downloaded Unity project from Unity Hub.
 3.  Open `LUIDA > Scene > Create New Scene` from Unity's menu bar, enter a scene name for your experiment (e.g., `MyExperimentScene`), and press the OK button.
 
     <img width="482" height="120" alt="image" src="https://github.com/user-attachments/assets/78e2852f-3fd0-4655-a9c5-7a5efa189eba" />
@@ -456,8 +454,9 @@ return {
 
 1.  Open `Cluster > Settings` from Unity's menu bar and check "Use beta features".
     ![Enable beta features](https://github.com/user-attachments/assets/af786e5e-07fe-4126-b350-1ed7c0401ecd)
-2.  **Local test play**: Press the play button in Unity Editor to verify that the entire experiment flow, each state's behavior, and object behaviors work as intended.
-3.  Save the scene.
+2.  Save the scene.
+
+**About verifying behavior**: As per Cluster Creator Kit's specification, Cluster Script does not run when previewing in the Unity Editor. Please verify the entire experiment flow, each state's behavior, and object behaviors after uploading to cluster in the next step ([additional notes](/Documentation_JA.md#補足-unity-editor-上でのプレビューについて)).
 
 </details>
 

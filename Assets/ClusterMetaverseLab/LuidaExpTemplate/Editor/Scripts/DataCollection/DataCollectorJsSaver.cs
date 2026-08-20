@@ -3,11 +3,12 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using ClusterMetaverseLab.Luida.Scripting;
 using ClusterVR.CreatorKit.Item.Implements;
 
 /// <summary>
 /// Generates calculator JS from the config, writes it to the scene's
-/// DataCollector script asset, and triggers CSCombiner. Shared by the
+/// DataCollector script asset, and triggers LuidaScriptCombiner. Shared by the
 /// gimmick inspector (one-off Register button) and the Data Collector tab.
 /// </summary>
 public static class DataCollectorJsSaver
@@ -48,10 +49,10 @@ public static class DataCollectorJsSaver
             return;
         }
 
-        var combiner = dataCollector.GetComponent<ScriptableClusterScriptCombiner>();
+        var combiner = dataCollector.GetComponent<LuidaScriptCombiner>();
         if (combiner == null)
         {
-            Debug.LogError("[LUIDA] LUIDA-DataCollector is missing ScriptableClusterScriptCombiner — cannot combine.");
+            Debug.LogError("[LUIDA] LUIDA-DataCollector is missing LuidaScriptCombiner — cannot combine.");
             return;
         }
 

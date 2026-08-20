@@ -216,7 +216,7 @@ The items below are NOT callable JS functions. They are choices in the Action dr
 
 These actions send messages to the `LUIDA-AvatarSpawner` world item (a `WorldItemReference` that must exist in the scene and carry `AvatarManager.js`). The spawner resolves the participant number to a `PlayerHandle` via `$.groupState.participants` and then creates/destroys the avatar wrapper item for that player. If the participant has not yet been enrolled (i.e., `PARTICIPANTS[participantIndex]` would be `undefined`), the action is logged and silently ignored.
 
-Prerequisite: avatars are registered in the LUIDA Web Console; their IDs are synced into this project via the **LUIDA > Configure experiment automation > Avatars** tab and stored in the `AvatarRegistry` asset. The editor shows the registered IDs as a dropdown.
+Prerequisite: avatars are registered locally via the standalone **LUIDA > Configure avatars** window — drop a `.vrm` file (VRM 0.x or 1.0; 0.x files are migrated to VRM 1.0 automatically on import) or a humanoid prefab into its drop zone. Registrations are stored in the scene's `AvatarRegistry` asset, and the editor shows the registered IDs as a dropdown. (The LUIDA Web Console's avatar settings are a separate mechanism for join-time avatars and are not used by these actions.)
 
 ### `Assign avatar to participant` (editor action)
 

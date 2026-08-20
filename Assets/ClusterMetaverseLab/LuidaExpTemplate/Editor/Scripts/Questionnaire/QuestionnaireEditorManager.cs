@@ -4,6 +4,7 @@ using UnityEditor;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ClusterMetaverseLab.Luida.Scripting;
 using ClusterVR.CreatorKit.Item.Implements;
 using ClusterVR.CreatorKit.Operation.Implements;
 using ClusterVR.CreatorKit.Gimmick.Implements;
@@ -53,7 +54,7 @@ public static class QuestionnaireEditorManager
                 var identifiersAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(identifiersAssetPath);
                 if (identifiersAsset != null)
                 {
-                    ScriptableClusterScriptCombiner combiner = formController.GetComponent<ScriptableClusterScriptCombiner>();
+                    LuidaScriptCombiner combiner = formController.GetComponent<LuidaScriptCombiner>();
                     if (combiner != null)
                     {
                         combiner.ReplaceScript(identifiersAsset, 0, null, 0, true);
@@ -148,7 +149,7 @@ public static class QuestionnaireEditorManager
                 var identifiersAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(identifiersAssetPath);
                 if (identifiersAsset != null)
                 {
-                    var combiner = formController.GetComponent<ScriptableClusterScriptCombiner>();
+                    var combiner = formController.GetComponent<LuidaScriptCombiner>();
                     if (combiner != null)
                     {
                         combiner.ReplaceScript(identifiersAsset, 0, null, 0, true);

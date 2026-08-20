@@ -1,0 +1,41 @@
+{
+    "name": "ClusterMetaverseLab.Luida.Editor",
+    "rootNamespace": "",
+    "references": [
+        "ClusterMetaverseLab.Luida",
+        "ClusterVR.CreatorKit",
+        "ClusterVR.CreatorKit.Common",
+        "ClusterVR.CreatorKit.Constants",
+        "ClusterVR.CreatorKit.Extensions",
+        "ClusterVR.CreatorKit.Gimmick",
+        "ClusterVR.CreatorKit.Gimmick.Implements",
+        "ClusterVR.CreatorKit.Item",
+        "ClusterVR.CreatorKit.Item.Implements",
+        "ClusterVR.CreatorKit.Operation",
+        "ClusterVR.CreatorKit.Operation.Implements",
+        "ClusterVR.CreatorKit.ProductUgc",
+        "ClusterVR.CreatorKit.Translation",
+        "ClusterVR.CreatorKit.Trigger",
+        "ClusterVR.CreatorKit.Trigger.Implements",
+        "ClusterVR.CreatorKit.Validator",
+        "ClusterVR.CreatorKit.World",
+        "ClusterVR.CreatorKit.World.Implements",
+        "ClusterVR.CreatorKit.Editor.EditorEvents",
+        "ClusterVR.CreatorKit.Editor.Api",
+        "ClusterVR.CreatorKit.Editor.Builder",
+        "ClusterVR.CreatorKit.Editor.Repository",
+        "ClusterVR.CreatorKit.Editor.Infrastructure",
+        "ClusterVR.CreatorKit.Editor.Utils"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

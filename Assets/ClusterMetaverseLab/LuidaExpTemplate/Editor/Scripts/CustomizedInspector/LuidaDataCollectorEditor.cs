@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using ClusterMetaverseLab.Luida.Scripting;
 using ClusterVR.CreatorKit.Item.Implements;
 using ClusterVR.CreatorKit.Operation.Implements;
 
@@ -13,7 +14,7 @@ public class LuidaDataCollectorEditor : Editor
         typeof(ItemLogic),
         typeof(ScriptableItem),
         typeof(ItemGroupMember),
-        typeof(ScriptableClusterScriptCombiner)
+        typeof(LuidaScriptCombiner)
     };
     private readonly List<Component> hiddenComponents = new List<Component>();
 

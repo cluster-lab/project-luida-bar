@@ -17,8 +17,10 @@ MonoBehaviour:
     onStateStartedActions:
     - predefinedActionTemplate:
         actionType: Customized Action
+        displayLabel: 
         codeSnippet: 
         variables: []
+        category: 
       customAction: "PARTICIPANTS[1].requestTextInput(\n  \"ask_to_calculate\",\n 
         getRandomInt(100) + \"+\" + getRandomInt(100) + \"=?\"\n);"
       isConditional: 0
@@ -28,6 +30,7 @@ MonoBehaviour:
       _variableValuesList: []
     duringStateActions: []
     onStateExitedActions: []
+  eventHandlers: []
   otherImplementation: "function getRandomInt(max) { // \u4E71\u6570\u306E\u6574\u6570\u3092\u751F\u6210\u3059\u308B\u95A2\u6570\u3092\u5B9A\u7FA9\u3059\u308B\n 
     return Math.floor(Math.random() * max);\n}\n$.onTextInput((text, meta, status)
     => {\n  if (status === TextInputStatus.Success) {\n    ToNextState(); // \u53C2\u52A0\u8005\u304B\u3089\u306E\u30C6\u30AD\u30B9\u30C8\u5165\u529B\u3092\u53D7\u3051\u4ED8\u3051\u305F\u3089\u6B21\u306E\u30B9\u30C6\u30FC\u30C8\u3078\u9077\u79FB\u3055\u305B\u308B\n   

@@ -1,0 +1,336 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22975fc05975d2a4f9b750cd520d63a0, type: 3}
+  m_Name: Sample
+  m_EditorClassIdentifier: ClusterMetaverseLab.Luida::LuidaDataCollectorConfig
+  schemaVersion: 2
+  collectedLabels:
+  - label: time
+    type: 2
+    ignoreOnSave: 0
+  - label: isRed
+    type: 1
+    ignoreOnSave: 0
+  fields:
+  - fieldName: ans
+    source: 7
+    collectedLabel: isRed
+    globalStateKey: 
+    globalStateType: 3
+    conditionVariableName: 
+    jsExpression: 
+    directValueKind: 0
+    arithmeticOperands: []
+    conditionalLhs:
+      kind: 5
+      label: isRed
+      stateKey: 
+      stateType: 3
+      jsExpression: 
+      directValueKind: 0
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    conditionalOp: 0
+    conditionalRhs:
+      kind: 8
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: true
+      directValueKind: 2
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    conditionalThen:
+      kind: 8
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: R
+      directValueKind: 1
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    conditionalElse:
+      kind: 8
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: B
+      directValueKind: 1
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    legacyCckGimmickValueType: 0
+    legacyStateScope: 0
+    legacyStateKey: 
+    legacyStateType: 0
+    legacyCollectedDataLabel: 
+    legacyLiteralKind: 0
+    legacyLiteralValue: 
+    legacyCustomJsExpression: 
+  - fieldName: font
+    source: 2
+    collectedLabel: timer
+    globalStateKey: 
+    globalStateType: 3
+    conditionVariableName: font
+    jsExpression: 
+    directValueKind: 0
+    arithmeticOperands: []
+    conditionalLhs:
+      kind: 5
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: 
+      directValueKind: 0
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    conditionalOp: 0
+    conditionalRhs:
+      kind: 5
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: 
+      directValueKind: 0
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    conditionalThen:
+      kind: 5
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: 
+      directValueKind: 0
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    conditionalElse:
+      kind: 5
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: 
+      directValueKind: 0
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    legacyCckGimmickValueType: 0
+    legacyStateScope: 0
+    legacyStateKey: 
+    legacyStateType: 0
+    legacyCollectedDataLabel: 
+    legacyLiteralKind: 0
+    legacyLiteralValue: 
+    legacyCustomJsExpression: 
+  - fieldName: text
+    source: 2
+    collectedLabel: timer
+    globalStateKey: 
+    globalStateType: 3
+    conditionVariableName: text
+    jsExpression: 
+    directValueKind: 0
+    arithmeticOperands: []
+    conditionalLhs:
+      kind: 5
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: 
+      directValueKind: 0
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    conditionalOp: 0
+    conditionalRhs:
+      kind: 5
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: 
+      directValueKind: 0
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    conditionalThen:
+      kind: 5
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: 
+      directValueKind: 0
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    conditionalElse:
+      kind: 5
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: 
+      directValueKind: 0
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    legacyCckGimmickValueType: 0
+    legacyStateScope: 0
+    legacyStateKey: 
+    legacyStateType: 0
+    legacyCollectedDataLabel: 
+    legacyLiteralKind: 0
+    legacyLiteralValue: 
+    legacyCustomJsExpression: 
+  - fieldName: req
+    source: 2
+    collectedLabel: timer
+    globalStateKey: 
+    globalStateType: 3
+    conditionVariableName: request
+    jsExpression: 
+    directValueKind: 0
+    arithmeticOperands: []
+    conditionalLhs:
+      kind: 5
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: 
+      directValueKind: 0
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    conditionalOp: 0
+    conditionalRhs:
+      kind: 5
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: 
+      directValueKind: 0
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    conditionalThen:
+      kind: 5
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: 
+      directValueKind: 0
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    conditionalElse:
+      kind: 5
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: 
+      directValueKind: 0
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    legacyCckGimmickValueType: 0
+    legacyStateScope: 0
+    legacyStateKey: 
+    legacyStateType: 0
+    legacyCollectedDataLabel: 
+    legacyLiteralKind: 0
+    legacyLiteralValue: 
+    legacyCustomJsExpression: 
+  - fieldName: depth
+    source: 2
+    collectedLabel: timer
+    globalStateKey: 
+    globalStateType: 3
+    conditionVariableName: depth
+    jsExpression: 
+    directValueKind: 0
+    arithmeticOperands: []
+    conditionalLhs:
+      kind: 5
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: 
+      directValueKind: 0
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    conditionalOp: 0
+    conditionalRhs:
+      kind: 5
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: 
+      directValueKind: 0
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    conditionalThen:
+      kind: 5
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: 
+      directValueKind: 0
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    conditionalElse:
+      kind: 5
+      label: 
+      stateKey: 
+      stateType: 3
+      jsExpression: 
+      directValueKind: 0
+      legacyLiteralKind: 0
+      legacyLiteralValue: 
+      legacyCustomJs: 
+      legacyStateScope: 0
+    legacyCckGimmickValueType: 0
+    legacyStateScope: 0
+    legacyStateKey: 
+    legacyStateType: 0
+    legacyCollectedDataLabel: 
+    legacyLiteralKind: 0
+    legacyLiteralValue: 
+    legacyCustomJsExpression: 
+  customJsSuffix: 
+  useCustomCodeMode: 0
+  rawJs: 

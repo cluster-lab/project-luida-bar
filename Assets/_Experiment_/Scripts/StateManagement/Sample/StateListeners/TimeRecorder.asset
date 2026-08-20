@@ -17,8 +17,10 @@ MonoBehaviour:
     onStateStartedActions:
     - predefinedActionTemplate:
         actionType: Customized Action
+        displayLabel: 
         codeSnippet: 
         variables: []
+        category: 
       customAction: '$.state.isInTrial = true;
 
         $.state.timer = 0;'
@@ -31,10 +33,14 @@ MonoBehaviour:
     onStateExitedActions:
     - predefinedActionTemplate:
         actionType: Customized Action
+        displayLabel: 
         codeSnippet: 
         variables: []
-      customAction: "$.state.isInTrial = false;\nSendDataToCollector(\n    \"timer\",
-        $.state.timer);"
+        category: 
+      customAction: '$.state.isInTrial = false;
+
+        SendDataToCollector("time",
+        $.state.timer);'
       isConditional: 0
       conditionVariable: 
       conditionValue: 
@@ -42,8 +48,10 @@ MonoBehaviour:
       _variableValuesList: []
     - predefinedActionTemplate:
         actionType: Process and save collected data
+        displayLabel: 
         codeSnippet: $.sendSignalCompat('this', 'exp_recordCustomData');
         variables: []
+        category: 
       customAction: 
       isConditional: 0
       conditionVariable: 
@@ -54,8 +62,10 @@ MonoBehaviour:
     onStateStartedActions:
     - predefinedActionTemplate:
         actionType: Upload collected data
+        displayLabel: 
         codeSnippet: $.sendSignalCompat('this', 'exp_uploadCustomData');
         variables: []
+        category: 
       customAction: 
       isConditional: 0
       conditionVariable: 
@@ -64,5 +74,6 @@ MonoBehaviour:
       _variableValuesList: []
     duringStateActions: []
     onStateExitedActions: []
+  eventHandlers: []
   otherImplementation: "function Start() { $.state.timer = 0; }\nfunction Update(deltaTime)
     {\n  if ($.state.isInTrial) $.state.timer += deltaTime;\n}"
