@@ -321,7 +321,7 @@ PrefabInstance:
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: worldItemReferences.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -330,9 +330,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
+      propertyPath: worldItemReferences.Array.data[1].id
+      value: LUIDA-AvatarSpawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
       propertyPath: worldItemReferences.Array.data[0].item
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: worldItemReferences.Array.data[1].item
+      value: 
+      objectReference: {fileID: 1160218779}
     - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: 'itemScripts.Array.data[1]'
@@ -812,7 +822,7 @@ PrefabInstance:
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: worldItemReferences.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -821,9 +831,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
+      propertyPath: worldItemReferences.Array.data[1].id
+      value: LUIDA-AvatarSpawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
       propertyPath: worldItemReferences.Array.data[0].item
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: worldItemReferences.Array.data[1].item
+      value: 
+      objectReference: {fileID: 1160218779}
     - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: 'itemScripts.Array.data[1]'
@@ -1081,7 +1101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
 --- !u!114 &231365096
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -1580,8 +1600,8 @@ PrefabInstance:
     - target: {fileID: 5697374075709122390, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
-        = \"callExternalEndpointID_example\";\npNum = 1;\nisTestMode = true;\n\r\n$.onStart(()
+      value: "expID = \"68af2b309c8c1f5dedc1f457\";\ntoken = \"bd82d51c-2f32-4d16-b919-33b6542b379a\";\ncallExternalEndpointID
+        = \"61c788d9-0da3-40aa-b5c2-f8858727c894\";\npNum = 1;\nisTestMode = true;\n\r\n$.onStart(()
         => {\n    reset();\n    $.state.isParticipantAssigned = false;\n    $.groupState.qCompletedCount
         = 0;\n    $.state.spawnBatchSize = 3;\n    $.state.spawnInterval = 0.2;\n});\n\n$.onUpdate((deltaTime)
         => {\n    if (!$.state.isParticipantAssigned && $.groupState.isParticipantsEnough)
@@ -1994,8 +2014,8 @@ PrefabInstance:
     - target: {fileID: 5964733846762761526, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
-        = \"callExternalEndpointID_example\";\npNum = 1;\nisTestMode = true;\n\r\nconst
+      value: "expID = \"68af2b309c8c1f5dedc1f457\";\ntoken = \"bd82d51c-2f32-4d16-b919-33b6542b379a\";\ncallExternalEndpointID
+        = \"61c788d9-0da3-40aa-b5c2-f8858727c894\";\npNum = 1;\nisTestMode = true;\n\r\nconst
         uploadInterval = 1;\r\nconst dataLengthPerUpload = 100;\r\nconst dataByteLengthPerUpload
         = 100000; // 102400\r\n\r\n$.onStart(() => {\r\n    $.state.customData =
         [];\r\n    $.state.uploadIndex = 0;\r\n    $.state.elapsedTime = 0;\r\n   
@@ -2338,7 +2358,7 @@ PrefabInstance:
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: worldItemReferences.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -2347,9 +2367,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
+      propertyPath: worldItemReferences.Array.data[1].id
+      value: LUIDA-AvatarSpawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
       propertyPath: worldItemReferences.Array.data[0].item
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: worldItemReferences.Array.data[1].item
+      value: 
+      objectReference: {fileID: 1160218779}
     - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: 'itemScripts.Array.data[1]'
@@ -2582,7 +2612,7 @@ PrefabInstance:
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: worldItemReferences.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -2591,9 +2621,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
+      propertyPath: worldItemReferences.Array.data[1].id
+      value: LUIDA-AvatarSpawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
       propertyPath: worldItemReferences.Array.data[0].item
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: worldItemReferences.Array.data[1].item
+      value: 
+      objectReference: {fileID: 1160218779}
     - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: 'itemScripts.Array.data[1]'
@@ -2999,8 +3039,8 @@ PrefabInstance:
     - target: {fileID: 320188938653792925, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
-        = \"callExternalEndpointID_example\";\npNum = 1;\nisTestMode = true;\n\r\nconst
+      value: "expID = \"68af2b309c8c1f5dedc1f457\";\ntoken = \"bd82d51c-2f32-4d16-b919-33b6542b379a\";\ncallExternalEndpointID
+        = \"61c788d9-0da3-40aa-b5c2-f8858727c894\";\npNum = 1;\nisTestMode = true;\n\r\nconst
         REJECTION_GATE_POS = new Vector3(-100, 100, -100);\n\nfunction enqueueRejection(idfc,
         reason) {\n    $.log(\"Rejected \" + idfc + \": \" + (reason || \"unknown\"));\n   
         $.groupState.participants = $.groupState.participants.filter(\n        p
@@ -3533,7 +3573,7 @@ PrefabInstance:
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: worldItemReferences.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -3542,9 +3582,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
+      propertyPath: worldItemReferences.Array.data[1].id
+      value: LUIDA-AvatarSpawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
       propertyPath: worldItemReferences.Array.data[0].item
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: worldItemReferences.Array.data[1].item
+      value: 
+      objectReference: {fileID: 1160218779}
     - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: 'itemScripts.Array.data[1]'
@@ -4334,6 +4384,383 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1154936610}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1160218771
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1160218780}
+  - component: {fileID: 1160218779}
+  - component: {fileID: 1160218778}
+  - component: {fileID: 1160218777}
+  - component: {fileID: 1160218776}
+  - component: {fileID: 1160218775}
+  - component: {fileID: 1160218774}
+  - component: {fileID: 1160218782}
+  - component: {fileID: 1160218781}
+  m_Layer: 0
+  m_Name: LUIDA-AvatarSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1160218774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1160218771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b331e57100a4127901fa699e619e234, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ClusterVR.CreatorKit.Item.Implements::ClusterVR.CreatorKit.Item.Implements.ItemGroupMember
+  host: {fileID: 930668818}
+--- !u!114 &1160218775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1160218771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02f60bfc9a2c4b04bcd3524b54a1e838, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ClusterVR.CreatorKit.Item.Implements::ClusterVR.CreatorKit.Item.Implements.WorldItemTemplateList
+  worldItemTemplates:
+  - id: HatsuneMikuNT
+    worldItemTemplate: {fileID: 510616187168272770, guid: e09af09989d58a049a354e4dc793de44,
+      type: 3}
+    itemTemplateId:
+      value: 0
+  - id: cybergirl
+    worldItemTemplate: {fileID: 4301232019179740859, guid: fc62ad627c7490c4c83a8e4f811cdac2,
+      type: 3}
+    itemTemplateId:
+      value: 0
+--- !u!114 &1160218776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1160218771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10b3caec32abe904d82759e5a64eb598, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ClusterVR.CreatorKit.World.Implements::ClusterVR.CreatorKit.World.Implements.WorldRuntimeSetting.WorldRuntimeSetting
+  useMovingPlatform: 1
+  movingPlatformHorizontalInertia: 0
+  movingPlatformVerticalInertia: 1
+  useMantling: 1
+  useWorldShadow: 1
+  useHUDType: 1
+  useCustomClippingPlanes: 1
+  nearPlane: 0.1
+  farPlane: 1000
+  enableCrouchWalk: 1
+  writeOwnAvatarSilhouetteStencil: 0
+--- !u!114 &1160218777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1160218771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efba9862ff2c44c8a85ac4257727b653, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ClusterMetaverseLab.Luida::ClusterMetaverseLab.Luida.Scripting.LuidaScriptCombiner
+  itemScripts:
+  - {fileID: 5022602860645237092, guid: f0688115ba7f02944aa276ac544daea8, type: 3}
+  - {fileID: 5022602860645237092, guid: 44e5a1d1d327ba545a99233a35dc19d7, type: 3}
+  playerScripts: []
+--- !u!114 &1160218778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1160218771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61061896c654489a41575fc291bf4a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ClusterVR.CreatorKit.Item.Implements::ClusterVR.CreatorKit.Item.Implements.ScriptableItem
+  sourceCodeAsset: {fileID: 0}
+  sourceCode: "// Auto-generated avatar command config\r\nconst AVATAR_INDEX_MAP
+    = [\"HatsuneMikuNT\", \"cybergirl\"];\r\n\r\n// ===== LUIDA Avatar Manager =====\n//
+    Runs on the LUIDA-AvatarSpawner item.\n// Reads AVATAR_INDEX_MAP from the prepended
+    constants header.\n//\n// Supports two input paths:\n//   1. Direct messages:
+    luida_assign_avatar / luida_unassign_avatar (from state-listening items)\n//  
+    2. Gimmick integer commands: polls global states \"luida_avatar_cmd\" + \"luida_avatar_participant\"\n//\n//
+    Both paths route through tryExecuteOrQueue, which defers execution until the\n//
+    target participant is \"ready\" (in $.groupState.participants, exists(), and\n//
+    has humanoid pose data) \u2014 see #avatar-fake-gimmick-race-fix. Falls back
+    to\n// best-effort execution after MAX_WAIT_SECONDS to keep behavior bounded.\n\nconst
+    MAX_WAIT_SECONDS = 5;\n\n$.onStart(() => {\n  $.state.createdAvatars = []; //
+    flat list of created avatar item handles\n  $.state.lastCmd = 0;         // last
+    processed command value\n  // One slot per participant number; later commands
+    overwrite earlier ones.\n  // Entry: { op: 'assign'|'unassign', avatarID?: string,
+    waitTime: number }\n  $.state.pendingByParticipant = {};\n});\n\n// --- Resolve
+    target to a PlayerHandle ---\n// target can be: PlayerHandle (from direct callers)
+    or integer (participant number, 1-based).\n// Returns null silently when out
+    of bounds \u2014 the readiness queue is responsible\n// for distinguishing \"not
+    registered yet\" (transient) from \"never will be\"\n// (timeout warning fires
+    after MAX_WAIT_SECONDS).\nfunction resolvePlayer(target) {\n  if (target ===
+    null || target === undefined) return null;\n  if (typeof target === \"number\")
+    {\n    const participants = $.groupState.participants;\n    if (!participants
+    || target < 1 || target > participants.length) return null;\n    return participants[target
+    - 1];\n  }\n  return target;\n}\n\n// --- Core assignment logic ---\nfunction
+    assignAvatarToPlayer(player, avatarID) {\n  if (!player || !player.exists())
+    {\n    $.log(\"[AvatarManager] Cannot assign avatar: player does not exist\");\n   
+    return;\n  }\n\n  // Remove any existing avatars for this player first\n  unassignAllFromPlayer(player);\n\n 
+    // Spawn the wrapper item\n  try {\n    const handle = $.createItem(\n      new
+    WorldItemTemplateId(avatarID),\n      player.getPosition(),\n      player.getRotation()\n   
+    );\n    handle.send(\"assignPlayer\", { player: player });\n\n    const list
+    = $.state.createdAvatars || [];\n    list.push(handle);\n    $.state.createdAvatars
+    = list;\n\n    $.log(\"[AvatarManager] Assigned avatar '\" + avatarID + \"' to
+    player \" + player.userDisplayName);\n  } catch (e) {\n    $.log(\"[AvatarManager]
+    createItem failed (rate limit?): \" + e);\n  }\n}\n\nfunction unassignAllFromPlayer(player)
+    {\n  if (!player) return;\n\n  const list = $.state.createdAvatars || [];\n 
+    for (let i = 0; i < list.length; i++) {\n    try {\n      list[i].send(\"unassignIfPlayer\",
+    player.id);\n    } catch (e) { /* item may already be gone */ }\n  }\n\n  $.log(\"[AvatarManager]
+    Unassigned all avatars from player \" + player.userDisplayName);\n}\n\n// ---
+    Readiness gate ---\n// A participant is \"ready\" to receive an avatar command
+    when they're enrolled\n// in $.groupState.participants, their PlayerHandle exists,
+    and Cluster has\n// finished populating their humanoid pose data. The third gate
+    is what\n// AvatarSyncClone actually needs to drive the bones \u2014 without
+    it, the wrapper\n// can spawn but stay in T-pose if pose data never arrives before
+    sync starts.\nfunction isPlayerReady(player) {\n  if (!player || !player.exists())
+    return false;\n  try {\n    return player.getHumanoidBoneRotation(HumanoidBone.Hips)
+    != null;\n  } catch (e) {\n    return false;\n  }\n}\n\n// Execute a queued payload
+    now. No readiness check \u2014 caller is responsible.\n// Returns true on success,
+    false on no-op (e.g. participant disappeared).\nfunction executePayload(payload,
+    participantNumber) {\n  const player = resolvePlayer(participantNumber);\n  if
+    (!player) return false;\n  if (payload.op === \"assign\") {\n    if (!payload.avatarID)
+    return false;\n    assignAvatarToPlayer(player, payload.avatarID);\n    return
+    true;\n  }\n  if (payload.op === \"unassign\") {\n    unassignAllFromPlayer(player);\n   
+    return true;\n  }\n  return false;\n}\n\nfunction clearPending(participantNumber)
+    {\n  if (!$.state.pendingByParticipant[participantNumber]) return;\n  const next
+    = { ...$.state.pendingByParticipant };\n  delete next[participantNumber];\n 
+    $.state.pendingByParticipant = next;\n}\n\nfunction queuePending(payload, participantNumber)
+    {\n  const next = { ...$.state.pendingByParticipant };\n  next[participantNumber]
+    = {\n    op: payload.op,\n    avatarID: payload.avatarID,\n    waitTime: 0\n 
+    };\n  $.state.pendingByParticipant = next;\n}\n\n// Tries to execute now. If
+    the participant isn't ready, queues the payload\n// (overwriting any older queued
+    payload for the same participant, so rapid\n// re-triggers resolve to the latest
+    command).\nfunction tryExecuteOrQueue(payload, participantNumber) {\n  const
+    player = resolvePlayer(participantNumber);\n  if (isPlayerReady(player)) {\n   
+    executePayload(payload, participantNumber);\n    clearPending(participantNumber);\n   
+    return;\n  }\n  queuePending(payload, participantNumber);\n  $.log(\"[AvatarManager]
+    Participant \" + participantNumber +\n        \" not ready \u2014 queued op=\"
+    + payload.op +\n        (payload.avatarID ? (\" avatarID=\" + payload.avatarID)
+    : \"\"));\n}\n\n// --- Message handlers (for state-listening items) ---\n$.onReceive((messageType,
+    arg, sender) => {\n  if (messageType === \"luida_assign_avatar\") {\n    const
+    participantNumber = arg.target !== undefined ? arg.target : arg.participantIndex;\n   
+    if (typeof participantNumber !== \"number\") return;\n    tryExecuteOrQueue({
+    op: \"assign\", avatarID: arg.avatarID }, participantNumber);\n  }\n\n  if (messageType
+    === \"luida_unassign_avatar\") {\n    const participantNumber = arg.target !==
+    undefined ? arg.target : arg.participantIndex;\n    if (typeof participantNumber
+    !== \"number\") return;\n    tryExecuteOrQueue({ op: \"unassign\" }, participantNumber);\n 
+    }\n});\n\n// --- Gimmick trigger polling (integer command) ---\n// Polls two
+    global integer states:\n//   \"luida_avatar_cmd\"         - action (>0 = assign
+    avatar at index cmd-1, -1 = unassign)\n//   \"luida_avatar_participant\" - participant
+    number (1-based)\n// After handling, sends a single reset signal to clear both.\n$.onUpdate((deltaTime)
+    => {\n  if (typeof AVATAR_INDEX_MAP === \"undefined\") return;\n\n  try {\n   
+    const cmd = $.getStateCompat(\"global\", \"luida_avatar_cmd\", \"integer\");\n   
+    if (cmd !== 0 && cmd !== $.state.lastCmd) {\n      $.state.lastCmd = cmd;\n\n     
+    const participantNumber = $.getStateCompat(\"global\", \"luida_avatar_participant\",
+    \"integer\") || 1;\n\n      if (cmd > 0) {\n        // Assign: cmd = avatarIndex
+    + 1 (1-based)\n        const avatarID = AVATAR_INDEX_MAP[cmd - 1];\n        if
+    (avatarID) {\n          tryExecuteOrQueue({ op: \"assign\", avatarID: avatarID
+    }, participantNumber);\n        }\n      } else if (cmd === -1) {\n        tryExecuteOrQueue({
+    op: \"unassign\" }, participantNumber);\n      }\n\n      // Reset both global
+    states via CCK GlobalLogic on the spawner.\n      // Fired immediately on pickup
+    (not after the work completes) so the\n      // gimmick stays re-triggerable
+    while the command is still queued.\n      $.sendSignalCompat(\"this\", \"luida_avatar_cmd_reset\");\n   
+    }\n\n    if (cmd === 0 && $.state.lastCmd !== 0) {\n      $.state.lastCmd = 0;\n   
+    }\n  } catch (e) {\n    $.log(\"[AvatarManager] Gimmick trigger poll error: \"
+    + e);\n  }\n\n  // --- Retry queued commands ---\n  // For each pending entry:
+    execute if the participant is now ready, time out\n  // after MAX_WAIT_SECONDS,
+    otherwise just advance waitTime. Uses the\n  // immutable-copy pattern so $.state
+    propagates.\n  const pending = $.state.pendingByParticipant;\n  if (!pending)
+    return;\n  let nextPending = pending;\n  let dirty = false;\n  for (const key
+    in pending) {\n    if (!Object.prototype.hasOwnProperty.call(pending, key)) continue;\n   
+    const entry = pending[key];\n    const participantNum = parseInt(key, 10);\n   
+    const player = resolvePlayer(participantNum);\n\n    if (isPlayerReady(player))
+    {\n      const payload = { op: entry.op, avatarID: entry.avatarID };\n      executePayload(payload,
+    participantNum);\n      $.log(\"[AvatarManager] Deferred op=\" + entry.op +\n           
+    (entry.avatarID ? (\" avatarID=\" + entry.avatarID) : \"\") +\n            \"
+    executed for participant \" + key +\n            \" after \" + entry.waitTime.toFixed(2)
+    + \"s\");\n      if (!dirty) { nextPending = { ...pending }; dirty = true; }\n     
+    delete nextPending[key];\n      continue;\n    }\n\n    const newWait = entry.waitTime
+    + deltaTime;\n    if (newWait >= MAX_WAIT_SECONDS) {\n      $.log(\"[AvatarManager]
+    WARN: timeout (\" + MAX_WAIT_SECONDS +\n            \"s) waiting for participant
+    \" + key +\n            \" \u2014 executing op=\" + entry.op + \" anyway\");\n     
+    const payload = { op: entry.op, avatarID: entry.avatarID };\n      executePayload(payload,
+    participantNum);\n      if (!dirty) { nextPending = { ...pending }; dirty = true;
+    }\n      delete nextPending[key];\n      continue;\n    }\n\n    if (!dirty)
+    { nextPending = { ...pending }; dirty = true; }\n    nextPending[key] = { op:
+    entry.op, avatarID: entry.avatarID, waitTime: newWait };\n  }\n  if (dirty) $.state.pendingByParticipant
+    = nextPending;\n});\n"
+--- !u!114 &1160218779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1160218771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ClusterVR.CreatorKit.Item.Implements::ClusterVR.CreatorKit.Item.Implements.Item
+  id:
+    value: 0
+  itemName: 
+  size: {x: 0, y: 0, z: 0}
+--- !u!4 &1160218780
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1160218771}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1160218781
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1160218771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 0
+      key: luida_avatar_cmd_reset
+    item: {fileID: 1160218779}
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 2
+          key: luida_avatar_participant
+          parameterType: 2
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 3
+              boolValue: 0
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &1160218782
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1160218771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 0
+      key: luida_avatar_cmd_reset
+    item: {fileID: 1160218779}
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 2
+          key: luida_avatar_cmd
+          parameterType: 2
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 3
+              boolValue: 0
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
 --- !u!1001 &1243157780
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4345,7 +4772,7 @@ PrefabInstance:
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: worldItemReferences.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -4354,9 +4781,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
+      propertyPath: worldItemReferences.Array.data[1].id
+      value: LUIDA-AvatarSpawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
       propertyPath: worldItemReferences.Array.data[0].item
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: worldItemReferences.Array.data[1].item
+      value: 
+      objectReference: {fileID: 1160218779}
     - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: 'itemScripts.Array.data[1]'
@@ -4945,7 +5382,7 @@ PrefabInstance:
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: worldItemReferences.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -4954,9 +5391,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
+      propertyPath: worldItemReferences.Array.data[1].id
+      value: LUIDA-AvatarSpawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
       propertyPath: worldItemReferences.Array.data[0].item
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: worldItemReferences.Array.data[1].item
+      value: 
+      objectReference: {fileID: 1160218779}
     - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: 'itemScripts.Array.data[1]'
@@ -5334,8 +5781,8 @@ PrefabInstance:
     - target: {fileID: 5697374075709122390, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
-        = \"callExternalEndpointID_example\";\npNum = 1;\nisTestMode = true;\n\r\n$.onStart(()
+      value: "expID = \"68af2b309c8c1f5dedc1f457\";\ntoken = \"bd82d51c-2f32-4d16-b919-33b6542b379a\";\ncallExternalEndpointID
+        = \"61c788d9-0da3-40aa-b5c2-f8858727c894\";\npNum = 1;\nisTestMode = true;\n\r\n$.onStart(()
         => {\n    reset();\n    $.state.isParticipantAssigned = false;\n    $.groupState.qCompletedCount
         = 0;\n    $.state.spawnBatchSize = 3;\n    $.state.spawnInterval = 0.2;\n});\n\n$.onUpdate((deltaTime)
         => {\n    if (!$.state.isParticipantAssigned && $.groupState.isParticipantsEnough)
@@ -5615,7 +6062,7 @@ PrefabInstance:
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: worldItemReferences.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -5624,9 +6071,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
+      propertyPath: worldItemReferences.Array.data[1].id
+      value: LUIDA-AvatarSpawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
       propertyPath: worldItemReferences.Array.data[0].item
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 161685276529953077, guid: de40e14777f5f4d3190981c4f4b1cddf,
+        type: 3}
+      propertyPath: worldItemReferences.Array.data[1].item
+      value: 
+      objectReference: {fileID: 1160218779}
     - target: {fileID: 833797841801743093, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
       propertyPath: 'itemScripts.Array.data[1]'
@@ -5749,12 +6206,18 @@ PrefabInstance:
         } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(deltaTime);\n           
         $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
         = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\r\n    2: [\n        { type: \"exec\", action: (deltaTime)
-        => {\n            PARTICIPANTS[1].requestTextInput(\n              \"ask_to_calculate\",\n             
-        getRandomInt(100) + \"+\" + getRandomInt(100) + \"=\"\n            );\n       
-        } }\r\n    ]\r\n};\n\r\nconst duringStateActions = {\r\n};\n\r\nconst stateExitActions
-        = {\r\n};\r\n\n\n// ---- legacy free-form code (migrate to event handlers
-        when possible) ----\n\nfunction getRandomInt(max) { // \u4E71\u6570\u306E\u6574\u6570\u3092\u751F\u6210\u3059\u308B\u95A2\u6570\u3092\u5B9A\u7FA9\u3059\u308B\n 
+        stateEnterActions = {\r\n    0: [\n        { type: \"exec\", action: (deltaTime)
+        => {\n            $.worldItemReference('LUIDA-AvatarSpawner').send('luida_assign_avatar',
+        { avatarID: 'HatsuneMikuNT', participantIndex: 1 });\n        } },\r\n       
+        { type: \"sleep\", value: 10 },\r\n        { type: \"exec\", action: (deltaTime)
+        => {\n            $.worldItemReference('LUIDA-AvatarSpawner').send('luida_unassign_avatar',
+        { participantIndex: 1 });\n        } }\r\n    ],\r\n    2: [\n        { type:
+        \"exec\", action: (deltaTime) => {\n            PARTICIPANTS[1].requestTextInput(\n             
+        \"ask_to_calculate\",\n              getRandomInt(100) + \"+\" + getRandomInt(100)
+        + \"=?\"\n            );\n        } }\r\n    ]\r\n};\n\r\nconst duringStateActions
+        = {\r\n};\n\r\nconst stateExitActions = {\r\n};\r\n\n\n// ---- legacy free-form
+        code (migrate to event handlers when possible) ----\n\nfunction getRandomInt(max)
+        { // \u4E71\u6570\u306E\u6574\u6570\u3092\u751F\u6210\u3059\u308B\u95A2\u6570\u3092\u5B9A\u7FA9\u3059\u308B\n 
         return Math.floor(Math.random() * max);\n}\n$.onTextInput((text, meta, status)
         => {\n  if (status === TextInputStatus.Success) {\n    ToNextState(); //
         \u53C2\u52A0\u8005\u304B\u3089\u306E\u30C6\u30AD\u30B9\u30C8\u5165\u529B\u3092\u53D7\u3051\u4ED8\u3051\u305F\u3089\u6B21\u306E\u30B9\u30C6\u30FC\u30C8\u3078\u9077\u79FB\u3055\u305B\u308B\n   
@@ -6414,3 +6877,4 @@ SceneRoots:
   - {fileID: 1243157780}
   - {fileID: 2029845015}
   - {fileID: 383654167}
+  - {fileID: 1160218780}
