@@ -4,24 +4,27 @@
 const AVATAR_SYNC_HIPS_Y = true;
 const AVATAR_HIPS_Y_OFFSET = 0;
 
+const AVATAR_HIPS_PARENT_REST_ROT = new Quaternion(0, 0, 0, 1);
+const AVATAR_HIPS_PARENT_REST_POS = new Vector3(0, 0, 0);
+
 const BONE_MAP = [
-  { bone: HumanoidBone.Hips, name: "J_Bip_C_Hips" },
-  { bone: HumanoidBone.Spine, name: "J_Bip_C_Spine" },
-  { bone: HumanoidBone.Chest, name: "J_Bip_C_Chest" },
-  { bone: HumanoidBone.Neck, name: "J_Bip_C_Neck" },
-  { bone: HumanoidBone.Head, name: "J_Bip_C_Head" },
-  { bone: HumanoidBone.LeftShoulder, name: "J_Bip_L_Shoulder" },
-  { bone: HumanoidBone.LeftUpperArm, name: "J_Bip_L_UpperArm" },
-  { bone: HumanoidBone.LeftLowerArm, name: "J_Bip_L_LowerArm" },
-  { bone: HumanoidBone.LeftHand, name: "J_Bip_L_Hand" },
-  { bone: HumanoidBone.RightShoulder, name: "J_Bip_R_Shoulder" },
-  { bone: HumanoidBone.RightUpperArm, name: "J_Bip_R_UpperArm" },
-  { bone: HumanoidBone.RightLowerArm, name: "J_Bip_R_LowerArm" },
-  { bone: HumanoidBone.RightHand, name: "J_Bip_R_Hand" },
-  { bone: HumanoidBone.LeftUpperLeg, name: "J_Bip_L_UpperLeg" },
-  { bone: HumanoidBone.LeftLowerLeg, name: "J_Bip_L_LowerLeg" },
-  { bone: HumanoidBone.RightUpperLeg, name: "J_Bip_R_UpperLeg" },
-  { bone: HumanoidBone.RightLowerLeg, name: "J_Bip_R_LowerLeg" },
+  { bone: HumanoidBone.Hips, name: "J_Bip_C_Hips", rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },
+  { bone: HumanoidBone.Spine, name: "J_Bip_C_Spine", rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },
+  { bone: HumanoidBone.Chest, name: "J_Bip_C_Chest", rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },
+  { bone: HumanoidBone.Neck, name: "J_Bip_C_Neck", rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },
+  { bone: HumanoidBone.Head, name: "J_Bip_C_Head", rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },
+  { bone: HumanoidBone.LeftShoulder, name: "J_Bip_L_Shoulder", rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },
+  { bone: HumanoidBone.LeftUpperArm, name: "J_Bip_L_UpperArm", rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },
+  { bone: HumanoidBone.LeftLowerArm, name: "J_Bip_L_LowerArm", rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },
+  { bone: HumanoidBone.LeftHand, name: "J_Bip_L_Hand", rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },
+  { bone: HumanoidBone.RightShoulder, name: "J_Bip_R_Shoulder", rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },
+  { bone: HumanoidBone.RightUpperArm, name: "J_Bip_R_UpperArm", rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },
+  { bone: HumanoidBone.RightLowerArm, name: "J_Bip_R_LowerArm", rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },
+  { bone: HumanoidBone.RightHand, name: "J_Bip_R_Hand", rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },
+  { bone: HumanoidBone.LeftUpperLeg, name: "J_Bip_L_UpperLeg", rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },
+  { bone: HumanoidBone.LeftLowerLeg, name: "J_Bip_L_LowerLeg", rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },
+  { bone: HumanoidBone.RightUpperLeg, name: "J_Bip_R_UpperLeg", rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },
+  { bone: HumanoidBone.RightLowerLeg, name: "J_Bip_R_LowerLeg", rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },
 ];
 
 const BONE_PARENT = {
