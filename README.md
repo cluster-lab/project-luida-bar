@@ -86,9 +86,13 @@ For custom data, the `LUIDA > Configure data collector` window provides a no-cod
 <img width="1475" height="483" alt="data-collection-result-on-web-screenshot" src="https://github.com/user-attachments/assets/05477847-f80a-4a7a-9b31-8826b179a419" />
 
 ### Avatar management
-The `LUIDA > Configure avatars` window maintains a per-experiment avatar registry. Registered avatars can be assigned to participants directly from the GUI via the "Assign avatar to participant" state-listening action, so swapping avatars at specific points in an experiment doesn't require any scripting.
+The `LUIDA > Configure avatars` window maintains a per-experiment avatar registry. Drop a `.vrm` file (VRM 0.x or 1.0 — 0.x files are migrated to VRM 1.0 automatically on import; UniVRM 1.0 is bundled at `Assets/VRM10` + `Assets/UniGLTF`) or any humanoid prefab into the window to register it. Registered avatars can be assigned to participants directly from the GUI via the "Assign avatar to participant" state-listening action, so swapping avatars at specific points in an experiment doesn't require any scripting.
 
-`LUIDA > Configure avatars` ウィンドウで、実験ごとのアバター一覧を管理できます。登録したアバターは、ステート連動アイテムの「Assign avatar to participant」アクションからGUI経由で参加者に割り当てられるため、実験中の特定タイミングでのアバター切替もスクリプトを書かずに実現できます。
+`LUIDA > Configure avatars` ウィンドウで、実験ごとのアバター一覧を管理できます。`.vrm` ファイル（VRM 0.x / 1.0 両対応。0.x はインポート時に自動で VRM 1.0 へマイグレーションされます。インポーターとして UniVRM 1.0 を `Assets/VRM10` + `Assets/UniGLTF` に同梱）または Humanoid のプレハブをウィンドウにドロップするだけで登録できます。登録したアバターは、ステート連動アイテムの「Assign avatar to participant」アクションからGUI経由で参加者に割り当てられるため、実験中の特定タイミングでのアバター切替もスクリプトを書かずに実現できます。
+
+Registration generates a wrapper item that syncs the player's pose at runtime. The wrapper bakes the avatar's rest pose, so non-normalized VRM 1.0 skeletons and A-posed FBX-based prefabs animate correctly too. After upgrading LUIDA, rebuild previously registered avatars (toggle any sync option to surface the Rebuild button, or re-drop the file). For in-editor preview, LUIDA automatically sets CSEmulator's test VRM (動作確認用のVRM) to the bundled transparent avatar — the emulator derives pose data from that model's bones, and a non-normalized test VRM (such as CSEmulator's bundled dummy) would distort assigned avatars in preview only.
+
+登録時には、プレイヤーの姿勢を実行時に同期するラッパーアイテムが自動生成されます。ラッパーにはアバターのレストポーズが焼き込まれるため、正規化されていない VRM 1.0 スケルトンや A ポーズの FBX 由来プレハブでも正しく動作します。LUIDA を更新した際は、登録済みアバターのラッパーを再ビルドしてください（同期オプションを一度切り替えると Rebuild ボタンが表示されます。ファイルの再ドロップでも可）。また、エディタ内プレビューでは CSEmulator の「動作確認用のVRM」に同梱の透明アバターが自動設定されます。エミュレーターはこのモデルのボーンから姿勢データを生成するため、正規化されていない VRM（CSEmulator 同梱のダミー等）を指定するとプレビューに限りアバターの姿勢が崩れます。
 
 <img width="890" height="788" alt="avatar-config-window-screenshot" src="https://github.com/user-attachments/assets/2003d19c-70a2-4e20-90c0-b8d0ef8ae892" />
 
