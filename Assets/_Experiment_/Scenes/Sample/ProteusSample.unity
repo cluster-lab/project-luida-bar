@@ -519,12 +519,12 @@ PrefabInstance:
         } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(deltaTime);\n           
         $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
         = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\r\n    1: [\n        { type: \"sleep\", value: 3 },\r\n       
+        stateEnterActions = {\n    1: [\n        { type: \"sleep\", value: 3 },\n       
         { type: \"exec\", action: (deltaTime) => {\n            $.setStateCompat('this',
-        'exp_showItem', true);\n        } },\r\n        { type: \"sleep\", value:
-        10 },\r\n        { type: \"exec\", action: (deltaTime) => {\n           
-        $.setStateCompat('this', 'exp_showItem', false);\n        } }\r\n    ]\r\n};\n\r\nconst
-        duringStateActions = {\r\n};\n\r\nconst stateExitActions = {\r\n};"
+        'exp_showItem', true);\n        } },\n        { type: \"sleep\", value: 10
+        },\n        { type: \"exec\", action: (deltaTime) => {\n            $.setStateCompat('this',
+        'exp_showItem', false);\n        } }\n    ]\n};\n\nconst duringStateActions
+        = {\n};\n\nconst stateExitActions = {\n};"
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -979,11 +979,11 @@ PrefabInstance:
         } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(deltaTime);\n           
         $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
         = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\r\n    1: [\n        { type: \"exec\", action: (deltaTime)
+        stateEnterActions = {\n    1: [\n        { type: \"exec\", action: (deltaTime)
         => {\n            $.setStateCompat('this', 'exp_showItem', true);\n       
-        } }\r\n    ]\r\n};\n\r\nconst duringStateActions = {\r\n};\n\r\nconst stateExitActions
-        = {\r\n    1: [\n        { type: \"exec\", action: (deltaTime) => {\n           
-        $.setStateCompat('this', 'exp_showItem', false);\n        } }\r\n    ]\r\n};\r\n\n\n$.onCollide((collision)
+        } }\n    ]\n};\n\nconst duringStateActions = {\n};\n\nconst stateExitActions
+        = {\n    1: [\n        { type: \"exec\", action: (deltaTime) => {\n           
+        $.setStateCompat('this', 'exp_showItem', false);\n        } }\n    ]\n};\n\n\n$.onCollide((collision)
         => {\n    if (!$.groupState.collectedData) $.groupState.collectedData = {};\n       
         let collectedData = $.groupState.collectedData;\n        collectedData['bridge']
         = 'danger';\n        $.groupState.collectedData = collectedData;\n    $.sendSignalCompat('this',
@@ -1630,21 +1630,21 @@ PrefabInstance:
         } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(deltaTime);\n           
         $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
         = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\r\n    0: [\n        { type: \"exec\", action: (deltaTime)
+        stateEnterActions = {\n    0: [\n        { type: \"exec\", action: (deltaTime)
         => {\n            $.setStateCompat('this', 'exp_showItem', true);\n       
-        } },\r\n        { type: \"exec\", action: (deltaTime) => {\n            $.subNode('Text').setText(`Welcome.
+        } },\n        { type: \"exec\", action: (deltaTime) => {\n            $.subNode('Text').setText(`Welcome.
         In this experiment,\n            you will embody an avatar to pass a bridge.`);\n       
-        } }\r\n    ],\r\n    1: [\n        { type: \"exec\", action: (deltaTime)
-        => {\n            $.setStateCompat('this', 'exp_showItem', true);\n       
-        } },\r\n        { type: \"exec\", action: (deltaTime) => {\n            $.subNode('Text').setText(`Preparing
-        trial...`);\n        } },\r\n        { type: \"sleep\", value: 3 },\r\n       
+        } }\n    ],\n    1: [\n        { type: \"exec\", action: (deltaTime) => {\n           
+        $.setStateCompat('this', 'exp_showItem', true);\n        } },\n        {
+        type: \"exec\", action: (deltaTime) => {\n            $.subNode('Text').setText(`Preparing
+        trial...`);\n        } },\n        { type: \"sleep\", value: 3 },\n       
         { type: \"exec\", action: (deltaTime) => {\n            $.subNode('Text').setText(`Look
-        in the mirror`);\n        } },\r\n        { type: \"sleep\", value: 10 },\r\n       
+        in the mirror`);\n        } },\n        { type: \"sleep\", value: 10 },\n       
         { type: \"exec\", action: (deltaTime) => {\n            $.subNode('Text').setText(`Walk
-        to the other side\n            via one of the bridges`);\n        } }\r\n   
-        ]\r\n};\n\r\nconst duringStateActions = {\r\n};\n\r\nconst stateExitActions
-        = {\r\n    1: [\n        { type: \"exec\", action: (deltaTime) => {\n           
-        $.setStateCompat('this', 'exp_showItem', false);\n        } }\r\n    ]\r\n};"
+        to the other side\n            via one of the bridges`);\n        } }\n   
+        ]\n};\n\nconst duringStateActions = {\n};\n\nconst stateExitActions = {\n   
+        1: [\n        { type: \"exec\", action: (deltaTime) => {\n            $.setStateCompat('this',
+        'exp_showItem', false);\n        } }\n    ]\n};"
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -2408,20 +2408,20 @@ PrefabInstance:
         } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(deltaTime);\n           
         $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
         = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\r\n    1: [\n        { type: \"exec\", action: (deltaTime)
+        stateEnterActions = {\n    1: [\n        { type: \"exec\", action: (deltaTime)
         => {\n            PARTICIPANTS[1].setPosition(new Vector3(0, 0, -2));\n       
-        } },\r\n        { type: \"exec\", action: (deltaTime) => {\n            $.worldItemReference('LUIDA-AvatarSpawner').send('luida_unassign_avatar',
-        { participantIndex: 1 });\n        } },\r\n        { type: \"sleep\", value:
-        3 },\r\n        { type: \"exec\", action: (deltaTime) => {\n            if
+        } },\n        { type: \"exec\", action: (deltaTime) => {\n            $.worldItemReference('LUIDA-AvatarSpawner').send('luida_unassign_avatar',
+        { participantIndex: 1 });\n        } },\n        { type: \"sleep\", value:
+        3 },\n        { type: \"exec\", action: (deltaTime) => {\n            if
         (CONDITION['avatar'] === 'elder') {\n              $.worldItemReference('LUIDA-AvatarSpawner').send('luida_assign_avatar',
         { avatarID: 'ElderAvatar', participantIndex: 1 });\n            }\n       
-        } },\r\n        { type: \"exec\", action: (deltaTime) => {\n            if
+        } },\n        { type: \"exec\", action: (deltaTime) => {\n            if
         (CONDITION['avatar'] === 'young') {\n              $.worldItemReference('LUIDA-AvatarSpawner').send('luida_assign_avatar',
         { avatarID: 'YoungAvatar', participantIndex: 1 });\n            }\n       
-        } }\r\n    ]\r\n};\n\r\nconst duringStateActions = {\r\n};\n\r\nconst stateExitActions
-        = {\r\n    2: [\n        { type: \"exec\", action: (deltaTime) => {\n           
+        } }\n    ]\n};\n\nconst duringStateActions = {\n};\n\nconst stateExitActions
+        = {\n    2: [\n        { type: \"exec\", action: (deltaTime) => {\n           
         $.worldItemReference('LUIDA-AvatarSpawner').send('luida_unassign_avatar',
-        { participantIndex: 1 });\n        } }\r\n    ]\r\n};"
+        { participantIndex: 1 });\n        } }\n    ]\n};"
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -2843,55 +2843,51 @@ PrefabInstance:
     - target: {fileID: 3321547682731800438, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: sourceCode
-      value: "const haptics = _.hapticsHandle;\r\n\r\n_.onReceive((id, body, sender)
-        => {\r\n    switch (id) {\r\n        case \"haptics\":\r\n            if
-        (haptics.isAvailable()) {\r\n                const effect = new HapticsEffect();\r\n               
-        effect.frequency = body.frequency;\r\n                effect.amplitude =
-        body.amplitude;\r\n                effect.duration = body.duration;\r\n               
-        haptics.playEffect(effect, body.target);\r\n            }\r\n           
-        break;\r\n        case \"sendOsc\":\r\n            sendOsc(body.address,
-        body.values);\r\n            break;\r\n        case \"initializeParticipant\":\r\n           
-        _.setMoveSpeedRate(1);\r\n            _.sendTo(sender, \"envInfoResponse\",
-        {\r\n                isAndroid: _.isAndroid,\r\n                isDesktop:
-        _.isDesktop,\r\n                isIos: _.isIos,\r\n                isMacOs:
-        _.isMacOs,\r\n                isMobile: _.isMobile,\r\n                isVr:
-        _.isVr,\r\n                isWindows: _.isWindows\r\n            });\r\n           
-        break;\r\n        case \"setQuestionnaireUI\":\r\n            setQuestionnaireUI(body.n,\r\n               
-        (body.hasOwnProperty(\"e\") ? body.e : null),\r\n                body.p,
-        body.r,\r\n                (body.hasOwnProperty(\"t\") ? body.t.toString()
-        : null));\r\n            break;\r\n        case \"setQuestionnaireUIs\":\r\n           
-        for (const ui of body) {\r\n                setQuestionnaireUI(ui.n,\r\n                   
-        (ui.hasOwnProperty(\"e\") ? ui.e : null),\r\n                    ui.p, ui.r,\r\n                   
-        (ui.hasOwnProperty(\"t\") ? ui.t.toString() : null));\r\n            }\r\n           
-        break;\r\n        case \"clearQuestionnaireAnswerUIs\":\r\n            let
-        targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(\"AnsText\");\r\n           
-        targetUI.setEnabled(false);\r\n            for (let i = 0; i < 20; i++) {\r\n               
+      value: "const haptics = _.hapticsHandle;\n\n_.onReceive((id, body, sender)
+        => {\n    switch (id) {\n        case \"haptics\":\n            if (haptics.isAvailable())
+        {\n                const effect = new HapticsEffect();\n                effect.frequency
+        = body.frequency;\n                effect.amplitude = body.amplitude;\n               
+        effect.duration = body.duration;\n                haptics.playEffect(effect,
+        body.target);\n            }\n            break;\n        case \"sendOsc\":\n           
+        sendOsc(body.address, body.values);\n            break;\n        case \"initializeParticipant\":\n           
+        _.setMoveSpeedRate(1);\n            _.sendTo(sender, \"envInfoResponse\",
+        {\n                isAndroid: _.isAndroid,\n                isDesktop: _.isDesktop,\n               
+        isIos: _.isIos,\n                isMacOs: _.isMacOs,\n                isMobile:
+        _.isMobile,\n                isVr: _.isVr,\n                isWindows: _.isWindows\n           
+        });\n            break;\n        case \"setQuestionnaireUI\":\n           
+        setQuestionnaireUI(body.n,\n                (body.hasOwnProperty(\"e\") ?
+        body.e : null),\n                body.p, body.r,\n                (body.hasOwnProperty(\"t\")
+        ? body.t.toString() : null));\n            break;\n        case \"setQuestionnaireUIs\":\n           
+        for (const ui of body) {\n                setQuestionnaireUI(ui.n,\n                   
+        (ui.hasOwnProperty(\"e\") ? ui.e : null),\n                    ui.p, ui.r,\n                   
+        (ui.hasOwnProperty(\"t\") ? ui.t.toString() : null));\n            }\n           
+        break;\n        case \"clearQuestionnaireAnswerUIs\":\n            let targetUI
+        = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(\"AnsText\");\n           
+        targetUI.setEnabled(false);\n            for (let i = 0; i < 20; i++) {\n               
         targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(\"AnsOptLabel_\"
-        + i);\r\n                if (targetUI) {\r\n                    targetUI.setEnabled(false);\r\n               
-        } else {\r\n                    break;\r\n                }\r\n           
-        }\r\n            break;\r\n        default:\r\n            break;\r\n   
-        }\r\n});\r\n\r\nfunction setQuestionnaireUI(targetName, isEnabled, position,
-        rotation, text) {\r\n    let targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(targetName);\r\n   
-        if (!targetUI) return;\r\n    if (isEnabled !== null) targetUI.setEnabled(isEnabled);\r\n   
+        + i);\n                if (targetUI) {\n                    targetUI.setEnabled(false);\n               
+        } else {\n                    break;\n                }\n            }\n           
+        break;\n        default:\n            break;\n    }\n});\n\nfunction setQuestionnaireUI(targetName,
+        isEnabled, position, rotation, text) {\n    let targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(targetName);\n   
+        if (!targetUI) return;\n    if (isEnabled !== null) targetUI.setEnabled(isEnabled);\n   
         if (position) targetUI.getUnityComponent(\"Transform\").unityProp.localPosition
-        = position;\r\n    if (rotation) targetUI.getUnityComponent(\"Transform\").unityProp.localRotation
-        = rotation;\r\n    if (text !== null) targetUI.findObject(\"Text\").getUnityComponent(\"Text\").unityProp.text
-        = text;\r\n}\r\n\r\nfunction sendOsc(address, values) {\r\n    if (typeof
-        _ === 'undefined' || typeof _.oscHandle === 'undefined') {\r\n        _.log(\"Error:
-        PlayerScript environment or oscHandle not found.\");\r\n        return;\r\n   
-        }\r\n\r\n    try {\r\n        const oscValues = values.map(val => {\r\n           
-        const type = typeof val;\r\n            if (type === 'boolean') {\r\n               
-        return OscValue.bool(val);\r\n            } else if (type === 'number') {\r\n               
-        if (Number.isInteger(val)) {\r\n                    return OscValue.int(val);\r\n               
-        } else {\r\n                    return OscValue.float(val);\r\n               
-        }\r\n            } else if (type === 'string') {\r\n                return
-        OscValue.asciiString(val);\r\n            } else {\r\n                _.log(`Warning:
-        Unsupported data type '${type}' for value '${val}'. Skipping.`);\r\n               
-        return null;\r\n            }\r\n        }).filter(v => v !== null);\r\n       
-        const message = new OscMessage(address, oscValues);\r\n        _.oscHandle.send(message);\r\n       
-        // _.log(`OSC message sent to ${address} with ${oscValues.length} value(s).`);\r\n\r\n   
-        } catch (e) {\r\n        _.log(`Error sending OSC message: ${e.message}`);\r\n   
-        }\r\n}\r\n"
+        = position;\n    if (rotation) targetUI.getUnityComponent(\"Transform\").unityProp.localRotation
+        = rotation;\n    if (text !== null) targetUI.findObject(\"Text\").getUnityComponent(\"Text\").unityProp.text
+        = text;\n}\n\nfunction sendOsc(address, values) {\n    if (typeof _ === 'undefined'
+        || typeof _.oscHandle === 'undefined') {\n        _.log(\"Error: PlayerScript
+        environment or oscHandle not found.\");\n        return;\n    }\n\n    try
+        {\n        const oscValues = values.map(val => {\n            const type
+        = typeof val;\n            if (type === 'boolean') {\n                return
+        OscValue.bool(val);\n            } else if (type === 'number') {\n               
+        if (Number.isInteger(val)) {\n                    return OscValue.int(val);\n               
+        } else {\n                    return OscValue.float(val);\n               
+        }\n            } else if (type === 'string') {\n                return OscValue.asciiString(val);\n           
+        } else {\n                _.log(`Warning: Unsupported data type '${type}'
+        for value '${val}'. Skipping.`);\n                return null;\n           
+        }\n        }).filter(v => v !== null);\n        const message = new OscMessage(address,
+        oscValues);\n        _.oscHandle.send(message);\n        // _.log(`OSC message
+        sent to ${address} with ${oscValues.length} value(s).`);\n\n    } catch (e)
+        {\n        _.log(`Error sending OSC message: ${e.message}`);\n    }\n}\n"
       objectReference: {fileID: 0}
     - target: {fileID: 3660925819112729135, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
@@ -3715,12 +3711,12 @@ PrefabInstance:
         } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(deltaTime);\n           
         $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
         = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\r\n    1: [\n        { type: \"sleep\", value: 13 },\r\n       
+        stateEnterActions = {\n    1: [\n        { type: \"sleep\", value: 13 },\n       
         { type: \"exec\", action: (deltaTime) => {\n            $.setStateCompat('this',
-        'exp_showItem', true);\n        } }\r\n    ]\r\n};\n\r\nconst duringStateActions
-        = {\r\n};\n\r\nconst stateExitActions = {\r\n    1: [\n        { type: \"exec\",
+        'exp_showItem', true);\n        } }\n    ]\n};\n\nconst duringStateActions
+        = {\n};\n\nconst stateExitActions = {\n    1: [\n        { type: \"exec\",
         action: (deltaTime) => {\n            $.setStateCompat('this', 'exp_showItem',
-        false);\n        } }\r\n    ]\r\n};"
+        false);\n        } }\n    ]\n};"
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}
@@ -4503,8 +4499,8 @@ PrefabInstance:
         while automation is active) ---\n    stateLog: (typeof COLLECTED_DATA !==
         \"undefined\" && COLLECTED_DATA) ? COLLECTED_DATA[\"stateLog\"] : undefined,\n   
         // --- END LUIDA AUTO ---\n    avatar: CONDITION[\"avatar\"],\n    bridge:
-        COLLECTED_DATA[\"bridge\"],\n};\nreturn fields;\n\r\n    return {};\r\n 
-        }\r\n  returnData.push(saveData());\r\n  return returnData;\r\n}\r\n"
+        COLLECTED_DATA[\"bridge\"],\n};\nreturn fields;\n\r\n    return {};\n  }\n 
+        returnData.push(saveData());\n  return returnData;\n}\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5964733846762761527, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
@@ -4896,11 +4892,11 @@ PrefabInstance:
         } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(deltaTime);\n           
         $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
         = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\r\n    1: [\n        { type: \"exec\", action: (deltaTime)
+        stateEnterActions = {\n    1: [\n        { type: \"exec\", action: (deltaTime)
         => {\n            $.setStateCompat('this', 'exp_showItem', true);\n       
-        } }\r\n    ]\r\n};\n\r\nconst duringStateActions = {\r\n};\n\r\nconst stateExitActions
-        = {\r\n    1: [\n        { type: \"exec\", action: (deltaTime) => {\n           
-        $.setStateCompat('this', 'exp_showItem', false);\n        } }\r\n    ]\r\n};\r\n\n\n$.onCollide((collision)
+        } }\n    ]\n};\n\nconst duringStateActions = {\n};\n\nconst stateExitActions
+        = {\n    1: [\n        { type: \"exec\", action: (deltaTime) => {\n           
+        $.setStateCompat('this', 'exp_showItem', false);\n        } }\n    ]\n};\n\n\n$.onCollide((collision)
         => {\n    if (!$.groupState.collectedData) $.groupState.collectedData = {};\n       
         let collectedData = $.groupState.collectedData;\n        collectedData['bridge']
         = 'safe';\n        $.groupState.collectedData = collectedData;\n    $.sendSignalCompat('this',
@@ -5213,8 +5209,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "// Auto-generated avatar command config\r\nconst AVATAR_INDEX_MAP
-    = [\"ElderAvatar\", \"YoungAvatar\"];\r\n\r\n// ===== LUIDA Avatar Manager =====\n//
+  sourceCode: "// Auto-generated avatar command config\nconst AVATAR_INDEX_MAP =
+    [\"YoungAvatar\", \"ElderAvatar\"];\n\r\n// ===== LUIDA Avatar Manager =====\n//
     Runs on the LUIDA-AvatarSpawner item.\n// Reads AVATAR_INDEX_MAP from the prepended
     constants header.\n//\n// Supports two input paths:\n//   1. Direct messages:
     luida_assign_avatar / luida_unassign_avatar (from state-listening items)\n//  
@@ -5695,15 +5691,15 @@ PrefabInstance:
         } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(deltaTime);\n           
         $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
         = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\r\n    3: [\n        { type: \"exec\", action: (deltaTime)
+        stateEnterActions = {\n    3: [\n        { type: \"exec\", action: (deltaTime)
         => {\n            $.setStateCompat('this', 'exp_showItem', true);\n       
-        } },\r\n        { type: \"exec\", action: (deltaTime) => {\n            $.subNode('Text').setText(`Thank
+        } },\n        { type: \"exec\", action: (deltaTime) => {\n            $.subNode('Text').setText(`Thank
         you!\n            You can now leave by\n            stepping on the portal\n           
-        in front of you`);\n        } },\r\n        { type: \"exec\", action: (deltaTime)
+        in front of you`);\n        } },\n        { type: \"exec\", action: (deltaTime)
         => {\n            $.sendSignalCompat('this', 'exp_uploadCustomData');\n       
-        } }\r\n    ]\r\n};\n\r\nconst duringStateActions = {\r\n};\n\r\nconst stateExitActions
-        = {\r\n    3: [\n        { type: \"exec\", action: (deltaTime) => {\n           
-        $.setStateCompat('this', 'exp_showItem', false);\n        } }\r\n    ]\r\n};"
+        } }\n    ]\n};\n\nconst duringStateActions = {\n};\n\nconst stateExitActions
+        = {\n    3: [\n        { type: \"exec\", action: (deltaTime) => {\n           
+        $.setStateCompat('this', 'exp_showItem', false);\n        } }\n    ]\n};"
       objectReference: {fileID: 0}
     - target: {fileID: 5660514857068071928, guid: de40e14777f5f4d3190981c4f4b1cddf,
         type: 3}

@@ -1600,8 +1600,8 @@ PrefabInstance:
     - target: {fileID: 5697374075709122390, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"68af2b309c8c1f5dedc1f457\";\ntoken = \"bd82d51c-2f32-4d16-b919-33b6542b379a\";\ncallExternalEndpointID
-        = \"61c788d9-0da3-40aa-b5c2-f8858727c894\";\npNum = 1;\nisTestMode = true;\n\r\n$.onStart(()
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
+        = \"callExternalEndpointID_example\";\npNum = 1;\nisTestMode = true;\n\r\n$.onStart(()
         => {\n    reset();\n    $.state.isParticipantAssigned = false;\n    $.groupState.qCompletedCount
         = 0;\n    $.state.spawnBatchSize = 3;\n    $.state.spawnInterval = 0.2;\n});\n\n$.onUpdate((deltaTime)
         => {\n    if (!$.state.isParticipantAssigned && $.groupState.isParticipantsEnough)
@@ -2014,8 +2014,8 @@ PrefabInstance:
     - target: {fileID: 5964733846762761526, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"68af2b309c8c1f5dedc1f457\";\ntoken = \"bd82d51c-2f32-4d16-b919-33b6542b379a\";\ncallExternalEndpointID
-        = \"61c788d9-0da3-40aa-b5c2-f8858727c894\";\npNum = 1;\nisTestMode = true;\n\r\nconst
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
+        = \"callExternalEndpointID_example\";\npNum = 1;\nisTestMode = true;\n\r\nconst
         uploadInterval = 1;\r\nconst dataLengthPerUpload = 100;\r\nconst dataByteLengthPerUpload
         = 100000; // 102400\r\n\r\n$.onStart(() => {\r\n    $.state.customData =
         [];\r\n    $.state.uploadIndex = 0;\r\n    $.state.elapsedTime = 0;\r\n   
@@ -2116,8 +2116,8 @@ PrefabInstance:
         time: COLLECTED_DATA[\"time\"],\n    isRed: COLLECTED_DATA[\"isRed\"],\n   
         ans: ((COLLECTED_DATA[\"isRed\"] === true) ? \"R\" : \"B\"),\n    font: CONDITION[\"font\"],\n   
         text: CONDITION[\"text\"],\n    req: CONDITION[\"request\"],\n    depth:
-        CONDITION[\"depth\"],\n};\nreturn fields;\n\r\n    return {};\r\n  }\r\n 
-        returnData.push(saveData());\r\n  return returnData;\r\n}\r\n"
+        CONDITION[\"depth\"],\n};\nreturn fields;\n\r\n    return {};\n  }\n  returnData.push(saveData());\n 
+        return returnData;\n}\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5964733846762761527, guid: 964d6187f971a8f43b4ee67279f1ef90,
         type: 3}
@@ -3039,8 +3039,8 @@ PrefabInstance:
     - target: {fileID: 320188938653792925, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"68af2b309c8c1f5dedc1f457\";\ntoken = \"bd82d51c-2f32-4d16-b919-33b6542b379a\";\ncallExternalEndpointID
-        = \"61c788d9-0da3-40aa-b5c2-f8858727c894\";\npNum = 1;\nisTestMode = true;\n\r\nconst
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
+        = \"callExternalEndpointID_example\";\npNum = 1;\nisTestMode = true;\n\r\nconst
         REJECTION_GATE_POS = new Vector3(-100, 100, -100);\n\nfunction enqueueRejection(idfc,
         reason) {\n    $.log(\"Rejected \" + idfc + \": \" + (reason || \"unknown\"));\n   
         $.groupState.participants = $.groupState.participants.filter(\n        p
@@ -3351,55 +3351,51 @@ PrefabInstance:
     - target: {fileID: 3321547682731800438, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
       propertyPath: sourceCode
-      value: "const haptics = _.hapticsHandle;\r\n\r\n_.onReceive((id, body, sender)
-        => {\r\n    switch (id) {\r\n        case \"haptics\":\r\n            if
-        (haptics.isAvailable()) {\r\n                const effect = new HapticsEffect();\r\n               
-        effect.frequency = body.frequency;\r\n                effect.amplitude =
-        body.amplitude;\r\n                effect.duration = body.duration;\r\n               
-        haptics.playEffect(effect, body.target);\r\n            }\r\n           
-        break;\r\n        case \"sendOsc\":\r\n            sendOsc(body.address,
-        body.values);\r\n            break;\r\n        case \"initializeParticipant\":\r\n           
-        _.setMoveSpeedRate(1);\r\n            _.sendTo(sender, \"envInfoResponse\",
-        {\r\n                isAndroid: _.isAndroid,\r\n                isDesktop:
-        _.isDesktop,\r\n                isIos: _.isIos,\r\n                isMacOs:
-        _.isMacOs,\r\n                isMobile: _.isMobile,\r\n                isVr:
-        _.isVr,\r\n                isWindows: _.isWindows\r\n            });\r\n           
-        break;\r\n        case \"setQuestionnaireUI\":\r\n            setQuestionnaireUI(body.n,\r\n               
-        (body.hasOwnProperty(\"e\") ? body.e : null),\r\n                body.p,
-        body.r,\r\n                (body.hasOwnProperty(\"t\") ? body.t.toString()
-        : null));\r\n            break;\r\n        case \"setQuestionnaireUIs\":\r\n           
-        for (const ui of body) {\r\n                setQuestionnaireUI(ui.n,\r\n                   
-        (ui.hasOwnProperty(\"e\") ? ui.e : null),\r\n                    ui.p, ui.r,\r\n                   
-        (ui.hasOwnProperty(\"t\") ? ui.t.toString() : null));\r\n            }\r\n           
-        break;\r\n        case \"clearQuestionnaireAnswerUIs\":\r\n            let
-        targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(\"AnsText\");\r\n           
-        targetUI.setEnabled(false);\r\n            for (let i = 0; i < 20; i++) {\r\n               
+      value: "const haptics = _.hapticsHandle;\n\n_.onReceive((id, body, sender)
+        => {\n    switch (id) {\n        case \"haptics\":\n            if (haptics.isAvailable())
+        {\n                const effect = new HapticsEffect();\n                effect.frequency
+        = body.frequency;\n                effect.amplitude = body.amplitude;\n               
+        effect.duration = body.duration;\n                haptics.playEffect(effect,
+        body.target);\n            }\n            break;\n        case \"sendOsc\":\n           
+        sendOsc(body.address, body.values);\n            break;\n        case \"initializeParticipant\":\n           
+        _.setMoveSpeedRate(1);\n            _.sendTo(sender, \"envInfoResponse\",
+        {\n                isAndroid: _.isAndroid,\n                isDesktop: _.isDesktop,\n               
+        isIos: _.isIos,\n                isMacOs: _.isMacOs,\n                isMobile:
+        _.isMobile,\n                isVr: _.isVr,\n                isWindows: _.isWindows\n           
+        });\n            break;\n        case \"setQuestionnaireUI\":\n           
+        setQuestionnaireUI(body.n,\n                (body.hasOwnProperty(\"e\") ?
+        body.e : null),\n                body.p, body.r,\n                (body.hasOwnProperty(\"t\")
+        ? body.t.toString() : null));\n            break;\n        case \"setQuestionnaireUIs\":\n           
+        for (const ui of body) {\n                setQuestionnaireUI(ui.n,\n                   
+        (ui.hasOwnProperty(\"e\") ? ui.e : null),\n                    ui.p, ui.r,\n                   
+        (ui.hasOwnProperty(\"t\") ? ui.t.toString() : null));\n            }\n           
+        break;\n        case \"clearQuestionnaireAnswerUIs\":\n            let targetUI
+        = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(\"AnsText\");\n           
+        targetUI.setEnabled(false);\n            for (let i = 0; i < 20; i++) {\n               
         targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(\"AnsOptLabel_\"
-        + i);\r\n                if (targetUI) {\r\n                    targetUI.setEnabled(false);\r\n               
-        } else {\r\n                    break;\r\n                }\r\n           
-        }\r\n            break;\r\n        default:\r\n            break;\r\n   
-        }\r\n});\r\n\r\nfunction setQuestionnaireUI(targetName, isEnabled, position,
-        rotation, text) {\r\n    let targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(targetName);\r\n   
-        if (!targetUI) return;\r\n    if (isEnabled !== null) targetUI.setEnabled(isEnabled);\r\n   
+        + i);\n                if (targetUI) {\n                    targetUI.setEnabled(false);\n               
+        } else {\n                    break;\n                }\n            }\n           
+        break;\n        default:\n            break;\n    }\n});\n\nfunction setQuestionnaireUI(targetName,
+        isEnabled, position, rotation, text) {\n    let targetUI = _.playerLocalObject(\"luida_questionnaire_ui\").findObject(targetName);\n   
+        if (!targetUI) return;\n    if (isEnabled !== null) targetUI.setEnabled(isEnabled);\n   
         if (position) targetUI.getUnityComponent(\"Transform\").unityProp.localPosition
-        = position;\r\n    if (rotation) targetUI.getUnityComponent(\"Transform\").unityProp.localRotation
-        = rotation;\r\n    if (text !== null) targetUI.findObject(\"Text\").getUnityComponent(\"Text\").unityProp.text
-        = text;\r\n}\r\n\r\nfunction sendOsc(address, values) {\r\n    if (typeof
-        _ === 'undefined' || typeof _.oscHandle === 'undefined') {\r\n        _.log(\"Error:
-        PlayerScript environment or oscHandle not found.\");\r\n        return;\r\n   
-        }\r\n\r\n    try {\r\n        const oscValues = values.map(val => {\r\n           
-        const type = typeof val;\r\n            if (type === 'boolean') {\r\n               
-        return OscValue.bool(val);\r\n            } else if (type === 'number') {\r\n               
-        if (Number.isInteger(val)) {\r\n                    return OscValue.int(val);\r\n               
-        } else {\r\n                    return OscValue.float(val);\r\n               
-        }\r\n            } else if (type === 'string') {\r\n                return
-        OscValue.asciiString(val);\r\n            } else {\r\n                _.log(`Warning:
-        Unsupported data type '${type}' for value '${val}'. Skipping.`);\r\n               
-        return null;\r\n            }\r\n        }).filter(v => v !== null);\r\n       
-        const message = new OscMessage(address, oscValues);\r\n        _.oscHandle.send(message);\r\n       
-        // _.log(`OSC message sent to ${address} with ${oscValues.length} value(s).`);\r\n\r\n   
-        } catch (e) {\r\n        _.log(`Error sending OSC message: ${e.message}`);\r\n   
-        }\r\n}\r\n"
+        = position;\n    if (rotation) targetUI.getUnityComponent(\"Transform\").unityProp.localRotation
+        = rotation;\n    if (text !== null) targetUI.findObject(\"Text\").getUnityComponent(\"Text\").unityProp.text
+        = text;\n}\n\nfunction sendOsc(address, values) {\n    if (typeof _ === 'undefined'
+        || typeof _.oscHandle === 'undefined') {\n        _.log(\"Error: PlayerScript
+        environment or oscHandle not found.\");\n        return;\n    }\n\n    try
+        {\n        const oscValues = values.map(val => {\n            const type
+        = typeof val;\n            if (type === 'boolean') {\n                return
+        OscValue.bool(val);\n            } else if (type === 'number') {\n               
+        if (Number.isInteger(val)) {\n                    return OscValue.int(val);\n               
+        } else {\n                    return OscValue.float(val);\n               
+        }\n            } else if (type === 'string') {\n                return OscValue.asciiString(val);\n           
+        } else {\n                _.log(`Warning: Unsupported data type '${type}'
+        for value '${val}'. Skipping.`);\n                return null;\n           
+        }\n        }).filter(v => v !== null);\n        const message = new OscMessage(address,
+        oscValues);\n        _.oscHandle.send(message);\n        // _.log(`OSC message
+        sent to ${address} with ${oscValues.length} value(s).`);\n\n    } catch (e)
+        {\n        _.log(`Error sending OSC message: ${e.message}`);\n    }\n}\n"
       objectReference: {fileID: 0}
     - target: {fileID: 3660925819112729135, guid: c429a845517c96a419988cd638c846f1,
         type: 3}
@@ -3852,7 +3848,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
 --- !u!114 &978791639
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -4480,7 +4476,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: ClusterMetaverseLab.Luida::ClusterMetaverseLab.Luida.Scripting.LuidaScriptCombiner
   itemScripts:
-  - {fileID: 5022602860645237092, guid: f0688115ba7f02944aa276ac544daea8, type: 3}
+  - {fileID: 5022602860645237092, guid: eeeb8fafd8158457d9887e6bb6c1c184, type: 3}
   - {fileID: 5022602860645237092, guid: 44e5a1d1d327ba545a99233a35dc19d7, type: 3}
   playerScripts: []
 --- !u!114 &1160218778
@@ -4496,16 +4492,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: ClusterVR.CreatorKit.Item.Implements::ClusterVR.CreatorKit.Item.Implements.ScriptableItem
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "// Auto-generated avatar command config\r\nconst AVATAR_INDEX_MAP
-    = [\"HatsuneMikuNT\", \"cybergirl\"];\r\n\r\n// ===== LUIDA Avatar Manager =====\n//
-    Runs on the LUIDA-AvatarSpawner item.\n// Reads AVATAR_INDEX_MAP from the prepended
-    constants header.\n//\n// Supports two input paths:\n//   1. Direct messages:
-    luida_assign_avatar / luida_unassign_avatar (from state-listening items)\n//  
-    2. Gimmick integer commands: polls global states \"luida_avatar_cmd\" + \"luida_avatar_participant\"\n//\n//
-    Both paths route through tryExecuteOrQueue, which defers execution until the\n//
-    target participant is \"ready\" (in $.groupState.participants, exists(), and\n//
-    has humanoid pose data) \u2014 see #avatar-fake-gimmick-race-fix. Falls back
-    to\n// best-effort execution after MAX_WAIT_SECONDS to keep behavior bounded.\n\nconst
+  sourceCode: "// Auto-generated avatar command config\nconst AVATAR_INDEX_MAP =
+    [];\n\r\n// ===== LUIDA Avatar Manager =====\n// Runs on the LUIDA-AvatarSpawner
+    item.\n// Reads AVATAR_INDEX_MAP from the prepended constants header.\n//\n//
+    Supports two input paths:\n//   1. Direct messages: luida_assign_avatar / luida_unassign_avatar
+    (from state-listening items)\n//   2. Gimmick integer commands: polls global
+    states \"luida_avatar_cmd\" + \"luida_avatar_participant\"\n//\n// Both paths
+    route through tryExecuteOrQueue, which defers execution until the\n// target
+    participant is \"ready\" (in $.groupState.participants, exists(), and\n// has
+    humanoid pose data) \u2014 see #avatar-fake-gimmick-race-fix. Falls back to\n//
+    best-effort execution after MAX_WAIT_SECONDS to keep behavior bounded.\n\nconst
     MAX_WAIT_SECONDS = 5;\n\n$.onStart(() => {\n  $.state.createdAvatars = []; //
     flat list of created avatar item handles\n  $.state.lastCmd = 0;         // last
     processed command value\n  // One slot per participant number; later commands
@@ -5781,8 +5777,8 @@ PrefabInstance:
     - target: {fileID: 5697374075709122390, guid: 5fc328789f6f647509a5de61027d8680,
         type: 3}
       propertyPath: sourceCode
-      value: "expID = \"68af2b309c8c1f5dedc1f457\";\ntoken = \"bd82d51c-2f32-4d16-b919-33b6542b379a\";\ncallExternalEndpointID
-        = \"61c788d9-0da3-40aa-b5c2-f8858727c894\";\npNum = 1;\nisTestMode = true;\n\r\n$.onStart(()
+      value: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
+        = \"callExternalEndpointID_example\";\npNum = 1;\nisTestMode = true;\n\r\n$.onStart(()
         => {\n    reset();\n    $.state.isParticipantAssigned = false;\n    $.groupState.qCompletedCount
         = 0;\n    $.state.spawnBatchSize = 3;\n    $.state.spawnInterval = 0.2;\n});\n\n$.onUpdate((deltaTime)
         => {\n    if (!$.state.isParticipantAssigned && $.groupState.isParticipantsEnough)
@@ -6206,18 +6202,12 @@ PrefabInstance:
         } else {\n            duringStateActions[$.state.state_id][$.state.duringStateActionID].action(deltaTime);\n           
         $.state.duringStateActionID += 1;\n        }\n    }\n    $.state.duringStateActionID
         = 0;\n}\n\nfunction Start() {}\nfunction Update(deltaTime) {}\n\r\nconst
-        stateEnterActions = {\r\n    0: [\n        { type: \"exec\", action: (deltaTime)
-        => {\n            $.worldItemReference('LUIDA-AvatarSpawner').send('luida_assign_avatar',
-        { avatarID: 'HatsuneMikuNT', participantIndex: 1 });\n        } },\r\n       
-        { type: \"sleep\", value: 10 },\r\n        { type: \"exec\", action: (deltaTime)
-        => {\n            $.worldItemReference('LUIDA-AvatarSpawner').send('luida_unassign_avatar',
-        { participantIndex: 1 });\n        } }\r\n    ],\r\n    2: [\n        { type:
-        \"exec\", action: (deltaTime) => {\n            PARTICIPANTS[1].requestTextInput(\n             
-        \"ask_to_calculate\",\n              getRandomInt(100) + \"+\" + getRandomInt(100)
-        + \"=?\"\n            );\n        } }\r\n    ]\r\n};\n\r\nconst duringStateActions
-        = {\r\n};\n\r\nconst stateExitActions = {\r\n};\r\n\n\n// ---- legacy free-form
-        code (migrate to event handlers when possible) ----\n\nfunction getRandomInt(max)
-        { // \u4E71\u6570\u306E\u6574\u6570\u3092\u751F\u6210\u3059\u308B\u95A2\u6570\u3092\u5B9A\u7FA9\u3059\u308B\n 
+        stateEnterActions = {\r\n    2: [\n        { type: \"exec\", action: (deltaTime)
+        => {\n            PARTICIPANTS[1].requestTextInput(\n              \"ask_to_calculate\",\n             
+        getRandomInt(100) + \"+\" + getRandomInt(100) + \"=?\"\n            );\n       
+        } }\r\n    ]\r\n};\n\r\nconst duringStateActions = {\r\n};\n\r\nconst stateExitActions
+        = {\r\n};\r\n\n\n// ---- legacy free-form code (migrate to event handlers
+        when possible) ----\n\nfunction getRandomInt(max) { // \u4E71\u6570\u306E\u6574\u6570\u3092\u751F\u6210\u3059\u308B\u95A2\u6570\u3092\u5B9A\u7FA9\u3059\u308B\n 
         return Math.floor(Math.random() * max);\n}\n$.onTextInput((text, meta, status)
         => {\n  if (status === TextInputStatus.Success) {\n    ToNextState(); //
         \u53C2\u52A0\u8005\u304B\u3089\u306E\u30C6\u30AD\u30B9\u30C8\u5165\u529B\u3092\u53D7\u3051\u4ED8\u3051\u305F\u3089\u6B21\u306E\u30B9\u30C6\u30FC\u30C8\u3078\u9077\u79FB\u3055\u305B\u308B\n   
