@@ -5151,13 +5151,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldItemTemplates:
-  - id: ElderAvatar
-    worldItemTemplate: {fileID: 5035746676271639667, guid: 47e643d19788e51449a8923568e508ec,
+  - id: YoungAvatar
+    worldItemTemplate: {fileID: 7200808668724617472, guid: c4afe4969ef5edd4fb8c3d6de2ac448b,
       type: 3}
     itemTemplateId:
       value: 0
-  - id: YoungAvatar
-    worldItemTemplate: {fileID: 5715672805277123826, guid: c4afe4969ef5edd4fb8c3d6de2ac448b,
+  - id: ElderAvatar
+    worldItemTemplate: {fileID: 5571057821034427851, guid: 47e643d19788e51449a8923568e508ec,
       type: 3}
     itemTemplateId:
       value: 0

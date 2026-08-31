@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: AvatarRegistry
   m_EditorClassIdentifier: 
   entries:
-  - avatarID: ElderAvatar
-    displayName: ElderAvatar
-    sourceVrmPrefab: {fileID: -1728013695380148634, guid: 169bfe77b684bda75e4886e90b15dadd,
+  - avatarID: YoungAvatar
+    displayName: YoungAvatar
+    sourceVrmPrefab: {fileID: -1728013695380148634, guid: 2419b69781ea1e3d84c178eae5d1a8c2,
       type: 3}
-    wrapperItemPrefab: {fileID: 7798243436123051482, guid: 47e643d19788e51449a8923568e508ec,
+    wrapperItemPrefab: {fileID: 389495318379955298, guid: c4afe4969ef5edd4fb8c3d6de2ac448b,
       type: 3}
     syncFingers: 0
     syncFeetToes: 0
@@ -26,11 +26,11 @@ MonoBehaviour:
     syncHipsY: 1
     hipsYOffset: 0
     needsRebuild: 0
-  - avatarID: YoungAvatar
-    displayName: YoungAvatar
-    sourceVrmPrefab: {fileID: -1728013695380148634, guid: 2419b69781ea1e3d84c178eae5d1a8c2,
+  - avatarID: ElderAvatar
+    displayName: ElderAvatar
+    sourceVrmPrefab: {fileID: -1728013695380148634, guid: 177bc491e5d72413ebb2241b8bbe53f4,
       type: 3}
-    wrapperItemPrefab: {fileID: 2536332609404862190, guid: c4afe4969ef5edd4fb8c3d6de2ac448b,
+    wrapperItemPrefab: {fileID: 911918220240374094, guid: 47e643d19788e51449a8923568e508ec,
       type: 3}
     syncFingers: 0
     syncFeetToes: 0
