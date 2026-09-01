@@ -1,2 +1,2 @@
 // Auto-generated avatar command config
-const AVATAR_INDEX_MAP = ["ElderAvatar", "YoungAvatar"];
+const AVATAR_INDEX_MAP = ["YoungAvatar", "ElderAvatar"];

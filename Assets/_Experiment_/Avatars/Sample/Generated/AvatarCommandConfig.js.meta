@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 177bc491e5d72413ebb2241b8bbe53f4
+guid: eeeb8fafd8158457d9887e6bb6c1c184
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -7,6 +7,4 @@ ScriptedImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-  script: {fileID: 11500000, guid: f66ead3390398f443aa127b741826ad9, type: 3}
-  MigrateToVrm1: 1
-  RenderPipeline: 0
+  script: {fileID: 11500000, guid: ee543661da8734b3b8b03e99d421098e, type: 3}

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2536332609404862190
+--- !u!1 &389495318379955298
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,12 +8,12 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2468281720169341713}
-  - component: {fileID: 1560277767553057672}
-  - component: {fileID: 5715672805277123826}
-  - component: {fileID: 445570674361353124}
-  - component: {fileID: 4151907933985081681}
-  - component: {fileID: 6372874941820807607}
+  - component: {fileID: 6138450605851154937}
+  - component: {fileID: 2470745146300845473}
+  - component: {fileID: 7200808668724617472}
+  - component: {fileID: 5083377516930609374}
+  - component: {fileID: 2589379783267503149}
+  - component: {fileID: 173532698598383170}
   m_Layer: 0
   m_Name: YoungAvatar
   m_TagString: Untagged
@@ -21,29 +21,29 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2468281720169341713
+--- !u!4 &6138450605851154937
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2536332609404862190}
+  m_GameObject: {fileID: 389495318379955298}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7202113390614440293}
+  - {fileID: 4810452015960542341}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &1560277767553057672
+--- !u!54 &2470745146300845473
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2536332609404862190}
+  m_GameObject: {fileID: 389495318379955298}
   serializedVersion: 5
   m_Mass: 1
   m_LinearDamping: 0
@@ -64,13 +64,13 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5715672805277123826
+--- !u!114 &7200808668724617472
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2536332609404862190}
+  m_GameObject: {fileID: 389495318379955298}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
@@ -80,121 +80,121 @@ MonoBehaviour:
     value: 0
   itemName: 
   size: {x: 0, y: 0, z: 0}
---- !u!114 &445570674361353124
+--- !u!114 &5083377516930609374
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2536332609404862190}
+  m_GameObject: {fileID: 389495318379955298}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 557c1287071b147459bb6f001560c6e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ClusterVR.CreatorKit.Item.Implements::ClusterVR.CreatorKit.Item.Implements.MovableItem
-  item: {fileID: 5715672805277123826}
-  rb: {fileID: 1560277767553057672}
---- !u!114 &4151907933985081681
+  item: {fileID: 7200808668724617472}
+  rb: {fileID: 2470745146300845473}
+--- !u!114 &2589379783267503149
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2536332609404862190}
+  m_GameObject: {fileID: 389495318379955298}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e61061896c654489a41575fc291bf4a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ClusterVR.CreatorKit.Item.Implements::ClusterVR.CreatorKit.Item.Implements.ScriptableItem
   sourceCodeAsset: {fileID: 0}
-  sourceCode: "// Auto-generated bone map for avatar: YoungAvatar\r\n// Do not edit
-    manually \u2014 regenerate via LUIDA Avatars window.\r\n\r\nconst AVATAR_SYNC_HIPS_Y
-    = true;\r\nconst AVATAR_HIPS_Y_OFFSET = 0;\r\n\r\nconst AVATAR_HIPS_PARENT_REST_ROT
-    = new Quaternion(0, 0, 0, 1);\r\nconst AVATAR_HIPS_PARENT_REST_POS = new Vector3(0,
-    0, 0);\r\n\r\nconst BONE_MAP = [\r\n  { bone: HumanoidBone.Hips, name: \"J_Bip_C_Hips\",
-    rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\r\n 
+  sourceCode: "// Auto-generated bone map for avatar: YoungAvatar\n// Do not edit
+    manually \u2014 regenerate via LUIDA Avatars window.\n\nconst AVATAR_SYNC_HIPS_Y
+    = true;\nconst AVATAR_HIPS_Y_OFFSET = 0;\n\nconst AVATAR_HIPS_PARENT_REST_ROT
+    = new Quaternion(0, 0, 0, 1);\nconst AVATAR_HIPS_PARENT_REST_POS = new Vector3(0,
+    0, 0);\n\nconst BONE_MAP = [\n  { bone: HumanoidBone.Hips, name: \"J_Bip_C_Hips\",
+    rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\n 
     { bone: HumanoidBone.Spine, name: \"J_Bip_C_Spine\", rest: new Quaternion(0,
-    0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\r\n  { bone: HumanoidBone.Chest,
+    0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\n  { bone: HumanoidBone.Chest,
     name: \"J_Bip_C_Chest\", rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0,
-    0, 0, 1) },\r\n  { bone: HumanoidBone.Neck, name: \"J_Bip_C_Neck\", rest: new
-    Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\r\n  { bone:
-    HumanoidBone.Head, name: \"J_Bip_C_Head\", rest: new Quaternion(0, 0, 0, 1),
-    restParent: new Quaternion(0, 0, 0, 1) },\r\n  { bone: HumanoidBone.LeftShoulder,
-    name: \"J_Bip_L_Shoulder\", rest: new Quaternion(0, 0, 0, 1), restParent: new
-    Quaternion(0, 0, 0, 1) },\r\n  { bone: HumanoidBone.LeftUpperArm, name: \"J_Bip_L_UpperArm\",
-    rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\r\n 
-    { bone: HumanoidBone.LeftLowerArm, name: \"J_Bip_L_LowerArm\", rest: new Quaternion(0,
-    0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\r\n  { bone: HumanoidBone.LeftHand,
-    name: \"J_Bip_L_Hand\", rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0,
-    0, 0, 1) },\r\n  { bone: HumanoidBone.RightShoulder, name: \"J_Bip_R_Shoulder\",
-    rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\r\n 
-    { bone: HumanoidBone.RightUpperArm, name: \"J_Bip_R_UpperArm\", rest: new Quaternion(0,
-    0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\r\n  { bone: HumanoidBone.RightLowerArm,
-    name: \"J_Bip_R_LowerArm\", rest: new Quaternion(0, 0, 0, 1), restParent: new
-    Quaternion(0, 0, 0, 1) },\r\n  { bone: HumanoidBone.RightHand, name: \"J_Bip_R_Hand\",
-    rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\r\n 
-    { bone: HumanoidBone.LeftUpperLeg, name: \"J_Bip_L_UpperLeg\", rest: new Quaternion(0,
-    0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\r\n  { bone: HumanoidBone.LeftLowerLeg,
-    name: \"J_Bip_L_LowerLeg\", rest: new Quaternion(0, 0, 0, 1), restParent: new
-    Quaternion(0, 0, 0, 1) },\r\n  { bone: HumanoidBone.RightUpperLeg, name: \"J_Bip_R_UpperLeg\",
-    rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\r\n 
-    { bone: HumanoidBone.RightLowerLeg, name: \"J_Bip_R_LowerLeg\", rest: new Quaternion(0,
-    0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\r\n];\r\n\r\nconst BONE_PARENT
-    = {\r\n  [HumanoidBone.Hips]: null,\r\n  [HumanoidBone.Spine]: HumanoidBone.Hips,\r\n 
-    [HumanoidBone.Chest]: HumanoidBone.Spine,\r\n  [HumanoidBone.Neck]: HumanoidBone.Chest,\r\n 
-    [HumanoidBone.Head]: HumanoidBone.Neck,\r\n  [HumanoidBone.LeftShoulder]: HumanoidBone.Chest,\r\n 
-    [HumanoidBone.LeftUpperArm]: HumanoidBone.LeftShoulder,\r\n  [HumanoidBone.LeftLowerArm]:
-    HumanoidBone.LeftUpperArm,\r\n  [HumanoidBone.LeftHand]: HumanoidBone.LeftLowerArm,\r\n 
-    [HumanoidBone.RightShoulder]: HumanoidBone.Chest,\r\n  [HumanoidBone.RightUpperArm]:
-    HumanoidBone.RightShoulder,\r\n  [HumanoidBone.RightLowerArm]: HumanoidBone.RightUpperArm,\r\n 
-    [HumanoidBone.RightHand]: HumanoidBone.RightLowerArm,\r\n  [HumanoidBone.LeftUpperLeg]:
-    HumanoidBone.Hips,\r\n  [HumanoidBone.LeftLowerLeg]: HumanoidBone.LeftUpperLeg,\r\n 
-    [HumanoidBone.RightUpperLeg]: HumanoidBone.Hips,\r\n  [HumanoidBone.RightLowerLeg]:
-    HumanoidBone.RightUpperLeg,\r\n};\r\n\r\n// ===== LUIDA Avatar Sync Clone =====\n//
-    Attached to each spawned avatar wrapper item.\n// Reads BONE_MAP and BONE_PARENT
-    from the prepended per-avatar BoneMap header.\n// Syncs the assigned player's
-    humanoid pose to this item's sub-nodes every frame.\n\nlet boneNodes = [];\nlet
-    hipsNode = null;\nlet headNode = null;\n\n// Rest transform of the hips' parent
-    node relative to the item root, baked by\n// VrmWrapperBuilder. Older bone-map
-    headers don't define these \u2014 fall back to\n// identity/zero (VRM0-normalized
-    behavior).\nconst HIPS_PARENT_REST_ROT = typeof AVATAR_HIPS_PARENT_REST_ROT !==
-    \"undefined\"\n  ? AVATAR_HIPS_PARENT_REST_ROT : new Quaternion(0, 0, 0, 1);\nconst
-    HIPS_PARENT_REST_POS = typeof AVATAR_HIPS_PARENT_REST_POS !== \"undefined\"\n 
-    ? AVATAR_HIPS_PARENT_REST_POS : new Vector3(0, 0, 0);\n\n$.onStart(() => {\n 
-    $.state.player = null;\n  $.state.needsScale = false;\n  $.state.scaled = false;\n 
-    $.state.poseWaitTime = 0;\n  $.state.warnedNoPose = false;\n\n  // Cache bone
-    sub-node references using the baked-in BONE_MAP.\n  // rest/restParent are the
-    avatar's rest-pose rotations baked by\n  // VrmWrapperBuilder; older bone maps
-    lack them, so default to identity\n  // (VRM0-normalized behavior).\n  const
-    identityRot = new Quaternion(0, 0, 0, 1);\n  boneNodes = [];\n  for (let i =
-    0; i < BONE_MAP.length; i++) {\n    const entry = BONE_MAP[i];\n    const node
-    = $.subNode(entry.name);\n    if (!node) continue;\n    const parentBone = BONE_PARENT[entry.bone]
-    !== undefined ? BONE_PARENT[entry.bone] : null;\n    boneNodes.push({\n     
-    bone: entry.bone,\n      node: node,\n      parentBone: parentBone,\n      rest:
-    entry.rest !== undefined ? entry.rest : identityRot,\n      restParent: entry.restParent
-    !== undefined ? entry.restParent : identityRot,\n    });\n    if (entry.bone
-    === HumanoidBone.Hips) hipsNode = node;\n    if (entry.bone === HumanoidBone.Head)
-    headNode = node;\n  }\n});\n\n// --- Receive messages from AvatarManager ---\n$.onReceive((messageType,
-    arg, sender) => {\n  if (messageType === \"assignPlayer\") {\n    $.state.player
-    = arg.player;\n    $.requestOwner(arg.player);\n  }\n\n  if (messageType ===
-    \"unassign\") {\n    $.state.player = null;\n    $.destroy();\n  }\n\n  if (messageType
-    === \"unassignIfPlayer\") {\n    if ($.state.player && $.state.player.id ===
-    arg) {\n      $.state.player = null;\n      $.destroy();\n    }\n  }\n});\n\n//
-    --- Quaternion math helpers ---\nfunction rotateVector(q, x, y, z) {\n  const
-    qx = q.x, qy = q.y, qz = q.z, qw = q.w;\n  const tx = 2 * (qy * z - qz * y);\n 
-    const ty = 2 * (qz * x - qx * z);\n  const tz = 2 * (qx * y - qy * x);\n  return
-    new Vector3(\n    x + qw * tx + (qy * tz - qz * ty),\n    y + qw * ty + (qz *
-    tx - qx * tz),\n    z + qw * tz + (qx * ty - qy * tx)\n  );\n}\n\nfunction multiplyQuaternions(q1,
-    q2) {\n  return new Quaternion(\n    q1.w * q2.x + q1.x * q2.w + q1.y * q2.z
-    - q1.z * q2.y,\n    q1.w * q2.y - q1.x * q2.z + q1.y * q2.w + q1.z * q2.x,\n   
-    q1.w * q2.z + q1.x * q2.y - q1.y * q2.x + q1.z * q2.w,\n    q1.w * q2.w - q1.x
-    * q2.x - q1.y * q2.y - q1.z * q2.z\n  );\n}\n\n// --- Per-frame sync ---\n$.onUpdate((deltaTime)
-    => {\n  const player = $.state.player;\n  if (!player || !player.exists()) return;\n\n 
-    // Diagnostic: if pose data is still null 3s after the wrapper got its player,\n 
-    // log once. Helps surface the rare \"AvatarManager timed out and spawned the\n 
-    // wrapper anyway, but pose data never arrived\" case to the experimenter.\n 
-    // Behavior unchanged \u2014 the existing `if (!boneRot) continue;` skip handles\n 
-    // the actual sync.\n  const hipsRotProbe = player.getHumanoidBoneRotation(HumanoidBone.Hips);\n 
+    0, 0, 1) },\n  { bone: HumanoidBone.Neck, name: \"J_Bip_C_Neck\", rest: new Quaternion(0,
+    0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\n  { bone: HumanoidBone.Head,
+    name: \"J_Bip_C_Head\", rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0,
+    0, 0, 1) },\n  { bone: HumanoidBone.LeftShoulder, name: \"J_Bip_L_Shoulder\",
+    rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\n 
+    { bone: HumanoidBone.LeftUpperArm, name: \"J_Bip_L_UpperArm\", rest: new Quaternion(0,
+    0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\n  { bone: HumanoidBone.LeftLowerArm,
+    name: \"J_Bip_L_LowerArm\", rest: new Quaternion(0, 0, 0, 1), restParent: new
+    Quaternion(0, 0, 0, 1) },\n  { bone: HumanoidBone.LeftHand, name: \"J_Bip_L_Hand\",
+    rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\n 
+    { bone: HumanoidBone.RightShoulder, name: \"J_Bip_R_Shoulder\", rest: new Quaternion(0,
+    0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\n  { bone: HumanoidBone.RightUpperArm,
+    name: \"J_Bip_R_UpperArm\", rest: new Quaternion(0, 0, 0, 1), restParent: new
+    Quaternion(0, 0, 0, 1) },\n  { bone: HumanoidBone.RightLowerArm, name: \"J_Bip_R_LowerArm\",
+    rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\n 
+    { bone: HumanoidBone.RightHand, name: \"J_Bip_R_Hand\", rest: new Quaternion(0,
+    0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\n  { bone: HumanoidBone.LeftUpperLeg,
+    name: \"J_Bip_L_UpperLeg\", rest: new Quaternion(0, 0, 0, 1), restParent: new
+    Quaternion(0, 0, 0, 1) },\n  { bone: HumanoidBone.LeftLowerLeg, name: \"J_Bip_L_LowerLeg\",
+    rest: new Quaternion(0, 0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\n 
+    { bone: HumanoidBone.RightUpperLeg, name: \"J_Bip_R_UpperLeg\", rest: new Quaternion(0,
+    0, 0, 1), restParent: new Quaternion(0, 0, 0, 1) },\n  { bone: HumanoidBone.RightLowerLeg,
+    name: \"J_Bip_R_LowerLeg\", rest: new Quaternion(0, 0, 0, 1), restParent: new
+    Quaternion(0, 0, 0, 1) },\n];\n\nconst BONE_PARENT = {\n  [HumanoidBone.Hips]:
+    null,\n  [HumanoidBone.Spine]: HumanoidBone.Hips,\n  [HumanoidBone.Chest]: HumanoidBone.Spine,\n 
+    [HumanoidBone.Neck]: HumanoidBone.Chest,\n  [HumanoidBone.Head]: HumanoidBone.Neck,\n 
+    [HumanoidBone.LeftShoulder]: HumanoidBone.Chest,\n  [HumanoidBone.LeftUpperArm]:
+    HumanoidBone.LeftShoulder,\n  [HumanoidBone.LeftLowerArm]: HumanoidBone.LeftUpperArm,\n 
+    [HumanoidBone.LeftHand]: HumanoidBone.LeftLowerArm,\n  [HumanoidBone.RightShoulder]:
+    HumanoidBone.Chest,\n  [HumanoidBone.RightUpperArm]: HumanoidBone.RightShoulder,\n 
+    [HumanoidBone.RightLowerArm]: HumanoidBone.RightUpperArm,\n  [HumanoidBone.RightHand]:
+    HumanoidBone.RightLowerArm,\n  [HumanoidBone.LeftUpperLeg]: HumanoidBone.Hips,\n 
+    [HumanoidBone.LeftLowerLeg]: HumanoidBone.LeftUpperLeg,\n  [HumanoidBone.RightUpperLeg]:
+    HumanoidBone.Hips,\n  [HumanoidBone.RightLowerLeg]: HumanoidBone.RightUpperLeg,\n};\n\r\n//
+    ===== LUIDA Avatar Sync Clone =====\n// Attached to each spawned avatar wrapper
+    item.\n// Reads BONE_MAP and BONE_PARENT from the prepended per-avatar BoneMap
+    header.\n// Syncs the assigned player's humanoid pose to this item's sub-nodes
+    every frame.\n\nlet boneNodes = [];\nlet hipsNode = null;\nlet headNode = null;\n\n//
+    Rest transform of the hips' parent node relative to the item root, baked by\n//
+    VrmWrapperBuilder. Older bone-map headers don't define these \u2014 fall back
+    to\n// identity/zero (VRM0-normalized behavior).\nconst HIPS_PARENT_REST_ROT
+    = typeof AVATAR_HIPS_PARENT_REST_ROT !== \"undefined\"\n  ? AVATAR_HIPS_PARENT_REST_ROT
+    : new Quaternion(0, 0, 0, 1);\nconst HIPS_PARENT_REST_POS = typeof AVATAR_HIPS_PARENT_REST_POS
+    !== \"undefined\"\n  ? AVATAR_HIPS_PARENT_REST_POS : new Vector3(0, 0, 0);\n\n$.onStart(()
+    => {\n  $.state.player = null;\n  $.state.needsScale = false;\n  $.state.scaled
+    = false;\n  $.state.poseWaitTime = 0;\n  $.state.warnedNoPose = false;\n\n  //
+    Cache bone sub-node references using the baked-in BONE_MAP.\n  // rest/restParent
+    are the avatar's rest-pose rotations baked by\n  // VrmWrapperBuilder; older
+    bone maps lack them, so default to identity\n  // (VRM0-normalized behavior).\n 
+    const identityRot = new Quaternion(0, 0, 0, 1);\n  boneNodes = [];\n  for (let
+    i = 0; i < BONE_MAP.length; i++) {\n    const entry = BONE_MAP[i];\n    const
+    node = $.subNode(entry.name);\n    if (!node) continue;\n    const parentBone
+    = BONE_PARENT[entry.bone] !== undefined ? BONE_PARENT[entry.bone] : null;\n   
+    boneNodes.push({\n      bone: entry.bone,\n      node: node,\n      parentBone:
+    parentBone,\n      rest: entry.rest !== undefined ? entry.rest : identityRot,\n     
+    restParent: entry.restParent !== undefined ? entry.restParent : identityRot,\n   
+    });\n    if (entry.bone === HumanoidBone.Hips) hipsNode = node;\n    if (entry.bone
+    === HumanoidBone.Head) headNode = node;\n  }\n});\n\n// --- Receive messages
+    from AvatarManager ---\n$.onReceive((messageType, arg, sender) => {\n  if (messageType
+    === \"assignPlayer\") {\n    $.state.player = arg.player;\n    $.requestOwner(arg.player);\n 
+    }\n\n  if (messageType === \"unassign\") {\n    $.state.player = null;\n    $.destroy();\n 
+    }\n\n  if (messageType === \"unassignIfPlayer\") {\n    if ($.state.player &&
+    $.state.player.id === arg) {\n      $.state.player = null;\n      $.destroy();\n   
+    }\n  }\n});\n\n// --- Quaternion math helpers ---\nfunction rotateVector(q, x,
+    y, z) {\n  const qx = q.x, qy = q.y, qz = q.z, qw = q.w;\n  const tx = 2 * (qy
+    * z - qz * y);\n  const ty = 2 * (qz * x - qx * z);\n  const tz = 2 * (qx * y
+    - qy * x);\n  return new Vector3(\n    x + qw * tx + (qy * tz - qz * ty),\n   
+    y + qw * ty + (qz * tx - qx * tz),\n    z + qw * tz + (qx * ty - qy * tx)\n 
+    );\n}\n\nfunction multiplyQuaternions(q1, q2) {\n  return new Quaternion(\n   
+    q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y,\n    q1.w * q2.y - q1.x
+    * q2.z + q1.y * q2.w + q1.z * q2.x,\n    q1.w * q2.z + q1.x * q2.y - q1.y * q2.x
+    + q1.z * q2.w,\n    q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z\n 
+    );\n}\n\n// --- Per-frame sync ---\n$.onUpdate((deltaTime) => {\n  const player
+    = $.state.player;\n  if (!player || !player.exists()) return;\n\n  // Diagnostic:
+    if pose data is still null 3s after the wrapper got its player,\n  // log once.
+    Helps surface the rare \"AvatarManager timed out and spawned the\n  // wrapper
+    anyway, but pose data never arrived\" case to the experimenter.\n  // Behavior
+    unchanged \u2014 the existing `if (!boneRot) continue;` skip handles\n  // the
+    actual sync.\n  const hipsRotProbe = player.getHumanoidBoneRotation(HumanoidBone.Hips);\n 
     if (!hipsRotProbe) {\n    $.state.poseWaitTime += deltaTime;\n    if (!$.state.warnedNoPose
     && $.state.poseWaitTime > 3) {\n      $.log(\"[AvatarSyncClone] Player pose still
     null after 3s \u2014 avatar may stay in T-pose\");\n      $.state.warnedNoPose
@@ -244,13 +244,13 @@ MonoBehaviour:
     const invParent = new Quaternion(-parentWorld.x, -parentWorld.y, -parentWorld.z,
     parentWorld.w);\n    const localBoneRot = multiplyQuaternions(invParent, desiredWorld);\n\n   
     entry.node.setRotation(localBoneRot);\n  }\n});\n"
---- !u!114 &6372874941820807607
+--- !u!114 &173532698598383170
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2536332609404862190}
+  m_GameObject: {fileID: 389495318379955298}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: efba9862ff2c44c8a85ac4257727b653, type: 3}
@@ -260,13 +260,13 @@ MonoBehaviour:
   - {fileID: 5022602860645237092, guid: 925808cb63daeb447bdaa0981466c014, type: 3}
   - {fileID: 5022602860645237092, guid: bb6d8ae54a18d2444818810e553a5422, type: 3}
   playerScripts: []
---- !u!1001 &2624386810010379541
+--- !u!1001 &385781802589487349
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 2468281720169341713}
+    m_TransformParent: {fileID: 6138450605851154937}
     m_Modifications:
     - target: {fileID: -1728013695380148634, guid: 2419b69781ea1e3d84c178eae5d1a8c2,
         type: 3}
@@ -329,9 +329,9 @@ PrefabInstance:
     m_AddedComponents: []
   m_SourcePrefab: {fileID: -3956505258223990651, guid: 2419b69781ea1e3d84c178eae5d1a8c2,
     type: 3}
---- !u!4 &7202113390614440293 stripped
+--- !u!4 &4810452015960542341 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5159078012444724336, guid: 2419b69781ea1e3d84c178eae5d1a8c2,
     type: 3}
-  m_PrefabInstance: {fileID: 2624386810010379541}
+  m_PrefabInstance: {fileID: 385781802589487349}
   m_PrefabAsset: {fileID: 0}
