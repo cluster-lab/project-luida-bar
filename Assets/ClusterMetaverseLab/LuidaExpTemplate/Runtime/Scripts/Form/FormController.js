@@ -7,6 +7,38 @@ $.onStart(() => {
 });
 
 $.onUpdate((deltaTime) => {
+    // A new sessionID means a new participant (ParticipantManager "luida_reset"): forget the previous one and
+    // reopen the form. Must run before the assignment below. The first frame only records the sessionID.
+    if ($.state.boundSessionID !== $.groupState.sessionID) {
+        const hadParticipant = !!$.state.isParticipantAssigned;
+        $.state.boundSessionID = $.groupState.sessionID;
+        if (hadParticipant) {
+            $.state.participant = null;
+            $.state.isParticipantAssigned = false;
+            reopenForm();
+        }
+    }
+
+    // The participant left and rejoined with the same account: the ParticipantManager put the new PlayerHandle
+    // into their slot ("続きから" on its new-participant prompt). Follow it. A form that was open is closed and
+    // restarted, because its answer options and texts were only visible to the previous join.
+    if ($.state.isParticipantAssigned && $.state.participant && !$.state.participant.exists()) {
+        const fresh = $.groupState.participants[($.getStateCompat("this", "pID", "integer") - 1) || 0];
+        if (fresh && fresh.exists() && fresh.id !== $.state.participant.id) {
+            $.state.participant = fresh;
+            $.worldItemReference("PrevButton").send("setParticipant", fresh);
+            $.worldItemReference("NextButton").send("setParticipant", fresh);
+            if ($.state.isInitiated && !$.state.isSubmitted) reopenForm();
+        }
+    }
+
+    // The form can be answered once per visit of its state. After the answers are sent it stays closed (the
+    // waiting screen is still shown and a click must not reload it) until the state machine has entered another
+    // state, which is when the container is deactivated; the next visit of the state finds it closed and ready.
+    if ($.state.isSubmitted && stateEnteredTime() !== ($.state.submittedStateEnteredTime || 0)) {
+        reopenForm();
+    }
+
     if (!$.state.isParticipantAssigned && $.groupState.isParticipantsEnough) {
         let player = $.groupState.participants[($.getStateCompat("this", "pID", "integer") - 1) || 0];
         $.state.participant = player;
@@ -283,7 +315,23 @@ function submitAnswers() {
         r: $.getRotation(),
         e: true
     });
+    $.state.submittedStateEnteredTime = stateEnteredTime();
     reset(false);
+}
+
+// Time of the last Global "state_entered" signal (0 if it never fired). Only a value different from the one
+// recorded when the answers were sent counts as a new state.
+function stateEnteredTime() {
+    const d = $.getStateCompat("global", "state_entered", "signal");
+    if (!d) return 0;
+    return (typeof d.getTime === "function") ? d.getTime() : (Number(d) || 0);
+}
+
+// Closed and ready for the next answer: forget the previous answers, show the start hint, hide the waiting text.
+function reopenForm() {
+    reset(true);
+    $.setStateCompat("this", "form_show_start_hint", true);
+    $.state.participant?.send("setQuestionnaireUI", { n: "WaitingText", e: false });
 }
 
 function toNext() {
